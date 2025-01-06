@@ -170,7 +170,7 @@ To collaborate:
 ### Running the Bash Setup
 
 ```
-chmod +x setup.sh
-./setup.sh submodule
+chmod +x nar.sh
+./nar.sh submodule
 
 ```
