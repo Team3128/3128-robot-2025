@@ -7,6 +7,7 @@ import java.util.function.Function;
 
 import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
+import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
@@ -26,7 +27,6 @@ import frc.team3128.subsystems.Swerve;
 public class Constants {
 
     public static class RobotConstants {
-
         public static final double maxVelocity = 0;
         public static final double maxAcceleration = 0;
 
@@ -52,7 +52,11 @@ public class Constants {
 
         public static final double neutralHeight = 0;
     }
-
+    public static class IntakeConstants {
+        public static final int right_Roller_ID= 1;
+        public static final NAR_CANSpark motor1= new NAR_CANSpark(right_Roller_ID);
+        public static final int currentThreshold= 0;
+    }
     public static class AutoConstants {
 
         // public static final var autoConstraints = null;
