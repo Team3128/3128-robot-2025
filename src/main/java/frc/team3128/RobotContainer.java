@@ -13,6 +13,9 @@ import common.hardware.input.NAR_ButtonBoard;
 import common.hardware.camera.Camera;
 import common.utility.narwhaldashboard.NarwhalDashboard;
 import common.utility.shuffleboard.NAR_Shuffleboard;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -71,8 +74,6 @@ public class RobotContainer {
     public double degreesToRadians(double degrees){
         return Angle.ofRelativeUnits(degrees, Units.Degrees).in(Units.Radians);
     }
-        initDashboard();
-    }   
 
     private void configureButtonBindings() {
        
