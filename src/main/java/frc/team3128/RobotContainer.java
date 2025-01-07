@@ -9,6 +9,7 @@ import common.utility.narwhaldashboard.NarwhalDashboard;
 import common.utility.shuffleboard.NAR_Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Swerve;
 
@@ -59,6 +60,8 @@ public class RobotContainer {
         controller.getButton(XboxButton.kB)
             .onTrue(intake.run(0.5))
             .onFalse(intake.stop());
+        controller.getButton(XboxButton.kX)
+            .onTrue(Commands.runOnce(()->swerve.resetGyro(0)));
     }
 
     public void initCameras() {
