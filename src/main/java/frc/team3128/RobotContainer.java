@@ -2,14 +2,14 @@ package frc.team3128;
 
 
 import common.hardware.input.NAR_XboxController;
+import common.hardware.input.NAR_XboxController.XboxButton;
 import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_TalonFX;
-
-import static common.hardware.input.NAR_XboxController.XboxButton.*;
 import common.utility.narwhaldashboard.NarwhalDashboard;
 import common.utility.shuffleboard.NAR_Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Swerve;
 
 
@@ -29,10 +29,12 @@ public class RobotContainer {
 
     private NarwhalDashboard dashboard;
     private Swerve swerve;
+    private Intake intake;
     private final Command swerveDriveCommand;
 
     public RobotContainer() {
         swerve = Swerve.getInstance();
+        intake = Intake.getInstance();
         
         NAR_CANSpark.maximumRetries = 2;
         NAR_TalonFX.maximumRetries = 2;
@@ -45,13 +47,18 @@ public class RobotContainer {
         swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
 
-        initCameras();
-        initDashboard();
+        // initCameras();
+        // initDashboard();
         configureButtonBindings();
     }   
 
     private void configureButtonBindings() {
-
+        controller.getButton(XboxButton.kA)
+            .onTrue(intake.run(-0.5))
+            .onFalse(intake.stop());
+        controller.getButton(XboxButton.kB)
+            .onTrue(intake.run(0.5))
+            .onFalse(intake.stop());
     }
 
     public void initCameras() {
