@@ -8,6 +8,9 @@ import common.hardware.motorcontroller.NAR_TalonFX;
 import static common.hardware.input.NAR_XboxController.XboxButton.*;
 import common.utility.narwhaldashboard.NarwhalDashboard;
 import common.utility.shuffleboard.NAR_Shuffleboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.team3128.subsystems.Swerve;
 
 
 /**
@@ -25,8 +28,12 @@ public class RobotContainer {
     public static NAR_XboxController controller, controller2;
 
     private NarwhalDashboard dashboard;
+    private Swerve swerve;
+    private final Command swerveDriveCommand;
 
     public RobotContainer() {
+        swerve = Swerve.getInstance();
+        
         NAR_CANSpark.maximumRetries = 2;
         NAR_TalonFX.maximumRetries = 2;
 
@@ -35,6 +42,8 @@ public class RobotContainer {
         controller = new NAR_XboxController(2);
         controller2 = new NAR_XboxController(3);
         
+        swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
+        CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
 
         initCameras();
         initDashboard();

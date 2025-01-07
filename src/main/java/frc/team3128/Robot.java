@@ -6,8 +6,6 @@ package frc.team3128;
 
 import java.util.Optional;
 
-import org.littletonrobotics.junction.Logger;
-
 import common.core.misc.NAR_Robot;
 import common.hardware.camera.Camera;
 import common.utility.Log;
@@ -67,7 +65,6 @@ public class Robot extends NAR_Robot {
             Camera.addIgnoredTags(6, 7, 8, 15, 16);
         }
 
-        Logger.start();
     }
 
     @Override
