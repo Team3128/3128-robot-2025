@@ -2,19 +2,18 @@ package frc.team3128;
 
 
 import common.hardware.input.NAR_XboxController;
+import common.hardware.limelight.Limelight;
 import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_TalonFX;
 
 import static common.hardware.input.NAR_XboxController.XboxButton.*;
 
+import common.hardware.input.NAR_ButtonBoard;
+
 import common.hardware.camera.Camera;
 import common.utility.narwhaldashboard.NarwhalDashboard;
 import common.utility.shuffleboard.NAR_Shuffleboard;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.units.DistanceUnit;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.team3128.subsystems.Swerve;
@@ -30,31 +29,39 @@ import frc.team3128.subsystems.Swerve;
 public class RobotContainer {
 
     // Create all subsystems
+    private Swerve swerve;
 
-    public static NAR_XboxController controller, controller2;
+    // private NAR_ButtonBoard judgePad;
+    private NAR_ButtonBoard buttonPad;
+
+    public static NAR_XboxController controller;
+    public static NAR_XboxController controller2;
 
     private NarwhalDashboard dashboard;
 
+    public static Limelight limelight;
+
     private final Command swerveDriveCommand;
 
-    private Swerve swerve;
-
     public RobotContainer() {
-        NAR_CANSpark.maximumRetries = 2;
-        NAR_TalonFX.maximumRetries = 2;
+        NAR_CANSpark.maximumRetries = 3;
+        NAR_TalonFX.maximumRetries = 1;
 
         NAR_Shuffleboard.WINDOW_WIDTH = 10;
 
+        // judgePad = new NAR_ButtonBoard(1);
         controller = new NAR_XboxController(2);
-        controller2 = new NAR_XboxController(3);
-        
+        buttonPad = new NAR_ButtonBoard(3);
+        controller2 = new NAR_XboxController(4);
+
         swerve = Swerve.getInstance();
-        swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
+        swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX,controller::getLeftY, controller::getRightX);
 
+        //uncomment line below to enable driving
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
-
+        
+        DriverStation.silenceJoystickConnectionWarning(true);
         initCameras();
-        initDashboard();
         configureButtonBindings();
     }   
     public double inchesToMeters(double inches){
@@ -64,6 +71,8 @@ public class RobotContainer {
     public double degreesToRadians(double degrees){
         return Angle.ofRelativeUnits(degrees, Units.Degrees).in(Units.Radians);
     }
+        initDashboard();
+    }   
 
     private void configureButtonBindings() {
        

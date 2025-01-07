@@ -162,10 +162,10 @@ public class Constants {
         public static final int MOD3_CANCODER_ID = 13;
 
         /* Cancoder Offsets */
-        public static final double MOD0_CANCODER_OFFSET = 105.15;
-        public static final double MOD1_CANCODER_OFFSET = -62.40234375;
-        public static final double MOD2_CANCODER_OFFSET = -84.287109375;
-        public static final double MOD3_CANCODER_OFFSET = 167.607421875;
+        public static final double MOD0_CANCODER_OFFSET = 136.845703125;
+        public static final double MOD1_CANCODER_OFFSET = -112.587890625;
+        public static final double MOD2_CANCODER_OFFSET = 111.4453125;
+        public static final double MOD3_CANCODER_OFFSET = -3.69140625;
 
         public static final double RAMP_TIME = 3;
 
@@ -219,7 +219,7 @@ public class Constants {
 
         /* Motor and Sensor IDs */
         public static final int PIDGEON_ID = 9; 
-        public static final String DRIVETRAIN_CANBUS_NAME = "Drivetrain";
+        public static final String DRIVETRAIN_CANBUS_NAME = "drivetrain";
         public static final double TRANSLATIONAL_DEADBAND = 0.5;
         public static final double ROTATIONAL_DEADBAND = 0.1;
 
