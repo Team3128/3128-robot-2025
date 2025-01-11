@@ -11,7 +11,6 @@ import static common.hardware.input.NAR_XboxController.XboxButton.*;
 import common.hardware.input.NAR_ButtonBoard;
 import common.utility.narwhaldashboard.NarwhalDashboard;
 import common.utility.shuffleboard.NAR_Shuffleboard;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.team3128.subsystems.Swerve;
@@ -36,21 +35,27 @@ public class RobotContainer {
     public static NAR_XboxController controller2;
 
     private NarwhalDashboard dashboard;
+    private Swerve swerve;
+    private final Command swerveDriveCommand;
 
     public static Limelight limelight;
 
     private final Command swerveDriveCommand;
 
     public RobotContainer() {
-        NAR_CANSpark.maximumRetries = 3;
-        NAR_TalonFX.maximumRetries = 1;
+        swerve = Swerve.getInstance();
+        
+        NAR_CANSpark.maximumRetries = 2;
+        NAR_TalonFX.maximumRetries = 2;
 
         NAR_Shuffleboard.WINDOW_WIDTH = 10;
 
         // judgePad = new NAR_ButtonBoard(1);
         controller = new NAR_XboxController(2);
-        buttonPad = new NAR_ButtonBoard(3);
-        controller2 = new NAR_XboxController(4);
+        controller2 = new NAR_XboxController(3);
+        
+        swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
+        CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
 
         swerve = Swerve.getInstance();
         swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX,controller::getLeftY, controller::getRightX);
