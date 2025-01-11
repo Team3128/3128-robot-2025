@@ -54,10 +54,10 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         controller.getButton(XboxButton.kA)
-            .onTrue(intake.run(-0.5))
+            .onTrue(intake.run(-0.15))
             .onFalse(intake.stop());
         controller.getButton(XboxButton.kB)
-            .onTrue(intake.run(0.5))
+            .onTrue(intake.run(0.25))
             .onFalse(intake.stop());
     }
 

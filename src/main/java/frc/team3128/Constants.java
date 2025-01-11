@@ -53,7 +53,7 @@ public class Constants {
         public static final double neutralHeight = 0;
     }
     public static class IntakeConstants {
-        public static final int right_Roller_ID= 1;
+        public static final int right_Roller_ID= 22;
         public static final NAR_CANSpark motor1= new NAR_CANSpark(right_Roller_ID);
         public static final int currentThreshold= 0;
     }
