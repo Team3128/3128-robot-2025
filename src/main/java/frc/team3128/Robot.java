@@ -64,7 +64,6 @@ public class Robot extends NAR_Robot {
         } else {
             Camera.addIgnoredTags(6, 7, 8, 15, 16);
         }
-
     }
 
     @Override

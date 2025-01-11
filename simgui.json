@@ -13,12 +13,26 @@
       "/Shuffleboard/Elevator/PID_Controller": "PIDController",
       "/Shuffleboard/IntakePivot/PID_Controller": "ProfiledPIDController",
       "/Shuffleboard/Shooter/PID_Controller": "PIDController",
-      "/Shuffleboard/Shooter/rightController": "PIDController"
+      "/Shuffleboard/Shooter/rightController": "PIDController",
+      "/SmartDashboard/Alerts": "Alerts",
+      "/SmartDashboard/Auto Chooser": "String Chooser"
     }
   },
   "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
+    "Retained Values": {
+      "open": false
+    },
     "transitory": {
       "Shuffleboard": {
+        ".metadata": {
+          "open": true
+        },
+        ".recording": {
+          "open": true
+        },
         "Shooter Function": {
           "open": true
         },

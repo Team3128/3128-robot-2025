@@ -108,6 +108,15 @@ if [ "$OPTION" = "submodule" ]; then
         fi
     fi
 
+    printf "\nWould you like to delete the jit pack vendor dependency? (y/n)\n"
+    read -r remove
+    if [ "$remove" = "y" ]; then
+        printf "\nRemoving jit pack vendor dependency..."
+        rm vendordeps/3128-common.json || {
+            printf "\nNo existing directories or cache present. Proceeding."
+        }
+    fi
+
     # Step 5: Build the submodule project
     printf "\nBuilding the submodule project..."
     cd libs/3128-common || {
@@ -129,15 +138,6 @@ if [ "$OPTION" = "submodule" ]; then
         printf "\nFailed to build the main project. Resolve build issues and try again."
         exit 1
     }
-
-    printf "\nWould you like to delete the jit pack vendor dependency? (y/n)\n"
-    read -r remove
-    if [ "$remove" = "y" ]; then
-        printf "\nRemoving jit pack vendor dependency..."
-        rm vendordeps/3128-common.json || {
-            printf "\nNo existing directories or cache present. Proceeding."
-        }
-    fi
 
     printf "\nScript executed successfully. Submodule setup complete!\n"
 fi
