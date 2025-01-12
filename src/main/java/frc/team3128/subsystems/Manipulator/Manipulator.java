@@ -22,7 +22,6 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
         if (instance == null) {
             instance = new Manipulator();
         }
-
         return instance;
     }
 
@@ -33,6 +32,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
                 runOnce(()-> setNeutralMode(COAST))
         ));
 
+<<<<<<< Updated upstream
         transitionMap.applyCommutativeFunction(
             state -> {
                 return sequence(
@@ -51,9 +51,23 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
                     manipulator.run(NEUTRAL.getPower())
             )
         );
+=======
+        for(ManipulatorStates state : ManipulatorStates.values()) {
+            if(state == IDLE) continue;
+            transitionMap.addConvergingTransition(state, sequence(
+                runOnce(()-> manipulator.setNeutralMode(BRAKE)),
+                manipulator.run(state.getPower())
+            ));
+
+        }
+
+        transitionMap.addDivergingTransition(IDLE);
+        transitionMap.addTransition(IDLE, NEUTRAL, runOnce(()-> manipulator.setNeutralMode(BRAKE)));
+
+>>>>>>> Stashed changes
 	}
 
     public boolean hasObjectPresent() {
-        return false;
+        return manipulator.hasObjectPresent();
     }
 }

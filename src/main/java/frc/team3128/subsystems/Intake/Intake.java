@@ -47,8 +47,7 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
     }
 
     public boolean hasObjectPresent() {
-        //TODO: populate with sensor
-        return true;
+        return roller.hasObjectPresent();
     }
 
 	@Override
@@ -56,7 +55,12 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
         // Idle on
 		transitionMap.addConvergingTransition(
             IDLE,
-            stop().andThen(setNeutralMode.apply(COAST))
+            sequence(
+                pivot.stop(),
+                roller.stop(),
+                runOnce(()->pivot.setNeutralMode(COAST)),
+                runOnce(()->roller.setNeutralMode(COAST))
+            )
         );
 
         // Idle off, Intake released, Outtake released, Processor complete, Climb Complete
@@ -66,7 +70,7 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
             IDLE, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE, CLIMB_LOCKED
         );
 
-        // Intake held, Intake held*
+        // Intake Toggled1, Intake Toggled1*
         transitionMap.addConvergingTransitions(
             transitioner.apply(INTAKE), 
             INTAKE, 
@@ -79,14 +83,14 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
             NEUTRAL, PROCESSOR_OUTTAKE
         );
 
-        // Processor held
+        // Processor Toggled1
         transitionMap.addTransition(
             NEUTRAL, 
             PROCESSOR_PRIME, 
             transitioner.apply(PROCESSOR_PRIME)
         );
 
-        // Processor released
+        // Processor Toggled2
         transitionMap.addTransition(
             PROCESSOR_PRIME, 
             PROCESSOR_OUTTAKE, 

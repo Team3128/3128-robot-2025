@@ -52,5 +52,8 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
             )
         );
 
+        transitionMap.addDivergingTransition(IDLE);
+        transitionMap.addTransition(IDLE, NEUTRAL, runOnce(()-> elevator.setNeutralMode(BRAKE)));
+
 	}
 }

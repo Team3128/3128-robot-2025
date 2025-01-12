@@ -2,13 +2,18 @@ package frc.team3128.subsystems.Manipulator;
 
 import common.core.subsystems.VoltageSubsystemBase;
 import common.hardware.motorcontroller.NAR_TalonFX;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
+import common.utility.shuffleboard.NAR_Shuffleboard;
+
 import static frc.team3128.Constants.ManipulatorConstants.*;
 
 public class RollerMechanism extends VoltageSubsystemBase {
 
     protected static NAR_TalonFX leader = new NAR_TalonFX(ROLLER_LEADER_ID);
+    protected static DigitalInput firstSensor = new DigitalInput(FIRST_SENSOR_ID);
+    protected static DigitalInput secondSensor = new DigitalInput(SECOND_SENSOR_ID);
 
     public RollerMechanism() {
         super(leader);
@@ -29,19 +34,16 @@ public class RollerMechanism extends VoltageSubsystemBase {
 
     @Override
     public boolean hasObjectPresent() {
-        // TODO Auto-generated method stub
-        return super.hasObjectPresent();
+        return firstSensor.get() || secondSensor.get();
     }
 
 	@Override
 	public Command reset() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'reset'");
+        return null;
 	}
 
 	@Override
 	public void initShuffleboard() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'initShuffleboard'");
+        
 	}
 }

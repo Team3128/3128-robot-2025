@@ -1,21 +1,21 @@
 package frc.team3128.subsystems.Intake;
 
-import common.core.controllers.Controller;
-import common.core.controllers.PIDFFConfig;
-import common.core.subsystems.PositionSubsystemBase;
+import common.core.subsystems.VoltageSubsystemBase;
 import common.hardware.motorcontroller.NAR_TalonFX;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
+import common.utility.shuffleboard.NAR_Shuffleboard;
+
 import static frc.team3128.Constants.IntakeConstants.*;
 
-public class RollerMechanism extends PositionSubsystemBase {
-
-    private static PIDFFConfig config = new PIDFFConfig(1, 1, 1);
-    protected static Controller controller = new Controller(config, Controller.Type.POSITION);
+public class RollerMechanism extends VoltageSubsystemBase {
 
     protected static NAR_TalonFX leader = new NAR_TalonFX(ROLLER_LEADER_ID);
+    protected static DigitalInput firstSensor = new DigitalInput(FIRST_SENSOR_ID);
 
     public RollerMechanism() {
-        super(controller, leader);
+        super(leader);
     }
 
     @Override
@@ -32,14 +32,17 @@ public class RollerMechanism extends PositionSubsystemBase {
     }
 
     @Override
-    protected void configController() {
-       controller.setInputRange(ROLLER_POSITION_MIN, ROLLER_POSITION_MAX);
-       controller.configureFeedback(leader);
-       controller.setTolerance(ROLLER_TOLERANCE);
+    public boolean hasObjectPresent() {
+        return firstSensor.get();
     }
 
-    public boolean hasObjectPresent() {
-        // TODO Auto-generated method stub
-        return true;
-    }
+	@Override
+	public Command reset() {
+        return null;
+	}
+
+	@Override
+	public void initShuffleboard() {
+        
+	}
 }

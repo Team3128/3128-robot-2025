@@ -439,6 +439,8 @@ public class Constants {
         public static final double ROLLER_POSITION_MAX = 1;
         public static final double ROLLER_TOLERANCE = 0.01;
 
+        public static final int FIRST_SENSOR_ID = 0;
+
     }
 
     public static class ElevatorConstants {
@@ -482,6 +484,9 @@ public class Constants {
         public static final boolean ROLLER_INVERT = false;
         public static final Neutral ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
         public static final StatusFrames ROLLER_STATUS_FRAME = StatusFrames.DEFAULT;
+
+        public static final int FIRST_SENSOR_ID = 0;
+        public static final int SECOND_SENSOR_ID = 1;
     }
 
 }
