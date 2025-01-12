@@ -8,6 +8,8 @@ public enum ManipulatorStates {
 
     private double power;
 
+    public static ManipulatorStates[] functionalStates = {NEUTRAL, FORWARD, REVERSE};
+
     private ManipulatorStates(double power) {
         this.power = power;
     }

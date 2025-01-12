@@ -9,8 +9,6 @@ import common.core.fsm.TransitionMap;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
 
 import static frc.team3128.subsystems.Intake.IntakeStates.*;
-
-import java.util.concurrent.TransferQueue;
 import java.util.function.Function;
 
 public class Intake extends FSMSubsystemBase<IntakeStates> {

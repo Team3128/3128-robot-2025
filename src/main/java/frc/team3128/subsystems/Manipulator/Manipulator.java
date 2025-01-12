@@ -30,16 +30,27 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 	public void registerTransitions() {
 		transitionMap.addConvergingTransition(IDLE, sequence(
                 manipulator.stop(),
-                runOnce(()-> manipulator.setNeutralMode(COAST))
+                runOnce(()-> setNeutralMode(COAST))
         ));
 
-        for(ManipulatorStates state : ManipulatorStates.values()) {
-            if(state == IDLE) continue;
-            transitionMap.addConvergingTransition(state, sequence(
-                runOnce(()-> manipulator.setNeutralMode(BRAKE)),
-                manipulator.run(state.getPower())
-            ));
-        }
+        transitionMap.applyCommutativeFunction(
+            state -> {
+                return sequence(
+                    runOnce(()-> setNeutralMode(BRAKE)),
+                    manipulator.run(state.getPower())
+                );
+            }, 
+            functionalStates
+        );
+
+        transitionMap.addTransition(
+            IDLE, 
+            NEUTRAL, 
+            sequence(
+                    runOnce(()-> manipulator.setNeutralMode(BRAKE)),
+                    manipulator.run(NEUTRAL.getPower())
+            )
+        );
 	}
 
     public boolean hasObjectPresent() {
