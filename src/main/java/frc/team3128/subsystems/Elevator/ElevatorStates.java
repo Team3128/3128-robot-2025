@@ -11,6 +11,8 @@ public enum ElevatorStates {
 
     private double setpoint;
 
+    public static ElevatorStates[] funtionalStates = {NEUTRAL, SOURCE, L1, L2, L3, L4};
+
     private ElevatorStates(double setpoint) {
         this.setpoint = setpoint;
     }
