@@ -93,14 +93,14 @@ public class Camera2 {
         Camera2.aprilTags = aprilTags;
         Camera2.robotPose = robotPose;
     }
-    public static void setResourcesCustom(DoubleSupplier gyro, BiConsumer<Pose2d, Double> odometry, String filepath, Supplier<Pose2d> robotPose) {
-        Camera2.gyro = gyro;
-        Camera2.odometry = odometry;
-        Camera2.robotPose = robotPose;
-        ParseJson2 parse = new ParseJson2(filepath);
-        AprilTagFieldLayout aprilTags = new AprilTagFieldLayout(parse.returnList(), parse.returnFieldLength(), parse.returnFieldWidth());
-        Camera2.aprilTags = aprilTags;
-    }
+    // public static void setResourcesCustom(DoubleSupplier gyro, BiConsumer<Pose2d, Double> odometry, String filepath, Supplier<Pose2d> robotPose) {
+    //     Camera2.gyro = gyro;
+    //     Camera2.odometry = odometry;
+    //     Camera2.robotPose = robotPose;
+    //     ParseJson2 parse = new ParseJson2(filepath);
+    //     AprilTagFieldLayout aprilTags = new AprilTagFieldLayout(parse.returnList(), parse.returnFieldLength(), parse.returnFieldWidth());
+    //     Camera2.aprilTags = aprilTags;
+    // }
 
     public static void setThresholds(double distanceThreshold, double ambiguityThreshold) {
         Camera2.distanceThreshold = distanceThreshold;
