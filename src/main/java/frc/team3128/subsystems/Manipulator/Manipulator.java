@@ -30,11 +30,14 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 
 	@Override
 	public void registerTransitions() {
+
+        //ALL STATES -> IDLE
 		transitionMap.addConvergingTransition(IDLE, sequence(
                 roller.stop(),
                 runOnce(()-> setNeutralMode(COAST))
         ));
 
+        //NEUTRAL, FORWARD, REVERSE are able to transition between each other
         transitionMap.applyCommutativeFunction(
             state -> {
                 return sequence(
@@ -45,6 +48,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
             functionalStates
         );
 
+        //IDLE -> NEUTRAL
         transitionMap.addTransition(
             IDLE, 
             NEUTRAL, 

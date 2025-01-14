@@ -8,7 +8,8 @@ public enum IntakeStates {
     PROCESSOR_PRIME(999),
     PROCESSOR_OUTTAKE(999, 999),
     CLIMB_PRIME(999),
-    CLIMB_LOCKED(999);
+    CLIMB_LOCKED(999),
+    CLIMB(666);
 
     private double angle;
     private double power;

@@ -478,6 +478,9 @@ public class Constants {
         public static final double CLIMBER_POSITiON_MIN = 0;
         public static final double CLIMBER_POSITION_MAX = 1;
         public static final double CLIMBER_TOLERANCE = 0.01;
+
+        public static final int WINCH_SERVO_ID = 0;
+        public static final int LOCK_SERVO_ID = 1;
     }
 
     public static class ManipulatorConstants {

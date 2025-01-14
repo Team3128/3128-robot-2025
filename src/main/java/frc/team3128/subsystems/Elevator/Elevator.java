@@ -33,11 +33,14 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
 
 	@Override
 	public void registerTransitions() {
+
+        //ALL STATES -> IDLE
 		transitionMap.addConvergingTransition(IDLE, sequence(
                 elevator.stop(),
                 runOnce(()-> setNeutralMode(COAST))
         ));
 
+        //NEUTRAL, SOURCE, L1, L2, L3, L4 are able to transition between each other
         transitionMap.applyCommutativeFunction(
             state -> {
                 return sequence(
@@ -45,9 +48,10 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
                     elevator.pidTo(state.getSetpoint())
                 );
             }, 
-            funtionalStates
+            functionalStates
         );
 
+        //IDLE -> NEUTRAL
         transitionMap.addTransition(
             IDLE, 
             NEUTRAL, 
@@ -56,9 +60,6 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
                     elevator.pidTo(NEUTRAL.getSetpoint())
             )
         );
-
-        transitionMap.addDivergingTransition(IDLE);
-        transitionMap.addTransition(IDLE, NEUTRAL, runOnce(()-> elevator.setNeutralMode(BRAKE)));
 
 	}
 }

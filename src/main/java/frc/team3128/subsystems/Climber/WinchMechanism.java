@@ -4,6 +4,7 @@ import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.core.subsystems.PositionSubsystemBase;
 import common.hardware.motorcontroller.NAR_TalonFX;
+import edu.wpi.first.wpilibj.PWM;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import static frc.team3128.Constants.ClimberConstants.*;
 
@@ -13,6 +14,9 @@ public class WinchMechanism extends PositionSubsystemBase {
     protected static Controller controller = new Controller(config, Controller.Type.POSITION);
 
     protected static NAR_TalonFX leader = new NAR_TalonFX(CLIMBER_LEADER_ID);
+
+    public PWM winchServo = new PWM(WINCH_SERVO_ID);
+    public PWM lockServo = new PWM(LOCK_SERVO_ID);
 
     public WinchMechanism() {
         super(controller, leader);
