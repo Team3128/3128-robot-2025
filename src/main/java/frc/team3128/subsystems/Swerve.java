@@ -2,8 +2,10 @@ package frc.team3128.subsystems;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -37,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.Constants.FieldConstants.*;
+import static frc.team3128.Constants.FieldConstants.FieldStates.*;
 import static frc.team3128.Constants.VisionConstants.*;
 
 public class Swerve extends SwerveBase {
@@ -237,6 +240,24 @@ public class Swerve extends SwerveBase {
                                 (Rotation2d angle) -> Math.abs(gyroAngle.minus(angle).getDegrees()))
                             );
         rotateTo(setpoint);
+    }
+
+    public void snapToReef(boolean isRight) {
+        final Pose2d pose = Swerve.getInstance().getPose();
+        Pose2d setpoint = pose.nearest(List.of(REEF_1, REEF_2, REEF_3, REEF_4, REEF_5, REEF_6)
+                                .stream().map(state -> state.getPose2d()).collect(Collectors.toList()));
+        setpoint = allianceFlip(setpoint);
+        rotateTo(setpoint.getRotation());
+        Rotation2d shiftDirection = setpoint.getRotation().plus(Rotation2d.fromDegrees(90 * (isRight ? -1 : 1)));
+        moveTo(setpoint.getTranslation().plus(reefShift.rotateBy(shiftDirection)));
+    }
+
+    public void snapToSource() {
+        final Pose2d pose = Swerve.getInstance().getPose();
+        Pose2d setpoint = pose.nearest(List.of(SOURCE_1, SOURCE_2)
+                                .stream().map(state -> state.getPose2d()).collect(Collectors.toList()));
+
+        setPose(allianceFlip(setpoint));
     }
 
     public boolean isConfigured() {

@@ -17,6 +17,8 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Manipulator.Manipulator;
@@ -62,7 +64,7 @@ public class RobotContainer {
 
         NAR_Shuffleboard.WINDOW_WIDTH = 10;
 
-        // judgePad = new NAR_ButtonBoard(1);
+        buttonPad = new NAR_ButtonBoard(1);
         controller = new NAR_XboxController(2);
         controller2 = new NAR_XboxController(3);
         
@@ -86,18 +88,35 @@ public class RobotContainer {
         buttonPad.getButton(1).whileTrue(robot.setStateCommand(IDLE)).onFalse(robot.setStateCommand(NEUTRAL));
 
         controller.getButton(kA).onTrue(robot.getCoralState(RPL1, RSL1));
-        controller.getButton(kA).onTrue(robot.getCoralState(RPL2, RSL2));
-        controller.getButton(kA).onTrue(robot.getCoralState(RPL3, RSL3));
-        controller.getButton(kA).onTrue(robot.getCoralState(RPL4, RSL4));
-        controller.getButton(kA).onTrue(robot.getCoralState(NEUTRAL, SOURCE, ()-> true));
+        controller.getButton(kB).onTrue(robot.getCoralState(RPL2, RSL2));
+        controller.getButton(kX).onTrue(robot.getCoralState(RPL3, RSL3));
+        controller.getButton(kY).onTrue(robot.getCoralState(RPL4, RSL4));
 
         controller.getButton(kLeftTrigger).onTrue(robot.getAlgeaState(INTAKE));
         controller.getButton(kLeftBumper).onTrue(robot.getAlgeaState(EJECT_OUTTAKE));
         controller.getButton(kBack).onTrue(robot.getAlgeaState(PROCESSOR_PRIME, PROCESSOR_OUTTAKE));
 
         controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
+        controller.getButton(kRightBumper).onTrue(robot.getClimbState());
+        controller.getButton(kStart).onTrue(
+            either(
+                robot.setStateCommand(CLIMB_WINCH), 
+                either(
+                    robot.setStateCommand(INDEXING), 
+                    robot.setStateCommand(SOURCE), 
+                    ()-> robot.stateEquals(SOURCE)), 
+                ()-> robot.stateEquals(CLIMB_LOCK))
+        );
 
-        // controller.getButton(kRightTrigger).toggleOnTrue(robot.setStateCommand(SOURCE)).onFalse();
+        controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
+        controller.getDownPOVButton().onTrue(runOnce(()-> swerve.setPose(FieldStates.PROCESSOR.getPose2d())));
+        controller.getRightPOVButton().onTrue(runOnce(()-> swerve.snapToReef(true)));
+        controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.snapToReef(false)));
+
+        controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.snapToAngle()));
+        controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
+
+        new Trigger(()-> robot.stateEquals(INDEXING)).and(()-> Intake.getInstance().hasObjectPresent()).onTrue(robot.setStateCommand(NEUTRAL));
     }
 
     public void initCameras() {

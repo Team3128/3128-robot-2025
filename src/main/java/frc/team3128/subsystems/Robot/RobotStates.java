@@ -18,6 +18,7 @@ public enum RobotStates {
     NEUTRAL(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
     IDLE(ElevatorStates.IDLE, IntakeStates.IDLE, ManipulatorStates.IDLE),
     SOURCE(ElevatorStates.SOURCE, IntakeStates.NEUTRAL, ManipulatorStates.FORWARD),
+    INDEXING(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.FORWARD),
     INTAKE(ElevatorStates.NEUTRAL, IntakeStates.INTAKE, ManipulatorStates.NEUTRAL),
     EJECT_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.EJECT_OUTTAKE, ManipulatorStates.NEUTRAL),
     PROCESSOR_PRIME(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_PRIME, ManipulatorStates.NEUTRAL),

@@ -9,13 +9,16 @@ import static frc.team3128.subsystems.Elevator.ElevatorStates.*;
 public class Elevator extends FSMSubsystemBase<ElevatorStates> {
     private static Elevator instance;
 
-    private ElevatorMechanism elevator;
-    private static TransitionMap<ElevatorStates> transitionMap;
+    protected ElevatorMechanism elevator;
+    private static TransitionMap<ElevatorStates> transitionMap = new TransitionMap<ElevatorStates>(ElevatorStates.class);
 
-    private Elevator() {
+    public Elevator() {
         super(ElevatorStates.class, transitionMap, IDLE);
         elevator = new ElevatorMechanism();
         addSubsystem(elevator);
+        registerTransitions();
+
+        System.out.println(transitionMap);
     }
 
     public static synchronized Elevator getInstance() {

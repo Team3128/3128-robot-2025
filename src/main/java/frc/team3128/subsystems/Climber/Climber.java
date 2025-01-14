@@ -9,14 +9,16 @@ import static frc.team3128.subsystems.Climber.ClimberStates.*;
 public class Climber extends FSMSubsystemBase<ClimberStates> {
     private static Climber instance;
 
-    private Winch winch;
+    protected WinchMechanism winch;
 
-    private static TransitionMap<ClimberStates> transitionMap;
+    private static TransitionMap<ClimberStates> transitionMap = new TransitionMap<ClimberStates>(ClimberStates.class);
 
-    private Climber() {
+    public Climber() {
         super(ClimberStates.class, transitionMap, IDLE);
-        winch = new Winch();
+        winch = new WinchMechanism();
         addSubsystem(winch);
+        registerTransitions();
+        System.out.println(transitionMap);
     }
 
     public static synchronized Climber getInstance() {
@@ -29,23 +31,12 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 
 	@Override
 	public void registerTransitions() {
-		transitionMap.addConvergingTransition(IDLE, sequence(
-                winch.stop(),
-                runOnce(()-> winch.setNeutralMode(COAST))
-        ));
-
-        for(ClimberStates state : ClimberStates.values()) {
-            if(state == IDLE) continue;
-
-            transitionMap.addConvergingFunction(
-                sequence(
-                    runOnce(()-> winch.setNeutralMode(BRAKE)),
-                    winch.pidTo(state.getSetpoint())
-                ),
-                state,
-                NEUTRAL, SOURCE, L1, L2, L3, L4
-            );    
-        }
-
+        transitionMap.addConvergingTransition(
+            IDLE,
+            sequence(
+                runOnce(()-> setNeutralMode(COAST)),
+                runOnce(()-> winch.stop())
+            )
+        );
 	}
 }

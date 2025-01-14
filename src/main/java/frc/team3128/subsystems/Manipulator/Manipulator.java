@@ -9,13 +9,16 @@ import static frc.team3128.subsystems.Manipulator.ManipulatorStates.*;
 public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
     private static Manipulator instance;
 
-    private RollerMechanism manipulator;
-    private static TransitionMap<ManipulatorStates> transitionMap;
+    public RollerMechanism roller;
+    private static TransitionMap<ManipulatorStates> transitionMap = new TransitionMap<ManipulatorStates>(ManipulatorStates.class);
 
-    private Manipulator() {
+    public Manipulator() {
         super(ManipulatorStates.class, transitionMap, IDLE);
-        manipulator = new RollerMechanism();
-        addSubsystem(manipulator);
+        roller = new RollerMechanism();
+        addSubsystem(roller);
+        registerTransitions();
+
+        System.out.println(transitionMap);
     }
 
     public static synchronized Manipulator getInstance() {
@@ -28,16 +31,15 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 	@Override
 	public void registerTransitions() {
 		transitionMap.addConvergingTransition(IDLE, sequence(
-                manipulator.stop(),
+                roller.stop(),
                 runOnce(()-> setNeutralMode(COAST))
         ));
 
-<<<<<<< Updated upstream
         transitionMap.applyCommutativeFunction(
             state -> {
                 return sequence(
                     runOnce(()-> setNeutralMode(BRAKE)),
-                    manipulator.run(state.getPower())
+                    run(state.getPower())
                 );
             }, 
             functionalStates
@@ -47,27 +49,13 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
             IDLE, 
             NEUTRAL, 
             sequence(
-                    runOnce(()-> manipulator.setNeutralMode(BRAKE)),
-                    manipulator.run(NEUTRAL.getPower())
+                    runOnce(()-> setNeutralMode(BRAKE)),
+                    run(NEUTRAL.getPower())
             )
         );
-=======
-        for(ManipulatorStates state : ManipulatorStates.values()) {
-            if(state == IDLE) continue;
-            transitionMap.addConvergingTransition(state, sequence(
-                runOnce(()-> manipulator.setNeutralMode(BRAKE)),
-                manipulator.run(state.getPower())
-            ));
-
-        }
-
-        transitionMap.addDivergingTransition(IDLE);
-        transitionMap.addTransition(IDLE, NEUTRAL, runOnce(()-> manipulator.setNeutralMode(BRAKE)));
-
->>>>>>> Stashed changes
 	}
 
     public boolean hasObjectPresent() {
-        return manipulator.hasObjectPresent();
+        return roller.hasObjectPresent();
     }
 }

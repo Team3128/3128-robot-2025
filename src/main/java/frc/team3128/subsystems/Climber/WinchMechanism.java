@@ -7,14 +7,14 @@ import common.hardware.motorcontroller.NAR_TalonFX;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import static frc.team3128.Constants.ClimberConstants.*;
 
-public class Winch extends PositionSubsystemBase {
+public class WinchMechanism extends PositionSubsystemBase {
 
     private static PIDFFConfig config = new PIDFFConfig(1, 1, 1);
     protected static Controller controller = new Controller(config, Controller.Type.POSITION);
 
     protected static NAR_TalonFX leader = new NAR_TalonFX(CLIMBER_LEADER_ID);
 
-    public Winch() {
+    public WinchMechanism() {
         super(controller, leader);
     }
 
@@ -33,7 +33,7 @@ public class Winch extends PositionSubsystemBase {
 
     @Override
     protected void configController() {
-       controller.setInputRange(CLIMBER_POSITION_MIN, CLIMBER_POSITION_MAX);
+       controller.setInputRange(CLIMBER_POSITiON_MIN, CLIMBER_POSITION_MAX);
        controller.configureFeedback(leader);
        controller.setTolerance(CLIMBER_TOLERANCE);
     }   

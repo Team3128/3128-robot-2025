@@ -15,27 +15,26 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
     
     private static Intake instance;
 
-    private PivotMechanism pivot;
-    private RollerMechanism roller;
-    private static TransitionMap<IntakeStates> transitionMap;
-    private Function<Neutral, Command> setNeutralMode;
-    private Function<IntakeStates, Command> transitioner;
+    protected PivotMechanism pivot;
+    protected RollerMechanism roller;
+    private static TransitionMap<IntakeStates> transitionMap = new TransitionMap<IntakeStates>(IntakeStates.class);
+    private Function<Neutral, Command> setNeutralMode = mode -> runOnce(() -> getSubsystems().forEach(subsystem -> subsystem.setNeutralMode(mode)));
+    private Function<IntakeStates, Command> transitioner = state -> {
+        return sequence(
+            setNeutralMode.apply(BRAKE),
+            pivot.pidTo(state.getAngle()),
+            roller.run(state.getPower())
+        );
+    };
 
-    private Intake() {
+    public Intake() {
         super(IntakeStates.class, transitionMap, IDLE);
         pivot = new PivotMechanism();
         roller = new RollerMechanism();
         addSubsystem(pivot, roller);
+        registerTransitions();
 
-        setNeutralMode = mode -> runOnce(() -> getSubsystems().forEach(subsystem -> subsystem.setNeutralMode(mode)));
-
-        transitioner = state -> {
-            return sequence(
-                setNeutralMode.apply(BRAKE),
-                pivot.pidTo(state.getAngle()),
-                roller.run(state.getPower())
-            );
-        };
+        System.out.println(transitionMap);
     }
 
     public static synchronized Intake getInstance() {
