@@ -49,11 +49,6 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         );
     }
 
-	@Override
-	public void registerTransitions() {
-		
-	}
-
     public Command getCoralState(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition) {
         boolean initialManipulatorState = Manipulator.getInstance().hasObjectPresent();
         return either(
@@ -69,7 +64,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         return getCoralState(defaultState, exclusiveState, ()-> stateEquals(defaultState));
     }
 
-    public Command getAlgeaState(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition) {
+    public Command getAlgaeState(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition) {
         boolean initialIntakeState = Intake.getInstance().hasObjectPresent();
         return either(
             setStateCommand(exclusiveState)
@@ -80,11 +75,11 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         );
     }
 
-    public Command getAlgeaState(RobotStates defaultState, RobotStates exclusiveState) {
-        return getAlgeaState(defaultState, exclusiveState, ()-> stateEquals(defaultState));
+    public Command getAlgaeState(RobotStates defaultState, RobotStates exclusiveState) {
+        return getAlgaeState(defaultState, exclusiveState, ()-> stateEquals(defaultState));
     }
 
-    public Command getAlgeaState(RobotStates state, BooleanSupplier condition){
+    public Command getAlgaeState(RobotStates state, BooleanSupplier condition){
         return either(
             setStateCommand(NEUTRAL),
             setStateCommand(state),
@@ -92,8 +87,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         );
     }
 
-    public Command getAlgeaState(RobotStates state){
-        return getAlgeaState(state, ()-> stateEquals(state));
+    public Command getAlgaeState(RobotStates state){
+        return getAlgaeState(state, ()-> stateEquals(state));
     }
 
     public Command getClimbState() {
@@ -103,4 +98,95 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             ()-> stateEquals(CLIMB_PRIME)
         );
     }
+
+    @Override
+	public void registerTransitions() {
+        transitionMap.addConvergingTransition(
+            IDLE,
+            updateSubsystemStates(IDLE)
+        );
+        transitionMap.addTransition(
+            RPL1,
+            RSL1,
+            updateSubsystemStates(RSL1)
+        );
+        transitionMap.addTransition(
+            RPL2,
+            RSL2,
+            updateSubsystemStates(RSL1)
+        );
+        transitionMap.addTransition(
+            RPL3,
+            RSL3,
+            updateSubsystemStates(RSL1)
+        );
+        transitionMap.addConvergingTransitions(
+            updateSubsystemStates(RPL1),
+            RPL1,
+            RSL2, RSL3, RSL4, NEUTRAL, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE 
+        );
+        transitionMap.addConvergingTransitions(
+            updateSubsystemStates(RPL2),
+            RPL2,
+            RSL1, RSL3, RSL4, NEUTRAL, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE 
+        );
+        transitionMap.addConvergingTransitions(
+            updateSubsystemStates(RPL3),
+            RPL3,
+            RSL1, RSL2, RSL4, NEUTRAL, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE 
+        );
+        transitionMap.addConvergingTransitions(
+            updateSubsystemStates(RPL4),
+            RPL4,
+            RSL1, RSL3, RSL2, NEUTRAL, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE 
+        );
+        transitionMap.addConvergingTransitions(
+            updateSubsystemStates(NEUTRAL),
+            NEUTRAL,
+            RSL1, RSL3, RSL2, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME, PROCESSOR_OUTTAKE, CLIMB_PRIME, CLIMB_LOCK
+        );
+        transitionMap.addCommutativeTransition(
+            SOURCE,
+            INDEXING,
+            updateSubsystemStates(INDEXING),
+            updateSubsystemStates(NEUTRAL)
+        );
+        transitionMap.addConvergingTransitions(
+            updateSubsystemStates(SOURCE),
+            SOURCE,
+            RSL1, RSL2, RSL3, RSL4, IDLE, INDEXING, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE
+        );
+        transitionMap.addConvergingTransitions(
+            updateSubsystemStates(EJECT_OUTTAKE),
+            EJECT_OUTTAKE,
+            RSL1, RSL2, RSL3, RSL4, NEUTRAL, SOURCE, INTAKE
+        );
+        transitionMap.addConvergingTransitions(
+            updateSubsystemStates(PROCESSOR_PRIME),
+            PROCESSOR_PRIME,
+            RSL1, RSL2, RSL3, RSL4, NEUTRAL, SOURCE, INTAKE
+        );
+        transitionMap.addTransition(
+            PROCESSOR_PRIME,
+            PROCESSOR_OUTTAKE,
+            updateSubsystemStates(PROCESSOR_OUTTAKE)
+        );
+        transitionMap.addConvergingTransitions(
+            updateSubsystemStates(CLIMB_PRIME),
+            CLIMB_PRIME,
+            RSL1, RSL2, RSL3, RSL4, NEUTRAL, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE, CLIMB_LOCK
+        );
+        transitionMap.addTransition(
+            CLIMB_PRIME,
+            CLIMB_LOCK,
+            updateSubsystemStates(CLIMB_LOCK)
+        );
+        transitionMap.addTransition(
+            CLIMB_LOCK,
+            CLIMB_WINCH,
+            updateSubsystemStates(CLIMB_WINCH)
+        );
+
+
+	}
 }

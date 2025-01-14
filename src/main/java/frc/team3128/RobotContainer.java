@@ -92,9 +92,9 @@ public class RobotContainer {
         controller.getButton(kX).onTrue(robot.getCoralState(RPL3, RSL3));
         controller.getButton(kY).onTrue(robot.getCoralState(RPL4, RSL4));
 
-        controller.getButton(kLeftTrigger).onTrue(robot.getAlgeaState(INTAKE));
-        controller.getButton(kLeftBumper).onTrue(robot.getAlgeaState(EJECT_OUTTAKE));
-        controller.getButton(kBack).onTrue(robot.getAlgeaState(PROCESSOR_PRIME, PROCESSOR_OUTTAKE));
+        controller.getButton(kLeftTrigger).onTrue(robot.getAlgaeState(INTAKE));
+        controller.getButton(kLeftBumper).onTrue(robot.getAlgaeState(EJECT_OUTTAKE));
+        controller.getButton(kBack).onTrue(robot.getAlgaeState(PROCESSOR_PRIME, PROCESSOR_OUTTAKE));
 
         controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
         controller.getButton(kRightBumper).onTrue(robot.getClimbState());
@@ -103,7 +103,7 @@ public class RobotContainer {
                 robot.setStateCommand(CLIMB_WINCH), 
                 either(
                     robot.setStateCommand(INDEXING), 
-                    robot.setStateCommand(SOURCE), 
+                    robot.setStateCommand(SOURCE).onlyIf(() -> !Manipulator.getInstance().hasObjectPresent()), 
                     ()-> robot.stateEquals(SOURCE)), 
                 ()-> robot.stateEquals(CLIMB_LOCK))
         );
@@ -116,7 +116,7 @@ public class RobotContainer {
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.snapToAngle()));
         controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
 
-        new Trigger(()-> robot.stateEquals(INDEXING)).and(()-> Intake.getInstance().hasObjectPresent()).onTrue(robot.setStateCommand(NEUTRAL));
+        new Trigger(()-> robot.stateEquals(INDEXING)).and(()-> Manipulator.getInstance().hasObjectPresent()).onTrue(robot.setStateCommand(NEUTRAL));
     }
 
     public void initCameras() {

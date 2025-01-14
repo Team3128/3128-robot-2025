@@ -9,7 +9,7 @@ import frc.team3128.subsystems.Manipulator.ManipulatorStates;
 public enum RobotStates {
     RPL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
     RPL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
-    RPL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
+    RPL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL), 
     RPL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
     RSL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.FORWARD),
     RSL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.FORWARD),
@@ -76,4 +76,6 @@ public enum RobotStates {
     public ClimberStates getClimberState() {
         return this.climber;
     }
+
+
 }

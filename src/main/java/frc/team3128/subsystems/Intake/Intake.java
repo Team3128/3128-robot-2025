@@ -18,7 +18,7 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
     protected PivotMechanism pivot;
     protected RollerMechanism roller;
     private static TransitionMap<IntakeStates> transitionMap = new TransitionMap<IntakeStates>(IntakeStates.class);
-    private Function<Neutral, Command> setNeutralMode = mode -> runOnce(() -> getSubsystems().forEach(subsystem -> subsystem.setNeutralMode(mode)));
+    private Function<Neutral, Command> setNeutralMode = mode -> runOnce(() -> setNeutralMode(mode));
     private Function<IntakeStates, Command> transitioner = state -> {
         return sequence(
             setNeutralMode.apply(BRAKE),
