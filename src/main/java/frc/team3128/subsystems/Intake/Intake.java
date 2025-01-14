@@ -51,7 +51,7 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
 
 	@Override
 	public void registerTransitions() {
-        // Idle on
+        //ALL STATES -> IDLE
 		transitionMap.addConvergingTransition(
             IDLE,
             sequence(
@@ -62,52 +62,61 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
             )
         );
 
-        // Idle off, Intake released, Outtake released, Processor complete, Climb Complete
+        //IDLE, INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME, PROCESSOR_OUTTAKE, CLIMB_LOCKED, CLIMB -> NEUTRAL
         transitionMap.addConvergingTransitions(
             transitioner.apply(NEUTRAL),
             NEUTRAL,
-            IDLE, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE, CLIMB_LOCKED
+            IDLE, INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME, PROCESSOR_OUTTAKE, CLIMB_LOCKED, CLIMB
         );
 
-        // Intake Toggled1, Intake Toggled1*
+        //NEUTRAL, PROCESSOR_OUTTAKE -> INTAKE
         transitionMap.addConvergingTransitions(
             transitioner.apply(INTAKE), 
             INTAKE, 
             NEUTRAL, PROCESSOR_OUTTAKE
         );
 
+        // NEUTRAL, INTAKE -> EJECT_OUTTAKE
         transitionMap.addConvergingTransitions(
             transitioner.apply(EJECT_OUTTAKE), 
             EJECT_OUTTAKE, 
             NEUTRAL, PROCESSOR_OUTTAKE
         );
 
-        // Processor Toggled1
+        // NEUTRAL -> PROCESSOR_PRIME
         transitionMap.addTransition(
             NEUTRAL, 
             PROCESSOR_PRIME, 
             transitioner.apply(PROCESSOR_PRIME)
         );
 
-        // Processor Toggled2
+        // PROCESSOR_PRIME -> PROCESSOR_OUTTAKE
         transitionMap.addTransition(
             PROCESSOR_PRIME, 
             PROCESSOR_OUTTAKE, 
             transitioner.apply(PROCESSOR_OUTTAKE)
         );
 
-        // Climb Held
+        // NEUTRAL -> CLIMB_PRIME
         transitionMap.addTransition(
             NEUTRAL, 
             CLIMB_PRIME, 
             transitioner.apply(CLIMB_PRIME)
         );
 
-        // Climb Released
+        // CLIMB_PRIME -> CLIMB_LOCKED
         transitionMap.addTransition(
             CLIMB_PRIME, 
             CLIMB_LOCKED, 
             transitioner.apply(CLIMB_LOCKED)
         );
+
+        // CLIMB_LOCKED -> CLIMB
+        transitionMap.addTransition(
+            CLIMB_LOCKED, 
+            CLIMB, 
+            transitioner.apply(CLIMB)
+        );
+        
 	}
 }
