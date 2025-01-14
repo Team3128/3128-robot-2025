@@ -1,6 +1,7 @@
 package frc.team3128;
 
 
+import common.core.misc.NAR_Robot;
 import common.hardware.input.NAR_XboxController;
 import common.hardware.limelight.Limelight;
 import common.hardware.motorcontroller.NAR_CANSpark;
@@ -14,6 +15,12 @@ import common.utility.shuffleboard.NAR_Shuffleboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+<<<<<<< Updated upstream
+=======
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.team3128.doglog.DogLog;
+import frc.team3128.subsystems.Intake;
+>>>>>>> Stashed changes
 import frc.team3128.subsystems.Swerve;
 
 
@@ -61,11 +68,31 @@ public class RobotContainer {
         DriverStation.silenceJoystickConnectionWarning(true);
         initCameras();
         configureButtonBindings();
+<<<<<<< Updated upstream
         initDashboard();
     }   
 
     private void configureButtonBindings() {
 
+=======
+        NAR_Robot.addPeriodic(()->{logData();}, 0.02);
+
+    } 
+    private void logData() {
+        DogLog.log("Test", "Hello");
+        swerve.initDogLog();
+    }  
+
+    private void configureButtonBindings() {
+        controller.getButton(XboxButton.kA)
+            .onTrue(intake.run(-0.30))
+            .onFalse(intake.stop());
+        controller.getButton(XboxButton.kB)
+            .onTrue(intake.run(-0.15))
+            .onFalse(intake.stop());
+        controller.getButton(XboxButton.kX)
+            .onTrue(Commands.runOnce(()->swerve.resetGyro(0)));
+>>>>>>> Stashed changes
     }
 
     public void initCameras() {
