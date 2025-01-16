@@ -29,6 +29,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -91,11 +92,15 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         controller.getButton(XboxButton.kA).onTrue(swerve.characterize(1, 1).beforeStarting(runOnce(()->swerve.oLock())));
-        controller.getButton(XboxButton.kB).onTrue(runOnce(()->swerve.resetGyro(180)));
+        controller.getButton(XboxButton.kB).onTrue(runOnce(()->swerve.resetGyro(0)));
         controller.getButton(XboxButton.kY).onTrue(runOnce(()->swerve.resetEncoders()));
+
+        buttonPad.getButton(1).onTrue(runOnce(()-> Arrays.asList(swerve.getModules()).forEach(module -> module.setBrakeMode(false))))
+        .onFalse(runOnce(()-> Arrays.asList(swerve.getModules()).forEach(module -> module.setBrakeMode(true))));
+        buttonPad.getButton(2).onTrue(runOnce(()-> swerve.oLock()));
+        buttonPad.getButton(3).onTrue(runOnce(()-> swerve.zeroLock()));
     }
     public void initCameras() { 
-        //  Camera.setResources(()->swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField), () -> swerve.getPose());
         List<AprilTag> tags = new ArrayList<AprilTag>();
         tags.add(new AprilTag(1, new Pose3d(inchesToMeters(657.37), inchesToMeters(25.80), inchesToMeters(58.50), new Rotation3d(Math.toRadians(126), 0, Math.toRadians(0)))));
         tags.add(new AprilTag(2, new Pose3d(inchesToMeters(657.37), inchesToMeters(291.20), inchesToMeters(58.50), new Rotation3d(Math.toRadians(234), 0, Math.toRadians(0)))));
@@ -118,17 +123,19 @@ public class RobotContainer {
         tags.add(new AprilTag(19, new Pose3d(inchesToMeters(160.39), inchesToMeters(186.83), inchesToMeters(12.13), new Rotation3d(Math.toRadians(120), 0, Math.toRadians(0)))));
         tags.add(new AprilTag(20, new Pose3d(inchesToMeters(193.10), inchesToMeters(186.83), inchesToMeters(12.13), new Rotation3d(Math.toRadians(60), 0, Math.toRadians(0)))));
         tags.add(new AprilTag(21, new Pose3d(inchesToMeters(209.49), inchesToMeters(158.58), inchesToMeters(12.13), new Rotation3d(Math.toRadians(0), 0, Math.toRadians(0)))));
-        tags.add(new AprilTag(22, new Pose3d(inchesToMeters(193.10), inchesToMeters(130.17), inchesToMeters(12.13), new Rotation3d(Math.toRadians(300), 0, Math.toRadians(0)))));        AprilTagFieldLayout tagLayout = new AprilTagFieldLayout(tags, 17.548, 8.052);
+        tags.add(new AprilTag(22, new Pose3d(inchesToMeters(193.10), inchesToMeters(130.17), inchesToMeters(12.13), new Rotation3d(Math.toRadians(300), 0, Math.toRadians(0)))));
+        
+        AprilTagFieldLayout tagLayout = new AprilTagFieldLayout(tags, 17.548, 8.052);
 
         Camera.setResources(()->swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), tagLayout, () -> swerve.getPose());
          Camera.setThresholds(20,  10);
          if(Robot.isReal()){
-            Camera frontRightCamera = new Camera("FRONT_RIGHT", inchesToMeters(10.055), inchesToMeters(9.79), degreesToRadians(30), degreesToRadians(-28.125), 0);
+            Camera frontRightCamera = new Camera("FRONT_RIGHT", -inchesToMeters(10.055), -inchesToMeters(9.79), degreesToRadians(30), degreesToRadians(-28.125), 0);
             // Camera frontLeftCamera = new Camera("FRONT_LEFT", inchesToMeters(10.055), -inchesToMeters(9.79), degreesToRadians(-30), degreesToRadians(-28.125), 0);
 
-            Camera frontLeftCamera = new Camera("FRONT_LEFT", inchesToMeters(13.5), -inchesToMeters(0), degreesToRadians(0), degreesToRadians(0), 0);
-            Camera backRightCamera = new Camera("BACK_RIGHT", -inchesToMeters(10.055), inchesToMeters(9.79),  degreesToRadians(150), degreesToRadians(-28.125), 0);
-            Camera backLeftCamera = new Camera("BACK_LEFT", -inchesToMeters(10.055), -inchesToMeters(9.79), degreesToRadians(-150), degreesToRadians(-28.125), 0);
+            Camera frontLeftCamera = new Camera("FRONT_LEFT", -inchesToMeters(13.5), inchesToMeters(0), degreesToRadians(0), degreesToRadians(0), 0);
+            Camera backRightCamera = new Camera("BACK_RIGHT", inchesToMeters(10.055), -inchesToMeters(9.79),  degreesToRadians(150), degreesToRadians(-28.125), 0);
+            Camera backLeftCamera = new Camera("BACK_LEFT", inchesToMeters(10.055), inchesToMeters(9.79), degreesToRadians(-150), degreesToRadians(-28.125), 0);
          }  
     }
 

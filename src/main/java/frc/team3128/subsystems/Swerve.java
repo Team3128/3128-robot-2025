@@ -34,11 +34,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import frc.team3128.SwerveBase2;
+
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.Constants.FieldConstants.*;
 import static frc.team3128.Constants.VisionConstants.*;
 
-public class Swerve extends SwerveBase {
+public class Swerve extends SwerveBase2 {
 
     private static Swerve instance;
 
@@ -193,7 +195,7 @@ public class Swerve extends SwerveBase {
 
     private ChassisSpeeds inputToChassisSpeeds(DoubleSupplier x, DoubleSupplier y, DoubleSupplier z){
         final Translation2d translation = adjustControllerInputs(x.getAsDouble(), y.getAsDouble(), true).times(MAX_DRIVE_SPEED);
-        final double rotation = Math.copySign(Math.pow(z.getAsDouble(), 3/2), z.getAsDouble()) * MAX_DRIVE_ANGULAR_VELOCITY;
+        final double rotation = -Math.copySign(Math.pow(z.getAsDouble(), 3/2), z.getAsDouble()) * MAX_DRIVE_ANGULAR_VELOCITY;
         return new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
     }
 
@@ -262,7 +264,7 @@ public class Swerve extends SwerveBase {
 
     @Override
     public void resetGyro(double reset) {
-        gyro.setYaw(flipRotation(reset).getDegrees());
+        gyro.setYaw(reset);
     }
 
     public Command characterize(double startDelay, double rampRate, double targetPosition) {
