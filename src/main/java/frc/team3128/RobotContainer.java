@@ -130,12 +130,12 @@ public class RobotContainer {
         Camera.setResources(()->swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), tagLayout, () -> swerve.getPose());
          Camera.setThresholds(20,  10);
          if(Robot.isReal()){
-            Camera frontRightCamera = new Camera("FRONT_RIGHT", -inchesToMeters(10.055), -inchesToMeters(9.79), degreesToRadians(30), degreesToRadians(-28.125), 0);
+            Camera frontRightCamera = new Camera("FRONT_RIGHT", inchesToMeters(10.055), -inchesToMeters(9.79), degreesToRadians(30), degreesToRadians(-28.125), 0);
             // Camera frontLeftCamera = new Camera("FRONT_LEFT", inchesToMeters(10.055), -inchesToMeters(9.79), degreesToRadians(-30), degreesToRadians(-28.125), 0);
 
-            Camera frontLeftCamera = new Camera("FRONT_LEFT", -inchesToMeters(13.5), inchesToMeters(0), degreesToRadians(0), degreesToRadians(0), 0);
-            Camera backRightCamera = new Camera("BACK_RIGHT", inchesToMeters(10.055), -inchesToMeters(9.79),  degreesToRadians(150), degreesToRadians(-28.125), 0);
-            Camera backLeftCamera = new Camera("BACK_LEFT", inchesToMeters(10.055), inchesToMeters(9.79), degreesToRadians(-150), degreesToRadians(-28.125), 0);
+            Camera frontLeftCamera = new Camera("FRONT_LEFT", inchesToMeters(13.5), inchesToMeters(0), degreesToRadians(0), degreesToRadians(0), 0);
+            Camera backRightCamera = new Camera("BACK_RIGHT", -inchesToMeters(10.055), -inchesToMeters(9.79),  degreesToRadians(150), degreesToRadians(-28.125), 0);
+            Camera backLeftCamera = new Camera("BACK_LEFT", -inchesToMeters(10.055), inchesToMeters(9.79), degreesToRadians(-150), degreesToRadians(-28.125), 0);
          }  
     }
 
