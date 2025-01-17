@@ -9,7 +9,7 @@ import static frc.team3128.Constants.IntakeConstants.*;
 
 public class PivotMechanism extends PositionSubsystemBase {
 
-    private static PIDFFConfig config = new PIDFFConfig(1, 1, 1);
+    private static PIDFFConfig config = new PIDFFConfig(0.2, 0, 0);
     protected static Controller controller = new Controller(config, Controller.Type.POSITION);
 
     protected static NAR_TalonFX leader = new NAR_TalonFX(PIVOT_LEADER_ID);

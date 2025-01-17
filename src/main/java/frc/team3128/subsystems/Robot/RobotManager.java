@@ -42,10 +42,10 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     public Command updateSubsystemStates(RobotStates nextState) {
         return sequence(
-            elevator.setStateCommand(nextState.getElevatorState()),
-            manipulator.setStateCommand(nextState.getManipulatorState()),
-            intake.setStateCommand(nextState.getIntakeState()),
-            climber.setStateCommand(nextState.getClimberState())
+            // elevator.setStateCommand(nextState.getElevatorState()),
+            // manipulator.setStateCommand(nextState.getManipulatorState()),
+            intake.setStateCommand(nextState.getIntakeState())
+            // climber.setStateCommand(nextState.getClimberState())
         );
     }
 

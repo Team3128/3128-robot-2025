@@ -12,7 +12,7 @@ import static frc.team3128.Constants.IntakeConstants.*;
 public class RollerMechanism extends VoltageSubsystemBase {
 
     protected static NAR_TalonFX leader = new NAR_TalonFX(ROLLER_LEADER_ID);
-    protected static DigitalInput firstSensor = new DigitalInput(FIRST_SENSOR_ID);
+    // protected static DigitalInput firstSensor = new DigitalInput(FIRST_SENSOR_ID);
 
     public RollerMechanism() {
         super(leader);
@@ -33,7 +33,8 @@ public class RollerMechanism extends VoltageSubsystemBase {
 
     @Override
     public boolean hasObjectPresent() {
-        return firstSensor.get();
+        // return firstSensor.get();
+        return true;
     }
 
 	@Override

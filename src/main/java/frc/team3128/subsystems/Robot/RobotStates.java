@@ -25,7 +25,7 @@ public enum RobotStates {
     PROCESSOR_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_OUTTAKE, ManipulatorStates.NEUTRAL),
     CLIMB_PRIME(IntakeStates.CLIMB_PRIME, ClimberStates.CLIMB_PRIME),
     CLIMB_LOCK(IntakeStates.CLIMB_LOCKED, ClimberStates.CLIMB_LOCKED),
-    CLIMB_WINCH(IntakeStates.CLIMB_PRIME, ClimberStates.CLIMB_WINCH);
+    CLIMB_WINCH(IntakeStates.CLIMB, ClimberStates.CLIMB_WINCH);
 
     private ElevatorStates elevator;
     private IntakeStates intake;

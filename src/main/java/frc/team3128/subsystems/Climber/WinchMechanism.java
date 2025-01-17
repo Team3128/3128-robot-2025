@@ -15,8 +15,8 @@ public class WinchMechanism extends PositionSubsystemBase {
 
     protected static NAR_TalonFX leader = new NAR_TalonFX(CLIMBER_LEADER_ID);
 
-    public PWM winchServo = new PWM(WINCH_SERVO_ID);
-    public PWM lockServo = new PWM(LOCK_SERVO_ID);
+    // public PWM winchServo = new PWM(WINCH_SERVO_ID);
+    // public PWM lockServo = new PWM(LOCK_SERVO_ID);
 
     public WinchMechanism() {
         super(controller, leader);

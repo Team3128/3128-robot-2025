@@ -23,9 +23,9 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
     private Function<ClimberStates, Command> transitioner = state -> {
         return sequence(
             setNeutralMode.apply(BRAKE),
-            winch.pidTo(state.getAngle()),
-            runOnce(()->winch.lockServo.setPosition(state.getHasClaw() ? 1 : 0)),
-            runOnce(()->winch.winchServo.setPosition(state.getHasWinch() ? 1 : 0))
+            winch.pidTo(state.getAngle())
+            // runOnce(()->winch.lockServo.setPosition(state.getHasClaw() ? 1 : 0)),
+            // runOnce(()->winch.winchServo.setPosition(state.getHasWinch() ? 1 : 0))
         );
     };
 

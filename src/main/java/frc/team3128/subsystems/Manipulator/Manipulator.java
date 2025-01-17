@@ -9,13 +9,13 @@ import static frc.team3128.subsystems.Manipulator.ManipulatorStates.*;
 public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
     private static Manipulator instance;
 
-    public RollerMechanism roller;
+    // public RollerMechanism roller;
     private static TransitionMap<ManipulatorStates> transitionMap = new TransitionMap<ManipulatorStates>(ManipulatorStates.class);
 
     public Manipulator() {
         super(ManipulatorStates.class, transitionMap, IDLE);
-        roller = new RollerMechanism();
-        addSubsystem(roller);
+        // roller = new RollerMechanism();
+        // addSubsystem(roller);
         registerTransitions();
 
         System.out.println(transitionMap);
@@ -33,7 +33,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 
         //ALL STATES -> IDLE
 		transitionMap.addConvergingTransition(IDLE, sequence(
-                roller.stop(),
+                // roller.stop(),
                 runOnce(()-> setNeutralMode(COAST))
         ));
 
@@ -60,6 +60,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 	}
 
     public boolean hasObjectPresent() {
-        return roller.hasObjectPresent();
+        // return roller.hasObjectPresent();
+        return true;
     }
 }

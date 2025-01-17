@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.Robot;
-import frc.team3128.subsystems.Swerve;
+// import frc.team3128.subsystems.Swerve;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
@@ -38,7 +38,7 @@ public class AutoPrograms {
 
     private HashMap<String, Command> autoMap = new HashMap<String, Command>();
     private HashMap<String, Command> pathMap = new HashMap<String, Command>();
-    private static Swerve swerve = Swerve.getInstance();
+    // private static Swerve swerve = Swerve.getInstance();
     private RobotConfig robotConfig;
     private static AutoPrograms instance;
     SendableChooser<Command> autoChooser;
@@ -70,38 +70,38 @@ public class AutoPrograms {
     private void configPathPlanner() {
         Pathfinding.setPathfinder(new LocalADStar());
 
-        try {
-            robotConfig = RobotConfig.fromGUISettings();
-        } catch (Exception e) {
-            robotConfig = new RobotConfig(
-                ROBOT_MASS,
-                ROBOT_MOI, 
-                new ModuleConfig(
-                    DRIVE_WHEEL_DIAMETER / 2, 
-                    MAX_DRIVE_SPEED, 
-                    WHEEL_COF, 
-                    DCMotor.getKrakenX60(1),
-                    DRIVE_MOTOR_GEAR_RATIO, 
-                    (double) DRIVE_MOTOR_CURRENT_LIMIT, 
-                    1
-                ),
-                Swerve.moduleOffsets
-            );
-        }
+        // try {
+        //     robotConfig = RobotConfig.fromGUISettings();
+        // } catch (Exception e) {
+        //     robotConfig = new RobotConfig(
+        //         ROBOT_MASS,
+        //         ROBOT_MOI, 
+        //         new ModuleConfig(
+        //             DRIVE_WHEEL_DIAMETER / 2, 
+        //             MAX_DRIVE_SPEED, 
+        //             WHEEL_COF, 
+        //             DCMotor.getKrakenX60(1),
+        //             DRIVE_MOTOR_GEAR_RATIO, 
+        //             (double) DRIVE_MOTOR_CURRENT_LIMIT, 
+        //             1
+        //         ),
+        //         Swerve.moduleOffsets
+        //     );
+        // }
 
-        AutoBuilder.configure(
-            swerve::getPose, 
-            swerve::resetOdometry, 
-            swerve::getRobotVelocity, 
-            (velocity, feedforwards)-> swerve.drive(velocity), 
-            new PPHolonomicDriveController(
-                new PIDConstants(Swerve.translationConfig.kP, Swerve.translationConfig.kI, Swerve.translationConfig.kD),
-                new PIDConstants(Swerve.rotationConfig.kP, Swerve.rotationConfig.kI, Swerve.rotationConfig.kD)
-            ),
-            robotConfig,
-            ()-> Robot.getAlliance() == Alliance.Red,
-            swerve
-            );
+        // AutoBuilder.configure(
+        //     swerve::getPose, 
+        //     swerve::resetOdometry, 
+        //     swerve::getRobotVelocity, 
+        //     (velocity, feedforwards)-> swerve.drive(velocity), 
+        //     new PPHolonomicDriveController(
+        //         new PIDConstants(Swerve.translationConfig.kP, Swerve.translationConfig.kI, Swerve.translationConfig.kD),
+        //         new PIDConstants(Swerve.rotationConfig.kP, Swerve.rotationConfig.kI, Swerve.rotationConfig.kD)
+        //     ),
+        //     robotConfig,
+        //     ()-> Robot.getAlliance() == Alliance.Red,
+        //     swerve
+        //     );
     }
 
     public static Command getPathPlannerAuto(String trajectoryName) {
