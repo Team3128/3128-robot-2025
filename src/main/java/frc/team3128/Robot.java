@@ -51,6 +51,7 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void robotInit(){
+        Camera.enableAll();
         m_robotContainer.initDashboard();
         LiveWindow.disableAllTelemetry();
     }
@@ -59,22 +60,24 @@ public class Robot extends NAR_Robot {
     public void driverStationConnected() {
         Log.info("State", "DS Connected");
         Log.info("Alliance", getAlliance().toString());
-        if (getAlliance() == Alliance.Red) {
-            Camera.addIgnoredTags(3, 4, 5, 11, 12);
-        } else {
-            Camera.addIgnoredTags(6, 7, 8, 15, 16);
-        }
+        // if (getAlliance() == Alliance.Red) {
+        //     Camera.addIgnoredTags(3, 4, 5, 11, 12);
+        // } else {
+        //     Camera.addIgnoredTags(6, 7, 8, 15, 16);
+        // }
 
     }
 
     @Override
     public void robotPeriodic(){
         CommandScheduler.getInstance().run();
+        Camera.updateAll();
     }
 
     @Override
     public void autonomousInit() {
         CommandScheduler.getInstance().cancelAll();
+        Camera.enableAll();
         Command m_autonomousCommand = AutoPrograms.getInstance().getAutonomousCommand();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
@@ -84,16 +87,19 @@ public class Robot extends NAR_Robot {
     @Override
     public void autonomousPeriodic() {
         CommandScheduler.getInstance().run();
+        Camera.updateAll();
     }
 
     @Override
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
+        Camera.enableAll();
     }
 
     @Override
     public void teleopPeriodic() {
         CommandScheduler.getInstance().run();
+        Camera.updateAll();
     }
 
     @Override

@@ -9,15 +9,22 @@ import common.hardware.motorcontroller.NAR_TalonFX;
 
 import static common.hardware.input.NAR_XboxController.XboxButton.*;
 
+import common.hardware.camera.Camera;
 import common.hardware.input.NAR_ButtonBoard;
+import common.utility.Log;
 import common.utility.narwhaldashboard.NarwhalDashboard;
 import common.utility.shuffleboard.NAR_Shuffleboard;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import frc.team3128.subsystems.Swerve;
 
+import static frc.team3128.Constants.FieldConstants.*;
+import static frc.team3128.Constants.FieldConstants.*;
+import static frc.team3128.Constants.VisionConstants.*;
 
 /**
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -73,7 +80,15 @@ public class RobotContainer {
     }
 
     public void initCameras() {
-
+        Log.info("tags", APRIL_TAGS.get(0).toString());
+        Camera.setResources(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), new AprilTagFieldLayout(APRIL_TAGS, FIELD_X_LENGTH, FIELD_Y_LENGTH), () -> swerve.getPose());
+        Camera.setThresholds(5,  10);
+        if (Robot.isReal()) {
+            Camera frontRightCamera = new Camera("FRONT_RIGHT", Units.inchesToMeters(10.055), Units.inchesToMeters(9.79), Units.degreesToRadians(30), Units.degreesToRadians(-28.125), 0);
+            Camera frontLeftCamera = new Camera("FRONT_LEFT", Units.inchesToMeters(13.5), -Units.inchesToMeters(0), Units.degreesToRadians(0), Units.degreesToRadians(0), 0);
+            Camera backRightCamera = new Camera("BACK_RIGHT", -Units.inchesToMeters(10.055), Units.inchesToMeters(9.79),  Units.degreesToRadians(150), Units.degreesToRadians(-28.125), 0);
+            Camera backLeftCamera = new Camera("BACK_LEFT", -Units.inchesToMeters(10.055), -Units.inchesToMeters(9.79), Units.degreesToRadians(-150), Units.degreesToRadians(-28.125), 0);
+        }
     }
 
     public void initDashboard() {

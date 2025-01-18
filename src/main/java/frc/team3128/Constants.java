@@ -3,6 +3,7 @@ package frc.team3128;
 import static edu.wpi.first.units.Units.Rotation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -10,11 +11,14 @@ import java.util.function.Function;
 import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -256,7 +260,30 @@ public class Constants {
  
         public static final Matrix<N3,N1> SVR_VISION_MEASUREMENT_STD = VecBuilder.fill(0.5,0.5,Units.degreesToRadians(5));
 
-        public static final HashMap<Integer, Pose2d> APRIL_TAG_POS = new HashMap<Integer,Pose2d>();
+        public static final List<AprilTag> APRIL_TAGS = Arrays.asList(
+            new AprilTag(1, new Pose3d(Units.inchesToMeters(657.37), Units.inchesToMeters(25.80), Units.inchesToMeters(58.50), new Rotation3d(0, Math.toRadians(0), Math.toRadians(126)))),
+            new AprilTag(2, new Pose3d(Units.inchesToMeters(657.37), Units.inchesToMeters(291.20), Units.inchesToMeters(58.50), new Rotation3d(0, Math.toRadians(0), Math.toRadians(234)))),
+            new AprilTag(3, new Pose3d(Units.inchesToMeters(455.15), Units.inchesToMeters(317.15), Units.inchesToMeters(51.25), new Rotation3d(0, Math.toRadians(0), Math.toRadians(270)))),
+            new AprilTag(4, new Pose3d(Units.inchesToMeters(365.20), Units.inchesToMeters(241.64), Units.inchesToMeters(73.54), new Rotation3d(0, Math.toRadians(30), Math.toRadians(0)))),
+            new AprilTag(5, new Pose3d(Units.inchesToMeters(265.20), Units.inchesToMeters(75.39), Units.inchesToMeters(73.54), new Rotation3d(0, Math.toRadians(30), Math.toRadians(0)))),
+            new AprilTag(6, new Pose3d(Units.inchesToMeters(530.49), Units.inchesToMeters(130.17), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(300)))),
+            new AprilTag(7, new Pose3d(Units.inchesToMeters(546.87), Units.inchesToMeters(158.50), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(0)))),
+            new AprilTag(8, new Pose3d(Units.inchesToMeters(530.49), Units.inchesToMeters(186.83), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(60)))),
+            new AprilTag(9, new Pose3d(Units.inchesToMeters(497.77), Units.inchesToMeters(186.83), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(120)))),
+            new AprilTag(10, new Pose3d(Units.inchesToMeters(481.39), Units.inchesToMeters(158.50), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(180)))),
+            new AprilTag(11, new Pose3d(Units.inchesToMeters(497.77), Units.inchesToMeters(130.17), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(240)))),
+            new AprilTag(12, new Pose3d(Units.inchesToMeters(33.51), Units.inchesToMeters(25.80), Units.inchesToMeters(58.50), new Rotation3d(0, Math.toRadians(0), Math.toRadians(54)))),
+            new AprilTag(13, new Pose3d(Units.inchesToMeters(33.51), Units.inchesToMeters(291.20), Units.inchesToMeters(58.50), new Rotation3d(0, Math.toRadians(0), Math.toRadians(306)))),
+            new AprilTag(14, new Pose3d(Units.inchesToMeters(325.68), Units.inchesToMeters(241.64), Units.inchesToMeters(73.54), new Rotation3d(0, Math.toRadians(30), Math.toRadians(180)))),
+            new AprilTag(15, new Pose3d(Units.inchesToMeters(325.68), Units.inchesToMeters(75.39), Units.inchesToMeters(73.54), new Rotation3d(0, Math.toRadians(30), Math.toRadians(180)))),
+            new AprilTag(16, new Pose3d(Units.inchesToMeters(235.73), Units.inchesToMeters(-0.15), Units.inchesToMeters(51.25), new Rotation3d(0, Math.toRadians(0), Math.toRadians(90)))),
+            new AprilTag(17, new Pose3d(Units.inchesToMeters(160.39), Units.inchesToMeters(130.17), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(240)))),
+            new AprilTag(18, new Pose3d(Units.inchesToMeters(144.00), Units.inchesToMeters(158.50), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(180)))),
+            new AprilTag(19, new Pose3d(Units.inchesToMeters(160.39), Units.inchesToMeters(186.83), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(120)))),
+            new AprilTag(20, new Pose3d(Units.inchesToMeters(193.10), Units.inchesToMeters(186.83), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(60)))),
+            new AprilTag(21, new Pose3d(Units.inchesToMeters(209.49), Units.inchesToMeters(158.58), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(0)))),
+            new AprilTag(22, new Pose3d(Units.inchesToMeters(193.10), Units.inchesToMeters(130.17), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(300))))
+        );
     }
     
     public static class FieldConstants{
