@@ -1,5 +1,7 @@
 package frc.team3128;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,7 +76,7 @@ public class Constants {
         public static final double controllerPOVOffset = -90;
 
         public static final double driveMotorGearRatio = 0;
-        public static final double angleMotorGearRatio = 0; 
+        public static final double angleMotorGearRatio = 150 / 7; 
 
         // public static final var kinematics = null; 
 
@@ -162,16 +164,16 @@ public class Constants {
         public static final int MOD3_CANCODER_ID = 13;
 
         /* Cancoder Offsets */
-        public static final double MOD0_CANCODER_OFFSET = -161.0156249; //22.06054-180;//136.845703125;
-        public static final double MOD1_CANCODER_OFFSET = -111.8847652; //-116.27929;//-112.587890625;
-        public static final double MOD2_CANCODER_OFFSET = 109.16015625; //110.47851;//111.4453125;
-        public static final double MOD3_CANCODER_OFFSET = 58.798828;; //60.99609;//-3.69140625;
+        public static final double MOD0_CANCODER_OFFSET = 19.51171875 - 180;
+        public static final double MOD1_CANCODER_OFFSET = 68.37890625 - 180;
+        public static final double MOD2_CANCODER_OFFSET = -68.90625 + 180;
+        public static final double MOD3_CANCODER_OFFSET = -119.0038015 + 180;
 
         public static final double RAMP_TIME = 3;
 
         /* Drivetrain Constants */
         public static final double ROBOT_MASS = 35.210; //kg
-        public static final double ROBOT_MOI = 3.385; //kg m^2 mass * (trackWidth / 2) * (Ka angular / Ka linear)
+        public static final double ROBOT_MOI = 3.6576; //kg m^2 mass * (trackWidth / 2) * (Ka angular / Ka linear)
         public static final double WHEEL_COF = 1.43;
         public static final double DRIVE_BUMPER_LENGTH = Units.inchesToMeters(5);
         public static final double DRIVE_TRACK_WIDTH = Units.inchesToMeters(20.75); //Hand measure later
@@ -183,7 +185,7 @@ public class Constants {
         public static final double closedLoopRamp = 0.0;
 
         public static final double DRIVE_MOTOR_GEAR_RATIO = 225.0 / 42.0;
-        public static final double DRIVE_ANGLE_GEAR_RATIO = (300.0 / 13.0); 
+        public static final double DRIVE_ANGLE_GEAR_RATIO = (150.0 / 7.0); // 300.0 / 13.0
 
         /* Swerve Current Limiting */
         public static final int DRIVE_ANGLE_CURRENT_LIMIT = 30; //30
@@ -203,9 +205,9 @@ public class Constants {
         public static final double DRIVE_MOTOR_KF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double DRIVE_MOTOR_KS = 0.19057;//0.60094; // 0.19225;
-        public static final double DRIVE_MOTOR_KV = 2.01208;//1.1559;  // 2.4366
-        public static final double DRIVE_MOTOR_KA = 0.09043; //0.12348; // 0.34415
+        public static final double DRIVE_MOTOR_KS = 0.13023; //0.19057;//0.60094; // 0.19225;
+        public static final double DRIVE_MOTOR_KV = 1.92348; //2.01208;//1.1559;  // 2.4366
+        public static final double DRIVE_MOTOR_KA = 0.10274; //0.09043; //0.12348; // 0.34415
 
         /* Swerve Profiling Values */
         // Theoretical: v = 4.96824, omega = 11.5
@@ -255,8 +257,6 @@ public class Constants {
         public static final Matrix<N3,N1> SVR_VISION_MEASUREMENT_STD = VecBuilder.fill(0.5,0.5,Units.degreesToRadians(5));
 
         public static final HashMap<Integer, Pose2d> APRIL_TAG_POS = new HashMap<Integer,Pose2d>();
-
-
     }
     
     public static class FieldConstants{
@@ -330,7 +330,7 @@ public class Constants {
         public static Translation2d adjustControllerInputs(Translation2d translation, boolean fieldRelative) {
             Rotation2d rotation = Rotation2d.fromDegrees(-90);
             if(Robot.getAlliance() == Alliance.Red || !fieldRelative) {
-                rotation.unaryMinus();
+                rotation = Rotation2d.fromDegrees(90);
             }
             return translation.rotateBy(rotation);
         }
