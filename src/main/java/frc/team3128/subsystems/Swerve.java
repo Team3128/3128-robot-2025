@@ -34,11 +34,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import frc.team3128.SwerveBase2;
+
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.Constants.FieldConstants.*;
 import static frc.team3128.Constants.VisionConstants.*;
 
-public class Swerve extends SwerveBase {
+public class Swerve extends SwerveBase2 {
 
     private static Swerve instance;
 
