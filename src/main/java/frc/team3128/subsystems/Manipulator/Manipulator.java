@@ -22,7 +22,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
         // addSubsystem(roller);
         registerTransitions();
 
-        System.out.println(transitionMap);
+        // System.out.println(transitionMap);
     }
 
     public static synchronized Manipulator getInstance() {

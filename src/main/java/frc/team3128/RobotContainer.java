@@ -42,6 +42,8 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 @SuppressWarnings("unused")
 public class RobotContainer {
 
+    public static final boolean printStatus = true;
+
     // Create all subsystems
     private RobotManager robot;
 
@@ -84,8 +86,8 @@ public class RobotContainer {
     }   
 
     private void configureButtonBindings() {
-
-        buttonPad.getButton(1).whileTrue(robot.setState(NEUTRAL)).onFalse(robot.setStateCommand(NEUTRAL));
+        controller.initShuffleboard();
+        buttonPad.getButton(1).whileTrue(robot.setState(IDLE)).onFalse(robot.setStateCommand(NEUTRAL));
 
         controller.getButton(kA).onTrue(robot.setState(NEUTRAL).beforeStarting(print("BUTTON BEFORE")).andThen(print("BUTTON AFTER")));
         controller.getButton(kB).onTrue(robot.setState(IDLE).beforeStarting(print("BUTTON BEFORE")).andThen(print("BUTTON AFTER")));

@@ -10,6 +10,7 @@ import common.core.fsm.TransitionMap;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
 
 import static frc.team3128.subsystems.Intake.IntakeStates.*;
+import static frc.team3128.RobotContainer.printStatus;
 import java.util.function.Function;
 
 public class Intake extends FSMSubsystemBase<IntakeStates> {
@@ -29,7 +30,7 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
     };
 
     public Intake() {
-        super(IntakeStates.class, transitionMap, IDLE);
+        super(IntakeStates.class, transitionMap, NEUTRAL);
         pivot = new PivotMechanism();
         roller = new RollerMechanism();
         addSubsystem(pivot, roller);
@@ -122,23 +123,32 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
 	}
 
     public Command setState(IntakeStates nextState) {
-        System.out.println("setState()");
+        if(printStatus) System.out.println("Intake attempting to set state. \n\tFROM: " + currentState.name() + "\n\t  TO: " + nextState.name());
         Transition<IntakeStates> transition = transitionMap.getTransition(getState(), nextState);
         
         // if not the same state
         if(!stateEquals(nextState)) requestTransition = transition;
-        else return Commands.none();
+        else {
+            if(printStatus) System.out.println("Invalid Transition: Requested state already reached. \nExiting...");
+            return Commands.none();
+        }
 
         // if invalid trnasition
-        if(transition == null) return Commands.none();
-        System.out.println(transition.toString());
+        if(transition == null) {
+            if(printStatus) System.out.println("Invalid Transition: Transition is null. \nExiting...");
+            return Commands.none();
+        }
+
+        if(printStatus) System.out.println("Valid Transition: " + transition.toString());
 
 
         // if not transitioning
         if(isTransitioning()) {
+            if(printStatus) System.out.println("Canceling current transitions...");
             currentTransition.cancel();
         }
 
+        if(printStatus) System.out.println("Scheduling transition...");
         currentTransition = transition;
         // currentTransition.getCommand().schedule();
         currentState = nextState;

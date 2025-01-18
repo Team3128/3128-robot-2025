@@ -22,7 +22,7 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
         addSubsystem(elevator);
         registerTransitions();
 
-        System.out.println(transitionMap);
+        // System.out.println(transitionMap);
     }
 
     public static synchronized Elevator getInstance() {

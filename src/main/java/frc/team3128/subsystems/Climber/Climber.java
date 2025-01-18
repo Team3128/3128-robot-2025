@@ -36,7 +36,7 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
         winch = new WinchMechanism();
         addSubsystem(winch);
         registerTransitions();
-        System.out.println(transitionMap);
+        // System.out.println(transitionMap);
     }
 
     public static synchronized Climber getInstance() {

@@ -7,6 +7,9 @@ import frc.team3128.subsystems.Intake.IntakeStates;
 import frc.team3128.subsystems.Manipulator.ManipulatorStates;
 
 public enum RobotStates {
+    IDLE(ElevatorStates.IDLE, IntakeStates.IDLE, ManipulatorStates.IDLE),
+    NEUTRAL(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
+
     RPL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
     RPL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
     RPL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL), 
@@ -15,14 +18,14 @@ public enum RobotStates {
     RSL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.FORWARD),
     RSL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.FORWARD),
     RSL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.FORWARD),
-    NEUTRAL(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
-    IDLE(ElevatorStates.IDLE, IntakeStates.IDLE, ManipulatorStates.IDLE),
     SOURCE(ElevatorStates.SOURCE, IntakeStates.NEUTRAL, ManipulatorStates.FORWARD),
+    
     INDEXING(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.FORWARD),
     INTAKE(ElevatorStates.NEUTRAL, IntakeStates.INTAKE, ManipulatorStates.NEUTRAL),
     EJECT_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.EJECT_OUTTAKE, ManipulatorStates.NEUTRAL),
     PROCESSOR_PRIME(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_PRIME, ManipulatorStates.NEUTRAL),
     PROCESSOR_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_OUTTAKE, ManipulatorStates.NEUTRAL),
+    
     CLIMB_PRIME(IntakeStates.CLIMB_PRIME, ClimberStates.CLIMB_PRIME),
     CLIMB_LOCK(IntakeStates.CLIMB_LOCKED, ClimberStates.CLIMB_LOCKED),
     CLIMB_WINCH(IntakeStates.CLIMB, ClimberStates.CLIMB_WINCH);
