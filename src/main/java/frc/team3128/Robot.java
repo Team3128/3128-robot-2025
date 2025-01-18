@@ -57,7 +57,7 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void driverStationConnected() {
-         Log.info("State", "DS Connected");
+        Log.info("State", "DS Connected");
         Log.info("Alliance", getAlliance().toString());
         if (getAlliance() == Alliance.Red) {
             Camera.addIgnoredTags(3, 4, 5, 11, 12);

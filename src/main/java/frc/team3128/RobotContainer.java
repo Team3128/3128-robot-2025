@@ -15,7 +15,7 @@ import common.utility.shuffleboard.NAR_Shuffleboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 import frc.team3128.subsystems.Swerve;
 
 
@@ -67,7 +67,9 @@ public class RobotContainer {
     }   
 
     private void configureButtonBindings() {
-        controller.getButton(XboxButton.kB).onTrue(Commands.runOnce(()->swerve.resetGyro(0)));
+        controller.getButton(XboxButton.kB).onTrue(runOnce(()->swerve.resetGyro(0)));
+        controller.getButton(XboxButton.kA).onTrue(runOnce(()->swerve.resetEncoders()));
+        controller.getButton(XboxButton.kY).onTrue(swerve.characterize(1, 1).beforeStarting(runOnce(()->swerve.zeroLock())));
     }
 
     public void initCameras() {
