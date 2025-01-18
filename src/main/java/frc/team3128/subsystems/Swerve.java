@@ -193,7 +193,7 @@ public class Swerve extends SwerveBase {
 
     private ChassisSpeeds inputToChassisSpeeds(DoubleSupplier x, DoubleSupplier y, DoubleSupplier z){
         final Translation2d translation = adjustControllerInputs(x.getAsDouble(), y.getAsDouble(), true).times(MAX_DRIVE_SPEED);
-        final double rotation = Math.copySign(Math.pow(z.getAsDouble(), 3/2), z.getAsDouble()) * MAX_DRIVE_ANGULAR_VELOCITY;
+        final double rotation = -Math.copySign(Math.pow(z.getAsDouble(), 3/2), z.getAsDouble()) * MAX_DRIVE_ANGULAR_VELOCITY;
         return new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
     }
 

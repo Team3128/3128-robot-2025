@@ -1,5 +1,7 @@
 package frc.team3128;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -162,10 +164,10 @@ public class Constants {
         public static final int MOD3_CANCODER_ID = 13;
 
         /* Cancoder Offsets */
-        public static final double MOD0_CANCODER_OFFSET = 136.845703125;
-        public static final double MOD1_CANCODER_OFFSET = -112.587890625;
-        public static final double MOD2_CANCODER_OFFSET = 111.4453125;
-        public static final double MOD3_CANCODER_OFFSET = -3.69140625;
+        public static final double MOD0_CANCODER_OFFSET = 19.16015624999 - 180;
+        public static final double MOD1_CANCODER_OFFSET = -113.818359375;
+        public static final double MOD2_CANCODER_OFFSET = -67.412109375 + 180;
+        public static final double MOD3_CANCODER_OFFSET = 62.13867187499;
 
         public static final double RAMP_TIME = 3;
 
@@ -328,7 +330,8 @@ public class Constants {
         public static Translation2d adjustControllerInputs(Translation2d translation, boolean fieldRelative) {
             Rotation2d rotation = Rotation2d.fromDegrees(-90);
             if(Robot.getAlliance() == Alliance.Red || !fieldRelative) {
-                rotation.unaryMinus();
+                System.out.println("Alliance Red Detected");
+                rotation = Rotation2d.fromDegrees(90);
             }
             return translation.rotateBy(rotation);
         }
