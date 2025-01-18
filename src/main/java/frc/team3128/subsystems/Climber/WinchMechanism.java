@@ -13,7 +13,7 @@ public class WinchMechanism extends PositionSubsystemBase {
     private static PIDFFConfig config = new PIDFFConfig(1, 1, 1);
     protected static Controller controller = new Controller(config, Controller.Type.POSITION);
 
-    protected static NAR_TalonFX leader = new NAR_TalonFX(CLIMBER_LEADER_ID);
+    public static NAR_TalonFX leader = new NAR_TalonFX(CLIMBER_LEADER_ID);
 
     // public PWM winchServo = new PWM(WINCH_SERVO_ID);
     // public PWM lockServo = new PWM(LOCK_SERVO_ID);

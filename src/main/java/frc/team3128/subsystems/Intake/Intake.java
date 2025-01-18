@@ -121,37 +121,4 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
         );
         
 	}
-
-    public Command setState(IntakeStates nextState) {
-        if(printStatus) System.out.println("Intake attempting to set state. \n\tFROM: " + currentState.name() + "\n\t  TO: " + nextState.name());
-        Transition<IntakeStates> transition = transitionMap.getTransition(getState(), nextState);
-        
-        // if not the same state
-        if(!stateEquals(nextState)) requestTransition = transition;
-        else {
-            if(printStatus) System.out.println("Invalid Transition: Requested state already reached. \nExiting...");
-            return Commands.none();
-        }
-
-        // if invalid trnasition
-        if(transition == null) {
-            if(printStatus) System.out.println("Invalid Transition: Transition is null. \nExiting...");
-            return Commands.none();
-        }
-
-        if(printStatus) System.out.println("Valid Transition: " + transition.toString());
-
-
-        // if not transitioning
-        if(isTransitioning()) {
-            if(printStatus) System.out.println("Canceling current transitions...");
-            currentTransition.cancel();
-        }
-
-        if(printStatus) System.out.println("Scheduling transition...");
-        currentTransition = transition;
-        // currentTransition.getCommand().schedule();
-        currentState = nextState;
-        return transition.getCommand();
-    }
 }

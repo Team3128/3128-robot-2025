@@ -67,28 +67,4 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
         // return roller.hasObjectPresent();
         return true;
     }
-
-    public Command setState(ManipulatorStates nextState) {
-        System.out.println("setState()");
-        Transition<ManipulatorStates> transition = transitionMap.getTransition(getState(), nextState);
-        
-        // if not the same state
-        if(!stateEquals(nextState)) requestTransition = transition;
-        else return Commands.none();
-
-        // if invalid trnasition
-        if(transition == null) return Commands.none();
-        System.out.println(transition.toString());
-
-
-        // if not transitioning
-        if(isTransitioning()) {
-            currentTransition.cancel();
-        }
-
-        currentTransition = transition;
-        // currentTransition.getCommand().schedule();
-        currentState = nextState;
-        return transition.getCommand();
-    }
 }

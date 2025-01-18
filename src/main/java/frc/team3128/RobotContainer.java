@@ -87,10 +87,10 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         controller.initShuffleboard();
-        buttonPad.getButton(1).whileTrue(robot.setState(IDLE)).onFalse(robot.setStateCommand(NEUTRAL));
+        // buttonPad.getButton(1).whileTrue(robot.setState(IDLE)).onFalse(robot.setStateCommand(NEUTRAL));
 
-        controller.getButton(kA).onTrue(robot.setState(NEUTRAL).beforeStarting(print("BUTTON BEFORE")).andThen(print("BUTTON AFTER")));
-        controller.getButton(kB).onTrue(robot.setState(IDLE).beforeStarting(print("BUTTON BEFORE")).andThen(print("BUTTON AFTER")));
+        controller.getButton(kA).onTrue(robot.setStateCommand(NEUTRAL).beforeStarting(print("BUTTON BEFORE")).andThen(print("BUTTON AFTER")));
+        controller.getButton(kB).onTrue(robot.setStateCommand(IDLE).beforeStarting(print("BUTTON BEFORE")).andThen(print("BUTTON AFTER")));
         // controller.getButton(kB).onTrue(robot.getCoralState(RPL2, RSL2));
         controller.getButton(kX).onTrue(robot.getCoralState(RPL3, RSL3));
         controller.getButton(kY).onTrue(robot.getCoralState(RPL4, RSL4));

@@ -17,7 +17,7 @@ import java.util.function.Function;
 public class Climber extends FSMSubsystemBase<ClimberStates> {
     private static Climber instance;
 
-    protected WinchMechanism winch;
+    public WinchMechanism winch;
 
     private static TransitionMap<ClimberStates> transitionMap = new TransitionMap<ClimberStates>(ClimberStates.class);
 
@@ -79,30 +79,4 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
         transitionMap.addTransition(CLIMB_LOCKED, CLIMB_PRIME, transitioner.apply(CLIMB_PRIME));
 
 	}
-
-    public Command setState(ClimberStates nextState) {
-        System.out.println("setState()");
-        Transition<ClimberStates> transition = transitionMap.getTransition(getState(), nextState);
-        
-        // if not the same state
-        if(!stateEquals(nextState)) requestTransition = transition;
-        else return Commands.none();
-
-        // if invalid trnasition
-        if(transition == null) return Commands.none();
-        System.out.println(transition.toString());
-
-
-        // if not transitioning
-        if(isTransitioning()) {
-            currentTransition.cancel();
-        }
-
-        currentTransition = transition;
-        // currentTransition.getCommand().schedule();
-        currentState = nextState;
-        return transition.getCommand();
-    }
-
-
 }

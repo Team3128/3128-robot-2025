@@ -64,27 +64,4 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
         );
 
 	}
-
-    public Command setState(ElevatorStates nextState) {
-        System.out.println("setState()");
-        Transition<ElevatorStates> transition = transitionMap.getTransition(getState(), nextState);        
-        // if not the same state
-        if(!stateEquals(nextState)) requestTransition = transition;
-        else return Commands.none();
-
-        // if invalid trnasition
-        if(transition == null) return Commands.none();
-        System.out.println(transition.toString());
-
-
-        // if not transitioning
-        if(isTransitioning()) {
-            currentTransition.cancel();
-        }
-
-        currentTransition = transition;
-        // currentTransition.getCommand().schedule();
-        currentState = nextState;
-        return transition.getCommand();
-    }
 }
