@@ -431,7 +431,7 @@ public class Constants {
         public static final double PIVOT_POSITION_MAX = 1;
         public static final double PIVOT_TOLERANCE = 0.01;
 
-        public static final int ROLLER_LEADER_ID = 6;
+        public static final int ROLLER_LEADER_ID = 41;
 
         public static final double ROLLER_GEAR_RATIO = 1;
         public static final double ROLLER_SAMPLE_PER_MINUTE = 60;
