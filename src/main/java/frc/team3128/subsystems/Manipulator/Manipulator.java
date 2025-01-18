@@ -1,7 +1,11 @@
 package frc.team3128.subsystems.Manipulator;
 
 import common.core.fsm.FSMSubsystemBase;
+import common.core.fsm.Transition;
 import common.core.fsm.TransitionMap;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+
 import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.subsystems.Manipulator.ManipulatorStates.*;
@@ -62,5 +66,29 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
     public boolean hasObjectPresent() {
         // return roller.hasObjectPresent();
         return true;
+    }
+
+    public Command setState(ManipulatorStates nextState) {
+        System.out.println("setState()");
+        Transition<ManipulatorStates> transition = transitionMap.getTransition(getState(), nextState);
+        
+        // if not the same state
+        if(!stateEquals(nextState)) requestTransition = transition;
+        else return Commands.none();
+
+        // if invalid trnasition
+        if(transition == null) return Commands.none();
+        System.out.println(transition.toString());
+
+
+        // if not transitioning
+        if(isTransitioning()) {
+            currentTransition.cancel();
+        }
+
+        currentTransition = transition;
+        // currentTransition.getCommand().schedule();
+        currentState = nextState;
+        return transition.getCommand();
     }
 }

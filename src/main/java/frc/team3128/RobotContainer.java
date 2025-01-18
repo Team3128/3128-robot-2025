@@ -17,6 +17,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.Constants.FieldConstants.FieldStates;
 // import frc.team3128.subsystems.Swerve;
@@ -84,10 +85,11 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
 
-        buttonPad.getButton(1).whileTrue(robot.setStateCommand(IDLE)).onFalse(robot.setStateCommand(NEUTRAL));
+        buttonPad.getButton(1).whileTrue(robot.setState(NEUTRAL)).onFalse(robot.setStateCommand(NEUTRAL));
 
-        controller.getButton(kA).onTrue(robot.getCoralState(RPL1, RSL1));
-        controller.getButton(kB).onTrue(robot.getCoralState(RPL2, RSL2));
+        controller.getButton(kA).onTrue(robot.setState(NEUTRAL).beforeStarting(print("BUTTON BEFORE")).andThen(print("BUTTON AFTER")));
+        controller.getButton(kB).onTrue(robot.setState(IDLE).beforeStarting(print("BUTTON BEFORE")).andThen(print("BUTTON AFTER")));
+        // controller.getButton(kB).onTrue(robot.getCoralState(RPL2, RSL2));
         controller.getButton(kX).onTrue(robot.getCoralState(RPL3, RSL3));
         controller.getButton(kY).onTrue(robot.getCoralState(RPL4, RSL4));
 

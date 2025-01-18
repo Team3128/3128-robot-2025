@@ -1,8 +1,10 @@
 package frc.team3128.subsystems.Robot;
 
 import common.core.fsm.FSMSubsystemBase;
+import common.core.fsm.Transition;
 import common.core.fsm.TransitionMap;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3128.subsystems.Climber.Climber;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Intake.Intake;
@@ -20,16 +22,16 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static Intake intake;
     private static Climber climber;
 
-    private static TransitionMap<RobotStates> transitionMap;
+    private static TransitionMap<RobotStates> transitionMap = new TransitionMap<>(RobotStates.class);
 
     private RobotManager() {
-        super(RobotStates.class, transitionMap, IDLE);
-        registerTransitions();
+        super(RobotStates.class, transitionMap, NEUTRAL);
 
         elevator = Elevator.getInstance();
         manipulator = Manipulator.getInstance();
         intake = Intake.getInstance();
         climber = Climber.getInstance();
+        registerTransitions();
     }
 
     public static synchronized RobotManager getInstance() {
@@ -143,7 +145,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         transitionMap.addConvergingTransitions(
             updateSubsystemStates(NEUTRAL),
             NEUTRAL,
-            RSL1, RSL3, RSL2, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME, PROCESSOR_OUTTAKE, CLIMB_PRIME, CLIMB_LOCK
+            RSL1, RSL3, RSL2, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME, PROCESSOR_OUTTAKE, CLIMB_PRIME, CLIMB_LOCK, IDLE
         );
         transitionMap.addCommutativeTransition(
             SOURCE,
@@ -189,4 +191,30 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
 
 	}
+
+    public Command setState(RobotStates nextState) {
+        // System.out.println("setState()");
+        // System.out.println("Current State: " + currentState.name());
+        // System.out.println("Next State: " + nextState.name());
+        Transition<RobotStates> transition = transitionMap.getTransition(getState(), nextState);
+        
+        // if not the same state
+        if(!stateEquals(nextState)) requestTransition = transition;
+        else return print("Same State " + super.currentState);
+
+        // if invalid trnasition
+        if(transition == null) return print("Transition Null " + super.currentState);
+        // System.out.println(transition.toString());
+
+
+        // if not transitioning
+        if(isTransitioning()) {
+            currentTransition.cancel();
+        }
+
+        currentTransition = transition;
+        // currentTransition.getCommand().schedule();
+        currentState = nextState;
+        return transition.getCommand().beforeStarting(print("Transitioning"));
+    }
 }

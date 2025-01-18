@@ -3,8 +3,9 @@ package frc.team3128.subsystems.Intake;
 import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
-
+import edu.wpi.first.wpilibj2.command.Commands;
 import common.core.fsm.FSMSubsystemBase;
+import common.core.fsm.Transition;
 import common.core.fsm.TransitionMap;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
 
@@ -119,4 +120,28 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
         );
         
 	}
+
+    public Command setState(IntakeStates nextState) {
+        System.out.println("setState()");
+        Transition<IntakeStates> transition = transitionMap.getTransition(getState(), nextState);
+        
+        // if not the same state
+        if(!stateEquals(nextState)) requestTransition = transition;
+        else return Commands.none();
+
+        // if invalid trnasition
+        if(transition == null) return Commands.none();
+        System.out.println(transition.toString());
+
+
+        // if not transitioning
+        if(isTransitioning()) {
+            currentTransition.cancel();
+        }
+
+        currentTransition = transition;
+        // currentTransition.getCommand().schedule();
+        currentState = nextState;
+        return transition.getCommand();
+    }
 }
