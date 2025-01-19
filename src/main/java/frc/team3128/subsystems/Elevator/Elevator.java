@@ -17,7 +17,7 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
     private static TransitionMap<ElevatorStates> transitionMap = new TransitionMap<ElevatorStates>(ElevatorStates.class);
 
     public Elevator() {
-        super(ElevatorStates.class, transitionMap, IDLE);
+        super(ElevatorStates.class, transitionMap, NEUTRAL);
         elevator = new ElevatorMechanism();
         addSubsystem(elevator);
         registerTransitions();
@@ -47,11 +47,25 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
             state -> {
                 return sequence(
                     runOnce(()-> setNeutralMode(BRAKE)),
-                    elevator.pidTo(state.getSetpoint())
+                    // elevator.pidTo(state.getSetpoint())
+                    elevator.run(state.getSetpoint()),
+                    print("Transitioning to state: " + state)
                 );
             }, 
             functionalStates
         );
+
+        // transitionMap.addTransition(NEUTRAL, L1, sequence(
+        //     runOnce(()-> setNeutralMode(BRAKE)),
+        //     // elevator.pidTo(RPL1.getSetpoint())
+        //     elevator.run(L1.getSetpoint())
+        // ));
+
+        // transitionMap.addTransition(L1, NEUTRAL, sequence(
+        //     runOnce(()-> setNeutralMode(BRAKE)),
+        //     // elevator.pidTo(RPL1.getSetpoint())
+        //     elevator.run(NEUTRAL.getSetpoint())
+        // ));
 
         //IDLE -> NEUTRAL
         transitionMap.addTransition(
@@ -59,7 +73,8 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
             NEUTRAL, 
             sequence(
                     runOnce(()-> elevator.setNeutralMode(BRAKE)),
-                    elevator.pidTo(NEUTRAL.getSetpoint())
+                    // elevator.pidTo(NEUTRAL.getSetpoint())
+                    elevator.run(0)
             )
         );
 

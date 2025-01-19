@@ -3,6 +3,7 @@ package frc.team3128.subsystems.Climber;
 import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.core.subsystems.PositionSubsystemBase;
+import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_TalonFX;
 import edu.wpi.first.wpilibj.PWM;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
@@ -13,7 +14,8 @@ public class WinchMechanism extends PositionSubsystemBase {
     private static PIDFFConfig config = new PIDFFConfig(1, 1, 1);
     protected static Controller controller = new Controller(config, Controller.Type.POSITION);
 
-    public static NAR_TalonFX leader = new NAR_TalonFX(CLIMBER_LEADER_ID);
+    public static NAR_CANSpark leader = new NAR_CANSpark(CLIMBER_LEADER_ID);
+    // public static NAR_CANSpark follower = new NAR_CANSpark(CLIMBER_FOLLOWER_ID);
 
     // public PWM winchServo = new PWM(WINCH_SERVO_ID);
     // public PWM lockServo = new PWM(LOCK_SERVO_ID);
@@ -33,6 +35,8 @@ public class WinchMechanism extends PositionSubsystemBase {
         CLIMBER_STATUS_FRAME);
 
         leader.configMotor(motorConfig);
+        //TODO: fix follower config
+        // follower.configMotor(motorConfig);
     }
 
     @Override

@@ -47,9 +47,9 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     public Command updateSubsystemStates(RobotStates nextState) {
         return sequence(
-            // elevator.setStateCommand(nextState.getElevatorState()),
+            elevator.setStateCommand(nextState.getElevatorState())
             // manipulator.setStateCommand(nextState.getManipulatorState()),
-            intake.setStateCommand(nextState.getIntakeState())
+            // intake.setStateCommand(nextState.getIntakeState()),
             // climber.setStateCommand(nextState.getClimberState())
         );
     }
@@ -58,7 +58,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         boolean initialManipulatorState = Manipulator.getInstance().hasObjectPresent();
         return either(
             setStateCommand(exclusiveState)
-            .until(()-> !initialManipulatorState)
+            // .until(()-> !initialManipulatorState)
+            .withTimeout(1)
             .andThen(setStateCommand(NEUTRAL)),
             setStateCommand(defaultState),
             condition
@@ -115,6 +116,15 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         //     NEUTRAL,
         //     runOnce(() -> WinchMechanism.leader.setPercentOutput(0)).andThen(print("NEUTRAL->IDLE"))
         // );
+
+        transitionMap.applyCommutativeFunction(
+            state -> sequence(
+                updateSubsystemStates(state),
+                print("Transitioning to state: " + state)
+            ), 
+            reefPrimeStates
+        );
+
         transitionMap.addTransition(
             RPL1,
             RSL1,
@@ -151,9 +161,9 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             RSL1, RSL3, RSL2, NEUTRAL, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE 
         );
         transitionMap.addConvergingTransitions(
-            Climber.getInstance().winch.run(0.2).andThen(print("IDLE->NEUTRAL")),
+            updateSubsystemStates(NEUTRAL),
             NEUTRAL,
-            RSL1, RSL3, RSL2, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME, PROCESSOR_OUTTAKE, CLIMB_PRIME, CLIMB_LOCK, IDLE
+            RPL1, RSL1, RSL3, RSL2, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME, PROCESSOR_OUTTAKE, CLIMB_PRIME, CLIMB_LOCK, IDLE
         );
         transitionMap.addCommutativeTransition(
             SOURCE,
@@ -201,7 +211,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 	}
 
     // @Override
-    // public Command setState(RobotStates nextState) {
+    // public void setState(RobotStates nextState) {
     //     if(printStatus) System.out.println("Robot attempting to set state. \n\tFROM: " + currentState.name() + "\n\t  TO: " + nextState.name());
     //     Transition<RobotStates> transition = transitionMap.getTransition(getState(), nextState);
         
@@ -209,15 +219,14 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     //     if(!stateEquals(nextState)) requestTransition = transition;
     //     else {
     //         if(printStatus) System.out.println("Invalid Transition: Requested state already reached. \nExiting...");
-    //         return Commands.none();
+    //         return;
     //     }
 
     //     // if invalid trnasition
     //     if(transition == null) {
     //         if(printStatus) System.out.println("Invalid Transition: Transition is null. \nExiting...");
-    //         return Commands.none();
+    //         return;
     //     }
-
     //     if(printStatus) System.out.println("Valid Transition: " + transition.toString());
 
 
@@ -231,6 +240,5 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     //     currentTransition = transition;
     //     currentTransition.getCommand().schedule();
     //     currentState = nextState;
-    //     return transition.getCommand();
     // }
 }

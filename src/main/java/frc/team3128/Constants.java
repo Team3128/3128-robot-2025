@@ -418,7 +418,7 @@ public class Constants {
 
     public static class IntakeConstants {
     
-        public static final int PIVOT_LEADER_ID = 40;
+        public static final int PIVOT_LEADER_ID = 31;
 
         public static final double PIVOT_GEAR_RATIO = 1;
         public static final double PIVOT_SAMPLE_PER_MINUTE = 60;
@@ -451,7 +451,7 @@ public class Constants {
     public static class ElevatorConstants {
 
         public static final int ELEVATOR_LEADER_ID = 30;
-        public static final int ELEVATOR_FOLLOWER_ID = 31;
+        public static final int ELEVATOR_FOLLOWER_ID = 40;
 
         public static final double ELEVATOR_GEAR_RATIO = 1;
         public static final double ELEVATOR_SAMPLE_PER_MINUTE = 60;
@@ -468,6 +468,7 @@ public class Constants {
     public static class ClimberConstants {
         
         public static final int CLIMBER_LEADER_ID = 20;
+        public static final int CLIMBER_FOLLOWER_ID = 21;
 
         public static final double CLIMBER_GEAR_RATIO = 1;
         public static final double CLIMBER_SAMPLE_PER_MINUTE = 60;

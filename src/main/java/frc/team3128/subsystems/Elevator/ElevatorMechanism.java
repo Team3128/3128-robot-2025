@@ -4,15 +4,17 @@ import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.core.subsystems.PositionSubsystemBase;
 import common.hardware.motorcontroller.NAR_TalonFX;
+import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import static frc.team3128.Constants.ElevatorConstants.*;
 
 public class ElevatorMechanism extends PositionSubsystemBase {
 
-    private static PIDFFConfig config = new PIDFFConfig(1, 1, 1);
+    private static PIDFFConfig config = new PIDFFConfig(0.1, 0, 0);
     protected static Controller controller = new Controller(config, Controller.Type.POSITION);
 
-    protected static NAR_TalonFX leader = new NAR_TalonFX(ELEVATOR_LEADER_ID);
+    protected static NAR_CANSpark leader = new NAR_CANSpark(ELEVATOR_LEADER_ID);
+    protected static NAR_CANSpark follower = new NAR_CANSpark(ELEVATOR_FOLLOWER_ID);
 
     public ElevatorMechanism() {
         super(controller, leader);
@@ -28,7 +30,15 @@ public class ElevatorMechanism extends PositionSubsystemBase {
         ELEVATOR_NEUTRAL_MODE,
         ELEVATOR_STATUS_FRAME);
 
+
         leader.configMotor(motorConfig);
+
+        //TODO: fix follwoer config
+
+        follower.configMotor(motorConfig);
+        follower.follow(leader);
+        // follower.follow(leader);
+
     }
 
     @Override
