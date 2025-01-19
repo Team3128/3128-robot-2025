@@ -48,7 +48,6 @@ public class RobotContainer {
 
     // Create all subsystems
     private RobotManager robot;
-    private Elevator elevator;
 
     // private NAR_ButtonBoard judgePad;
     private NAR_ButtonBoard buttonPad;
@@ -78,7 +77,6 @@ public class RobotContainer {
         // CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
 
         robot = RobotManager.getInstance();
-        elevator = Elevator.getInstance();
 
         //uncomment line below to enable driving
         // CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
@@ -91,20 +89,15 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         controller.initShuffleboard();
-        // buttonPad.getButton(1).whileTrue(robot.setState(IDLE)).onFalse(robot.setStateCommand(NEUTRAL));
+        buttonPad.getButton(1).whileTrue(robot.setStateCommand(IDLE)).onFalse(robot.setStateCommand(NEUTRAL));
 
-        controller.getButton(kA).onTrue(robot.setStateCommand(NEUTRAL).beforeStarting(print("BUTTON BEFORE")).andThen(print("BUTTON AFTER")));
-        controller.getButton(kB).onTrue(robot.setStateCommand(IDLE).beforeStarting(print("BUTTON BEFORE")).andThen(print("BUTTON AFTER")));
-        // controller.getButton(kB).onTrue(robot.getCoralState(RPL2, RSL2));
-        controller.getButton(kX).onTrue(robot.getCoralState(RPL1, RSL1));
-        controller.getButton(kY).onTrue(robot.getCoralState(RPL2, RSL2));
+        controller.getButton(kA).onTrue(robot.getCoralState(RPL1, RSL1));
+        controller.getButton(kB).onTrue(robot.getCoralState(RPL2, RSL2));
+        controller.getButton(kX).onTrue(robot.getCoralState(RPL3, RSL3));
+        controller.getButton(kY).onTrue(robot.getCoralState(RPL4, RSL4));
 
 
-        // controller.getButton(kX).onTrue(either(
-        //     elevator.setStateCommand(ElevatorStates.NEUTRAL),
-        //     elevator.setStateCommand(ElevatorStates.L1), ()->elevator.stateEquals(ElevatorStates.L1)));
 
-        controller.getButton(kY).onTrue(robot.setStateCommand(RPL2));
 
         controller.getButton(kLeftTrigger).onTrue(robot.getAlgaeState(INTAKE));
         controller.getButton(kLeftBumper).onTrue(robot.getAlgaeState(EJECT_OUTTAKE));

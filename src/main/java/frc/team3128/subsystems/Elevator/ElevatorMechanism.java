@@ -17,7 +17,7 @@ public class ElevatorMechanism extends PositionSubsystemBase {
     protected static NAR_CANSpark follower = new NAR_CANSpark(ELEVATOR_FOLLOWER_ID);
 
     public ElevatorMechanism() {
-        super(controller, leader);
+        super(controller, leader, follower);
     }
 
     @Override
@@ -35,8 +35,7 @@ public class ElevatorMechanism extends PositionSubsystemBase {
 
         //TODO: fix follwoer config
 
-        follower.configMotor(motorConfig);
-        follower.follow(leader);
+        follower.configMotor(motorConfig.invertFollower());
         // follower.follow(leader);
 
     }

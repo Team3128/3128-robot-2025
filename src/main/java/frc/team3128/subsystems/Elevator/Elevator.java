@@ -48,24 +48,11 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
                 return sequence(
                     runOnce(()-> setNeutralMode(BRAKE)),
                     // elevator.pidTo(state.getSetpoint())
-                    elevator.run(state.getSetpoint()),
-                    print("Transitioning to state: " + state)
+                    elevator.run(state.getSetpoint())
                 );
             }, 
             functionalStates
         );
-
-        // transitionMap.addTransition(NEUTRAL, L1, sequence(
-        //     runOnce(()-> setNeutralMode(BRAKE)),
-        //     // elevator.pidTo(RPL1.getSetpoint())
-        //     elevator.run(L1.getSetpoint())
-        // ));
-
-        // transitionMap.addTransition(L1, NEUTRAL, sequence(
-        //     runOnce(()-> setNeutralMode(BRAKE)),
-        //     // elevator.pidTo(RPL1.getSetpoint())
-        //     elevator.run(NEUTRAL.getSetpoint())
-        // ));
 
         //IDLE -> NEUTRAL
         transitionMap.addTransition(

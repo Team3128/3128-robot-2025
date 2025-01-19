@@ -17,7 +17,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
     private static TransitionMap<ManipulatorStates> transitionMap = new TransitionMap<ManipulatorStates>(ManipulatorStates.class);
 
     public Manipulator() {
-        super(ManipulatorStates.class, transitionMap, IDLE);
+        super(ManipulatorStates.class, transitionMap, NEUTRAL);
         // roller = new RollerMechanism();
         // addSubsystem(roller);
         registerTransitions();
