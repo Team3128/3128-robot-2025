@@ -59,6 +59,7 @@ public class AutoPrograms {
         List<String> autoStrings = AutoBuilder.getAllAutoNames();
         
         for (String autoName : autoStrings) {
+            autoMap.put(autoName, getPathPlannerAuto(autoName));
             try {
                 for (PathPlannerPath path : PathPlannerAuto.getPathGroupFromAutoFile(autoName)) {
                     pathMap.put(path.name, AutoBuilder.followPath(path));
@@ -70,24 +71,26 @@ public class AutoPrograms {
     private void configPathPlanner() {
         Pathfinding.setPathfinder(new LocalADStar());
 
-        try {
-            robotConfig = RobotConfig.fromGUISettings();
-        } catch (Exception e) {
-            robotConfig = new RobotConfig(
+        // try {
+        //     robotConfig = RobotConfig.fromGUISettings();
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
+
+        robotConfig = new RobotConfig(
                 ROBOT_MASS,
                 ROBOT_MOI, 
                 new ModuleConfig(
                     DRIVE_WHEEL_DIAMETER / 2, 
-                    MAX_DRIVE_SPEED, 
+                    5.3, 
                     WHEEL_COF, 
                     DCMotor.getKrakenX60(1),
                     DRIVE_MOTOR_GEAR_RATIO, 
-                    (double) DRIVE_MOTOR_CURRENT_LIMIT, 
+                    DRIVE_MOTOR_CURRENT_LIMIT, 
                     1
                 ),
                 Swerve.moduleOffsets
             );
-        }
 
         AutoBuilder.configure(
             swerve::getPose, 
@@ -121,7 +124,7 @@ public class AutoPrograms {
     }
 
     public Command getAutonomousCommand() {
-        String selectedAutoName = ""; //NarwhalDashboard.getInstance().getSelectedAuto();
+        String selectedAutoName = "RB_1p"; //NarwhalDashboard.getInstance().getSelectedAuto();
         String hardcode = "";
         
         Command autoCommand;
@@ -134,7 +137,7 @@ public class AutoPrograms {
         autoCommand = autoMap.get(selectedAutoName);
 
         Log.info("AUTO_SELECTED", selectedAutoName);
-        return autoCommand.beforeStarting(reset());
+        return autoCommand;
     }
 
     private Command defaultAuto(){
@@ -142,6 +145,6 @@ public class AutoPrograms {
     }
 
     private Command reset() {
-        return none();
+        return runOnce(() -> swerve.resetGyro(Robot.getAlliance() == Alliance.Red ? 0 : 180));
     }
 }

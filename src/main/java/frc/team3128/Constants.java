@@ -176,7 +176,7 @@ public class Constants {
         public static final double RAMP_TIME = 3;
 
         /* Drivetrain Constants */
-        public static final double ROBOT_MASS = 35.210; //kg
+        public static final double ROBOT_MASS = 31.37; //kg
         public static final double ROBOT_MOI = 3.6576; //kg m^2 mass * (trackWidth / 2) * (Ka angular / Ka linear)
         public static final double WHEEL_COF = 1.43;
         public static final double DRIVE_BUMPER_LENGTH = Units.inchesToMeters(5);
@@ -217,10 +217,10 @@ public class Constants {
         // Theoretical: v = 4.96824, omega = 11.5
         // Real: v = 4.5, omega = 10
         // For safety, use less than theoretical and real values
-        public static final double MAX_DRIVE_SPEED = 4.57;//4.8; //meters per second - 16.3 ft/sec
+        public static final double MAX_DRIVE_SPEED = 3;//4.57//4.8; //meters per second - 16.3 ft/sec
         public static final double MAX_ATTAINABLE_DRIVE_SPEED = MAX_DRIVE_SPEED; //Stole from citrus.
-        public static final double MAX_DRIVE_ACCELERATION = 5;
-        public static final double MAX_DRIVE_ANGULAR_VELOCITY = 8;
+        public static final double MAX_DRIVE_ACCELERATION = 6.6;//5;
+        public static final double MAX_DRIVE_ANGULAR_VELOCITY = 1364 / 360;
         public static final double MAX_DRIVE_ANGULAR_ACCELERATION = 2 * Math.PI; //I stole from citrus.
 
         /* Motor and Sensor IDs */

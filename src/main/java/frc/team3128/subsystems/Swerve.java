@@ -202,6 +202,12 @@ public class Swerve extends SwerveBase {
         rotateTo(pose.getRotation());
     }
 
+    @Override
+    public void resetOdometry(Pose2d pose) {
+        resetGyro(allianceFlip(pose.getRotation()).getDegrees());
+        odometry.resetPosition(getGyroRotation2d(), getPositions(), pose);
+    }
+
     public void moveTo(Translation2d translation) {
         translationSetpoint = translation;
         translationController.enable();
