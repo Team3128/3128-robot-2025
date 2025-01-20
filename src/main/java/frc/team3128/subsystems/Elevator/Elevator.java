@@ -45,7 +45,7 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
         transitionMap.applyCommutativeFunction(
             state -> {
                 return sequence(
-                    runOnce(()-> setNeutralMode(BRAKE)),
+                    // runOnce(()-> setNeutralMode(BRAKE)),
                     // elevator.pidTo(state.getSetpoint())
                     elevator.run(state.getSetpoint())
                 );

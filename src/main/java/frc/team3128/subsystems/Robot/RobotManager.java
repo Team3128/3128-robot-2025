@@ -60,7 +60,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         return either(
             setStateCommand(exclusiveState).andThen(runOnce(()-> hasObjectPresent = manipulator.hasObjectPresent()))
             // .until(()-> manipulator.hasObjectPresent() != hasObjectPresent)
-            .withTimeout(1)
+            .andThen(waitSeconds(1))
             .andThen(setStateCommand(NEUTRAL)),
             setStateCommand(defaultState),
             condition
@@ -107,10 +107,10 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     }
 
     @Override
-	public void registerTransitions() {
+    public void registerTransitions() {
         transitionMap.addConvergingTransition(
             IDLE,
-            Climber.getInstance().winch.run(0).andThen(print("NEUTRAL->IDLE"))
+            updateSubsystemStates(IDLE)
         );
         // transitionMap.addTransition(
         //     IDLE,
@@ -134,12 +134,17 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         transitionMap.addTransition(
             RPL2,
             RSL2,
-            updateSubsystemStates(RSL1)
+            updateSubsystemStates(RSL2)
         );
         transitionMap.addTransition(
             RPL3,
             RSL3,
-            updateSubsystemStates(RSL1)
+            updateSubsystemStates(RSL3)
+        );
+        transitionMap.addTransition(
+            RPL4,
+            RSL4,
+            updateSubsystemStates(RSL4)
         );
         transitionMap.addConvergingTransitions(
             updateSubsystemStates(RPL1),
@@ -164,7 +169,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         transitionMap.addConvergingTransitions(
             updateSubsystemStates(NEUTRAL),
             NEUTRAL,
-            RPL1, RSL1, RSL3, RSL2, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME, PROCESSOR_OUTTAKE, CLIMB_PRIME, CLIMB_LOCK, IDLE
+            RPL1, RPL2, RPL3, RPL4, RSL1, RSL2, RSL3, RSL4, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME, PROCESSOR_OUTTAKE, CLIMB_PRIME, CLIMB_LOCK, IDLE
         );
         transitionMap.addCommutativeTransition(
             SOURCE,
@@ -176,6 +181,11 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             updateSubsystemStates(SOURCE),
             SOURCE,
             RSL1, RSL2, RSL3, RSL4, IDLE, INDEXING, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE
+        );
+        transitionMap.addConvergingTransitions(
+            updateSubsystemStates(INTAKE),
+            INTAKE,
+            RSL1, RSL2, RSL3, RSL4, IDLE, NEUTRAL, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE
         );
         transitionMap.addConvergingTransitions(
             updateSubsystemStates(EJECT_OUTTAKE),
@@ -209,5 +219,5 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         );
 
 
-	}
+    }
 }

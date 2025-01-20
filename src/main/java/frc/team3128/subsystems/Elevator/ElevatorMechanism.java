@@ -4,6 +4,7 @@ import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.core.subsystems.PositionSubsystemBase;
 import common.hardware.motorcontroller.NAR_TalonFX;
+import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
 import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import static frc.team3128.Constants.ElevatorConstants.*;
@@ -13,8 +14,8 @@ public class ElevatorMechanism extends PositionSubsystemBase {
     private static PIDFFConfig config = new PIDFFConfig(0.1, 0, 0);
     protected static Controller controller = new Controller(config, Controller.Type.POSITION);
 
-    protected static NAR_CANSpark left = new NAR_CANSpark(ELEVATOR_LEFT_ID);
-    protected static NAR_CANSpark right = new NAR_CANSpark(ELEVATOR_RIGHT_ID);
+    protected static NAR_CANSpark left = new NAR_CANSpark(ELEVATOR_LEFT_ID, ControllerType.CAN_SPARK_FLEX);
+    protected static NAR_CANSpark right = new NAR_CANSpark(ELEVATOR_RIGHT_ID, ControllerType.CAN_SPARK_FLEX);
 
     public ElevatorMechanism() {
         super(controller, left, right);

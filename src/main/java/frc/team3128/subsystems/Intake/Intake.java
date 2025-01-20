@@ -18,23 +18,23 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
     
     private static Intake instance;
 
-    protected PivotMechanism pivot;
-    protected RollerMechanism roller;
+    // protected PivotMechanism pivot;
+    // protected RollerMechanism roller;
     private static TransitionMap<IntakeStates> transitionMap = new TransitionMap<IntakeStates>(IntakeStates.class);
     private Function<Neutral, Command> setNeutralMode = mode -> runOnce(() -> setNeutralMode(mode));
     private Function<IntakeStates, Command> transitioner = state -> {
         return sequence(
-            setNeutralMode.apply(BRAKE),
-            pivot.pidTo(state.getAngle()),
-            roller.run(state.getPower())
+            setNeutralMode.apply(BRAKE)//,
+            // pivot.pidTo(state.getAngle()),
+            // roller.run(state.getPower())
         );
     };
 
     public Intake() {
         super(IntakeStates.class, transitionMap, NEUTRAL);
-        pivot = new PivotMechanism();
-        roller = new RollerMechanism();
-        addSubsystem(pivot, roller);
+        // pivot = new PivotMechanism();
+        // roller = new RollerMechanism();
+        // addSubsystem(pivot, roller);
         // registerTransitions();
     }
 
@@ -47,7 +47,8 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
     }
 
     public boolean hasObjectPresent() {
-        return roller.hasObjectPresent();
+        return true;
+        // return roller.hasObjectPresent();
     }
 
 	@Override
@@ -56,10 +57,10 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
 		transitionMap.addConvergingTransition(
             IDLE,
             sequence(
-                pivot.stop(),
-                roller.stop(),
-                runOnce(()->pivot.setNeutralMode(COAST)),
-                runOnce(()->roller.setNeutralMode(COAST))
+                // pivot.stop(),
+                // roller.stop(),
+                // runOnce(()->pivot.setNeutralMode(COAST)),
+                // runOnce(()->roller.setNeutralMode(COAST))
             )
         );
 

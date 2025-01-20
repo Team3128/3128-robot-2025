@@ -59,8 +59,8 @@ public class Robot extends NAR_Robot {
     public void robotInit(){
         m_robotContainer.initDashboard();
         LiveWindow.disableAllTelemetry();
-        Log.logDebug = true;
-        Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM);
+        // Log.logDebug = true;
+        Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM, MOTOR);
     }
 
     @Override

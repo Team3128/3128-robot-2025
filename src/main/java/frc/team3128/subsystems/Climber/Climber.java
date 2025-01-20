@@ -18,15 +18,15 @@ import java.util.function.Function;
 public class Climber extends FSMSubsystemBase<ClimberStates> {
     private static Climber instance;
 
-    public WinchMechanism winch;
+    // public WinchMechanism winch;
 
     private static TransitionMap<ClimberStates> transitionMap = new TransitionMap<ClimberStates>(ClimberStates.class);
 
     private Function<Neutral, Command> setNeutralMode = mode -> runOnce(() -> getSubsystems().forEach(subsystem -> subsystem.setNeutralMode(mode)));
     private Function<ClimberStates, Command> transitioner = state -> {
         return sequence(
-            setNeutralMode.apply(BRAKE),
-            winch.pidTo(state.getAngle())
+            setNeutralMode.apply(BRAKE)//,
+            // winch.pidTo(state.getAngle())
             // runOnce(()->winch.lockServo.setPosition(state.getHasClaw() ? 1 : 0)),
             // runOnce(()->winch.winchServo.setPosition(state.getHasWinch() ? 1 : 0))
         );
@@ -34,8 +34,8 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 
     public Climber() {
         super(ClimberStates.class, transitionMap, NEUTRAL);
-        winch = new WinchMechanism();
-        addSubsystem(winch);
+        // winch = new WinchMechanism();
+        // addSubsystem(winch);
         // registerTransitions();
     }
 
@@ -54,8 +54,8 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
         transitionMap.addConvergingTransition(
             IDLE,
             sequence(
-            runOnce(()-> setNeutralMode(COAST)),
-            runOnce(()-> winch.stop())
+            runOnce(()-> setNeutralMode(COAST))//,
+            // runOnce(()-> winch.stop())
         )
         );
 
