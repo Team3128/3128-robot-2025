@@ -58,6 +58,7 @@ public class Robot extends NAR_Robot {
     public void robotInit(){
         m_robotContainer.initDashboard();
         LiveWindow.disableAllTelemetry();
+        Log.logDebug = true;
     }
 
     @Override
@@ -85,9 +86,23 @@ public class Robot extends NAR_Robot {
         // }
         Commands.sequence(
             RobotManager.getInstance().setStateCommand(RobotStates.RPL1),
-            waitSeconds(3),
+            waitSeconds(1),
             RobotManager.getInstance().setStateCommand(RobotStates.RSL1),
-            waitSeconds(3),
+            waitSeconds(1),
+            RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL),
+            waitSeconds(1),
+            RobotManager.getInstance().setStateCommand(RobotStates.INTAKE),
+            waitSeconds(1),
+            RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL),
+            waitSeconds(1),
+            RobotManager.getInstance().setStateCommand(RobotStates.PROCESSOR_PRIME),
+            waitSeconds(1),
+            RobotManager.getInstance().setStateCommand(RobotStates.PROCESSOR_OUTTAKE),
+            waitSeconds(1),
+            RobotManager.getInstance().setStateCommand(RobotStates.INTAKE),
+            waitSeconds(1),
+            RobotManager.getInstance().setStateCommand(RobotStates.EJECT_OUTTAKE),
+            waitSeconds(1),
             RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL)
         ).schedule();
     }

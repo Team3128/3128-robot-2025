@@ -8,6 +8,7 @@ import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.Transition;
 import common.core.fsm.TransitionMap;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
+import common.utility.Log;
 
 import static frc.team3128.subsystems.Intake.IntakeStates.*;
 import static frc.team3128.RobotContainer.printStatus;
@@ -34,9 +35,7 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
         pivot = new PivotMechanism();
         roller = new RollerMechanism();
         addSubsystem(pivot, roller);
-        registerTransitions();
-
-        System.out.println(transitionMap);
+        // registerTransitions();
     }
 
     public static synchronized Intake getInstance() {
@@ -119,6 +118,5 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
             CLIMB, 
             transitioner.apply(CLIMB)
         );
-        
 	}
 }

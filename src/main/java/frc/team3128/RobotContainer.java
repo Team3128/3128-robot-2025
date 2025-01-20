@@ -96,9 +96,6 @@ public class RobotContainer {
         controller.getButton(kX).onTrue(robot.getCoralState(RPL3, RSL3));
         controller.getButton(kY).onTrue(robot.getCoralState(RPL4, RSL4));
 
-
-
-
         controller.getButton(kLeftTrigger).onTrue(robot.getAlgaeState(INTAKE));
         controller.getButton(kLeftBumper).onTrue(robot.getAlgaeState(EJECT_OUTTAKE));
         controller.getButton(kBack).onTrue(robot.getAlgaeState(PROCESSOR_PRIME, PROCESSOR_OUTTAKE));

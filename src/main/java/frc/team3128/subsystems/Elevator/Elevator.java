@@ -3,6 +3,7 @@ package frc.team3128.subsystems.Elevator;
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.Transition;
 import common.core.fsm.TransitionMap;
+import common.utility.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -20,9 +21,7 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
         super(ElevatorStates.class, transitionMap, NEUTRAL);
         elevator = new ElevatorMechanism();
         addSubsystem(elevator);
-        registerTransitions();
-
-        // System.out.println(transitionMap);
+        // registerTransitions();
     }
 
     public static synchronized Elevator getInstance() {
@@ -64,6 +63,5 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
                     elevator.run(0)
             )
         );
-
 	}
 }

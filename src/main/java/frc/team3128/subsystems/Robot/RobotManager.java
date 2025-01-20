@@ -27,6 +27,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     private static TransitionMap<RobotStates> transitionMap = new TransitionMap<>(RobotStates.class);
 
+    private static boolean hasObjectPresent;
+
     private RobotManager() {
         super(RobotStates.class, transitionMap, NEUTRAL);
 
@@ -47,18 +49,17 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     public Command updateSubsystemStates(RobotStates nextState) {
         return sequence(
-            elevator.setStateCommand(nextState.getElevatorState())
-            // manipulator.setStateCommand(nextState.getManipulatorState()),
-            // intake.setStateCommand(nextState.getIntakeState()),
-            // climber.setStateCommand(nextState.getClimberState())
+            elevator.setStateCommand(nextState.getElevatorState()),
+            manipulator.setStateCommand(nextState.getManipulatorState()),
+            intake.setStateCommand(nextState.getIntakeState()),
+            climber.setStateCommand(nextState.getClimberState())
         );
     }
 
     public Command getCoralState(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition) {
-        boolean initialManipulatorState = Manipulator.getInstance().hasObjectPresent();
         return either(
-            setStateCommand(exclusiveState)
-            // .until(()-> !initialManipulatorState)
+            setStateCommand(exclusiveState).andThen(runOnce(()-> hasObjectPresent = manipulator.hasObjectPresent()))
+            // .until(()-> manipulator.hasObjectPresent() != hasObjectPresent)
             .withTimeout(1)
             .andThen(setStateCommand(NEUTRAL)),
             setStateCommand(defaultState),

@@ -4,6 +4,7 @@ import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.Transition;
 import common.core.fsm.TransitionMap;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
+import common.utility.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3128.subsystems.Intake.IntakeStates;
@@ -35,8 +36,7 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
         super(ClimberStates.class, transitionMap, NEUTRAL);
         winch = new WinchMechanism();
         addSubsystem(winch);
-        registerTransitions();
-        // System.out.println(transitionMap);
+        // registerTransitions();
     }
 
     public static synchronized Climber getInstance() {
@@ -77,6 +77,5 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 
         //WINCH -> PRIME
         transitionMap.addTransition(CLIMB_LOCKED, CLIMB_PRIME, transitioner.apply(CLIMB_PRIME));
-
 	}
 }
