@@ -450,8 +450,8 @@ public class Constants {
 
     public static class ElevatorConstants {
 
-        public static final int ELEVATOR_LEADER_ID = 30;
-        public static final int ELEVATOR_FOLLOWER_ID = 31;
+        public static final int ELEVATOR_LEFT_ID = 30;
+        public static final int ELEVATOR_RIGHT_ID = 31;
 
         public static final double ELEVATOR_GEAR_RATIO = 1;
         public static final double ELEVATOR_SAMPLE_PER_MINUTE = 60;

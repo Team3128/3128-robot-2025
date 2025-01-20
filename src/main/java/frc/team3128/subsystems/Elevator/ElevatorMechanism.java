@@ -13,11 +13,11 @@ public class ElevatorMechanism extends PositionSubsystemBase {
     private static PIDFFConfig config = new PIDFFConfig(0.1, 0, 0);
     protected static Controller controller = new Controller(config, Controller.Type.POSITION);
 
-    protected static NAR_CANSpark leader = new NAR_CANSpark(ELEVATOR_LEADER_ID);
-    protected static NAR_CANSpark follower = new NAR_CANSpark(ELEVATOR_FOLLOWER_ID);
+    protected static NAR_CANSpark left = new NAR_CANSpark(ELEVATOR_LEFT_ID);
+    protected static NAR_CANSpark right = new NAR_CANSpark(ELEVATOR_RIGHT_ID);
 
     public ElevatorMechanism() {
-        super(controller, leader, follower);
+        super(controller, left, right);
     }
 
     @Override
@@ -31,12 +31,8 @@ public class ElevatorMechanism extends PositionSubsystemBase {
         ELEVATOR_STATUS_FRAME);
 
 
-        leader.configMotor(motorConfig);
-
-        //TODO: fix follwoer config
-
-        follower.configMotor(motorConfig.invertFollower());
-        // follower.follow(leader);
+        left.configMotor(motorConfig);
+        right.configMotor(motorConfig.invertFollower());
 
         initShuffleboard();
 
@@ -45,7 +41,7 @@ public class ElevatorMechanism extends PositionSubsystemBase {
     @Override
     protected void configController() {
        controller.setInputRange(ELEVATOR_POSITION_MIN, ELEVATOR_POSITION_MAX);
-       controller.configureFeedback(leader);
+       controller.configureFeedback(left);
        controller.setTolerance(ELEVATOR_TOLERANCE);
     }   
 }

@@ -167,6 +167,12 @@ To collaborate:
 10. `git push`		Push commit changes from local to origin
 
 
+`git commit -am "<Commit Message>"`	 Adds all untracked files and adds a commit message
+`git commit -um "<Commit Message>"`	 Adds all tracked files and adds a commit message
+
+If git submodule is present without any contents, run `git submodule init` and `git submodule update`
+
+
 ### Running the Bash Setup
 
 ```

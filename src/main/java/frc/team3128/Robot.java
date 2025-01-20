@@ -9,6 +9,7 @@ import java.util.Optional;
 import common.core.misc.NAR_Robot;
 import common.hardware.camera.Camera;
 import common.utility.Log;
+import static common.utility.Log.Type.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -59,11 +60,12 @@ public class Robot extends NAR_Robot {
         m_robotContainer.initDashboard();
         LiveWindow.disableAllTelemetry();
         Log.logDebug = true;
+        Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM);
     }
 
     @Override
     public void driverStationConnected() {
-         Log.info("State", "DS Connected");
+        Log.info("State", "DS Connected");
         Log.info("Alliance", getAlliance().toString());
         if (getAlliance() == Alliance.Red) {
             Camera.addIgnoredTags(3, 4, 5, 11, 12);
