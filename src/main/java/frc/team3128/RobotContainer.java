@@ -12,6 +12,7 @@ import static common.hardware.input.NAR_XboxController.XboxButton.*;
 import common.hardware.input.NAR_ButtonBoard;
 import common.utility.narwhaldashboard.NarwhalDashboard;
 import common.utility.shuffleboard.NAR_Shuffleboard;
+import common.utility.sysid.CmdSysId;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.subsystems.Elevator.Elevator;
+import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
 // import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Intake.Intake;
@@ -48,6 +50,7 @@ public class RobotContainer {
 
     // Create all subsystems
     private RobotManager robot;
+    private ElevatorMechanism elevator;
 
     // private NAR_ButtonBoard judgePad;
     private NAR_ButtonBoard buttonPad;
@@ -77,6 +80,7 @@ public class RobotContainer {
         // CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
 
         robot = RobotManager.getInstance();
+        elevator = new ElevatorMechanism();
 
         //uncomment line below to enable driving
         // CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
@@ -90,6 +94,14 @@ public class RobotContainer {
     private void configureButtonBindings() {
         controller.initShuffleboard();
         buttonPad.getButton(1).whileTrue(robot.setStateCommand(IDLE)).onFalse(robot.setStateCommand(NEUTRAL));
+
+        controller2.getButton(kA).onTrue(elevator.pidTo(0));
+        controller2.getButton(kB).onTrue(elevator.run(0.3)).onFalse(elevator.run(0));
+        controller2.getButton(kX).onTrue(elevator.run(-0.3)).onFalse(elevator.run(0));
+        controller2.getButton(kY).onTrue(elevator.reset());
+
+        controller2.getButton(kLeftTrigger).onTrue(elevator.characterization(1, 0.1));
+        controller2.getButton(kLeftTrigger).onTrue(elevator.characterization(1, 0.5));
 
         controller.getButton(kA).onTrue(robot.getCoralState(RPL1, RSL1));
         controller.getButton(kB).onTrue(robot.getCoralState(RPL2, RSL2));

@@ -453,7 +453,8 @@ public class Constants {
         public static final int ELEVATOR_LEFT_ID = 30;
         public static final int ELEVATOR_RIGHT_ID = 31;
 
-        public static final double ELEVATOR_GEAR_RATIO = 1;
+        //1/14 gear ratio based on wom
+        public static final double ELEVATOR_GEAR_RATIO = 1 * Units.inchesToMeters(1.88);
         public static final double ELEVATOR_SAMPLE_PER_MINUTE = 60;
         public static final int ELEVATOR_STATOR_CURRENT_LIMIT = 40;
         public static final boolean ELEVATOR_INVERT = false;
@@ -461,8 +462,8 @@ public class Constants {
         public static final StatusFrames ELEVATOR_STATUS_FRAME = StatusFrames.POSITION;
 
         public static final double ELEVATOR_POSITION_MIN = 0;
-        public static final double ELEVATOR_POSITION_MAX = 1;
-        public static final double ELEVATOR_TOLERANCE = 0.01;
+        public static final double ELEVATOR_POSITION_MAX = Units.inchesToMeters(85);
+        public static final double ELEVATOR_TOLERANCE = 0.02;
     }
 
     public static class ClimberConstants {
