@@ -46,8 +46,8 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
             state -> {
                 return sequence(
                     // runOnce(()-> setNeutralMode(BRAKE)),
-                    // elevator.pidTo(state.getSetpoint())
-                    elevator.run(state.getSetpoint())
+                    elevator.pidTo(state.getSetpoint())
+                    // elevator.run(state.getSetpoint())
                 );
             }, 
             functionalStates
@@ -59,8 +59,8 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
             NEUTRAL, 
             sequence(
                     runOnce(()-> elevator.setNeutralMode(BRAKE)),
-                    // elevator.pidTo(NEUTRAL.getSetpoint())
-                    elevator.run(0)
+                    elevator.pidTo(NEUTRAL.getSetpoint())
+                    // elevator.run(0)
             )
         );
 	}

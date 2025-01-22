@@ -28,6 +28,8 @@ import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Manipulator.Manipulator;
 import frc.team3128.subsystems.Robot.RobotManager;
+
+import static frc.team3128.Constants.ElevatorConstants.ELEVATOR_POSITION_MAX;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 
 import java.io.IOException;
@@ -95,13 +97,15 @@ public class RobotContainer {
         controller.initShuffleboard();
         buttonPad.getButton(1).whileTrue(robot.setStateCommand(IDLE)).onFalse(robot.setStateCommand(NEUTRAL));
 
-        controller2.getButton(kA).onTrue(elevator.pidTo(0));
-        controller2.getButton(kB).onTrue(elevator.run(0.3)).onFalse(elevator.run(0));
-        controller2.getButton(kX).onTrue(elevator.run(-0.3)).onFalse(elevator.run(0));
+        controller2.getButton(kLeftTrigger).onTrue(elevator.pidTo(0));
+        controller2.getButton(kLeftBumper).onTrue(elevator.pidTo(1));
+        controller2.getButton(kB).onTrue(elevator.runVolts(4)).onFalse(elevator.run(0));
+        controller2.getButton(kX).onTrue(elevator.runVolts(-4)).onFalse(elevator.run(0));
         controller2.getButton(kY).onTrue(elevator.reset());
 
-        controller2.getButton(kLeftTrigger).onTrue(elevator.characterization(1, 0.1));
-        controller2.getButton(kLeftTrigger).onTrue(elevator.characterization(1, 0.5));
+        // controller2.getButton(kLeftTrigger).onTrue(elevator.characterization(1, 0.1));
+        // controller2.getButton(kLeftBumper).onTrue(elevator.characterization(1, 0.5));
+        controller2.getButton(kRightBumper).onTrue(new CmdSysId("Elevator", elevator::runVolts, elevator::getVelocity, elevator::getPosition, 1, 0.5, 1.4, true, elevator));
 
         controller.getButton(kA).onTrue(robot.getCoralState(RPL1, RSL1));
         controller.getButton(kB).onTrue(robot.getCoralState(RPL2, RSL2));
