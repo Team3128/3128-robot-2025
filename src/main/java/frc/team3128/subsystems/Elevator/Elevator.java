@@ -37,7 +37,7 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
 
         //ALL STATES -> IDLE
 		transitionMap.addConvergingTransition(IDLE, sequence(
-                elevator.stop(),
+                elevator.stopCommand(),
                 runOnce(()-> setNeutralMode(COAST))
         ));
 

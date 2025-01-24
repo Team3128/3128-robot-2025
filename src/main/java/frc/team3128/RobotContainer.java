@@ -99,9 +99,9 @@ public class RobotContainer {
 
         controller2.getButton(kLeftTrigger).onTrue(elevator.pidTo(0));
         controller2.getButton(kLeftBumper).onTrue(elevator.pidTo(1));
-        controller2.getButton(kB).onTrue(elevator.runVolts(4)).onFalse(elevator.run(0));
-        controller2.getButton(kX).onTrue(elevator.runVolts(-4)).onFalse(elevator.run(0));
-        controller2.getButton(kY).onTrue(elevator.reset());
+        controller2.getButton(kB).onTrue(elevator.runVoltsCommand(4)).onFalse(elevator.runCommand(0));
+        controller2.getButton(kX).onTrue(elevator.runVoltsCommand(-4)).onFalse(elevator.runCommand(0));
+        controller2.getButton(kY).onTrue(elevator.resetCommand());
 
         // controller2.getButton(kLeftTrigger).onTrue(elevator.characterization(1, 0.1));
         // controller2.getButton(kLeftBumper).onTrue(elevator.characterization(1, 0.5));
