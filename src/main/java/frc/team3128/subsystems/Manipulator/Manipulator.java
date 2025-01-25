@@ -14,14 +14,14 @@ import static frc.team3128.subsystems.Manipulator.ManipulatorStates.*;
 public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
     private static Manipulator instance;
 
-    // public RollerMechanism roller;
+    public RollerMechanism roller;
     private static TransitionMap<ManipulatorStates> transitionMap = new TransitionMap<ManipulatorStates>(ManipulatorStates.class);
 
     public Manipulator() {
         super(ManipulatorStates.class, transitionMap, NEUTRAL);
-        // roller = new RollerMechanism();
-        // addSubsystem(roller);
-        // registerTransitions();
+        roller = new RollerMechanism();
+        addSubsystem(roller);
+        registerTransitions();
     }
 
     public static synchronized Manipulator getInstance() {
@@ -36,18 +36,13 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 
         //ALL STATES -> IDLE
 		transitionMap.addConvergingTransition(IDLE, sequence(
-                // roller.stop(),
+                stopCommand(),
                 runOnce(()-> setNeutralMode(COAST))
         ));
 
         //NEUTRAL, FORWARD, REVERSE are able to transition between each other
         transitionMap.applyCommutativeFunction(
-            state -> {
-                return sequence(
-                    runOnce(()-> setNeutralMode(BRAKE)),
-                    run(state.getPower())
-                );
-            }, 
+            state -> runCommand(state.getPower()), 
             functionalStates
         );
 
@@ -57,7 +52,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
             NEUTRAL, 
             sequence(
                     runOnce(()-> setNeutralMode(BRAKE)),
-                    run(NEUTRAL.getPower())
+                    runCommand(NEUTRAL.getPower())
             )
         );
 	}
