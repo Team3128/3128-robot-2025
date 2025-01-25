@@ -82,7 +82,7 @@ public class RobotContainer {
         // CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
 
         robot = RobotManager.getInstance();
-        elevator = new ElevatorMechanism();
+        elevator = ElevatorMechanism.getInstance();
 
         //uncomment line below to enable driving
         // CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
@@ -98,14 +98,15 @@ public class RobotContainer {
         buttonPad.getButton(1).whileTrue(robot.setStateCommand(IDLE)).onFalse(robot.setStateCommand(NEUTRAL));
 
         controller2.getButton(kLeftTrigger).onTrue(elevator.pidTo(0));
-        controller2.getButton(kLeftBumper).onTrue(elevator.pidTo(1));
+        controller2.getButton(kLeftBumper).onTrue(elevator.pidTo(0.5));
+        controller2.getButton(kRightBumper).onTrue(elevator.pidTo(1));
         controller2.getButton(kB).onTrue(elevator.runVoltsCommand(4)).onFalse(elevator.runCommand(0));
         controller2.getButton(kX).onTrue(elevator.runVoltsCommand(-4)).onFalse(elevator.runCommand(0));
         controller2.getButton(kY).onTrue(elevator.resetCommand());
 
         // controller2.getButton(kLeftTrigger).onTrue(elevator.characterization(1, 0.1));
         // controller2.getButton(kLeftBumper).onTrue(elevator.characterization(1, 0.5));
-        controller2.getButton(kRightBumper).onTrue(new CmdSysId("Elevator", elevator::runVolts, elevator::getVelocity, elevator::getPosition, 1, 0.5, 1.4, true, elevator));
+        controller2.getButton(kRightTrigger).onTrue(new CmdSysId("Elevator", elevator::runVolts, elevator::getVelocity, elevator::getPosition, 1, 0.5, 1.4, true, elevator));
 
         controller.getButton(kA).onTrue(robot.getCoralState(RPL1, RSL1));
         controller.getButton(kB).onTrue(robot.getCoralState(RPL2, RSL2));

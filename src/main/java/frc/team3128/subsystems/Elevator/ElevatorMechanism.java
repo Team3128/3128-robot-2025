@@ -11,14 +11,21 @@ import static frc.team3128.Constants.ElevatorConstants.*;
 
 public class ElevatorMechanism extends PositionSubsystemBase {
 
+    private static ElevatorMechanism instance;
+
     private static PIDFFConfig config = new PIDFFConfig(64, 0, 0, 0.22086, 4.52908,0.99630,0);
     protected static Controller controller = new Controller(config, Controller.Type.POSITION);
 
     protected static NAR_CANSpark left = new NAR_CANSpark(ELEVATOR_LEFT_ID, ControllerType.CAN_SPARK_FLEX);
     protected static NAR_CANSpark right = new NAR_CANSpark(ELEVATOR_RIGHT_ID, ControllerType.CAN_SPARK_FLEX);
 
-    public ElevatorMechanism() {
+    private ElevatorMechanism() {
         super(controller, left, right);
+    }
+
+    public static synchronized ElevatorMechanism getInstance() {
+        if (instance == null) instance = new ElevatorMechanism();
+        return instance;
     }
 
     @Override
@@ -36,7 +43,6 @@ public class ElevatorMechanism extends PositionSubsystemBase {
         right.configMotor(motorConfig.follower());
 
         initShuffleboard();
-
     }
 
     @Override

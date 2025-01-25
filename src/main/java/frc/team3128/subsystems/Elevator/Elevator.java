@@ -19,7 +19,7 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
 
     public Elevator() {
         super(ElevatorStates.class, transitionMap, NEUTRAL);
-        elevator = new ElevatorMechanism();
+        elevator = ElevatorMechanism.getInstance();
         addSubsystem(elevator);
         // registerTransitions();
     }
