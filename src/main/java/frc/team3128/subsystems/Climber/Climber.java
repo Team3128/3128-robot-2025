@@ -22,7 +22,7 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 
     private static TransitionMap<ClimberStates> transitionMap = new TransitionMap<ClimberStates>(ClimberStates.class);
 
-    private Function<Neutral, Command> setNeutralMode = mode -> runOnce(() -> getSubsystems().forEach(subsystem -> subsystem.setNeutralMode(mode)));
+    private Function<Neutral, Command> setNeutralMode = mode -> applyCommand(subsystem -> subsystem.setNeutralMode(mode));
     private Function<ClimberStates, Command> transitioner = state -> {
         return sequence(
             setNeutralMode.apply(BRAKE)//,
@@ -35,7 +35,7 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
     public Climber() {
         super(ClimberStates.class, transitionMap, NEUTRAL);
         // winch = new WinchMechanism();
-        // addSubsystem(winch);
+        // addSubsystems(winch);
         // registerTransitions();
     }
 

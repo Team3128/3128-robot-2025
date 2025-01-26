@@ -59,6 +59,7 @@ public class Swerve extends SwerveBase {
     public static final PIDFFConfig anglePIDConfig = new PIDFFConfig(DRIVE_ANGLE_KP, DRIVE_ANGLE_KI, DRIVE_ANGLE_KD);
 
     private static final SwerveModuleConfig Mod0 = new SwerveModuleConfig(
+        "Front Left",
         0, 
         new SwerveMotorConfig(new NAR_TalonFX(MOD0_DRIVE_MOTOR_ID, DRIVETRAIN_CANBUS_NAME), driveMotorConfig, drivePIDConfig),
         new SwerveMotorConfig(new NAR_TalonFX(MOD0_ANGLE_MOTOR_ID, DRIVETRAIN_CANBUS_NAME), angleMotorConfig, anglePIDConfig),
@@ -66,6 +67,7 @@ public class Swerve extends SwerveBase {
         MAX_DRIVE_SPEED);
 
     private static final SwerveModuleConfig Mod1 = new SwerveModuleConfig(
+        "Front Right",
         1, 
         new SwerveMotorConfig(new NAR_TalonFX(MOD1_DRIVE_MOTOR_ID, DRIVETRAIN_CANBUS_NAME), driveMotorConfig, drivePIDConfig),
         new SwerveMotorConfig(new NAR_TalonFX(MOD1_ANGLE_MOTOR_ID, DRIVETRAIN_CANBUS_NAME), angleMotorConfig, anglePIDConfig),
@@ -73,6 +75,7 @@ public class Swerve extends SwerveBase {
         MAX_DRIVE_SPEED);
         
     private static final SwerveModuleConfig Mod2 = new SwerveModuleConfig(
+        "Back Left",
         2, 
         new SwerveMotorConfig(new NAR_TalonFX(MOD2_DRIVE_MOTOR_ID, DRIVETRAIN_CANBUS_NAME), driveMotorConfig, drivePIDConfig),
         new SwerveMotorConfig(new NAR_TalonFX(MOD2_ANGLE_MOTOR_ID, DRIVETRAIN_CANBUS_NAME), angleMotorConfig, anglePIDConfig),
@@ -80,6 +83,7 @@ public class Swerve extends SwerveBase {
         MAX_DRIVE_SPEED);
         
     private static final SwerveModuleConfig Mod3 = new SwerveModuleConfig(
+        "Back Right",
         3, 
         new SwerveMotorConfig(new NAR_TalonFX(MOD3_DRIVE_MOTOR_ID, DRIVETRAIN_CANBUS_NAME), driveMotorConfig, drivePIDConfig),
         new SwerveMotorConfig(new NAR_TalonFX(MOD3_ANGLE_MOTOR_ID, DRIVETRAIN_CANBUS_NAME), angleMotorConfig, anglePIDConfig),
