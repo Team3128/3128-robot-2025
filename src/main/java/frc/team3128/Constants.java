@@ -164,10 +164,10 @@ public class Constants {
         public static final int MOD3_CANCODER_ID = 13;
 
         /* Cancoder Offsets */
-        public static final double MOD0_CANCODER_OFFSET = 136.845703125;
-        public static final double MOD1_CANCODER_OFFSET = -112.587890625;
-        public static final double MOD2_CANCODER_OFFSET = 111.4453125;
-        public static final double MOD3_CANCODER_OFFSET = -3.69140625;
+        public static final double MOD0_CANCODER_OFFSET = -163.1;
+        public static final double MOD1_CANCODER_OFFSET = -116.367;
+        public static final double MOD2_CANCODER_OFFSET = 104.326;
+        public static final double MOD3_CANCODER_OFFSET = 66.26;
 
         public static final double RAMP_TIME = 3;
 
@@ -185,7 +185,7 @@ public class Constants {
         public static final double closedLoopRamp = 0.0;
 
         public static final double DRIVE_MOTOR_GEAR_RATIO = 225.0 / 42.0;
-        public static final double DRIVE_ANGLE_GEAR_RATIO = (300.0 / 13.0); 
+        public static final double DRIVE_ANGLE_GEAR_RATIO = (150.0 / 7.0); 
 
         /* Swerve Current Limiting */
         public static final int DRIVE_ANGLE_CURRENT_LIMIT = 30; //30
@@ -458,7 +458,7 @@ public class Constants {
         public static final double ELEVATOR_SAMPLE_PER_MINUTE = 60;
         public static final int ELEVATOR_STATOR_CURRENT_LIMIT = 40;
         public static final boolean ELEVATOR_INVERT = false;
-        public static final Neutral ELEVATOR_NEUTRAL_MODE = Neutral.BRAKE;
+        public static final Neutral ELEVATOR_NEUTRAL_MODE = Neutral.COAST;
         public static final StatusFrames ELEVATOR_STATUS_FRAME = StatusFrames.POSITION;
 
         public static final double ELEVATOR_POSITION_MIN = 0;
@@ -491,8 +491,8 @@ public class Constants {
 
         public static final double ROLLER_GEAR_RATIO = 1;
         public static final double ROLLER_SAMPLE_PER_MINUTE = 60;
-        public static final int ROLLER_STATOR_CURRENT_LIMIT = 40;
-        public static final boolean ROLLER_INVERT = false;
+        public static final int ROLLER_STATOR_CURRENT_LIMIT = 60;
+        public static final boolean ROLLER_INVERT = true;
         public static final Neutral ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
         public static final StatusFrames ROLLER_STATUS_FRAME = StatusFrames.DEFAULT;
 

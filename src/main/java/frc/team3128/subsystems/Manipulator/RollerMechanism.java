@@ -1,7 +1,9 @@
 package frc.team3128.subsystems.Manipulator;
 
 import common.core.subsystems.VoltageSubsystemBase;
+import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_TalonFX;
+import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
@@ -11,12 +13,20 @@ import static frc.team3128.Constants.ManipulatorConstants.*;
 
 public class RollerMechanism extends VoltageSubsystemBase {
 
-    protected static NAR_TalonFX leader = new NAR_TalonFX(ROLLER_LEADER_ID);
+    private static RollerMechanism instance;
+
+    public static synchronized RollerMechanism getInstance() {
+        if(instance == null) instance = new RollerMechanism();
+        return instance;
+    }
+
+    protected static NAR_CANSpark leader = new NAR_CANSpark(ROLLER_LEADER_ID, ControllerType.CAN_SPARK_FLEX);
     // protected static DigitalInput firstSensor = new DigitalInput(FIRST_SENSOR_ID);
     // protected static DigitalInput secondSensor = new DigitalInput(SECOND_SENSOR_ID);
 
     public RollerMechanism() {
         super(leader);
+        initShuffleboard();
     }
 
     @Override
@@ -41,6 +51,8 @@ public class RollerMechanism extends VoltageSubsystemBase {
 
 	@Override
 	public void initShuffleboard() {
-        
+        NAR_Shuffleboard.addData(getName(), "Power", ()-> leader.getAppliedOutput(), 0, 0);
+        NAR_Shuffleboard.addData(getName(), "Current", ()->leader.getStallCurrent(), 1, 0);
+        NAR_Shuffleboard.addData(getName(), "Torque", ()-> leader.getTorque(), 2, 0);
 	}
 }

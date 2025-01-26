@@ -3,11 +3,11 @@ package frc.team3128.subsystems.Elevator;
 public enum ElevatorStates {
     IDLE,
     NEUTRAL(0),
-    SOURCE(0.1),
-    L1(0.2),
-    L2(0.3),
-    L3(0.4),
-    L4(0.5);
+    SOURCE(0),
+    L1(0.3),
+    L2(0.475),
+    L3(0.885),
+    L4(1.55);
 
     private double setpoint;
 
