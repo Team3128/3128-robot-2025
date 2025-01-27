@@ -103,8 +103,12 @@ public class RobotContainer {
         buttonPad.getButton(1).whileTrue(runOnce(()-> swerve.setBrakeMode(false))).onFalse(runOnce(()-> swerve.setBrakeMode(true)));
         buttonPad.getButton(2).whileTrue(runOnce(()-> elevator.setNeutralMode(Neutral.COAST))).onFalse(runOnce(()-> elevator.setNeutralMode(Neutral.BRAKE)));
 
+        controller2.getButton(kLeftTrigger).onTrue(elevator.pidTo(0));
+        controller2.getButton(kLeftBumper).onTrue(elevator.pidTo(0.5));
+        controller2.getButton(kRightBumper).onTrue(elevator.pidTo(1));
         controller2.getButton(kB).onTrue(Elevator.getInstance().runVoltsCommand(4)).onFalse(Elevator.getInstance().stopCommand());
         controller2.getButton(kX).onTrue(Elevator.getInstance().runVoltsCommand(-4)).onFalse(Elevator.getInstance().stopCommand());
+        controller2.getButton(kY).onTrue(Elevator.getInstance().resetCommand());
 
         controller2.getUpPOVButton().onTrue(RollerMechanism.getInstance().runCommand(0.3)).onFalse(RollerMechanism.getInstance().stopCommand());
         controller2.getDownPOVButton().onTrue(Manipulator.getInstance().runCommand(-0.3)).onFalse(Manipulator.getInstance().stopCommand());

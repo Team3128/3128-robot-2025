@@ -20,7 +20,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
     public Manipulator() {
         super(ManipulatorStates.class, transitionMap, NEUTRAL);
         roller = RollerMechanism.getInstance();
-        addMechanisms(roller);
+        addSubsystem(roller);
         registerTransitions();
     }
 
