@@ -137,7 +137,7 @@ public class AutoPrograms {
         autoCommand = autoMap.get(selectedAutoName);
 
         Log.info("AUTO_SELECTED", selectedAutoName);
-        return autoCommand;
+        return autoCommand.beforeStarting(reset());
     }
 
     private Command defaultAuto(){
