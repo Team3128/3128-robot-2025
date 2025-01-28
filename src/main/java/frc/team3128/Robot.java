@@ -9,13 +9,18 @@ import java.util.Optional;
 import common.core.misc.NAR_Robot;
 import common.hardware.camera.Camera;
 import common.utility.Log;
+import static common.utility.Log.Type.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3128.autonomous.AutoPrograms;
+import frc.team3128.subsystems.Swerve;
+// import frc.team3128.autonomous.AutoPrograms;
+import frc.team3128.subsystems.Robot.RobotManager;
+import frc.team3128.subsystems.Robot.RobotStates;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
@@ -54,6 +59,8 @@ public class Robot extends NAR_Robot {
         Camera.enableAll();
         m_robotContainer.initDashboard();
         LiveWindow.disableAllTelemetry();
+        // Log.logDebug = true;
+        Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM, MOTOR);
     }
 
     @Override
@@ -116,11 +123,12 @@ public class Robot extends NAR_Robot {
     public void disabledInit() {
         CommandScheduler.getInstance().cancelAll();
         hasInitialized = true;
+        Swerve.getInstance().setBrakeMode(false);
     }
 
     @Override
     public void disabledExit() {
-        
+        Swerve.getInstance().setBrakeMode(true);
     }
     
     @Override

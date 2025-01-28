@@ -111,6 +111,6 @@ tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
 
-// dependencies {
-// 	implementation project(':libs:3128-common')
-// }
+dependencies {
+	implementation project(':libs:3128-common')
+}

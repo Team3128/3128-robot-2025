@@ -1,17 +1,14 @@
 package frc.team3128;
 
-import static edu.wpi.first.units.Units.Rotation;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.function.Function;
-
 import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import edu.wpi.first.apriltag.AprilTag;
+import common.hardware.motorcontroller.NAR_Motor.Neutral;
+import common.hardware.motorcontroller.NAR_Motor.StatusFrames;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -25,7 +22,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.team3128.subsystems.Swerve;
+// import frc.team3128.subsystems.Swerve;
 
 
 
@@ -168,10 +165,10 @@ public class Constants {
         public static final int MOD3_CANCODER_ID = 13;
 
         /* Cancoder Offsets */
-        public static final double MOD0_CANCODER_OFFSET = 19.51171875 - 180;
-        public static final double MOD1_CANCODER_OFFSET = 68.37890625 - 180;
-        public static final double MOD2_CANCODER_OFFSET = -68.90625 + 180;
-        public static final double MOD3_CANCODER_OFFSET = -119.0038015 + 180;
+        public static final double MOD0_CANCODER_OFFSET = -163.1;
+        public static final double MOD1_CANCODER_OFFSET = -116.367;
+        public static final double MOD2_CANCODER_OFFSET = 104.326;
+        public static final double MOD3_CANCODER_OFFSET = 66.26;
 
         public static final double RAMP_TIME = 3;
 
@@ -247,9 +244,11 @@ public class Constants {
         public static final List<Rotation2d> snapToAngles = new ArrayList<>();
         static {
             snapToAngles.add(Rotation2d.fromDegrees(-180));
-            snapToAngles.add(Rotation2d.fromDegrees(-90));
+            snapToAngles.add(Rotation2d.fromDegrees(-120));
+            snapToAngles.add(Rotation2d.fromDegrees(-60));
             snapToAngles.add(Rotation2d.fromDegrees(0));
-            snapToAngles.add(Rotation2d.fromDegrees(90));
+            snapToAngles.add(Rotation2d.fromDegrees(60));
+            snapToAngles.add(Rotation2d.fromDegrees(120));
             snapToAngles.add(Rotation2d.fromDegrees(180));
         }
     }
@@ -290,23 +289,49 @@ public class Constants {
 
         public static final double FIELD_X_LENGTH = Units.inchesToMeters(651.25); // meters
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(315.5); // meters
+        public static final Translation2d FIELD = new Translation2d(FIELD_X_LENGTH, FIELD_Y_LENGTH);
+        public static final Translation2d CENTER_FIELD = FIELD.div(2);
+
+        public static final Translation2d reefShift = new Translation2d(0.35/2, 0);
 
         public enum FieldStates {
             BLUE_BARGE,
             CENTER_BARGE,
             RED_BARGE,
-            REEF_1,
-            REEF_2,
-            REEF_3,
-            REEF_4,
-            REEF_5,
-            REEF_6,
+            REEF_1(new Pose2d(new Translation2d(5.80, 4.05), Rotation2d.fromDegrees(180))),
+            REEF_2(new Pose2d(new Translation2d(5.15, 5.15), Rotation2d.fromDegrees(240))),
+            REEF_3(new Pose2d(new Translation2d(3.80, 5.15), Rotation2d.fromDegrees(300))),
+            REEF_4(new Pose2d(new Translation2d(3.15, 4.05), Rotation2d.fromDegrees(0))),
+            REEF_5(new Pose2d(new Translation2d(3.80, 2.90), Rotation2d.fromDegrees(600))),
+            REEF_6(new Pose2d(new Translation2d(5.15, 2.90), Rotation2d.fromDegrees(120))),
             PIECE_1,
             PIECE_2,
             PIECE_3,
-            CORAL_1,
-            CORAL_2,
-            PROCESSOR
+            SOURCE_1(new Pose2d(new Translation2d(1.20, 7.00), Rotation2d.fromDegrees(125))),
+            SOURCE_2(new Pose2d(new Translation2d(1.20, 7.00), Rotation2d.fromDegrees(235))),
+            PROCESSOR(new Pose2d(new Translation2d(6.35, 0.60), Rotation2d.fromDegrees(270)));
+
+            private final Pose2d pose;
+
+            private FieldStates(Pose2d pose) {
+                this.pose = pose;
+            }
+
+            private FieldStates() {
+                this(new Pose2d());
+            }
+
+            public Pose2d getPose2d() {
+                return pose;
+            }
+
+            public Translation2d getTranslation2d() {
+                return pose.getTranslation();
+            }
+
+            public Rotation2d getRotation2d() {
+                return pose.getRotation();
+            }
         }
 
 
@@ -414,4 +439,89 @@ public class Constants {
     
         }
     }
+
+    public static class IntakeConstants {
+    
+        public static final int PIVOT_LEADER_ID = 40;
+
+        public static final double PIVOT_GEAR_RATIO = 1;
+        public static final double PIVOT_SAMPLE_PER_MINUTE = 60;
+        public static final int PIVOT_STATOR_CURRENT_LIMIT = 40;
+        public static final boolean PIVOT_INVERT = false;
+        public static final Neutral PIVOT_NEUTRAL_MODE = Neutral.BRAKE;
+        public static final StatusFrames PIVOT_STATUS_FRAME = StatusFrames.POSITION;
+
+        public static final double PIVOT_POSITION_MIN = 0;
+        public static final double PIVOT_POSITION_MAX = 1;
+        public static final double PIVOT_TOLERANCE = 0.01;
+
+        public static final int ROLLER_LEADER_ID = 41;
+
+        public static final double ROLLER_GEAR_RATIO = 1;
+        public static final double ROLLER_SAMPLE_PER_MINUTE = 60;
+        public static final int ROLLER_STATOR_CURRENT_LIMIT = 40;
+        public static final boolean ROLLER_INVERT = false;
+        public static final Neutral ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
+        public static final StatusFrames ROLLER_STATUS_FRAME = StatusFrames.POSITION;
+
+        public static final double ROLLER_pose_MIN = 0;
+        public static final double ROLLER_pose_MAX = 1;
+        public static final double ROLLER_TOLERANCE = 0.01;
+
+        public static final int FIRST_SENSOR_ID = 0;
+
+    }
+
+    public static class ElevatorConstants {
+
+        public static final int ELEVATOR_LEFT_ID = 30;
+        public static final int ELEVATOR_RIGHT_ID = 31;
+
+        //1/14 gear ratio based on wom
+        public static final double ELEVATOR_GEAR_RATIO = Units.inchesToMeters(62.625) / 67.5;
+        public static final double ELEVATOR_SAMPLE_PER_MINUTE = 60;
+        public static final int ELEVATOR_STATOR_CURRENT_LIMIT = 40;
+        public static final boolean ELEVATOR_INVERT = false;
+        public static final Neutral ELEVATOR_NEUTRAL_MODE = Neutral.COAST;
+        public static final StatusFrames ELEVATOR_STATUS_FRAME = StatusFrames.POSITION;
+
+        public static final double ELEVATOR_POSITION_MIN = 0;
+        public static final double ELEVATOR_POSITION_MAX = Units.inchesToMeters(62.625);
+        public static final double ELEVATOR_TOLERANCE = 0.02;
+    }
+
+    public static class ClimberConstants {
+        
+        public static final int CLIMBER_LEADER_ID = 20;
+        public static final int CLIMBER_FOLLOWER_ID = 21;
+
+        public static final double CLIMBER_GEAR_RATIO = 1;
+        public static final double CLIMBER_SAMPLE_PER_MINUTE = 60;
+        public static final int CLIMBER_STATOR_CURRENT_LIMIT = 40;
+        public static final boolean CLIMBER_INVERT = false;
+        public static final Neutral CLIMBER_NEUTRAL_MODE = Neutral.BRAKE;
+        public static final StatusFrames CLIMBER_STATUS_FRAME = StatusFrames.POSITION;
+
+        public static final double CLIMBER_POSITiON_MIN = 0;
+        public static final double CLIMBER_POSITION_MAX = 1;
+        public static final double CLIMBER_TOLERANCE = 0.01;
+
+        public static final int WINCH_SERVO_ID = 0;
+        public static final int LOCK_SERVO_ID = 1;
+    }
+
+    public static class ManipulatorConstants {
+        public static final int ROLLER_LEADER_ID = 50;
+
+        public static final double ROLLER_GEAR_RATIO = 1;
+        public static final double ROLLER_SAMPLE_PER_MINUTE = 60;
+        public static final int ROLLER_STATOR_CURRENT_LIMIT = 60;
+        public static final boolean ROLLER_INVERT = true;
+        public static final Neutral ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
+        public static final StatusFrames ROLLER_STATUS_FRAME = StatusFrames.DEFAULT;
+
+        public static final int FIRST_SENSOR_ID = 0;
+        public static final int SECOND_SENSOR_ID = 1;
+    }
+
 }

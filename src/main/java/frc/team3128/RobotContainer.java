@@ -6,6 +6,7 @@ import common.hardware.input.NAR_XboxController.XboxButton;
 import common.hardware.limelight.Limelight;
 import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_TalonFX;
+import common.hardware.motorcontroller.NAR_Motor.Neutral;
 
 import static common.hardware.input.NAR_XboxController.XboxButton.*;
 
@@ -14,17 +15,28 @@ import common.hardware.input.NAR_ButtonBoard;
 import common.utility.Log;
 import common.utility.narwhaldashboard.NarwhalDashboard;
 import common.utility.shuffleboard.NAR_Shuffleboard;
+import common.utility.sysid.CmdSysId;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.team3128.Constants.DriveConstants;
+import frc.team3128.Constants.RobotConstants;
+import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Elevator.Elevator;
+import frc.team3128.subsystems.Elevator.ElevatorMechanism;
+import frc.team3128.subsystems.Manipulator.Manipulator;
+import frc.team3128.subsystems.Robot.RobotManager;
 
 import static frc.team3128.Constants.FieldConstants.*;
 import static frc.team3128.Constants.FieldConstants.*;
 import static frc.team3128.Constants.VisionConstants.*;
+import static frc.team3128.subsystems.Robot.RobotStates.*;
 
 /**
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -35,7 +47,12 @@ import static frc.team3128.Constants.VisionConstants.*;
 @SuppressWarnings("unused")
 public class RobotContainer {
 
+    public static final boolean printStatus = true;
+
     // Create all subsystems
+    private RobotManager robot;
+    private Elevator elevator;
+    private Manipulator manipulator;
     private Swerve swerve;
 
     // private NAR_ButtonBoard judgePad;
@@ -58,14 +75,19 @@ public class RobotContainer {
 
         NAR_Shuffleboard.WINDOW_WIDTH = 10;
 
-        // judgePad = new NAR_ButtonBoard(1);
+        buttonPad = new NAR_ButtonBoard(1);
         controller = new NAR_XboxController(2);
         controller2 = new NAR_XboxController(3);
         
-        swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX,controller::getLeftY, controller::getRightX);
+        swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
+        CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
+
+        robot = RobotManager.getInstance();
+        elevator = Elevator.getInstance();
+        manipulator = Manipulator.getInstance();
 
         //uncomment line below to enable driving
-        CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
+        // CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
         
         DriverStation.silenceJoystickConnectionWarning(true);
         initCameras();
@@ -74,9 +96,47 @@ public class RobotContainer {
     }   
 
     private void configureButtonBindings() {
-        controller.getButton(XboxButton.kB).onTrue(runOnce(()->swerve.resetGyro(0)));
-        controller.getButton(XboxButton.kA).onTrue(runOnce(()->swerve.resetEncoders()));
-        controller.getButton(XboxButton.kY).onTrue(swerve.characterize(1, 1).beforeStarting(runOnce(()->swerve.zeroLock())));
+        buttonPad.getButton(1).whileTrue(runOnce(()-> swerve.setBrakeMode(false))).onFalse(runOnce(()-> swerve.setBrakeMode(true)));
+        buttonPad.getButton(2).whileTrue(runOnce(()-> elevator.setNeutralMode(Neutral.COAST))).onFalse(runOnce(()-> elevator.setNeutralMode(Neutral.BRAKE)));
+
+
+
+        // controller2.getButton(kLeftTrigger).onTrue(elevator.characterization(1, 0.1));
+        // controller2.getButton(kLeftBumper).onTrue(elevator.characterization(1, 0.5));
+        controller.getButton(kA).onTrue(robot.getCoralState(RPL1, RSL1));
+        controller.getButton(kB).onTrue(robot.getCoralState(RPL2, RSL2));
+        controller.getButton(kX).onTrue(robot.getCoralState(RPL3, RSL3));
+        controller.getButton(kY).onTrue(robot.getCoralState(RPL4, RSL4));
+
+        controller.getButton(kLeftTrigger).onTrue(robot.getAlgaeState(INTAKE));
+        controller.getButton(kLeftBumper).onTrue(robot.getAlgaeState(EJECT_OUTTAKE));
+        controller.getButton(kBack).onTrue(robot.getAlgaeState(PROCESSOR_PRIME, PROCESSOR_OUTTAKE));
+
+        controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
+        controller.getButton(kRightBumper).onTrue(robot.getClimbState());
+        controller.getButton(kStart).onTrue(
+            either(
+                robot.setStateCommand(CLIMB_WINCH), 
+                either(
+                    robot.setStateCommand(INDEXING), 
+                    robot.setStateCommand(SOURCE).onlyIf(() -> !Manipulator.getInstance().hasObjectPresent()), 
+                    ()-> robot.stateEquals(SOURCE)), 
+                ()-> robot.stateEquals(CLIMB_LOCK))
+        );
+
+        controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
+        controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetEncoders()));
+
+        // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
+        // controller.getDownPOVButton().onTrue(runOnce(()-> swerve.setPose(FieldStates.PROCESSOR.getPose2d())));
+        // controller.getRightPOVButton().onTrue(runOnce(()-> swerve.snapToReef(true)));
+        // controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.snapToReef(false)));
+
+        // controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.snapToAngle()));
+        // controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
+
+        new Trigger(()-> robot.stateEquals(INDEXING)).and(()-> Manipulator.getInstance().hasObjectPresent()).onTrue(robot.setStateCommand(NEUTRAL));
+        new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL, IDLE, SOURCE)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow));
     }
 
     public void initCameras() {
