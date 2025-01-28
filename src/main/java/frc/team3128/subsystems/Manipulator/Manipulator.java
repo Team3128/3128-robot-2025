@@ -2,6 +2,8 @@ package frc.team3128.subsystems.Manipulator;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
+import common.doglog.DogLog;
+
 import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.subsystems.Manipulator.ManipulatorStates.*;
@@ -33,7 +35,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 
         //ALL STATES -> IDLE
 		transitionMap.addConvergingTransition(IDLE, sequence(
-                roller.stop(),
+                roller.stopCommand(),
                 runOnce(()-> setNeutralMode(COAST))
         ));
 
@@ -61,5 +63,10 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 
     public boolean hasObjectPresent() {
         return roller.hasObjectPresent();
+    }
+
+    public void dogLogPeriodic(){
+        DogLog.log("Manipulator State", getState());
+        DogLog.log(getName() + "hasObjectPresent", hasObjectPresent());
     }
 }

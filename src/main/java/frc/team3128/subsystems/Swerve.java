@@ -18,6 +18,7 @@ import common.core.swerve.SwerveModule;
 import common.core.swerve.SwerveModuleConfig;
 import common.core.swerve.SwerveModuleConfig.SwerveEncoderConfig;
 import common.core.swerve.SwerveModuleConfig.SwerveMotorConfig;
+import common.doglog.DogLog;
 import common.hardware.motorcontroller.NAR_Motor;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
@@ -37,6 +38,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.Constants.FieldConstants.*;
 import static frc.team3128.Constants.FieldConstants.FieldStates.*;
@@ -300,6 +302,17 @@ public class Swerve extends SwerveBase {
             true, 
             this
         );
+        
+    }
+    public void dogLogPeriodic(){
+        for(int i = 0; i < 4; i++){
+            DogLog.log("State Mod " + i, modules[i].getState());
+            DogLog.log("Drive Motor Current " + i, modules[i].getDriveMotor().getStallCurrent());
+            DogLog.log("Angle Motor Current " + i, modules[i].getAngleMotor().getStallCurrent());
+            DogLog.log("Running State Mod " + i, modules[i].getRunningState());
+        }
+        DogLog.log("Speed", getSpeed());
+        DogLog.log("Pose", getPose());
     }
 
 }

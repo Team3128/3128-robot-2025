@@ -2,9 +2,10 @@ package frc.team3128.subsystems.Climber;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
+import common.core.misc.NAR_Robot;
+import common.doglog.DogLog;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.team3128.subsystems.Intake.IntakeStates;
 
 import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
@@ -35,6 +36,7 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
         addSubsystem(winch);
         registerTransitions();
         System.out.println(transitionMap);
+        NAR_Robot.addPeriodic(() -> dogLogPeriodic(), 0.02);
     }
 
     public static synchronized Climber getInstance() {
@@ -77,6 +79,8 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
         transitionMap.addTransition(CLIMB_LOCKED, CLIMB_PRIME, transitioner.apply(CLIMB_PRIME));
 
 	}
-
+    public void dogLogPeriodic(){
+        DogLog.log("Climber State", getState());
+    }
 
 }

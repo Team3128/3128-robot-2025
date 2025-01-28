@@ -3,6 +3,7 @@ package frc.team3128.subsystems.Climber;
 import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.core.subsystems.PositionSubsystemBase;
+import common.doglog.DogLog;
 import common.hardware.motorcontroller.NAR_TalonFX;
 import edu.wpi.first.wpilibj.PWM;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
@@ -41,4 +42,15 @@ public class WinchMechanism extends PositionSubsystemBase {
        controller.configureFeedback(leader);
        controller.setTolerance(CLIMBER_TOLERANCE);
     }   
+    
+    public void dogLogPeriodic(){
+        DogLog.log(getName() + "Velocity", leader.getVelocity());
+        DogLog.log(getName() + "Motor" , leader.getMotor());
+        DogLog.log(getName() + "Position", leader.getPosition());
+        DogLog.log(getName() + "StallCurrent", leader.getStallCurrent());
+        DogLog.log(getName() + "State", leader.getState());
+        DogLog.log(getName() + "Temperature", leader.getTemperature());
+        DogLog.log(getName() + "At setpoint", controller.atSetpoint());
+        DogLog.log(getName() + "Measurement", controller.getMeasurement());
+    }
 }

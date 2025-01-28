@@ -3,9 +3,9 @@ package frc.team3128.subsystems.Intake;
 import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
-
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
+import common.doglog.DogLog;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
 
 import static frc.team3128.subsystems.Intake.IntakeStates.*;
@@ -23,7 +23,7 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
         return sequence(
             setNeutralMode.apply(BRAKE),
             pivot.pidTo(state.getAngle()),
-            roller.run(state.getPower())
+            roller.runCommand(state.getPower())
         );
     };
 
@@ -55,8 +55,8 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
 		transitionMap.addConvergingTransition(
             IDLE,
             sequence(
-                pivot.stop(),
-                roller.stop(),
+                pivot.stopCommand(),
+                roller.stopCommand(),
                 runOnce(()->pivot.setNeutralMode(COAST)),
                 runOnce(()->roller.setNeutralMode(COAST))
             )
@@ -119,4 +119,8 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
         );
         
 	}
+    public void dogLogPeriodic(){
+        DogLog.log("Intake State", getState());
+        DogLog.log(getName() + "hasObjectPresent", hasObjectPresent());
+    }
 }

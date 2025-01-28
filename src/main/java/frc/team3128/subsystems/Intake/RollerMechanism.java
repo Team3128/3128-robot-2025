@@ -1,6 +1,7 @@
 package frc.team3128.subsystems.Intake;
 
 import common.core.subsystems.VoltageSubsystemBase;
+import common.doglog.DogLog;
 import common.hardware.motorcontroller.NAR_TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,12 +38,28 @@ public class RollerMechanism extends VoltageSubsystemBase {
     }
 
 	@Override
-	public Command reset() {
-        return null;
-	}
-
-	@Override
 	public void initShuffleboard() {
         
 	}
+
+    @Override
+    public void reset() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'reset'");
+    }
+
+    @Override
+    public Command resetCommand() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'resetCommand'");
+    }
+    public void dogLogPeriodic(){
+        DogLog.log(getName() + "Velocity", leader.getVelocity());
+        DogLog.log(getName() + "Motor" , leader.getMotor());
+        DogLog.log(getName() + "Position", leader.getPosition());
+        DogLog.log(getName() + "StallCurrent", leader.getStallCurrent());
+        DogLog.log(getName() + "State", leader.getState());
+        DogLog.log(getName() + "Temperature", leader.getTemperature());
+    }
+    
 }
