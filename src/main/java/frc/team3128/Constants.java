@@ -1,5 +1,7 @@
 package frc.team3128;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -356,9 +358,9 @@ public class Constants {
         }
 
         public static Translation2d adjustControllerInputs(Translation2d translation, boolean fieldRelative) {
-            Rotation2d rotation = Rotation2d.fromDegrees(-90);
+            Rotation2d rotation = Rotation2d.fromDegrees(DriveConstants.controllerPOVOffset);
             if(Robot.getAlliance() == Alliance.Red || !fieldRelative) {
-                rotation.unaryMinus();
+                rotation = Rotation2d.fromDegrees(DriveConstants.controllerPOVOffset * -1);
             }
             return translation.rotateBy(rotation);
         }

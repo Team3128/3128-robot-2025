@@ -117,35 +117,35 @@ public class Robot extends NAR_Robot {
         Swerve.getInstance().resetEncoders();
     }
 
-    @Override
-    public void teleopPeriodic() {
-        CommandScheduler.getInstance().run();
-    }
+    // @Override
+    // public void teleopPeriodic() {
+    //     CommandScheduler.getInstance().run();
+    // }
 
-    @Override
-    public void simulationInit() {
+    // @Override
+    // public void simulationInit() {
         
-    }
+    // }
 
-    @Override
-    public void simulationPeriodic() {
-        CommandScheduler.getInstance().run();
-    }
+    // @Override
+    // public void simulationPeriodic() {
+    //     CommandScheduler.getInstance().run();
+    // }
 
-    @Override
-    public void disabledInit() {
-        CommandScheduler.getInstance().cancelAll();
-        hasInitialized = true;
-        Swerve.getInstance().setBrakeMode(false);
-    }
+    // @Override
+    // public void disabledInit() {
+    //     CommandScheduler.getInstance().cancelAll();
+    //     hasInitialized = true;
+    //     Swerve.getInstance().setBrakeMode(false);
+    // }
 
-    @Override
-    public void disabledExit() {
-        Swerve.getInstance().setBrakeMode(true);
-    }
+    // @Override
+    // public void disabledExit() {
+    //     Swerve.getInstance().setBrakeMode(true);
+    // }
     
-    @Override
-    public void disabledPeriodic() {
-        CommandScheduler.getInstance().run();
-    }
+    // @Override
+    // public void disabledPeriodic() {
+    //     CommandScheduler.getInstance().run();
+    // }
 }

@@ -218,6 +218,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             updateSubsystemStates(CLIMB_WINCH)
         );
 
+        transitionMap.addTransition(NEUTRAL, SOURCE, updateSubsystemStates(SOURCE));
+        transitionMap.addTransition(SOURCE, NEUTRAL, updateSubsystemStates(NEUTRAL));
 
     }
 }

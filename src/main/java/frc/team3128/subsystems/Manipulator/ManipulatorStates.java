@@ -3,7 +3,7 @@ package frc.team3128.subsystems.Manipulator;
 public enum ManipulatorStates {
     IDLE,
     NEUTRAL,
-    FORWARD(0.5),
+    FORWARD(0.3),
     REVERSE(-0.5);
 
     private double power;
