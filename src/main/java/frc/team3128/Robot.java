@@ -13,6 +13,7 @@ import static common.utility.Log.Type.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3128.subsystems.Swerve;
@@ -82,10 +83,10 @@ public class Robot extends NAR_Robot {
     public void autonomousInit() {
         CommandScheduler.getInstance().cancelAll();
         Camera.enableAll();
-        Command m_autonomousCommand = AutoPrograms.getInstance().getAutonomousCommand();
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.schedule();
-        }
+        // Command m_autonomousCommand = AutoPrograms.getInstance().getAutonomousCommand();
+        // if (m_autonomousCommand != null) {
+        //     m_autonomousCommand.schedule();
+        // }
     }
 
     @Override

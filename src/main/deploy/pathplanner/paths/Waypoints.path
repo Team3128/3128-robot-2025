@@ -231,9 +231,25 @@
         "x": 1.3622626681287748,
         "y": 1.9821706659653602
       },
-      "nextControl": null,
+      "nextControl": {
+        "x": 1.037737331871225,
+        "y": 0.01782933403463982
+      },
       "isLocked": false,
       "linkedName": "CORAL_2"
+    },
+    {
+      "anchor": {
+        "x": 11.58,
+        "y": 3.7
+      },
+      "prevControl": {
+        "x": 6.968485143208341,
+        "y": 0.3128564283809565
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -303,7 +319,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -125.00000000000001
+    "rotation": 142.6
   },
   "reversed": false,
   "folder": null,

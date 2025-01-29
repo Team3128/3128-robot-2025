@@ -79,7 +79,7 @@ public class Constants {
 
     public static class DriveConstants {
 
-        public static final double controllerPOVOffset = -90;
+        public static final double controllerPOVOffset = 90;
 
         public static final double driveMotorGearRatio = 0;
         public static final double angleMotorGearRatio = 150 / 7; 
@@ -528,5 +528,4 @@ public class Constants {
         public static final int FIRST_SENSOR_ID = 0;
         public static final int SECOND_SENSOR_ID = 1;
     }
-
 }
