@@ -173,10 +173,6 @@ public class Swerve extends SwerveBase {
 
         if((velocity.omegaRadiansPerSecond < ROTATIONAL_DEADBAND || DriverStation.isAutonomous()) && rotationController.isEnabled())
             velocity.omegaRadiansPerSecond = -rotationController.calculate(getPose().getRotation().getRadians(), rotationSetpointSupplier.get().getRadians());
-        NAR_Shuffleboard.addData("Translation Controller", "Error", ()-> getPose().getTranslation().minus(translationSetpoint).toString(), 0, 0);
-        NAR_Shuffleboard.addData("Translation Controller", "Output X", ()-> velocity.vxMetersPerSecond, 0, 1);
-        NAR_Shuffleboard.addData("Translation Controller", "Output Y", ()-> velocity.vyMetersPerSecond, 0, 2);
-
         
         assign(velocity);
         if(translationController.isEnabled() && translationController.atSetpoint()) translationController.disable();
@@ -279,7 +275,6 @@ public class Swerve extends SwerveBase {
     @Override
     public void initShuffleboard(){
         super.initShuffleboard();
-        NAR_Shuffleboard.addData("Rotation Controller", "Measurement", ()-> getGyroRotation2d().getRadians(), 1, 0);
     }
 
     @Override

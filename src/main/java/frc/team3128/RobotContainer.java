@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.team3128.Constants.DriveConstants;
+import frc.team3128.Constants.RobotConstants;
 import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Elevator.Elevator;
@@ -99,7 +101,6 @@ public class RobotContainer {
     }   
 
     private void configureButtonBindings() {
-        controller.initShuffleboard();
         buttonPad.getButton(1).whileTrue(runOnce(()-> swerve.setBrakeMode(false))).onFalse(runOnce(()-> swerve.setBrakeMode(true)));
         buttonPad.getButton(2).whileTrue(runOnce(()-> elevator.setNeutralMode(Neutral.COAST))).onFalse(runOnce(()-> elevator.setNeutralMode(Neutral.BRAKE)));
 
@@ -154,6 +155,7 @@ public class RobotContainer {
         // controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
 
         new Trigger(()-> robot.stateEquals(INDEXING)).and(()-> Manipulator.getInstance().hasObjectPresent()).onTrue(robot.setStateCommand(NEUTRAL));
+        new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL, IDLE, SOURCE)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow));
     }
 
     public void initCameras() {

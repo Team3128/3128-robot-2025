@@ -11,11 +11,8 @@ import common.hardware.camera.Camera;
 import common.utility.Log;
 import static common.utility.Log.Type.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3128.subsystems.Swerve;
@@ -24,7 +21,6 @@ import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
-import static frc.team3128.subsystems.Robot.RobotStates.NEUTRAL;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to

@@ -20,10 +20,16 @@
       "/Shuffleboard/Commands/Shooter": "Subsystem",
       "/Shuffleboard/Commands/Swerve Commands": "Subsystem",
       "/Shuffleboard/Elevator/PID_Controller": "PIDController",
+      "/Shuffleboard/ElevatorMechanism/Characterize": "Command",
+      "/Shuffleboard/ElevatorMechanism/Enable": "Command",
       "/Shuffleboard/ElevatorMechanism/PID_Controller": "PIDController",
+      "/Shuffleboard/ElevatorMechanism/Reset": "Command",
+      "/Shuffleboard/ElevatorMechanism/Run Volts": "Command",
       "/Shuffleboard/IntakePivot/PID_Controller": "ProfiledPIDController",
       "/Shuffleboard/Shooter/PID_Controller": "PIDController",
       "/Shuffleboard/Shooter/rightController": "PIDController",
+      "/Shuffleboard/Swerve/Identify Offsets": "Command",
+      "/Shuffleboard/Swerve/Reset Gyro": "Command",
       "/SmartDashboard/Alerts": "Alerts",
       "/SmartDashboard/Auto Chooser": "String Chooser"
     }
