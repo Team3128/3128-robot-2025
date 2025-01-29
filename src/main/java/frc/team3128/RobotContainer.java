@@ -2,6 +2,7 @@ package frc.team3128;
 
 
 import common.hardware.input.NAR_XboxController;
+import common.hardware.input.NAR_XboxController.XboxButton;
 import common.hardware.limelight.Limelight;
 import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_TalonFX;
@@ -23,6 +24,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.Constants.DriveConstants;
 import frc.team3128.Constants.RobotConstants;
 import frc.team3128.Constants.FieldConstants.FieldStates;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
@@ -59,6 +64,7 @@ public class RobotContainer {
     private RobotManager robot;
     private ElevatorMechanism elevator;
     private Manipulator manipulator;
+    private Swerve swerve;
 
     // private NAR_ButtonBoard judgePad;
     private NAR_ButtonBoard buttonPad;
@@ -67,7 +73,6 @@ public class RobotContainer {
     public static NAR_XboxController controller2;
 
     private NarwhalDashboard dashboard;
-    private Swerve swerve;
     private final Command swerveDriveCommand;
 
     public static Limelight limelight;
@@ -165,6 +170,9 @@ public class RobotContainer {
     }
 
     public void initDashboard() {
-
+        dashboard = NarwhalDashboard.getInstance();
+        dashboard.addUpdate("robotX", ()-> swerve.getPose().getX());
+        dashboard.addUpdate("robotY", ()-> swerve.getPose().getY());
+        dashboard.addUpdate("robotYaw", ()-> swerve.getPose().getRotation().getDegrees());
     }
 }

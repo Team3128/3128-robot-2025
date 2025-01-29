@@ -78,7 +78,7 @@ public class Constants {
         public static final double controllerPOVOffset = -90;
 
         public static final double driveMotorGearRatio = 0;
-        public static final double angleMotorGearRatio = 0; 
+        public static final double angleMotorGearRatio = 150 / 7; 
 
         // public static final var kinematics = null; 
 
@@ -175,7 +175,7 @@ public class Constants {
 
         /* Drivetrain Constants */
         public static final double ROBOT_MASS = 35.210; //kg
-        public static final double ROBOT_MOI = 3.385; //kg m^2 mass * (trackWidth / 2) * (Ka angular / Ka linear)
+        public static final double ROBOT_MOI = 3.6576; //kg m^2 mass * (trackWidth / 2) * (Ka angular / Ka linear)
         public static final double WHEEL_COF = 1.43;
         public static final double DRIVE_BUMPER_LENGTH = Units.inchesToMeters(5);
         public static final double DRIVE_TRACK_WIDTH = Units.inchesToMeters(20.75); //Hand measure later
@@ -187,7 +187,7 @@ public class Constants {
         public static final double closedLoopRamp = 0.0;
 
         public static final double DRIVE_MOTOR_GEAR_RATIO = 225.0 / 42.0;
-        public static final double DRIVE_ANGLE_GEAR_RATIO = (150.0 / 7.0); 
+        public static final double DRIVE_ANGLE_GEAR_RATIO = (150.0 / 7.0); // 300.0 / 13.0
 
         /* Swerve Current Limiting */
         public static final int DRIVE_ANGLE_CURRENT_LIMIT = 30; //30
@@ -207,9 +207,9 @@ public class Constants {
         public static final double DRIVE_MOTOR_KF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double DRIVE_MOTOR_KS = 0.19057;//0.60094; // 0.19225;
-        public static final double DRIVE_MOTOR_KV = 2.01208;//1.1559;  // 2.4366
-        public static final double DRIVE_MOTOR_KA = 0.09043; //0.12348; // 0.34415
+        public static final double DRIVE_MOTOR_KS = 0.13023; //0.19057;//0.60094; // 0.19225;
+        public static final double DRIVE_MOTOR_KV = 1.92348; //2.01208;//1.1559;  // 2.4366
+        public static final double DRIVE_MOTOR_KA = 0.10274; //0.09043; //0.12348; // 0.34415
 
         /* Swerve Profiling Values */
         // Theoretical: v = 4.96824, omega = 11.5
