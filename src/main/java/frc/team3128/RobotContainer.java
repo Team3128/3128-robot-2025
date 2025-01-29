@@ -2,6 +2,7 @@ package frc.team3128;
 
 
 import common.hardware.input.NAR_XboxController;
+import common.hardware.input.NAR_XboxController.XboxButton;
 import common.hardware.limelight.Limelight;
 import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_TalonFX;
@@ -9,7 +10,9 @@ import common.hardware.motorcontroller.NAR_Motor.Neutral;
 
 import static common.hardware.input.NAR_XboxController.XboxButton.*;
 
+import common.hardware.camera.Camera;
 import common.hardware.input.NAR_ButtonBoard;
+import common.utility.Log;
 import common.utility.narwhaldashboard.NarwhalDashboard;
 import common.utility.shuffleboard.NAR_Shuffleboard;
 import common.utility.sysid.CmdSysId;
@@ -23,6 +26,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.Constants.DriveConstants;
 import frc.team3128.Constants.RobotConstants;
 import frc.team3128.Constants.FieldConstants.FieldStates;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
@@ -43,6 +52,9 @@ import javax.lang.model.element.NestingKind;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
+import static frc.team3128.Constants.FieldConstants.*;
+import static frc.team3128.Constants.FieldConstants.*;
+import static frc.team3128.Constants.VisionConstants.*;
 
 /**
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -67,10 +79,10 @@ public class RobotContainer {
     public static NAR_XboxController controller2;
 
     private NarwhalDashboard dashboard;
-    private Swerve swerve;
     private final Command swerveDriveCommand;
 
     public static Limelight limelight;
+
 
     public RobotContainer() {
         swerve = Swerve.getInstance();
@@ -165,6 +177,9 @@ public class RobotContainer {
     }
 
     public void initDashboard() {
-
+        dashboard = NarwhalDashboard.getInstance();
+        dashboard.addUpdate("robotX", ()-> swerve.getPose().getX());
+        dashboard.addUpdate("robotY", ()-> swerve.getPose().getY());
+        dashboard.addUpdate("robotYaw", ()-> swerve.getPose().getRotation().getDegrees());
     }
 }

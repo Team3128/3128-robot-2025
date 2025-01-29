@@ -279,7 +279,7 @@ public class Swerve extends SwerveBase {
 
     @Override
     public void resetGyro(double reset) {
-        gyro.setYaw(flipRotation(reset).getDegrees());
+        gyro.setYaw(reset);
     }
 
     public Command characterize(double startDelay, double rampRate, double targetPosition) {
