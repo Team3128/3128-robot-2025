@@ -186,9 +186,9 @@ public class RobotContainer {
     }
 
     public void initDashboard() {
-        // dashboard = NarwhalDashboard.getInstance();
-        // dashboard.addUpdate("robotX", ()-> swerve.getPose().getX());
-        // dashboard.addUpdate("robotY", ()-> swerve.getPose().getY());
-        // dashboard.addUpdate("robotYaw", ()-> swerve.getPose().getRotation().getDegrees());
+        dashboard = NarwhalDashboard.getInstance();
+        dashboard.addUpdate("robotX", ()-> swerve.getPose().getX());
+        dashboard.addUpdate("robotY", ()-> swerve.getPose().getY());
+        dashboard.addUpdate("robotYaw", ()-> swerve.getPose().getRotation().getDegrees());
     }
 }
