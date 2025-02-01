@@ -50,32 +50,32 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 	@Override
 	public void registerTransitions() {
 
-        //ALL STATES -> IDLE
-        transitionMap.addConvergingTransition(
-            IDLE,
-            sequence(
-            runOnce(()-> setNeutralMode(COAST))//,
-            // runOnce(()-> winch.stop())
-        )
-        );
+        // //ALL STATES -> IDLE
+        // transitionMap.addConvergingTransition(
+        //     IDLE,
+        //     sequence(
+        //     runOnce(()-> setNeutralMode(COAST))//,
+        //     // runOnce(()-> winch.stop())
+        // )
+        // );
 
-        //IDLE, PRIME, LOCKED -> NEUTRAL
-        transitionMap.addConvergingTransitions(
-            transitioner.apply(NEUTRAL), 
-            NEUTRAL, 
-            IDLE, CLIMB_PRIME, CLIMB_LOCKED
-        );
+        // //IDLE, PRIME, LOCKED -> NEUTRAL
+        // transitionMap.addConvergingTransitions(
+        //     transitioner.apply(NEUTRAL), 
+        //     NEUTRAL, 
+        //     IDLE, CLIMB_PRIME, CLIMB_LOCKED
+        // );
 
-        //NEUTRAL -> PRIME
-        transitionMap.addTransition(NEUTRAL, CLIMB_PRIME, transitioner.apply(CLIMB_PRIME));
+        // //NEUTRAL -> PRIME
+        // transitionMap.addTransition(NEUTRAL, CLIMB_PRIME, transitioner.apply(CLIMB_PRIME));
 
-        //PRIME -> LOCKED
-        transitionMap.addTransition(CLIMB_PRIME, CLIMB_LOCKED, transitioner.apply(CLIMB_LOCKED));
+        // //PRIME -> LOCKED
+        // transitionMap.addTransition(CLIMB_PRIME, CLIMB_LOCKED, transitioner.apply(CLIMB_LOCKED));
 
-        //LOCKED -> WINCH
-        transitionMap.addTransition(CLIMB_LOCKED, CLIMB_WINCH, transitioner.apply(CLIMB_WINCH));
+        // //LOCKED -> WINCH
+        // transitionMap.addTransition(CLIMB_LOCKED, CLIMB_WINCH, transitioner.apply(CLIMB_WINCH));
 
-        //WINCH -> PRIME
-        transitionMap.addTransition(CLIMB_LOCKED, CLIMB_PRIME, transitioner.apply(CLIMB_PRIME));
+        // //WINCH -> PRIME
+        // transitionMap.addTransition(CLIMB_LOCKED, CLIMB_PRIME, transitioner.apply(CLIMB_PRIME));
 	}
 }

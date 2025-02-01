@@ -1,14 +1,16 @@
 package frc.team3128.subsystems.Manipulator;
 
+import io.vavr.collection.List;
+
 public enum ManipulatorStates {
     IDLE,
     NEUTRAL,
-    FORWARD(0.3),
-    REVERSE(-0.5);
+    IN(0.3),
+    OUT(-0.5);
 
     private double power;
 
-    public static ManipulatorStates[] functionalStates = {NEUTRAL, FORWARD, REVERSE};
+    public static final List<ManipulatorStates> functionalStates = List.of(NEUTRAL, IN, OUT);
 
     private ManipulatorStates(double power) {
         this.power = power;

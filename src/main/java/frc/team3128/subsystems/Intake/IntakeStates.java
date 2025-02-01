@@ -1,5 +1,8 @@
 package frc.team3128.subsystems.Intake;
 
+import frc.team3128.subsystems.Robot.RobotStates;
+import io.vavr.collection.List;
+
 public enum IntakeStates {
     IDLE,
     NEUTRAL(90),
@@ -8,8 +11,13 @@ public enum IntakeStates {
     PROCESSOR_PRIME(999),
     PROCESSOR_OUTTAKE(999, 999),
     CLIMB_PRIME(999),
-    CLIMB_LOCKED(999),
-    CLIMB(666);
+    CLIMB_LOCK(999),
+    CLIMB_WINCH(666);
+
+    public static final List<IntakeStates> defaultIntakeStates = List.of(INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME);
+    public static final List<IntakeStates> exclusiveIntakeStates = List.of(PROCESSOR_PRIME);
+    public static final List<IntakeStates> defaultClimbStates = List.of(CLIMB_PRIME);
+    public static final List<IntakeStates> exclusiveClimbStates = List.of(CLIMB_LOCK, CLIMB_WINCH);
 
     private double angle;
     private double power;

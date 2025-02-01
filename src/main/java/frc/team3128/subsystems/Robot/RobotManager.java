@@ -11,12 +11,14 @@ import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Intake.IntakeStates;
 import frc.team3128.subsystems.Manipulator.Manipulator;
+import io.vavr.collection.List;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.RobotContainer.printStatus;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.Function;
 
 public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static RobotManager instance;
@@ -26,6 +28,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static Climber climber;
 
     private static TransitionMap<RobotStates> transitionMap = new TransitionMap<>(RobotStates.class);
+    private Function<RobotStates, Command> defaultTransitioner = state -> {return updateSubsystemStates(state);};
 
     private static boolean hasObjectPresent;
 
@@ -58,7 +61,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     public Command getCoralState(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition) {
         return either(
-            setStateCommand(exclusiveState).andThen(runOnce(()-> hasObjectPresent = manipulator.hasObjectPresent()))
+            setStateCommand(exclusiveState)
             // .until(()-> manipulator.hasObjectPresent() != hasObjectPresent)
             .andThen(waitSeconds(1))
             .andThen(setStateCommand(NEUTRAL)),
@@ -72,10 +75,9 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     }
 
     public Command getAlgaeState(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition) {
-        boolean initialIntakeState = Intake.getInstance().hasObjectPresent();
         return either(
             setStateCommand(exclusiveState)
-            .until(()-> !initialIntakeState)
+            .withTimeout(1)
             .andThen(setStateCommand(NEUTRAL)),
             setStateCommand(defaultState),
             condition
@@ -108,118 +110,27 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     @Override
     public void registerTransitions() {
-        transitionMap.addConvergingTransition(
-            IDLE,
-            updateSubsystemStates(IDLE)
-        );
-        // transitionMap.addTransition(
-        //     IDLE,
-        //     NEUTRAL,
-        //     runOnce(() -> WinchMechanism.leader.setPercentOutput(0)).andThen(print("NEUTRAL->IDLE"))
-        // );
+        
+        // From all transitions to Idle
+        transitionMap.addConvergingTransition(IDLE, defaultTransitioner);
 
-        transitionMap.applyCommutativeFunction(
-            state -> sequence(
-                updateSubsystemStates(state),
-                print("Transitioning to state: " + state)
-            ), 
-            reefPrimeStates
-        );
+        // From Idle to Neutral
+        transitionMap.addTransition(IDLE, NEUTRAL, defaultTransitioner);
 
-        transitionMap.addTransition(
-            RPL1,
-            RSL1,
-            updateSubsystemStates(RSL1)
-        );
-        transitionMap.addTransition(
-            RPL2,
-            RSL2,
-            updateSubsystemStates(RSL2)
-        );
-        transitionMap.addTransition(
-            RPL3,
-            RSL3,
-            updateSubsystemStates(RSL3)
-        );
-        transitionMap.addTransition(
-            RPL4,
-            RSL4,
-            updateSubsystemStates(RSL4)
-        );
-        transitionMap.addConvergingTransitions(
-            updateSubsystemStates(RPL1),
-            RPL1,
-            RSL2, RSL3, RSL4, NEUTRAL, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE 
-        );
-        transitionMap.addConvergingTransitions(
-            updateSubsystemStates(RPL2),
-            RPL2,
-            RSL1, RSL3, RSL4, NEUTRAL, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE 
-        );
-        transitionMap.addConvergingTransitions(
-            updateSubsystemStates(RPL3),
-            RPL3,
-            RSL1, RSL2, RSL4, NEUTRAL, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE 
-        );
-        transitionMap.addConvergingTransitions(
-            updateSubsystemStates(RPL4),
-            RPL4,
-            RSL1, RSL3, RSL2, NEUTRAL, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE 
-        );
-        transitionMap.addConvergingTransitions(
-            updateSubsystemStates(NEUTRAL),
-            NEUTRAL,
-            RPL1, RPL2, RPL3, RPL4, RSL1, RSL2, RSL3, RSL4, INDEXING, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME, PROCESSOR_OUTTAKE, CLIMB_PRIME, CLIMB_LOCK, IDLE
-        );
-        transitionMap.addCommutativeTransition(
-            SOURCE,
-            INDEXING,
-            updateSubsystemStates(INDEXING),
-            updateSubsystemStates(NEUTRAL)
-        );
-        transitionMap.addConvergingTransitions(
-            updateSubsystemStates(SOURCE),
-            SOURCE,
-            RSL1, RSL2, RSL3, RSL4, IDLE, INDEXING, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE
-        );
-        transitionMap.addConvergingTransitions(
-            updateSubsystemStates(INTAKE),
-            INTAKE,
-            RSL1, RSL2, RSL3, RSL4, IDLE, NEUTRAL, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE
-        );
-        transitionMap.addConvergingTransitions(
-            updateSubsystemStates(EJECT_OUTTAKE),
-            EJECT_OUTTAKE,
-            RSL1, RSL2, RSL3, RSL4, NEUTRAL, SOURCE, INTAKE
-        );
-        transitionMap.addConvergingTransitions(
-            updateSubsystemStates(PROCESSOR_PRIME),
-            PROCESSOR_PRIME,
-            RSL1, RSL2, RSL3, RSL4, NEUTRAL, SOURCE, INTAKE
-        );
-        transitionMap.addTransition(
-            PROCESSOR_PRIME,
-            PROCESSOR_OUTTAKE,
-            updateSubsystemStates(PROCESSOR_OUTTAKE)
-        );
-        transitionMap.addConvergingTransitions(
-            updateSubsystemStates(CLIMB_PRIME),
-            CLIMB_PRIME,
-            RSL1, RSL2, RSL3, RSL4, NEUTRAL, SOURCE, INTAKE, EJECT_OUTTAKE, PROCESSOR_OUTTAKE, CLIMB_LOCK
-        );
-        transitionMap.addTransition(
-            CLIMB_PRIME,
-            CLIMB_LOCK,
-            updateSubsystemStates(CLIMB_LOCK)
-        );
-        transitionMap.addTransition(
-            CLIMB_LOCK,
-            CLIMB_WINCH,
-            updateSubsystemStates(CLIMB_WINCH)
-        );
+        // Between all default states
+        transitionMap.addCommutativeTransition(defaultStates.asJava(), defaultTransitioner);
 
-        transitionMap.addTransition(NEUTRAL, SOURCE, updateSubsystemStates(SOURCE));
-        transitionMap.addTransition(SOURCE, NEUTRAL, updateSubsystemStates(NEUTRAL));
+        // From reef primes to reef scores
+        transitionMap.addCorrespondenceTransitions(defaultElevatorStates.asJava(), exclusiveElevatorStates.asJava(), defaultTransitioner);
+
+        // From climb prime to climb lock and climb score
+        transitionMap.addCorrespondenceTransitions(List.fill(exclusiveClimbStates.size(), CLIMB_PRIME).asJava(), exclusiveClimbStates.asJava(), defaultTransitioner);
+
+        // From processor prime to processor outtake
+        transitionMap.addTransition(PROCESSOR_PRIME, PROCESSOR_OUTTAKE, defaultTransitioner);
+
+        // From exclusive state to Neutral
+        transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, defaultTransitioner);
 
     }
 }

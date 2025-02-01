@@ -5,30 +5,29 @@ import frc.team3128.subsystems.Climber.ClimberStates;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Intake.IntakeStates;
 import frc.team3128.subsystems.Manipulator.ManipulatorStates;
+import io.vavr.collection.List;
 
 public enum RobotStates {
     IDLE(ElevatorStates.IDLE, IntakeStates.IDLE, ManipulatorStates.IDLE),
-    NEUTRAL(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
+    NEUTRAL(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.IN),
 
-    RPL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
-    RPL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
-    RPL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL), 
-    RPL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
-    RSL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.FORWARD),
-    RSL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.FORWARD),
-    RSL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.FORWARD),
-    RSL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.FORWARD),
-    SOURCE(ElevatorStates.SOURCE, IntakeStates.NEUTRAL, ManipulatorStates.FORWARD),
+    RPL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.IN),
+    RPL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.IN),
+    RPL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.IN), 
+    RPL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.IN),
+    RSL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.OUT),
+    RSL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.OUT),
+    RSL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.OUT),
+    RSL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.OUT),
     
-    INDEXING(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.FORWARD),
     INTAKE(ElevatorStates.NEUTRAL, IntakeStates.INTAKE, ManipulatorStates.NEUTRAL),
     EJECT_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.EJECT_OUTTAKE, ManipulatorStates.NEUTRAL),
     PROCESSOR_PRIME(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_PRIME, ManipulatorStates.NEUTRAL),
     PROCESSOR_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_OUTTAKE, ManipulatorStates.NEUTRAL),
     
     CLIMB_PRIME(IntakeStates.CLIMB_PRIME, ClimberStates.CLIMB_PRIME),
-    CLIMB_LOCK(IntakeStates.CLIMB_LOCKED, ClimberStates.CLIMB_LOCKED),
-    CLIMB_WINCH(IntakeStates.CLIMB, ClimberStates.CLIMB_WINCH);
+    CLIMB_LOCK(IntakeStates.CLIMB_LOCK, ClimberStates.CLIMB_LOCKED),
+    CLIMB_WINCH(IntakeStates.CLIMB_WINCH, ClimberStates.CLIMB_WINCH);
 
     private ElevatorStates elevator;
     private IntakeStates intake;
@@ -36,9 +35,15 @@ public enum RobotStates {
     private ClimberStates climber;
     private Translation2d position;
 
-    public static RobotStates[] reefPrimeStates = {RPL1, RPL2, RPL3, RPL4};
-    public static RobotStates[] reefScoreStates = {RSL1, RSL2, RSL3, RSL4};
-    public static RobotStates[] climbStates = {CLIMB_PRIME, CLIMB_LOCK, CLIMB_WINCH};
+    public static final List<RobotStates> defaultElevatorStates = List.of(RPL1, RPL2, RPL3, RPL4);
+    public static final List<RobotStates> exclusiveElevatorStates = List.of(RSL1, RSL2, RSL3, RSL4);
+    public static final List<RobotStates> defaultIntakeStates = List.of(INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME);
+    public static final List<RobotStates> exclusiveIntakeStates = List.of(PROCESSOR_PRIME);
+    public static final List<RobotStates> defaultClimbStates = List.of(CLIMB_PRIME);
+    public static final List<RobotStates> exclusiveClimbStates = List.of(CLIMB_LOCK, CLIMB_WINCH);
+
+    public static final List<RobotStates> defaultStates = List.of(NEUTRAL).appendAll(defaultElevatorStates).appendAll(defaultIntakeStates).appendAll(defaultClimbStates);
+    public static final List<RobotStates> exclusiveStates = exclusiveElevatorStates.appendAll(exclusiveIntakeStates).appendAll(exclusiveClimbStates);
 
     private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator, ClimberStates climber, Translation2d position) {
         this.elevator = elevator;

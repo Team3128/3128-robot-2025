@@ -118,8 +118,8 @@ public class RobotContainer {
 
         controller2.getUpPOVButton().onTrue(RollerMechanism.getInstance().runCommand(0.1)).onFalse(RollerMechanism.getInstance().stopCommand());
         controller2.getDownPOVButton().onTrue(Manipulator.getInstance().runCommand(-0.1)).onFalse(Manipulator.getInstance().stopCommand());
-        controller2.getLeftPOVButton().onTrue(manipulator.setStateCommand(ManipulatorStates.FORWARD)).onFalse(manipulator.setStateCommand(ManipulatorStates.NEUTRAL));
-        controller2.getLeftPOVButton().onTrue(manipulator.setStateCommand(ManipulatorStates.REVERSE)).onFalse(manipulator.setStateCommand(ManipulatorStates.NEUTRAL));
+        controller2.getLeftPOVButton().onTrue(manipulator.setStateCommand(ManipulatorStates.IN)).onFalse(manipulator.setStateCommand(ManipulatorStates.NEUTRAL));
+        controller2.getLeftPOVButton().onTrue(manipulator.setStateCommand(ManipulatorStates.OUT)).onFalse(manipulator.setStateCommand(ManipulatorStates.NEUTRAL));
 
 
 
@@ -148,8 +148,6 @@ public class RobotContainer {
         //         ()-> robot.stateEquals(CLIMB_LOCK))
         // );
 
-        controller.getButton(kStart).onTrue(robot.setStateCommand(SOURCE)).onFalse(robot.setStateCommand(NEUTRAL));
-
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
         controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetEncoders()));
 
@@ -161,8 +159,6 @@ public class RobotContainer {
         // controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.snapToAngle()));
         // controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
 
-        new Trigger(()-> robot.stateEquals(INDEXING)).and(()-> Manipulator.getInstance().hasObjectPresent()).onTrue(robot.setStateCommand(NEUTRAL));
-        new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL, IDLE, SOURCE)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));
     }
 
     public void initCameras() {

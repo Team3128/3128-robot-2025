@@ -1,21 +1,20 @@
 package frc.team3128.subsystems.Elevator;
 
 import common.core.fsm.FSMSubsystemBase;
-import common.core.fsm.Transition;
 import common.core.fsm.TransitionMap;
-import common.utility.Log;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-
 import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.subsystems.Elevator.ElevatorStates.*;
+
+import java.util.function.Function;
 
 public class Elevator extends FSMSubsystemBase<ElevatorStates> {
     private static Elevator instance;
 
     protected ElevatorMechanism elevator;
     private static TransitionMap<ElevatorStates> transitionMap = new TransitionMap<ElevatorStates>(ElevatorStates.class);
+    private Function<ElevatorStates, Command> defaultTransitioner = state -> {return elevator.pidTo(state.getSetpoint());};
 
     public Elevator() {
         super(ElevatorStates.class, transitionMap, NEUTRAL);
@@ -37,30 +36,19 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
 
         //ALL STATES -> IDLE
 		transitionMap.addConvergingTransition(IDLE, sequence(
-                elevator.stopCommand(),
+                defaultTransitioner.apply(IDLE).until(()-> elevator.atSetpoint()),
+                stopCommand(),
                 runOnce(()-> setNeutralMode(COAST))
         ));
 
-        //NEUTRAL, SOURCE, L1, L2, L3, L4 are able to transition between each other
-        transitionMap.applyCommutativeFunction(
-            state -> {
-                return sequence(
-                    // runOnce(()-> setNeutralMode(BRAKE)),
-                    elevator.pidTo(state.getSetpoint())
-                    // elevator.run(state.getSetpoint())
-                );
-            }, 
-            functionalStates
-        );
+        transitionMap.addCommutativeTransition(functionalStates.asJava(), defaultTransitioner);
 
-        //IDLE -> NEUTRAL
         transitionMap.addTransition(
             IDLE, 
-            NEUTRAL, 
+            NEUTRAL,
             sequence(
-                    runOnce(()-> elevator.setNeutralMode(BRAKE)),
-                    elevator.pidTo(NEUTRAL.getSetpoint())
-                    // elevator.run(0)
+                runOnce(()-> setNeutralMode(BRAKE)),
+                defaultTransitioner.apply(NEUTRAL)
             )
         );
 	}

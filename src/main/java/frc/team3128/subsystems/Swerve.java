@@ -273,11 +273,6 @@ public class Swerve extends SwerveBase {
     }
 
     @Override
-    public void initShuffleboard(){
-        super.initShuffleboard();
-    }
-
-    @Override
     public void resetGyro(double reset) {
         gyro.setYaw(reset);
     }
@@ -296,5 +291,4 @@ public class Swerve extends SwerveBase {
             this
         );
     }
-
 }

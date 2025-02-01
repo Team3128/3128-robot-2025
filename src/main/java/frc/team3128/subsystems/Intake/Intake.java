@@ -4,6 +4,7 @@ import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import io.vavr.collection.List;
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.Transition;
 import common.core.fsm.TransitionMap;
@@ -21,10 +22,8 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
     // protected PivotMechanism pivot;
     // protected RollerMechanism roller;
     private static TransitionMap<IntakeStates> transitionMap = new TransitionMap<IntakeStates>(IntakeStates.class);
-    private Function<Neutral, Command> setNeutralMode = mode -> runOnce(() -> setNeutralMode(mode));
-    private Function<IntakeStates, Command> transitioner = state -> {
+    private Function<IntakeStates, Command> defaultTransitioner = state -> {
         return sequence(
-            setNeutralMode.apply(BRAKE)//,
             // pivot.pidTo(state.getAngle()),
             // roller.run(state.getPower())
         );
@@ -46,78 +45,17 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
         return instance;
     }
 
-    public boolean hasObjectPresent() {
-        return true;
-        // return roller.hasObjectPresent();
-    }
-
 	@Override
 	public void registerTransitions() {
         //ALL STATES -> IDLE
-		transitionMap.addConvergingTransition(
-            IDLE,
-            sequence(
-                // pivot.stop(),
-                // roller.stop(),
-                // runOnce(()->pivot.setNeutralMode(COAST)),
-                // runOnce(()->roller.setNeutralMode(COAST))
-            )
-        );
+		transitionMap.addConvergingTransition(IDLE, defaultTransitioner.apply(IDLE).andThen(stopCommand()).andThen(runOnce(()-> setNeutralMode(COAST))));
 
-        //IDLE, INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME, PROCESSOR_OUTTAKE, CLIMB_LOCKED, CLIMB -> NEUTRAL
-        transitionMap.addConvergingTransitions(
-            transitioner.apply(NEUTRAL),
-            NEUTRAL,
-            IDLE, INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME, PROCESSOR_OUTTAKE, CLIMB_LOCKED, CLIMB
-        );
+        transitionMap.addCommutativeTransition(defaultIntakeStates.appendAll(defaultClimbStates).asJava(), defaultTransitioner);
 
-        //NEUTRAL, PROCESSOR_OUTTAKE -> INTAKE
-        transitionMap.addConvergingTransitions(
-            transitioner.apply(INTAKE), 
-            INTAKE, 
-            NEUTRAL, PROCESSOR_OUTTAKE
-        );
+        transitionMap.addConvergingTransition(exclusiveIntakeStates.appendAll(exclusiveClimbStates).asJava(), NEUTRAL, defaultTransitioner);
 
-        // NEUTRAL, INTAKE -> EJECT_OUTTAKE
-        transitionMap.addConvergingTransitions(
-            transitioner.apply(EJECT_OUTTAKE), 
-            EJECT_OUTTAKE, 
-            NEUTRAL, PROCESSOR_OUTTAKE
-        );
+        transitionMap.addTransition(PROCESSOR_PRIME, PROCESSOR_OUTTAKE, defaultTransitioner);
 
-        // NEUTRAL -> PROCESSOR_PRIME
-        transitionMap.addTransition(
-            NEUTRAL, 
-            PROCESSOR_PRIME, 
-            transitioner.apply(PROCESSOR_PRIME)
-        );
-
-        // PROCESSOR_PRIME -> PROCESSOR_OUTTAKE
-        transitionMap.addTransition(
-            PROCESSOR_PRIME, 
-            PROCESSOR_OUTTAKE, 
-            transitioner.apply(PROCESSOR_OUTTAKE)
-        );
-
-        // NEUTRAL -> CLIMB_PRIME
-        transitionMap.addTransition(
-            NEUTRAL, 
-            CLIMB_PRIME, 
-            transitioner.apply(CLIMB_PRIME)
-        );
-
-        // CLIMB_PRIME -> CLIMB_LOCKED
-        transitionMap.addTransition(
-            CLIMB_PRIME, 
-            CLIMB_LOCKED, 
-            transitioner.apply(CLIMB_LOCKED)
-        );
-
-        // CLIMB_LOCKED -> CLIMB
-        transitionMap.addTransition(
-            CLIMB_LOCKED, 
-            CLIMB, 
-            transitioner.apply(CLIMB)
-        );
+        transitionMap.addCorrespondenceTransitions(List.fill(exclusiveClimbStates.size(), CLIMB_PRIME).asJava(), exclusiveClimbStates.asJava(), defaultTransitioner);
 	}
 }

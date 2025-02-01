@@ -1,4 +1,5 @@
 package frc.team3128.subsystems.Elevator;
+import io.vavr.collection.List;
 
 public enum ElevatorStates {
     IDLE,
@@ -11,7 +12,7 @@ public enum ElevatorStates {
 
     private double setpoint;
 
-    public static ElevatorStates[] functionalStates = {NEUTRAL, SOURCE, L1, L2, L3, L4};
+    public static final List<ElevatorStates> functionalStates = List.of(NEUTRAL, L1, L2, L3, L4);
 
     private ElevatorStates(double setpoint) {
         this.setpoint = setpoint;
