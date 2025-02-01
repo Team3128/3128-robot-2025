@@ -11,7 +11,7 @@
         "x": 6.918232651573201,
         "y": 6.723966734722103
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "RED_BARGE"
     },
     {
@@ -27,7 +27,7 @@
         "x": 7.871385543675572,
         "y": 2.011665128347129
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "BLUE_BARGE"
     },
     {
@@ -43,7 +43,7 @@
         "x": 6.579582542817907,
         "y": 4.534382823758809
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "CENTER_BARGE"
     },
     {
@@ -59,7 +59,7 @@
         "x": 5.818199223783827,
         "y": 4.678583399192574
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "REEF_1"
     },
     {
@@ -75,7 +75,7 @@
         "x": 4.680198773256282,
         "y": 5.846070021796472
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "REEF_2"
     },
     {
@@ -91,7 +91,7 @@
         "x": 2.6308553353535755,
         "y": 4.623638053972696
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "REEF_3"
     },
     {
@@ -107,7 +107,7 @@
         "x": 2.9551995472072328,
         "y": 2.1480511348763685
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "REEF_4"
     },
     {
@@ -123,7 +123,7 @@
         "x": 5.246815928036405,
         "y": 1.9850673714863873
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "REEF_5"
     },
     {
@@ -139,7 +139,7 @@
         "x": 6.524927965931056,
         "y": 3.5114634028169296
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "REEF_6"
     },
     {
@@ -155,7 +155,7 @@
         "x": 0.767737657636278,
         "y": 5.818947526674182
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "PIECE_1"
     },
     {
@@ -171,7 +171,7 @@
         "x": 2.7938619208581668,
         "y": 3.2478238072346164
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "PIECE_2"
     },
     {
@@ -187,7 +187,7 @@
         "x": 1.1277042538561708,
         "y": 2.0681172385421878
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "PIECE_3"
     },
     {
@@ -203,7 +203,7 @@
         "x": 8.772382082595039,
         "y": 7.089779930508014
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "CORAL_1"
     },
     {
