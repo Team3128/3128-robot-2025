@@ -55,10 +55,10 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         controller.getButton(XboxButton.kA)
-            .onTrue(intake.run(-0.15))
+            .onTrue(intake.run(-0.75))
             .onFalse(intake.stop());
         controller.getButton(XboxButton.kB)
-            .onTrue(intake.run(0.25))
+            .onTrue(intake.run(0.75))
             .onFalse(intake.stop());
         controller.getButton(XboxButton.kX)
             .onTrue(Commands.runOnce(()->swerve.resetGyro(0)));
