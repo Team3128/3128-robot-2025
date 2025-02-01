@@ -13,6 +13,7 @@ import static common.utility.Log.Type.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3128.subsystems.Swerve;
@@ -54,6 +55,7 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void robotInit(){
+        Camera.enableAll();
         m_robotContainer.initDashboard();
         LiveWindow.disableAllTelemetry();
         // Log.logDebug = true;
@@ -74,53 +76,36 @@ public class Robot extends NAR_Robot {
     @Override
     public void robotPeriodic(){
         CommandScheduler.getInstance().run();
+        Camera.updateAll();
     }
 
     @Override
     public void autonomousInit() {
-        // CommandScheduler.getInstance().cancelAll();
+        CommandScheduler.getInstance().cancelAll();
+        Camera.enableAll();
         // Command m_autonomousCommand = AutoPrograms.getInstance().getAutonomousCommand();
         // if (m_autonomousCommand != null) {
         //     m_autonomousCommand.schedule();
         // }
-        Commands.sequence(
-            RobotManager.getInstance().setStateCommand(RobotStates.RPL1),
-            waitSeconds(1),
-            RobotManager.getInstance().setStateCommand(RobotStates.RSL1),
-            waitSeconds(1),
-            RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL),
-            waitSeconds(1),
-            RobotManager.getInstance().setStateCommand(RobotStates.INTAKE),
-            waitSeconds(1),
-            RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL),
-            waitSeconds(1),
-            RobotManager.getInstance().setStateCommand(RobotStates.PROCESSOR_PRIME),
-            waitSeconds(1),
-            RobotManager.getInstance().setStateCommand(RobotStates.PROCESSOR_OUTTAKE),
-            waitSeconds(1),
-            RobotManager.getInstance().setStateCommand(RobotStates.INTAKE),
-            waitSeconds(1),
-            RobotManager.getInstance().setStateCommand(RobotStates.EJECT_OUTTAKE),
-            waitSeconds(1),
-            RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL)
-        ).schedule();
     }
 
     @Override
     public void autonomousPeriodic() {
         CommandScheduler.getInstance().run();
+        Camera.updateAll();
     }
 
     @Override
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
-        Swerve.getInstance().resetEncoders();
+        Camera.enableAll();
     }
 
-    // @Override
-    // public void teleopPeriodic() {
-    //     CommandScheduler.getInstance().run();
-    // }
+    @Override
+    public void teleopPeriodic() {
+        CommandScheduler.getInstance().run();
+        Camera.updateAll();
+    }
 
     // @Override
     // public void simulationInit() {
