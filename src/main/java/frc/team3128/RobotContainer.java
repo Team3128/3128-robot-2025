@@ -42,8 +42,10 @@ import frc.team3128.subsystems.Manipulator.Manipulator;
 import frc.team3128.subsystems.Manipulator.ManipulatorStates;
 import frc.team3128.subsystems.Manipulator.RollerMechanism;
 import frc.team3128.subsystems.Robot.RobotManager;
+import frc.team3128.subsystems.Robot.RobotStates;
 
 import static frc.team3128.Constants.ElevatorConstants.ELEVATOR_POSITION_MAX;
+import static frc.team3128.subsystems.Elevator.ElevatorStates.*;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 
 import java.io.IOException;
@@ -144,7 +146,7 @@ public class RobotContainer {
         controller.getButton(kLeftBumper).onTrue(robot.getAlgaeState(EJECT_OUTTAKE));
         controller.getButton(kBack).onTrue(robot.getAlgaeState(PROCESSOR_PRIME, PROCESSOR_OUTTAKE));
 
-        controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
+        controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(RobotStates.NEUTRAL));
         controller.getButton(kRightBumper).onTrue(robot.getClimbState());
         // controller.getButton(kStart).onTrue(
         //     either(
@@ -158,6 +160,8 @@ public class RobotContainer {
 
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
         controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetEncoders()));
+
+        new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
 
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
         // controller.getDownPOVButton().onTrue(runOnce(()-> swerve.setPose(FieldStates.PROCESSOR.getPose2d())));

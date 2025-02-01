@@ -121,7 +121,11 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         transitionMap.addCommutativeTransition(defaultStates.asJava(), defaultTransitioner);
 
         // From reef primes to reef scores
-        transitionMap.addCorrespondenceTransitions(defaultElevatorStates.asJava(), exclusiveElevatorStates.asJava(), defaultTransitioner);
+        // transitionMap.addCorrespondenceTransitions(defaultElevatorStates.asJava(), exclusiveElevatorStates.asJava(), defaultTransitioner);
+        transitionMap.addTransition(RPL1, RSL1, defaultTransitioner);
+        transitionMap.addTransition(RPL2, RSL2, defaultTransitioner);
+        transitionMap.addTransition(RPL3, RSL3, defaultTransitioner);
+        transitionMap.addTransition(RPL4, RSL4, defaultTransitioner);
 
         // From climb prime to climb lock and climb score
         transitionMap.addCorrespondenceTransitions(List.fill(exclusiveClimbStates.size(), CLIMB_PRIME).asJava(), exclusiveClimbStates.asJava(), defaultTransitioner);

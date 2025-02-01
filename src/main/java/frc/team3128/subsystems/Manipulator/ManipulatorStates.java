@@ -5,22 +5,22 @@ import io.vavr.collection.List;
 public enum ManipulatorStates {
     IDLE,
     NEUTRAL,
-    IN(0.3),
-    OUT(-0.5);
+    IN(2),
+    OUT(-6);
 
-    private double power;
+    private double volts;
 
     public static final List<ManipulatorStates> functionalStates = List.of(NEUTRAL, IN, OUT);
 
-    private ManipulatorStates(double power) {
-        this.power = power;
+    private ManipulatorStates(double volts) {
+        this.volts = volts;
     }
 
     private ManipulatorStates() {
-        this.power = 0;
+        this.volts = 0;
     }
 
-    public double getPower() {
-        return power;
+    public double getVolts() {
+        return volts;
     }
 }

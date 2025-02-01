@@ -521,7 +521,7 @@ public class Constants {
         public static final double ROLLER_GEAR_RATIO = 1;
         public static final double ROLLER_SAMPLE_PER_MINUTE = 60;
         public static final int ROLLER_STATOR_CURRENT_LIMIT = 60;
-        public static final boolean ROLLER_INVERT = true;
+        public static final boolean ROLLER_INVERT = false;
         public static final Neutral ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
         public static final StatusFrames ROLLER_STATUS_FRAME = StatusFrames.DEFAULT;
 

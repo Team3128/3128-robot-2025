@@ -18,7 +18,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 
     public RollerMechanism roller;
     private static TransitionMap<ManipulatorStates> transitionMap = new TransitionMap<ManipulatorStates>(ManipulatorStates.class);
-    private Function<ManipulatorStates, Command> defaultTransitioner = state -> {return runCommand(state.getPower());};
+    private Function<ManipulatorStates, Command> defaultTransitioner = state -> {return runVoltsCommand(state.getVolts());};
 
     public Manipulator() {
         super(ManipulatorStates.class, transitionMap, NEUTRAL);
@@ -41,7 +41,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 		transitionMap.addConvergingTransition(
             IDLE, 
             sequence(
-                runCommand(IDLE.getPower()),
+                runCommand(IDLE.getVolts()),
                 runOnce(()-> setNeutralMode(COAST))
             )
         );
@@ -54,7 +54,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
             IDLE, 
             NEUTRAL, 
             sequence(
-                runCommand(NEUTRAL.getPower()),
+                runCommand(NEUTRAL.getVolts()),
                 runOnce(()-> setNeutralMode(BRAKE))
             )
         );
