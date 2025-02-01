@@ -2,9 +2,10 @@ package frc.team3128.subsystems.Elevator;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
-import common.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.RobotContainer;
+import frc.team3128.subsystems.doglog.DogLog;
+
 import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.subsystems.Elevator.ElevatorStates.*;

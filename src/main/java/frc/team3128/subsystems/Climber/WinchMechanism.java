@@ -3,9 +3,9 @@ package frc.team3128.subsystems.Climber;
 import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.core.subsystems.PositionSubsystemBase;
-import common.doglog.DogLog;
 import common.hardware.motorcontroller.NAR_TalonFX;
 import edu.wpi.first.wpilibj.PWM;
+import frc.team3128.subsystems.doglog.DogLog;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import static frc.team3128.Constants.ClimberConstants.*;
 

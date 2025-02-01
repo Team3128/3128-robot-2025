@@ -2,7 +2,7 @@ package frc.team3128.subsystems.Manipulator;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
-import common.doglog.DogLog;
+import frc.team3128.subsystems.doglog.DogLog;
 
 import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;

@@ -3,9 +3,10 @@ package frc.team3128.subsystems.Elevator;
 import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.core.subsystems.PositionSubsystemBase;
-import common.doglog.DogLog;
 import common.hardware.motorcontroller.NAR_TalonFX;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
+import frc.team3128.subsystems.doglog.DogLog;
+
 import static frc.team3128.Constants.ElevatorConstants.*;
 
 public class ElevatorMechanism extends PositionSubsystemBase {

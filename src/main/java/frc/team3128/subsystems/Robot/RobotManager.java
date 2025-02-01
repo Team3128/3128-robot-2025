@@ -2,13 +2,12 @@ package frc.team3128.subsystems.Robot;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
-import common.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.subsystems.Climber.Climber;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Manipulator.Manipulator;
-
+import frc.team3128.subsystems.doglog.DogLog;
 import frc.team3128.Robot;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
@@ -23,7 +22,6 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static Manipulator manipulator;
     private static Intake intake;
     private static Climber climber;
-
     private static TransitionMap<RobotStates> transitionMap;
 
     private RobotManager() {
