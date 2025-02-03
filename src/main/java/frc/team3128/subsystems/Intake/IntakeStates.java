@@ -1,6 +1,5 @@
 package frc.team3128.subsystems.Intake;
 
-import frc.team3128.subsystems.Robot.RobotStates;
 import io.vavr.collection.List;
 
 public enum IntakeStates {

@@ -1,14 +1,9 @@
 package frc.team3128.subsystems.Climber;
 
 import common.core.fsm.FSMSubsystemBase;
-import common.core.fsm.Transition;
 import common.core.fsm.TransitionMap;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
-import common.utility.Log;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import frc.team3128.subsystems.Intake.IntakeStates;
-
 import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.subsystems.Climber.ClimberStates.*;

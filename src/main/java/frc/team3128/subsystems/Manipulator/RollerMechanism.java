@@ -2,10 +2,7 @@ package frc.team3128.subsystems.Manipulator;
 
 import common.core.subsystems.VoltageSubsystemBase;
 import common.hardware.motorcontroller.NAR_CANSpark;
-import common.hardware.motorcontroller.NAR_TalonFX;
 import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj2.command.Command;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import common.utility.shuffleboard.NAR_Shuffleboard;
 

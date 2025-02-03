@@ -1,20 +1,15 @@
 package frc.team3128.subsystems.Robot;
 
 import common.core.fsm.FSMSubsystemBase;
-import common.core.fsm.Transition;
 import common.core.fsm.TransitionMap;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3128.subsystems.Climber.Climber;
-import frc.team3128.subsystems.Climber.WinchMechanism;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Intake.Intake;
-import frc.team3128.subsystems.Intake.IntakeStates;
 import frc.team3128.subsystems.Manipulator.Manipulator;
-import io.vavr.collection.List;
-
 import static edu.wpi.first.wpilibj2.command.Commands.*;
-import static frc.team3128.RobotContainer.printStatus;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 
 import java.util.function.BooleanSupplier;
@@ -29,8 +24,6 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     private static TransitionMap<RobotStates> transitionMap = new TransitionMap<>(RobotStates.class);
     private Function<RobotStates, Command> defaultTransitioner = state -> {return updateSubsystemStates(state);};
-
-    private static boolean hasObjectPresent;
 
     private RobotManager() {
         super(RobotStates.class, transitionMap, NEUTRAL);
@@ -114,27 +107,20 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         // From all transitions to Idle
         transitionMap.addConvergingTransition(IDLE, defaultTransitioner);
 
-        // From Idle to Neutral
-        transitionMap.addTransition(IDLE,  NEUTRAL, defaultTransitioner);
-
         // Between all default states
         transitionMap.addCommutativeTransition(defaultStates.asJava(), defaultTransitioner);
 
-        // From reef primes to reef scores
-        transitionMap.addCorrespondenceTransitions(java.util.List.of(RPL1, RPL2, RPL3, RPL4), java.util.List.of(RSL1, RSL2, RSL3, RSL4), defaultTransitioner);
-        // transitionMap.addTransition(RPL1, RSL1, defaultTransitioner);
-        // transitionMap.addTransition(RPL2, RSL2, defaultTransitioner);
-        // transitionMap.addTransition(RPL3, RSL3, defaultTransitioner);
-        // transitionMap.addTransition(RPL4, RSL4, defaultTransitioner);
-
-        // From climb prime to climb lock and climb score
-        transitionMap.addCorrespondenceTransitions(List.fill(exclusiveClimbStates.size(), CLIMB_PRIME).asJava(), exclusiveClimbStates.asJava(), defaultTransitioner);
-
-        // From processor prime to processor outtake
-        transitionMap.addTransition(PROCESSOR_PRIME, PROCESSOR_OUTTAKE, defaultTransitioner);
+        // For each coupled states pair
+        transitionMap.addMappedTransition(coupledStates, defaultTransitioner);
 
         // From exclusive state to Neutral
         transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, defaultTransitioner);
 
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType(BuiltInWidgets.kToggleButton.getWidgetName()); // Can be "Toggle Button" or "Boolean Box"
+        builder.addBooleanProperty("Toggle", ()-> stateEquals(NEUTRAL), desire -> {if(desire) setState(NEUTRAL);});
     }
 }

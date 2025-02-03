@@ -3,16 +3,10 @@ package frc.team3128.subsystems.Intake;
 import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import io.vavr.collection.List;
 import common.core.fsm.FSMSubsystemBase;
-import common.core.fsm.Transition;
 import common.core.fsm.TransitionMap;
-import common.hardware.motorcontroller.NAR_Motor.Neutral;
-import common.utility.Log;
-
 import static frc.team3128.subsystems.Intake.IntakeStates.*;
-import static frc.team3128.RobotContainer.printStatus;
 import java.util.function.Function;
 
 public class Intake extends FSMSubsystemBase<IntakeStates> {

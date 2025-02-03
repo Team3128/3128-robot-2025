@@ -1,5 +1,7 @@
 package frc.team3128.subsystems.Robot;
 
+import java.util.Map;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.team3128.subsystems.Climber.ClimberStates;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
@@ -41,6 +43,17 @@ public enum RobotStates {
     public static final List<RobotStates> exclusiveIntakeStates = List.of(PROCESSOR_PRIME);
     public static final List<RobotStates> defaultClimbStates = List.of(CLIMB_PRIME);
     public static final List<RobotStates> exclusiveClimbStates = List.of(CLIMB_LOCK, CLIMB_WINCH);
+
+    public static final Map<RobotStates, RobotStates> coupledStates = Map.of(
+        RPL1, RSL1,
+        RPL2, RSL2,
+        RPL3, RSL3,
+        RPL3, RSL3,
+        IDLE, NEUTRAL,
+        PROCESSOR_PRIME, PROCESSOR_OUTTAKE,
+        CLIMB_PRIME, CLIMB_LOCK,
+        CLIMB_PRIME, CLIMB_WINCH
+    );
 
     public static final List<RobotStates> defaultStates = List.of(NEUTRAL).appendAll(defaultElevatorStates).appendAll(defaultIntakeStates).appendAll(defaultClimbStates);
     public static final List<RobotStates> exclusiveStates = exclusiveElevatorStates.appendAll(exclusiveIntakeStates).appendAll(exclusiveClimbStates);

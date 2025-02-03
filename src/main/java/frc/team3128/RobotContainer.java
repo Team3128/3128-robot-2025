@@ -19,6 +19,7 @@ import common.utility.sysid.CmdSysId;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -67,8 +68,6 @@ import static frc.team3128.Constants.VisionConstants.*;
 @SuppressWarnings("unused")
 public class RobotContainer {
 
-    public static final boolean printStatus = true;
-
     // Create all subsystems
     private RobotManager robot;
     private ElevatorMechanism elevator;
@@ -108,6 +107,8 @@ public class RobotContainer {
 
         //uncomment line below to enable driving
         // CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
+
+        NAR_Shuffleboard.addSendable("RobotContainer", "NEUTRAL", robot, 0, 0).withWidget(BuiltInWidgets.kToggleSwitch);
         
         DriverStation.silenceJoystickConnectionWarning(true);
         initCameras();

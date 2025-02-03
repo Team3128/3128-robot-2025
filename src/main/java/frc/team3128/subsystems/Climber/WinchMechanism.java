@@ -4,8 +4,6 @@ import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.core.subsystems.PositionSubsystemBase;
 import common.hardware.motorcontroller.NAR_CANSpark;
-import common.hardware.motorcontroller.NAR_TalonFX;
-import edu.wpi.first.wpilibj.PWM;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import static frc.team3128.Constants.ClimberConstants.*;
 

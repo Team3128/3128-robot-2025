@@ -4,7 +4,6 @@
 
 package frc.team3128;
 
-import common.core.misc.NAR_Robot;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
