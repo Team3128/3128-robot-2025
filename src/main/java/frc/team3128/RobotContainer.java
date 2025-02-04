@@ -39,9 +39,9 @@ import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
 // import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Intake.Intake;
-import frc.team3128.subsystems.Manipulator.Manipulator;
-import frc.team3128.subsystems.Manipulator.ManipulatorStates;
-import frc.team3128.subsystems.Manipulator.RollerMechanism;
+// import frc.team3128.subsystems.Manipulator.Manipulator;
+// import frc.team3128.subsystems.Manipulator.ManipulatorStates;
+// import frc.team3128.subsystems.Manipulator.RollerMechanism;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
 
@@ -71,7 +71,7 @@ public class RobotContainer {
     // Create all subsystems
     private RobotManager robot;
     private ElevatorMechanism elevator;
-    private Manipulator manipulator;
+    // private Manipulator manipulator;
     private Swerve swerve;
 
     // private NAR_ButtonBoard judgePad;
@@ -103,7 +103,7 @@ public class RobotContainer {
 
         robot = RobotManager.getInstance();
         elevator = ElevatorMechanism.getInstance();
-        manipulator = Manipulator.getInstance();
+        // manipulator = Manipulator.getInstance();
 
         //uncomment line below to enable driving
         // CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
@@ -117,7 +117,7 @@ public class RobotContainer {
     }   
 
     private void configureButtonBindings() {
-        buttonPad.getButton(1).whileTrue(runOnce(()-> swerve.setBrakeMode(false))).onFalse(runOnce(()-> swerve.setBrakeMode(true)));
+        buttonPad.getButton(1).whileTrue(runOnce(()-> swerve.setBrakeMode(false)).ignoringDisable(true)).onFalse(runOnce(()-> swerve.setBrakeMode(true)).ignoringDisable(true));
         buttonPad.getButton(2).whileTrue(runOnce(()-> elevator.setNeutralMode(Neutral.COAST))).onFalse(runOnce(()-> elevator.setNeutralMode(Neutral.BRAKE)));
 
         controller2.getButton(kLeftTrigger).onTrue(elevator.pidTo(0));
@@ -126,11 +126,12 @@ public class RobotContainer {
         controller2.getButton(kB).onTrue(Elevator.getInstance().runVoltsCommand(4)).onFalse(Elevator.getInstance().stopCommand());
         controller2.getButton(kX).onTrue(Elevator.getInstance().runVoltsCommand(-4)).onFalse(Elevator.getInstance().stopCommand());
         controller2.getButton(kY).onTrue(Elevator.getInstance().resetCommand());
+        controller2.getButton(kA).onTrue(ElevatorMechanism.getInstance().homing(-2/12, 0.5, 35));
 
-        controller2.getUpPOVButton().onTrue(RollerMechanism.getInstance().runCommand(0.1)).onFalse(RollerMechanism.getInstance().stopCommand());
-        controller2.getDownPOVButton().onTrue(Manipulator.getInstance().runCommand(-0.1)).onFalse(Manipulator.getInstance().stopCommand());
-        controller2.getLeftPOVButton().onTrue(manipulator.setStateCommand(ManipulatorStates.IN)).onFalse(manipulator.setStateCommand(ManipulatorStates.NEUTRAL));
-        controller2.getLeftPOVButton().onTrue(manipulator.setStateCommand(ManipulatorStates.OUT)).onFalse(manipulator.setStateCommand(ManipulatorStates.NEUTRAL));
+        // controller2.getUpPOVButton().onTrue(RollerMechanism.getInstance().runCommand(0.1)).onFalse(RollerMechanism.getInstance().stopCommand());
+        // controller2.getDownPOVButton().onTrue(Manipulator.getInstance().runCommand(-0.1)).onFalse(Manipulator.getInstance().stopCommand());
+        // controller2.getLeftPOVButton().onTrue(manipulator.setStateCommand(ManipulatorStates.IN)).onFalse(manipulator.setStateCommand(ManipulatorStates.NEUTRAL));
+        // controller2.getLeftPOVButton().onTrue(manipulator.setStateCommand(ManipulatorStates.OUT)).onFalse(manipulator.setStateCommand(ManipulatorStates.NEUTRAL));
 
 
 
@@ -160,7 +161,7 @@ public class RobotContainer {
         // );
 
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
-        controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetEncoders()));
+        // controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetEncoders()));
 
         new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
 

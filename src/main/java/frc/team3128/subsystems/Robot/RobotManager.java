@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static RobotManager instance;
-    private static Elevator elevator;
+    // private static Elevator elevator;
     private static Manipulator manipulator;
     private static Intake intake;
     private static Climber climber;
@@ -28,7 +28,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private RobotManager() {
         super(RobotStates.class, transitionMap, NEUTRAL);
 
-        elevator = Elevator.getInstance();
+        // elevator = Elevator.getInstance();
         manipulator = Manipulator.getInstance();
         intake = Intake.getInstance();
         climber = Climber.getInstance();
@@ -45,7 +45,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     public Command updateSubsystemStates(RobotStates nextState) {
         return sequence(
-            elevator.setStateCommand(nextState.getElevatorState()),
+            // elevator.setStateCommand(nextState.getElevatorState()),
             manipulator.setStateCommand(nextState.getManipulatorState()),
             intake.setStateCommand(nextState.getIntakeState()),
             climber.setStateCommand(nextState.getClimberState())
@@ -111,7 +111,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         transitionMap.addCommutativeTransition(defaultStates.asJava(), defaultTransitioner);
 
         // For each coupled states pair
-        transitionMap.addMappedTransition(coupledStates, defaultTransitioner);
+        // transitionMap.addMappedTransition(coupledStates, defaultTransitioner);
 
         // From exclusive state to Neutral
         transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, defaultTransitioner);

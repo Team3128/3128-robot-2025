@@ -74,10 +74,10 @@ public class Constants {
 
     public static class DriveConstants {
 
-        public static final double controllerPOVOffset = 90;
+        public static final double controllerPOVOffset = -90;
 
         public static final double driveMotorGearRatio = 0;
-        public static final double angleMotorGearRatio = 150 / 7; 
+        public static final double angleMotorGearRatio = 150.0 / 7.0; 
 
         // public static final var kinematics = null; 
 
@@ -165,10 +165,10 @@ public class Constants {
         public static final int MOD3_CANCODER_ID = 13;
 
         /* Cancoder Offsets */
-        public static final double MOD0_CANCODER_OFFSET = -163.1;
-        public static final double MOD1_CANCODER_OFFSET = -116.367;
-        public static final double MOD2_CANCODER_OFFSET = 104.326;
-        public static final double MOD3_CANCODER_OFFSET = 66.26;
+        public static final double MOD0_CANCODER_OFFSET = -162.5976;
+        public static final double MOD1_CANCODER_OFFSET = -112.1484;
+        public static final double MOD2_CANCODER_OFFSET = 113.3789;
+        public static final double MOD3_CANCODER_OFFSET = 59.9414;
 
         public static final double RAMP_TIME = 3;
 
