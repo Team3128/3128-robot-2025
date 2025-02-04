@@ -2,8 +2,6 @@ package frc.team3128.subsystems.Robot;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.subsystems.Climber.Climber;
 import frc.team3128.subsystems.Elevator.Elevator;
@@ -111,16 +109,10 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         transitionMap.addCommutativeTransition(defaultStates.asJava(), defaultTransitioner);
 
         // For each coupled states pair
-        transitionMap.addMappedTransition(coupledStates, defaultTransitioner);
+        transitionMap.addMappedTransition(coupledStates.asJava(), defaultTransitioner);
 
         // From exclusive state to Neutral
         transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, defaultTransitioner);
 
-    }
-
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        builder.setSmartDashboardType(BuiltInWidgets.kToggleButton.getWidgetName()); // Can be "Toggle Button" or "Boolean Box"
-        builder.addBooleanProperty("Toggle", ()-> stateEquals(NEUTRAL), desire -> {if(desire) setState(NEUTRAL);});
     }
 }
