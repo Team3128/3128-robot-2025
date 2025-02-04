@@ -14,10 +14,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-// import frc.team3128.autonomous.AutoPrograms;
-import frc.team3128.subsystems.Robot.RobotManager;
-import frc.team3128.subsystems.Robot.RobotStates;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -81,11 +77,6 @@ public class Robot extends NAR_Robot {
         // if (m_autonomousCommand != null) {
         //     m_autonomousCommand.schedule();
         // }
-        Commands.sequence(
-            RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL),
-            Commands.waitSeconds(3),
-            RobotManager.getInstance().setStateCommand(RobotStates.RPL1)
-        ).schedule();
     }
 
     @Override
