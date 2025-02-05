@@ -118,7 +118,9 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         buttonPad.getButton(1).whileTrue(runOnce(()-> swerve.setBrakeMode(false))).onFalse(runOnce(()-> swerve.setBrakeMode(true)));
-        buttonPad.getButton(2).whileTrue(runOnce(()-> elevator.setNeutralMode(Neutral.COAST))).onFalse(runOnce(()-> elevator.setNeutralMode(Neutral.BRAKE)));
+        // buttonPad.getButton(2).whileTrue(runOnce(()-> elevator.setNeutralMode(Neutral.COAST))).onFalse(runOnce(()-> elevator.setNeutralMode(Neutral.BRAKE)));
+        buttonPad.getButton(2).onTrue(swerve.identifyOffsetsCommand().ignoringDisable(true));
+
 
         controller2.getButton(kLeftTrigger).onTrue(elevator.pidTo(0));
         controller2.getButton(kLeftBumper).onTrue(elevator.pidTo(0.5));
@@ -163,6 +165,7 @@ public class RobotContainer {
         controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetEncoders()));
 
         new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
+        // new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).onTrue(runOnce(()-> Swerve.getInstance().throttle = 1).andThen(print("Full Throttle"))).onFalse(runOnce(()-> Swerve.getInstance().throttle = 0));
 
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
         // controller.getDownPOVButton().onTrue(runOnce(()-> swerve.setPose(FieldStates.PROCESSOR.getPose2d())));
@@ -180,7 +183,7 @@ public class RobotContainer {
         Camera.setThresholds(5,  10);
         if (Robot.isReal()) {
             // Camera frontRightCamera = new Camera("FRONT_RIGHT", Units.inchesToMeters(10.055), Units.inchesToMeters(9.79), Units.degreesToRadians(30), Units.degreesToRadians(-28.125), 0);
-            Camera frontLeftCamera = new Camera("FRONT_LEFT", Units.inchesToMeters(13.5), -Units.inchesToMeters(0), Units.degreesToRadians(0), Units.degreesToRadians(0), 0);
+            // Camera frontLeftCamera = new Camera("FRONT_LEFT", Units.inchesToMeters(13.5), -Units.inchesToMeters(0), Units.degreesToRadians(0), Units.degreesToRadians(0), 0);
             // Camera backRightCamera = new Camera("BACK_RIGHT", -Units.inchesToMeters(10.055), Units.inchesToMeters(9.79),  Units.degreesToRadians(150), Units.degreesToRadians(-28.125), 0);
             // Camera backLeftCamera = new Camera("BACK_LEFT", -Units.inchesToMeters(10.055), -Units.inchesToMeters(9.79), Units.degreesToRadians(-150), Units.degreesToRadians(-28.125), 0);
         }

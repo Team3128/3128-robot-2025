@@ -74,7 +74,7 @@ public class Constants {
 
     public static class DriveConstants {
 
-        public static final double controllerPOVOffset = 90;
+        public static final double controllerPOVOffset = -90;
 
         public static final double driveMotorGearRatio = 0;
         public static final double angleMotorGearRatio = 150 / 7; 
@@ -165,10 +165,11 @@ public class Constants {
         public static final int MOD3_CANCODER_ID = 13;
 
         /* Cancoder Offsets */
-        public static final double MOD0_CANCODER_OFFSET = -163.1;
-        public static final double MOD1_CANCODER_OFFSET = -116.367;
-        public static final double MOD2_CANCODER_OFFSET = 104.326;
-        public static final double MOD3_CANCODER_OFFSET = 66.26;
+        public static final double MOD0_CANCODER_OFFSET = -119.970703125; 
+        public static final double MOD1_CANCODER_OFFSET = -64.951171875; 
+        public static final double MOD2_CANCODER_OFFSET = 66.26953125; 
+        public static final double MOD3_CANCODER_OFFSET = 17.9296875; 
+
 
         public static final double RAMP_TIME = 3;
 
@@ -225,7 +226,6 @@ public class Constants {
         public static final String DRIVETRAIN_CANBUS_NAME = "drivetrain";
         public static final double TRANSLATIONAL_DEADBAND = 0.5;
         public static final double ROTATIONAL_DEADBAND = 0.1;
-
         /* Motor Inverts */
         public static final boolean DRIVE_MOTOR_INVERTED = false;
         public static final boolean DRIVE_ANGLE_INVERTED = true;
@@ -516,7 +516,7 @@ public class Constants {
         public static final double ROLLER_GEAR_RATIO = 1;
         public static final double ROLLER_SAMPLE_PER_MINUTE = 60;
         public static final int ROLLER_STATOR_CURRENT_LIMIT = 60;
-        public static final boolean ROLLER_INVERT = false;
+        public static final boolean ROLLER_INVERT = true;
         public static final Neutral ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
         public static final StatusFrames ROLLER_STATUS_FRAME = StatusFrames.DEFAULT;
 

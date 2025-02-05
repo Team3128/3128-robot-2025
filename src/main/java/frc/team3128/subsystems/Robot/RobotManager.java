@@ -45,8 +45,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         return sequence(
             elevator.setStateCommand(nextState.getElevatorState()),
             manipulator.setStateCommand(nextState.getManipulatorState()),
-            intake.setStateCommand(nextState.getIntakeState()),
-            climber.setStateCommand(nextState.getClimberState())
+            intake.setStateCommand(nextState.getIntakeState())
+            // climber.setStateCommand(nextState.getClimberState())
         );
     }
 

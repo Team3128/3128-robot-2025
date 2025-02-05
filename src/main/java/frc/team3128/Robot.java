@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 // import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
@@ -98,6 +100,7 @@ public class Robot extends NAR_Robot {
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
         Camera.enableAll();
+        Swerve.getInstance().throttle = 0.5;
     }
 
     @Override
@@ -116,12 +119,12 @@ public class Robot extends NAR_Robot {
     //     CommandScheduler.getInstance().run();
     // }
 
-    // @Override
-    // public void disabledInit() {
-    //     CommandScheduler.getInstance().cancelAll();
-    //     hasInitialized = true;
-    //     Swerve.getInstance().setBrakeMode(false);
-    // }
+    @Override
+    public void disabledInit() {
+        CommandScheduler.getInstance().cancelAll();
+        Swerve.getInstance().setBrakeMode(false);
+        ElevatorMechanism.getInstance().disable();
+    }
 
     // @Override
     // public void disabledExit() {

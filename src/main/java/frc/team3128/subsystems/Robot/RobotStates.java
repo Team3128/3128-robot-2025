@@ -12,10 +12,10 @@ public enum RobotStates {
     IDLE(ElevatorStates.IDLE, IntakeStates.IDLE, ManipulatorStates.IDLE),
     NEUTRAL(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.IN),
 
-    RPL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.IN),
-    RPL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.IN),
-    RPL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.IN), 
-    RPL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.IN),
+    RPL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
+    RPL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
+    RPL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL), 
+    RPL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
     RSL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.OUT),
     RSL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.OUT),
     RSL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.OUT),
@@ -47,10 +47,10 @@ public enum RobotStates {
         Pair.of(RPL1, RSL1),
         Pair.of(RPL2, RSL2),
         Pair.of(RPL3, RSL3),
-        Pair.of(RPL3, RSL3),
+        Pair.of(RPL4, RSL4),
         Pair.of(IDLE, NEUTRAL),
         Pair.of(PROCESSOR_PRIME, PROCESSOR_OUTTAKE),
-        Pair.of(CLIMB_PRIME, CLIMB_LOCK),
+        // Pair.of(CLIMB_PRIME, CLIMB_LOCK),
         Pair.of(CLIMB_PRIME, CLIMB_WINCH)
     );
 

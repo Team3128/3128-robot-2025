@@ -291,4 +291,10 @@ public class Swerve extends SwerveBase {
             this
         );
     }
+
+    @Override
+    public void initShuffleboard() {
+        super.initShuffleboard();
+        NAR_Shuffleboard.addData("Swerve", "Throttle", ()-> this.throttle, 4, 3);
+    }
 }
