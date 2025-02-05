@@ -15,12 +15,12 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
     protected ElevatorMechanism elevator;
     private static TransitionMap<ElevatorStates> transitionMap = new TransitionMap<ElevatorStates>(ElevatorStates.class);
     private Function<ElevatorStates, Command> defaultTransitioner = state -> {return elevator.pidTo(state.getSetpoint());};
+    private Function<ElevatorStates, Command> idleTransitioner = state -> {return stopCommand().andThen(runOnce(()-> setNeutralMode(state.getNeutral())));};
 
     public Elevator() {
-        super(ElevatorStates.class, transitionMap, NEUTRAL);
+        super(ElevatorStates.class, transitionMap, IDLE);
         elevator = ElevatorMechanism.getInstance();
         addMechanisms(elevator);
-        // registerTransitions();
     }
 
     public static synchronized Elevator getInstance() {
@@ -35,21 +35,10 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
 	public void registerTransitions() {
 
         //ALL STATES -> IDLE
-		transitionMap.addConvergingTransition(IDLE, sequence(
-                defaultTransitioner.apply(IDLE).until(()-> elevator.atSetpoint()),
-                stopCommand(),
-                runOnce(()-> setNeutralMode(COAST))
-        ));
+		transitionMap.addConvergingTransition(IDLE, idleTransitioner);
 
         transitionMap.addCommutativeTransition(functionalStates.asJava(), defaultTransitioner);
 
-        transitionMap.addTransition(
-            IDLE, 
-            NEUTRAL,
-            sequence(
-                runOnce(()-> setNeutralMode(BRAKE)),
-                defaultTransitioner.apply(NEUTRAL)
-            )
-        );
+        transitionMap.addTransition(IDLE, NEUTRAL, idleTransitioner);
 	}
 }

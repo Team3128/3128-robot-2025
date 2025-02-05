@@ -15,12 +15,12 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
     public RollerMechanism roller;
     private static TransitionMap<ManipulatorStates> transitionMap = new TransitionMap<ManipulatorStates>(ManipulatorStates.class);
     private Function<ManipulatorStates, Command> defaultTransitioner = state -> {return runVoltsCommand(state.getVolts());};
+    private Function<ManipulatorStates, Command> idleTransitioner = state -> {return runVoltsCommand(state.getVolts()).andThen(runOnce(()-> setNeutralMode(state.getNeutral())));};
 
     public Manipulator() {
-        super(ManipulatorStates.class, transitionMap, NEUTRAL);
+        super(ManipulatorStates.class, transitionMap, IDLE);
         roller = RollerMechanism.getInstance();
         addMechanisms(roller);
-        registerTransitions();
     }
 
     public static synchronized Manipulator getInstance() {
@@ -34,25 +34,12 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 	public void registerTransitions() {
 
         //ALL STATES -> IDLE
-		transitionMap.addConvergingTransition(
-            IDLE, 
-            sequence(
-                runCommand(IDLE.getVolts()),
-                runOnce(()-> setNeutralMode(COAST))
-            )
-        );
+		transitionMap.addConvergingTransition(IDLE, idleTransitioner);
 
         //NEUTRAL, IN, OUT are able to transition between each other
         transitionMap.addCommutativeTransition(functionalStates.asJava(), defaultTransitioner);
 
         //IDLE -> NEUTRAL
-        transitionMap.addTransition(
-            IDLE, 
-            NEUTRAL, 
-            sequence(
-                runCommand(NEUTRAL.getVolts()),
-                runOnce(()-> setNeutralMode(BRAKE))
-            )
-        );
+        transitionMap.addTransition(IDLE, NEUTRAL, idleTransitioner);
 	}
 }

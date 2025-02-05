@@ -4,8 +4,7 @@ public enum ClimberStates {
     IDLE,
     NEUTRAL,
     CLIMB_PRIME(90.0,false,false),
-    CLIMB_LOCKED(90.0,true,true),
-    CLIMB_WINCH(0.0,true,true);
+    CLIMB(0.0,true,true);
 
     private double angle;
     private boolean hasClaw;

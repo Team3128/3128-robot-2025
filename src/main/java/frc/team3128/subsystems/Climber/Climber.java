@@ -29,10 +29,7 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
     };
 
     public Climber() {
-        super(ClimberStates.class, transitionMap, NEUTRAL);
-        // winch = new WinchMechanism();
-        // addSubsystem(winch);
-        // registerTransitions();
+        super(ClimberStates.class, transitionMap, IDLE);
     }
 
     public static synchronized Climber getInstance() {

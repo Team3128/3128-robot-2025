@@ -49,5 +49,6 @@ public class ElevatorMechanism extends PositionSubsystemBase {
        controller.setInputRange(ELEVATOR_POSITION_MIN, ELEVATOR_POSITION_MAX);
        controller.configureFeedback(left);
        controller.setTolerance(ELEVATOR_TOLERANCE);
+       addDisableCondition(()-> ((getPosition() >= 0.90 * ELEVATOR_POSITION_MAX) && (getVolts() > 6) && (getVelocity() > 0))); // if too close to top and going towards top and getting too much power then disable
     }   
 }

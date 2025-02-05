@@ -83,11 +83,6 @@ public class Robot extends NAR_Robot {
         // if (m_autonomousCommand != null) {
         //     m_autonomousCommand.schedule();
         // }
-        Commands.sequence(
-            RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL),
-            Commands.waitSeconds(3),
-            RobotManager.getInstance().setStateCommand(RobotStates.RPL1)
-        ).schedule();
     }
 
     @Override
@@ -100,7 +95,7 @@ public class Robot extends NAR_Robot {
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
         Camera.enableAll();
-        Swerve.getInstance().throttle = 0.5;
+        RobotManager.getInstance().setState(RobotStates.NEUTRAL);
     }
 
     @Override
@@ -123,7 +118,7 @@ public class Robot extends NAR_Robot {
     public void disabledInit() {
         CommandScheduler.getInstance().cancelAll();
         Swerve.getInstance().setBrakeMode(false);
-        ElevatorMechanism.getInstance().disable();
+        RobotManager.getInstance().stop();
     }
 
     // @Override

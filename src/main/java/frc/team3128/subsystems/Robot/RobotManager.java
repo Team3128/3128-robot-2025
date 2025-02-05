@@ -24,13 +24,12 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private Function<RobotStates, Command> defaultTransitioner = state -> {return updateSubsystemStates(state);};
 
     private RobotManager() {
-        super(RobotStates.class, transitionMap, NEUTRAL);
+        super(RobotStates.class, transitionMap, IDLE);
 
         elevator = Elevator.getInstance();
         manipulator = Manipulator.getInstance();
         intake = Intake.getInstance();
         climber = Climber.getInstance();
-        registerTransitions();
     }
 
     public static synchronized RobotManager getInstance() {
@@ -75,28 +74,38 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         );
     }
 
-    public Command getAlgaeState(RobotStates defaultState, RobotStates exclusiveState) {
-        return getAlgaeState(defaultState, exclusiveState, ()-> stateEquals(defaultState));
-    }
-
-    public Command getAlgaeState(RobotStates state, BooleanSupplier condition){
+    public Command getTempToggleCommand(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition, double delay) {
         return either(
-            setStateCommand(NEUTRAL),
-            setStateCommand(state),
+            setStateCommand(exclusiveState)
+            .withTimeout(delay)
+            .andThen(setStateCommand(NEUTRAL)), 
+            updateSubsystemStates(defaultState), 
             condition
         );
     }
 
-    public Command getAlgaeState(RobotStates state){
-        return getAlgaeState(state, ()-> stateEquals(state));
+    public Command getTempToggleCommand(RobotStates defaultStates, RobotStates exclusiveState, BooleanSupplier condition) {
+        return getTempToggleCommand(defaultStates, exclusiveState, condition, 1);
     }
 
-    public Command getClimbState() {
+    public Command getTempToggleCommand(RobotStates defaultStates, RobotStates exclusiveState) {
+        return getTempToggleCommand(defaultStates, exclusiveState,  ()-> stateEquals(defaultStates), 1);
+    }
+
+    public Command getToggleCommand(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition) {
         return either(
-            setStateCommand(CLIMB_LOCK), 
-            setStateCommand(CLIMB_PRIME), 
-            ()-> stateEquals(CLIMB_PRIME)
+            updateSubsystemStates(exclusiveState), 
+            updateSubsystemStates(defaultState), 
+            condition
         );
+    }
+
+    public Command getToggleCommand(RobotStates defaultState, RobotStates exclusiveState) {
+        return getToggleCommand(defaultState, exclusiveState, ()-> stateEquals(defaultState));
+    }
+
+    public Command getToggleCommand(RobotStates state) {
+        return getToggleCommand(state, NEUTRAL);
     }
 
     @Override

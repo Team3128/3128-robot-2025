@@ -27,8 +27,7 @@ public enum RobotStates {
     PROCESSOR_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_OUTTAKE, ManipulatorStates.NEUTRAL),
     
     CLIMB_PRIME(IntakeStates.CLIMB_PRIME, ClimberStates.CLIMB_PRIME),
-    CLIMB_LOCK(IntakeStates.CLIMB_LOCK, ClimberStates.CLIMB_LOCKED),
-    CLIMB_WINCH(IntakeStates.CLIMB_WINCH, ClimberStates.CLIMB_WINCH);
+    CLIMB(IntakeStates.CLIMB_WINCH, ClimberStates.CLIMB);
 
     private ElevatorStates elevator;
     private IntakeStates intake;
@@ -41,7 +40,7 @@ public enum RobotStates {
     public static final List<RobotStates> defaultIntakeStates = List.of(INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME);
     public static final List<RobotStates> exclusiveIntakeStates = List.of(PROCESSOR_PRIME);
     public static final List<RobotStates> defaultClimbStates = List.of(CLIMB_PRIME);
-    public static final List<RobotStates> exclusiveClimbStates = List.of(CLIMB_LOCK, CLIMB_WINCH);
+    public static final List<RobotStates> exclusiveClimbStates = List.of(CLIMB);
 
     public static final List<Pair<RobotStates, RobotStates>> coupledStates = List.of(
         Pair.of(RPL1, RSL1),
@@ -50,8 +49,7 @@ public enum RobotStates {
         Pair.of(RPL4, RSL4),
         Pair.of(IDLE, NEUTRAL),
         Pair.of(PROCESSOR_PRIME, PROCESSOR_OUTTAKE),
-        // Pair.of(CLIMB_PRIME, CLIMB_LOCK),
-        Pair.of(CLIMB_PRIME, CLIMB_WINCH)
+        Pair.of(CLIMB_PRIME, CLIMB)
     );
 
     public static final List<RobotStates> defaultStates = List.of(NEUTRAL).appendAll(defaultElevatorStates).appendAll(defaultIntakeStates).appendAll(defaultClimbStates);
