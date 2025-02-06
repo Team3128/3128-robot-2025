@@ -3,6 +3,7 @@ package frc.team3128.subsystems.Robot;
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Climber.Climber;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Intake.Intake;
@@ -44,8 +45,9 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         return sequence(
             elevator.setStateCommand(nextState.getElevatorState()),
             manipulator.setStateCommand(nextState.getManipulatorState()),
-            intake.setStateCommand(nextState.getIntakeState())
+            intake.setStateCommand(nextState.getIntakeState()),
             // climber.setStateCommand(nextState.getClimberState())
+            runOnce(()-> Swerve.getInstance().throttle = nextState.getThrottle())
         );
     }
 

@@ -136,7 +136,7 @@ public class RobotContainer {
         controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetEncoders()));
 
         new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
-        new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));
+        // new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
         // controller.getDownPOVButton().onTrue(runOnce(()-> swerve.setPose(FieldStates.PROCESSOR.getPose2d())));
         // controller.getRightPOVButton().onTrue(runOnce(()-> swerve.snapToReef(true)));
