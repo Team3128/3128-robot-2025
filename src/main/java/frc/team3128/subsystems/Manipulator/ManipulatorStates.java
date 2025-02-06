@@ -6,7 +6,7 @@ import common.hardware.motorcontroller.NAR_Motor.Neutral;
 import io.vavr.collection.List;
 
 public enum ManipulatorStates {
-    IDLE,
+    UNDEFINED,
     NEUTRAL(0),
     IN(2),
     OUT(-6);

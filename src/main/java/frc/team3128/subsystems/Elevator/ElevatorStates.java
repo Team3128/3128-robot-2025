@@ -3,7 +3,7 @@ import common.hardware.motorcontroller.NAR_Motor.Neutral;
 import io.vavr.collection.List;
 
 public enum ElevatorStates {
-    IDLE,
+    UNDEFINED,
     NEUTRAL(0),
     L1(0.3),
     L2(0.475),

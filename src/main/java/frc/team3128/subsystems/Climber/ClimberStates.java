@@ -1,7 +1,7 @@
 package frc.team3128.subsystems.Climber;
 
 public enum ClimberStates {
-    IDLE,
+    UNDEFINED,
     NEUTRAL,
     CLIMB_PRIME(90.0,false,false),
     CLIMB(0.0,true,true);

@@ -24,7 +24,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private Function<RobotStates, Command> defaultTransitioner = state -> {return updateSubsystemStates(state);};
 
     private RobotManager() {
-        super(RobotStates.class, transitionMap, IDLE);
+        super(RobotStates.class, transitionMap, UNDEFINED);
 
         elevator = Elevator.getInstance();
         manipulator = Manipulator.getInstance();
@@ -111,8 +111,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     @Override
     public void registerTransitions() {
         
-        // From all transitions to Idle
-        transitionMap.addConvergingTransition(IDLE, defaultTransitioner);
+        // From all transitions to Undefined and Undefined to Neutral
+        transitionMap.addUndefinedState(UNDEFINED, NEUTRAL, defaultTransitioner);
 
         // Between all default states
         transitionMap.addCommutativeTransition(defaultStates.asJava(), defaultTransitioner);

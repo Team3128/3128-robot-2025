@@ -9,7 +9,7 @@ import frc.team3128.subsystems.Manipulator.ManipulatorStates;
 import io.vavr.collection.List;
 
 public enum RobotStates {
-    IDLE(ElevatorStates.IDLE, IntakeStates.IDLE, ManipulatorStates.IDLE),
+    UNDEFINED(ElevatorStates.UNDEFINED, IntakeStates.UNDEFINED, ManipulatorStates.UNDEFINED),
     NEUTRAL(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.IN),
 
     RPL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL),
@@ -27,7 +27,7 @@ public enum RobotStates {
     PROCESSOR_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_OUTTAKE, ManipulatorStates.NEUTRAL),
     
     CLIMB_PRIME(IntakeStates.CLIMB_PRIME, ClimberStates.CLIMB_PRIME),
-    CLIMB(IntakeStates.CLIMB_WINCH, ClimberStates.CLIMB);
+    CLIMB(IntakeStates.CLIMB, ClimberStates.CLIMB);
 
     private ElevatorStates elevator;
     private IntakeStates intake;
@@ -47,7 +47,7 @@ public enum RobotStates {
         Pair.of(RPL2, RSL2),
         Pair.of(RPL3, RSL3),
         Pair.of(RPL4, RSL4),
-        Pair.of(IDLE, NEUTRAL),
+        Pair.of(UNDEFINED, NEUTRAL),
         Pair.of(PROCESSOR_PRIME, PROCESSOR_OUTTAKE),
         Pair.of(CLIMB_PRIME, CLIMB)
     );
@@ -68,15 +68,15 @@ public enum RobotStates {
     }
 
     private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator) {
-        this(elevator, intake, manipulator, ClimberStates.IDLE);
+        this(elevator, intake, manipulator, ClimberStates.UNDEFINED);
     }
 
     private RobotStates(IntakeStates intake, ClimberStates climber) {
-        this(ElevatorStates.IDLE, intake, ManipulatorStates.NEUTRAL, climber);
+        this(ElevatorStates.UNDEFINED, intake, ManipulatorStates.NEUTRAL, climber);
     }
 
     private RobotStates() {
-        this(ElevatorStates.IDLE, IntakeStates.IDLE, ManipulatorStates.IDLE, ClimberStates.IDLE);
+        this(ElevatorStates.UNDEFINED, IntakeStates.UNDEFINED, ManipulatorStates.UNDEFINED, ClimberStates.UNDEFINED);
     }
 
     public ElevatorStates getElevatorState() {

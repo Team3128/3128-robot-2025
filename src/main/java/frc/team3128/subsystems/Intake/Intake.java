@@ -3,7 +3,6 @@ package frc.team3128.subsystems.Intake;
 import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
-import io.vavr.collection.List;
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
 import static frc.team3128.subsystems.Intake.IntakeStates.*;
@@ -24,7 +23,7 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
     };
 
     public Intake() {
-        super(IntakeStates.class, transitionMap, IDLE);
+        super(IntakeStates.class, transitionMap, UNDEFINED);
     }
 
     public static synchronized Intake getInstance() {
@@ -37,15 +36,15 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
 
 	@Override
 	public void registerTransitions() {
-        //ALL STATES -> IDLE
-		transitionMap.addConvergingTransition(IDLE, defaultTransitioner.apply(IDLE).andThen(stopCommand()).andThen(runOnce(()-> setNeutralMode(COAST))));
+        //ALL STATES -> UNDEFINED
+		transitionMap.addUndefinedState(UNDEFINED, NEUTRAL, stopCommand().andThen(()-> setNeutralMode(COAST)), defaultTransitioner.apply(NEUTRAL).beforeStarting(()-> setNeutralMode(BRAKE)));
 
-        transitionMap.addCommutativeTransition(defaultIntakeStates.appendAll(defaultClimbStates).asJava(), defaultTransitioner);
+        transitionMap.addCommutativeTransition(defaultStates.asJava(), defaultTransitioner);
 
-        transitionMap.addConvergingTransition(exclusiveIntakeStates.appendAll(exclusiveClimbStates).asJava(), NEUTRAL, defaultTransitioner);
+        transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, defaultTransitioner);
 
-        transitionMap.addTransition(PROCESSOR_PRIME, PROCESSOR_OUTTAKE, defaultTransitioner);
+        transitionMap.addMappedTransition(coupledStates.asJava(), defaultTransitioner);
 
-        transitionMap.addCorrespondenceTransitions(List.fill(exclusiveClimbStates.size(), CLIMB_PRIME).asJava(), exclusiveClimbStates.asJava(), defaultTransitioner);
+
 	}
 }
