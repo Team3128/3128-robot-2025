@@ -444,7 +444,7 @@ public class Constants {
     
         public static final int PIVOT_LEADER_ID = 40;
 
-        public static final double PIVOT_GEAR_RATIO = 1;
+        public static final double PIVOT_GEAR_RATIO = 90/12.38;
         public static final double PIVOT_SAMPLE_PER_MINUTE = 60;
         public static final int PIVOT_STATOR_CURRENT_LIMIT = 40;
         public static final boolean PIVOT_INVERT = false;
@@ -452,15 +452,15 @@ public class Constants {
         public static final StatusFrames PIVOT_STATUS_FRAME = StatusFrames.POSITION;
 
         public static final double PIVOT_POSITION_MIN = 0;
-        public static final double PIVOT_POSITION_MAX = 1;
-        public static final double PIVOT_TOLERANCE = 0.01;
+        public static final double PIVOT_POSITION_MAX = 180;
+        public static final double PIVOT_TOLERANCE = 1;
 
         public static final int ROLLER_LEADER_ID = 41;
 
         public static final double ROLLER_GEAR_RATIO = 1;
         public static final double ROLLER_SAMPLE_PER_MINUTE = 60;
         public static final int ROLLER_STATOR_CURRENT_LIMIT = 40;
-        public static final boolean ROLLER_INVERT = false;
+        public static final boolean ROLLER_INVERT = true;
         public static final Neutral ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
         public static final StatusFrames ROLLER_STATUS_FRAME = StatusFrames.POSITION;
 
