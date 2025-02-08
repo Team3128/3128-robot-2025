@@ -6,13 +6,13 @@ import io.vavr.collection.List;
 
 public enum IntakeStates {
     UNDEFINED,
-    NEUTRAL(90),
-    INTAKE(0, 1),
-    EJECT_OUTTAKE(90, -1),
-    PROCESSOR_PRIME(999),
-    PROCESSOR_OUTTAKE(999, 999),
-    CLIMB_PRIME(999),
-    CLIMB(666);
+    NEUTRAL(0),
+    INTAKE(45, 0.8),
+    EJECT_OUTTAKE(0, -0.8),
+    PROCESSOR_PRIME(0),
+    PROCESSOR_OUTTAKE(0, -0.8),
+    CLIMB_PRIME(700),
+    CLIMB(800);
 
     public static final List<IntakeStates> defaultStates = List.of(NEUTRAL, INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME, CLIMB_PRIME);
     public static final List<IntakeStates> exclusiveStates = List.of(PROCESSOR_OUTTAKE, CLIMB);
