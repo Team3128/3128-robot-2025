@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 import static frc.team3128.subsystems.Climber.ClimberStates.*;
 
+import java.util.List;
 import java.util.function.Function;
 
 public class Climber extends FSMSubsystemBase<ClimberStates> {
@@ -43,7 +44,11 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 
 	@Override
 	public void registerTransitions() {
-        transitionMap.addUndefinedState(UNDEFINED, currentState);
+        transitionMap.addUndefinedState(
+            UNDEFINED, 
+            currentState, 
+            runOnce(() -> setNeutralMode(Neutral.COAST))
+        );
         // //ALL STATES -> UNDEFINED
         // transitionMap.addConvergingTransition(
         //     UNDEFINED,
@@ -53,12 +58,23 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
         // )
         // );
 
+        transitionMap.addConvergingTransition(
+            List.of(UNDEFINED, CLIMB_PRIME),
+            NEUTRAL,
+            transitioner
+        );
         // //UNDEFINED, PRIME, LOCKED -> NEUTRAL
         // transitionMap.addConvergingTransitions(
         //     transitioner.apply(NEUTRAL), 
         //     NEUTRAL, 
         //     UNDEFINED, CLIMB_PRIME, CLIMB_LOCKED
         // );
+
+        transitionMap.addCorrespondenceTransitions(
+            List.of(NEUTRAL, CLIMB_PRIME, CLIMB), 
+            List.of(CLIMB_PRIME, CLIMB, NEUTRAL),
+            transitioner
+        );
 
         // //NEUTRAL -> PRIME
         // transitionMap.addTransition(NEUTRAL, CLIMB_PRIME, transitioner.apply(CLIMB_PRIME));
