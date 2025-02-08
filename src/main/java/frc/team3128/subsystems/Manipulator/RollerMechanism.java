@@ -1,5 +1,5 @@
 package frc.team3128.subsystems.Manipulator;
-
+import edu.wpi.first.wpilibj.DigitalInput;
 import common.core.subsystems.VoltageSubsystemBase;
 import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
@@ -18,8 +18,8 @@ public class RollerMechanism extends VoltageSubsystemBase {
     }
 
     protected static NAR_CANSpark leader = new NAR_CANSpark(ROLLER_LEADER_ID, ControllerType.CAN_SPARK_FLEX);
-    // protected static DigitalInput firstSensor = new DigitalInput(FIRST_SENSOR_ID);
-    // protected static DigitalInput secondSensor = new DigitalInput(SECOND_SENSOR_ID);
+    //protected static DigitalInput firstSensor = new DigitalInput(FIRST_SENSOR_ID);
+    //protected static DigitalInput secondSensor = new DigitalInput(SECOND_SENSOR_ID);
 
     public RollerMechanism() {
         super(leader);
