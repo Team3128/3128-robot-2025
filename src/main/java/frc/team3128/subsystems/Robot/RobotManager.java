@@ -3,6 +3,7 @@ package frc.team3128.subsystems.Robot;
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.team3128.doglog.DogLog;
 import frc.team3128.subsystems.Climber.Climber;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Intake.Intake;
@@ -189,4 +190,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
 
 	}
+    
+    public void dogLogPeriodic(){
+        DogLog.log("Robot State", getState());
+    }
 }

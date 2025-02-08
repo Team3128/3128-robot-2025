@@ -4,6 +4,7 @@ import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.core.subsystems.PositionSubsystemBase;
 import common.hardware.motorcontroller.NAR_TalonFX;
+import frc.team3128.doglog.DogLog;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import static frc.team3128.Constants.ElevatorConstants.*;
 
@@ -37,4 +38,15 @@ public class ElevatorMechanism extends PositionSubsystemBase {
        controller.configureFeedback(leader);
        controller.setTolerance(ELEVATOR_TOLERANCE);
     }   
+
+    public void dogLogPeriodic(){
+        DogLog.log(getName() + "Velocity", leader.getVelocity());
+        DogLog.log(getName() + "Motor" , leader.getMotor());
+        DogLog.log(getName() + "Position", leader.getPosition());
+        DogLog.log(getName() + "StallCurrent", leader.getStallCurrent());
+        DogLog.log(getName() + "State", leader.getState());
+        DogLog.log(getName() + "Temperature", leader.getTemperature());
+        DogLog.log(getName() + "At setpoint", controller.atSetpoint());
+        DogLog.log(getName() + "Measurement", controller.getMeasurement());
+    }
 }

@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Climber.Climber;
+import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Manipulator.Manipulator;
 import frc.team3128.subsystems.Robot.RobotManager;
@@ -53,6 +55,10 @@ public class RobotContainer {
 
     private NarwhalDashboard dashboard;
     private Swerve swerve;
+    private Climber climber;
+    private Elevator elevator;
+    private Intake intake;
+    private Manipulator manipulator;
     private final Command swerveDriveCommand;
 
     public static Limelight limelight;
@@ -72,13 +78,21 @@ public class RobotContainer {
         swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
 
+        
         swerve = Swerve.getInstance();
+        climber = Climber.getInstance();
+        elevator = Elevator.getInstance();
+        intake = Intake.getInstance();
+        manipulator = Manipulator.getInstance();
+
+
         robot = RobotManager.getInstance();
 
         //uncomment line below to enable driving
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
         
         DriverStation.silenceJoystickConnectionWarning(true);
+        NAR_Robot.addPeriodic(() -> logData(), 0.02);
         initCameras();
         configureButtonBindings();
         initDashboard();
@@ -118,6 +132,17 @@ public class RobotContainer {
         controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
 
         new Trigger(()-> robot.stateEquals(INDEXING)).and(()-> Manipulator.getInstance().hasObjectPresent()).onTrue(robot.setStateCommand(NEUTRAL));
+    }
+
+    public void logData(){
+        swerve.dogLogPeriodic();
+        climber.dogLogPeriodic();
+        elevator.dogLogPeriodic();
+        intake.dogLogPeriodic();
+        manipulator.dogLogPeriodic();
+        robot.dogLogPeriodic();
+
+
     }
 
     public void initCameras() {

@@ -1,6 +1,7 @@
 package frc.team3128.subsystems.Robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.team3128.doglog.DogLog;
 import frc.team3128.subsystems.Climber.ClimberStates;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Intake.IntakeStates;
@@ -76,6 +77,8 @@ public enum RobotStates {
     public ClimberStates getClimberState() {
         return this.climber;
     }
+
+
 
 
 }

@@ -303,7 +303,7 @@ public class Swerve extends SwerveBase {
             this
         );
     }
-    public void initDogLog(){
+    public void dogLogPeriodic(){
         for(int i = 0; i < 4; i++){
             DogLog.log("State Mod " + i, modules[i].getState());
             DogLog.log("Drive Motor Current " + i, modules[i].getDriveMotor().getStallCurrent());
