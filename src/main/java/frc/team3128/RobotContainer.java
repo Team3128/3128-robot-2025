@@ -60,6 +60,13 @@ public class RobotContainer {
         controller.getButton(XboxButton.kB)
             .onTrue(intake.run(0.75))
             .onFalse(intake.stop());
+
+        controller.getButton(XboxButton.kLeftTrigger)
+            .onTrue(intake.run(-0.5))
+            .onFalse(intake.stop());
+        controller.getButton(XboxButton.kLeftBumper)
+            .onTrue(intake.run(0.5))
+            .onFalse(intake.stop());
         controller.getButton(XboxButton.kX)
             .onTrue(Commands.runOnce(()->swerve.resetGyro(0)));
     }
