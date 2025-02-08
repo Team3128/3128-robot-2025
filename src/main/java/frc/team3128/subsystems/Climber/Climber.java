@@ -6,6 +6,7 @@ import common.hardware.motorcontroller.NAR_Motor.Neutral;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.subsystems.Climber.ClimberStates.*;
 
 import java.util.List;
@@ -14,8 +15,8 @@ import java.util.function.Function;
 public class Climber extends FSMSubsystemBase<ClimberStates> {
     private static Climber instance;
 
-    public WinchMechanism winch = new WinchMechanism();
-    public RollerMechanism roller = new RollerMechanism();
+    public WinchMechanism winch;
+    public RollerMechanism roller;
 
     private static TransitionMap<ClimberStates> transitionMap = new TransitionMap<ClimberStates>(ClimberStates.class);
 
@@ -23,15 +24,23 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
     private Function<ClimberStates, Command> defaultTransitioner = state -> {
         return Commands.sequence(
             setNeutralMode.apply(Neutral.BRAKE),
-            roller.runCommand(state.getHasRoller() ? 0.5 : 0),
-            winch.pidTo(state.getAngle())
-            // runOnce(()->winch.lockServo.setPosition(state.getHasClaw() ? 1 : 0)),
-            // runOnce(()->winch.winchServo.setPosition(state.getHasWinch() ? 1 : 0))
+            RollerMechanism.getInstance().runCommand(state.getRollerPower()),
+            sequence(
+                WinchMechanism.getInstance().runCommand(state.getWinchPower()),
+                waitUntil(()->WinchMechanism.getInstance().atSetpoint(state.getAngle())),
+                WinchMechanism.getInstance().runCommand(0)
+            )
+
         );
     };
 
     public Climber() {
         super(ClimberStates.class, transitionMap, UNDEFINED);
+
+        winch = WinchMechanism.getInstance();
+        roller = RollerMechanism.getInstance();
+
+        addMechanisms(winch,roller);
     }
 
     public static synchronized Climber getInstance() {

@@ -26,8 +26,8 @@ public enum RobotStates {
     PROCESSOR_PRIME(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_PRIME, ManipulatorStates.NEUTRAL, 0.5),
     PROCESSOR_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_OUTTAKE, ManipulatorStates.NEUTRAL, 0.5),
     
-    CLIMB_PRIME(IntakeStates.CLIMB_PRIME, ClimberStates.CLIMB_PRIME),
-    CLIMB(IntakeStates.CLIMB, ClimberStates.CLIMB);
+    CLIMB_PRIME(ClimberStates.CLIMB_PRIME, ElevatorStates.L1, 0.3),
+    CLIMB(ClimberStates.CLIMB, ElevatorStates.UNDEFINED, 0.3);
 
     private ElevatorStates elevator;
     private IntakeStates intake;
@@ -77,8 +77,8 @@ public enum RobotStates {
         this(elevator, intake, manipulator, ClimberStates.UNDEFINED, throttle);
     }
 
-    private RobotStates(IntakeStates intake, ClimberStates climber) {
-        this(ElevatorStates.UNDEFINED, intake, ManipulatorStates.NEUTRAL, climber);
+    private RobotStates(ClimberStates climber, ElevatorStates elevator, double throttle) {
+        this(elevator, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, climber, throttle);
     }
 
     private RobotStates() {
