@@ -20,7 +20,7 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
     private static TransitionMap<ClimberStates> transitionMap = new TransitionMap<ClimberStates>(ClimberStates.class);
 
     private Function<Neutral, Command> setNeutralMode = mode -> runOnce(() -> getMechanisms().forEach(subsystem -> subsystem.setNeutralMode(mode)));
-    private Function<ClimberStates, Command> transitioner = state -> {
+    private Function<ClimberStates, Command> defaultTransitioner = state -> {
         return Commands.sequence(
             setNeutralMode.apply(Neutral.BRAKE),
             roller.runCommand(state.getHasRoller() ? 0.5 : 0),
@@ -46,46 +46,11 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 	public void registerTransitions() {
         transitionMap.addUndefinedState(
             UNDEFINED, 
-            currentState, 
-            runOnce(() -> setNeutralMode(Neutral.COAST))
-        );
-        // //ALL STATES -> UNDEFINED
-        // transitionMap.addConvergingTransition(
-        //     UNDEFINED,
-        //     sequence(
-        //     runOnce(()-> setNeutralMode(COAST))//,
-        //     // runOnce(()-> winch.stop())
-        // )
-        // );
-
-        transitionMap.addConvergingTransition(
-            List.of(UNDEFINED, CLIMB_PRIME),
-            NEUTRAL,
-            transitioner
-        );
-        // //UNDEFINED, PRIME, LOCKED -> NEUTRAL
-        // transitionMap.addConvergingTransitions(
-        //     transitioner.apply(NEUTRAL), 
-        //     NEUTRAL, 
-        //     UNDEFINED, CLIMB_PRIME, CLIMB_LOCKED
-        // );
-
-        transitionMap.addCorrespondenceTransitions(
-            List.of(NEUTRAL, CLIMB_PRIME, CLIMB), 
-            List.of(CLIMB_PRIME, CLIMB, NEUTRAL),
-            transitioner
+            NEUTRAL, 
+            stopCommand().andThen(() -> setNeutralMode(Neutral.COAST)),
+            defaultTransitioner.apply(NEUTRAL).beforeStarting(() -> setNeutralMode(Neutral.BRAKE))
         );
 
-        // //NEUTRAL -> PRIME
-        // transitionMap.addTransition(NEUTRAL, CLIMB_PRIME, transitioner.apply(CLIMB_PRIME));
-
-        // //PRIME -> LOCKED
-        // transitionMap.addTransition(CLIMB_PRIME, CLIMB_LOCKED, transitioner.apply(CLIMB_LOCKED));
-
-        // //LOCKED -> WINCH
-        // transitionMap.addTransition(CLIMB_LOCKED, CLIMB_WINCH, transitioner.apply(CLIMB_WINCH));
-
-        // //WINCH -> PRIME
-        // transitionMap.addTransition(CLIMB_LOCKED, CLIMB_PRIME, transitioner.apply(CLIMB_PRIME));
+        transitionMap.addCommutativeTransition(List.of(NEUTRAL, CLIMB_PRIME, CLIMB), defaultTransitioner);
 	}
 }

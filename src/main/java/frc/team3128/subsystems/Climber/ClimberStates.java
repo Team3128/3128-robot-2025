@@ -5,23 +5,16 @@ public enum ClimberStates {
     NEUTRAL,
     // CLIMB_PRIME(90.0,false,false),
     // CLIMB(0.0,true,true);
-    CLIMB_PRIME(90.0, true),
-    CLIMB(0.0, false);
+    CLIMB_PRIME(90.0, false, true),
+    CLIMB(0.0, true, false);
 
     private double angle;
-    private boolean hasClaw;
     private boolean hasWinch;
     private boolean hasRoller;
 
-    private ClimberStates(double angle, boolean hasRoller) {
+    private ClimberStates(double angle, boolean hasWinch, boolean hasRoller) {
         this.angle = angle;
         this.hasRoller = hasRoller;
-    }
-
-    private ClimberStates(double angle, boolean hasClaw, boolean hasWinch) {
-        this.angle = angle;
-        this.hasClaw = hasClaw;
-        this.hasWinch = hasWinch;
     }
 
     private ClimberStates(double angle) {
@@ -34,10 +27,6 @@ public enum ClimberStates {
 
     public double getAngle() {
         return angle;
-    }
-
-    public boolean getHasClaw() {
-        return hasClaw;
     }
 
     public boolean getHasWinch() {
