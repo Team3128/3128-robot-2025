@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3128.subsystems.Intake;
+import frc.team3128.subsystems.Winch;
 import frc.team3128.subsystems.Swerve;
 
 
@@ -31,11 +32,14 @@ public class RobotContainer {
     private NarwhalDashboard dashboard;
     private Swerve swerve;
     private Intake intake;
+    private Winch winch;
+
     private final Command swerveDriveCommand;
 
     public RobotContainer() {
         swerve = Swerve.getInstance();
         intake = Intake.getInstance();
+        winch = Winch.getInstance();
         
         NAR_CANSpark.maximumRetries = 2;
         NAR_TalonFX.maximumRetries = 2;
@@ -62,11 +66,11 @@ public class RobotContainer {
             .onFalse(intake.stop());
 
         controller.getButton(XboxButton.kLeftTrigger)
-            .onTrue(intake.run(-0.5))
-            .onFalse(intake.stop());
+            .onTrue(winch.run(-1))
+            .onFalse(winch.stop());
         controller.getButton(XboxButton.kLeftBumper)
-            .onTrue(intake.run(0.5))
-            .onFalse(intake.stop());
+            .onTrue(winch.run(1))
+            .onFalse(winch.stop());
         controller.getButton(XboxButton.kX)
             .onTrue(Commands.runOnce(()->swerve.resetGyro(0)));
     }
