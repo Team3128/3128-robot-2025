@@ -494,6 +494,7 @@ public class Constants {
         
         public static final int CLIMBER_LEADER_ID = 20;
         public static final int CLIMBER_FOLLOWER_ID = 21;
+        public static final int CLIMB_ROLLER_ID = 22;
 
         public static final double CLIMBER_GEAR_RATIO = 1;
         public static final double CLIMBER_SAMPLE_PER_MINUTE = 60;
@@ -501,6 +502,12 @@ public class Constants {
         public static final boolean CLIMBER_INVERT = false;
         public static final Neutral CLIMBER_NEUTRAL_MODE = Neutral.BRAKE;
         public static final StatusFrames CLIMBER_STATUS_FRAME = StatusFrames.POSITION;
+
+        public static final double CLIMB_ROLLER_GEAR_RATIO = 999999;
+        public static final double CLIMB_ROLLER_SAMPLE_PER_MINUTE = 999999;
+        public static final int CLIMB_ROLLER_STATOR_CURRENT_LIMIT = 999999;
+        public static final boolean CLIMB_ROLLER_INVERT = false;
+        public static final Neutral CLIMB_ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
 
         public static final double CLIMBER_POSITiON_MIN = 0;
         public static final double CLIMBER_POSITION_MAX = 1;
