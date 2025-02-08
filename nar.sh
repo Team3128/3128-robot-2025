@@ -50,7 +50,7 @@ if [ "$OPTION" == "status" ]; then
     git status
 fi
 
-if [ "$OPTION" == "init"]; then
+if [ "$OPTION" == "init" ]; then
     # Define paths
     SUBMODULE_DIR="libs/3128-common"
     SUBMODULE_FILE="$SUBMODULE_DIR/build.gradle"

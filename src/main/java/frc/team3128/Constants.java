@@ -390,6 +390,8 @@ public class Constants {
 
     public static class LedConstants{
 
+        public static final int CANDLE_ID = 0;
+
         public static final int WHITE_VALUE = 0; //leds used don't have a white value
         public static final double r_SPEED = 0.75;
         public static final double c_SPEED = 1;
