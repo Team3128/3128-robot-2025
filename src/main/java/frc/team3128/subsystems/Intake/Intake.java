@@ -39,10 +39,13 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
         //ALL STATES -> UNDEFINED
 		transitionMap.addUndefinedState(UNDEFINED, NEUTRAL, stopCommand().andThen(()-> setNeutralMode(COAST)), defaultTransitioner.apply(NEUTRAL).beforeStarting(()-> setNeutralMode(BRAKE)));
 
+        //DEFAULT STATES -> DEFAULT STATES
         transitionMap.addCommutativeTransition(defaultStates.asJava(), defaultTransitioner);
 
+        //EXCLUSIVE STATES -> NEUTRAL
         transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, defaultTransitioner);
 
+        //PRIME STATES -> OUTPUT STATES
         transitionMap.addMappedTransition(coupledStates.asJava(), defaultTransitioner);
 
 
