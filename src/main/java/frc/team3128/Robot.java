@@ -38,7 +38,6 @@ public class Robot extends NAR_Robot {
     public static Robot instance;
 
     public static RobotContainer m_robotContainer = new RobotContainer();
-    // public static AutoPrograms autoPrograms;
 
     public static synchronized Robot getInstance() {
         if (instance == null) {
@@ -52,7 +51,6 @@ public class Robot extends NAR_Robot {
         Camera.enableAll();
         m_robotContainer.initDashboard();
         LiveWindow.disableAllTelemetry();
-        // Log.logDebug = true;
         Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM, MOTOR);
     }
 
@@ -76,11 +74,7 @@ public class Robot extends NAR_Robot {
     @Override
     public void autonomousInit() {
         CommandScheduler.getInstance().cancelAll();
-        Camera.enableAll();
-        // Command m_autonomousCommand = AutoPrograms.getInstance().getAutonomousCommand();
-        // if (m_autonomousCommand != null) {
-        //     m_autonomousCommand.schedule();
-        // }
+        // AutoPrograms.getInstance().getAutonomousCommand().schedule();
     }
 
     @Override
@@ -119,10 +113,11 @@ public class Robot extends NAR_Robot {
         RobotManager.getInstance().stop();
     }
 
-    // @Override
-    // public void disabledExit() {
-    //     Swerve.getInstance().setBrakeMode(true);
-    // }
+    @Override
+    public void disabledExit() {
+        Swerve.getInstance().setBrakeMode(true);
+        RobotManager.getInstance().stop();
+    }
     
     // @Override
     // public void disabledPeriodic() {

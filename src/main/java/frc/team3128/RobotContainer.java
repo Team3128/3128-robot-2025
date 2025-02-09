@@ -118,7 +118,10 @@ public class RobotContainer {
     private void configureButtonBindings() {
         buttonPad.getButton(1).whileTrue(runOnce(()-> swerve.setBrakeMode(false))).onFalse(runOnce(()-> swerve.setBrakeMode(true)));
         buttonPad.getButton(2).onTrue(swerve.identifyOffsetsCommand().ignoringDisable(true));
-        buttonPad.getButton(3).onTrue(runOnce(()-> robot.setNeutralMode(Neutral.COAST))).onFalse(runOnce(()-> robot.setNeutralMode(Neutral.BRAKE)));
+        buttonPad.getButton(3).onTrue(runOnce(()-> robot.setNeutralMode(Neutral.COAST)).ignoringDisable(true)).onFalse(runOnce(()-> robot.setNeutralMode(Neutral.BRAKE)).ignoringDisable(true));
+
+        buttonPad.getButton(14).onTrue(swerve.characterizeTranslation(0, 1, 10)).onFalse(runOnce(()-> swerve.stop()));
+        buttonPad.getButton(15).onTrue(swerve.characterizeRotation(0, 1, 10)).onFalse(runOnce(()-> swerve.stop()));
 
         controller.getButton(kA).onTrue(robot.getTempToggleCommand(RPL1, RSL1));
         controller.getButton(kB).onTrue(robot.getTempToggleCommand(RPL2, RSL2));
@@ -134,7 +137,7 @@ public class RobotContainer {
         controller.getButton(kStart).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
 
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
-        controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetEncoders()));
+        controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.snapToAngle()));
 
         new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
         // new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));

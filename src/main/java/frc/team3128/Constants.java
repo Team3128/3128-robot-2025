@@ -3,6 +3,8 @@ package frc.team3128;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
@@ -312,6 +314,8 @@ public class Constants {
             PROCESSOR(new Pose2d(new Translation2d(6.35, 0.60), Rotation2d.fromDegrees(270)));
 
             private final Pose2d pose;
+            public static List<Pose2d> reefPoses = List.of(REEF_1, REEF_2, REEF_3, REEF_4, REEF_5, REEF_6)
+                            .stream().map(state -> state.getPose2d()).collect(Collectors.toList());
 
             private FieldStates(Pose2d pose) {
                 this.pose = pose;
