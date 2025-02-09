@@ -51,37 +51,14 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         );
     }
 
-    public Command getCoralState(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition) {
-        return either(
-            setStateCommand(exclusiveState)
-            // .until(()-> manipulator.hasObjectPresent() != hasObjectPresent)
-            .andThen(waitSeconds(1))
-            .andThen(setStateCommand(NEUTRAL)),
-            setStateCommand(defaultState),
-            condition
-        );
-    }
-
-    public Command getCoralState(RobotStates defaultState, RobotStates exclusiveState) {
-        return getCoralState(defaultState, exclusiveState, ()-> stateEquals(defaultState));
-    }
-
-    public Command getAlgaeState(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition) {
-        return either(
-            setStateCommand(exclusiveState)
-            .withTimeout(1)
-            .andThen(setStateCommand(NEUTRAL)),
-            setStateCommand(defaultState),
-            condition
-        );
-    }
-
     public Command getTempToggleCommand(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition, double delay) {
         return either(
-            setStateCommand(exclusiveState)
-            .withTimeout(delay)
-            .andThen(setStateCommand(NEUTRAL)), 
-            updateSubsystemStates(defaultState), 
+            sequence(
+                setStateCommand(exclusiveState),
+                waitSeconds(1),
+                setStateCommand(NEUTRAL)
+            ),
+            setStateCommand(defaultState), 
             condition
         );
     }
@@ -96,8 +73,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     public Command getToggleCommand(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition) {
         return either(
-            updateSubsystemStates(exclusiveState), 
-            updateSubsystemStates(defaultState), 
+            setStateCommand(exclusiveState), 
+            setStateCommand(defaultState), 
             condition
         );
     }

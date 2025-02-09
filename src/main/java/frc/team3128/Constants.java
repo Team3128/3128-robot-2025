@@ -1,5 +1,7 @@
 package frc.team3128;
 
+import static frc.team3128.Constants.SwerveConstants.DRIVE_TRACK_WIDTH;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -171,14 +173,13 @@ public class Constants {
         public static final double MOD0_CANCODER_OFFSET = -119.970703125; 
         public static final double MOD1_CANCODER_OFFSET = -64.951171875; 
         public static final double MOD2_CANCODER_OFFSET = 66.26953125; 
-        public static final double MOD3_CANCODER_OFFSET = 17.9296875; 
+        public static final double MOD3_CANCODER_OFFSET = 18.720703125; 
 
 
         public static final double RAMP_TIME = 3;
 
         /* Drivetrain Constants */
-        public static final double ROBOT_MASS = 35.210; //kg
-        public static final double ROBOT_MOI = 3.6576; //kg m^2 mass * (trackWidth / 2) * (Ka angular / Ka linear)
+        public static final double ROBOT_MASS = 62; //kg
         public static final double WHEEL_COF = 1.43;
         public static final double DRIVE_BUMPER_LENGTH = Units.inchesToMeters(5);
         public static final double DRIVE_TRACK_WIDTH = Units.inchesToMeters(20.75); //Hand measure later
@@ -186,6 +187,7 @@ public class Constants {
         public static final double ROBOT_LENGTH = Units.inchesToMeters(26.5) + DRIVE_BUMPER_LENGTH; // bumperLength + trackWidth;
         public static final double DRIVE_WHEEL_DIAMETER = Units.inchesToMeters(4);
         public static final double DRIVE_WHEEL_CIRCUMFERENCE = DRIVE_WHEEL_DIAMETER * Math.PI;
+        public static final double ROBOT_MOI = ROBOT_MASS * (DRIVE_TRACK_WIDTH / 2) * 0.44965 / 0.4443; //kg m^2 mass * (trackWidth / 2) * (Ka angular / Ka linear)
 
         public static final double closedLoopRamp = 0.0;
 
@@ -210,15 +212,15 @@ public class Constants {
         public static final double DRIVE_MOTOR_KF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double DRIVE_MOTOR_KS = 0.13023; //0.19057;//0.60094; // 0.19225;
-        public static final double DRIVE_MOTOR_KV = 1.92348; //2.01208;//1.1559;  // 2.4366
-        public static final double DRIVE_MOTOR_KA = 0.10274; //0.09043; //0.12348; // 0.34415
+        public static final double DRIVE_MOTOR_KS = 0.16746;//0.13023; //0.19057;//0.60094; // 0.19225;
+        public static final double DRIVE_MOTOR_KV = 1.95619;//1.92348; //2.01208;//1.1559;  // 2.4366
+        public static final double DRIVE_MOTOR_KA = 0.4443;//0.10274; //0.09043; //0.12348; // 0.34415
 
         /* Swerve Profiling Values */
         // Theoretical: v = 4.96824, omega = 11.5
         // Real: v = 4.5, omega = 10
         // For safety, use less than theoretical and real values
-        public static final double MAX_DRIVE_SPEED = 4.57;//4.8; //meters per second - 16.3 ft/sec
+        public static final double MAX_DRIVE_SPEED = 6;//4.57;//4.8; //meters per second - 16.3 ft/sec
         public static final double MAX_ATTAINABLE_DRIVE_SPEED = MAX_DRIVE_SPEED; //Stole from citrus.
         public static final double MAX_DRIVE_ACCELERATION = 5;
         public static final double MAX_DRIVE_ANGULAR_VELOCITY = 8;
@@ -502,8 +504,8 @@ public class Constants {
 
     public static class ClimberConstants {
         
-        public static final int CLIMBER_LEADER_ID = 20;
-        public static final int CLIMBER_FOLLOWER_ID = 21;
+        public static final int CLIMBER_WINCH_ID = 20;
+        public static final int CLIMB_ROLLER_ID = 21;
 
         public static final double CLIMBER_GEAR_RATIO = 1;
         public static final double CLIMBER_SAMPLE_PER_MINUTE = 60;
@@ -516,8 +518,12 @@ public class Constants {
         public static final double CLIMBER_POSITION_MAX = 1;
         public static final double CLIMBER_TOLERANCE = 0.01;
 
-        public static final int WINCH_SERVO_ID = 0;
-        public static final int LOCK_SERVO_ID = 1;
+        public static final double CLIMB_ROLLER_GEAR_RATIO = 999999;
+        public static final double CLIMB_ROLLER_SAMPLE_PER_MINUTE = 999999;
+        public static final int CLIMB_ROLLER_STATOR_CURRENT_LIMIT = 999999;
+        public static final boolean CLIMB_ROLLER_INVERT = false;
+        public static final Neutral CLIMB_ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
+
     }
 
     public static class ManipulatorConstants {

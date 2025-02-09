@@ -1,10 +1,12 @@
- package frc.team3128.subsystems.Intake;
+package frc.team3128.subsystems.Intake;
 
 import common.core.subsystems.VoltageSubsystemBase;
- import common.hardware.motorcontroller.NAR_TalonFX;
- import edu.wpi.first.wpilibj.DigitalInput;
+import common.hardware.motorcontroller.NAR_TalonFX;
+import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
+import edu.wpi.first.wpilibj.DigitalInput;
  import edu.wpi.first.wpilibj2.command.Command;
  import common.hardware.motorcontroller.NAR_CANSpark;
+ import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
  import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
  import common.utility.shuffleboard.NAR_Shuffleboard;
 
@@ -12,12 +14,21 @@ import common.core.subsystems.VoltageSubsystemBase;
 
  public class RollerMechanism extends VoltageSubsystemBase {
 
-     protected static NAR_CANSpark leader = new NAR_CANSpark(ROLLER_LEADER_ID);
-      protected static DigitalInput firstSensor = new DigitalInput(FIRST_SENSOR_ID);
+    public static RollerMechanism instance;
 
-     public RollerMechanism() {
+     protected static NAR_CANSpark leader = new NAR_CANSpark(ROLLER_LEADER_ID, ControllerType.CAN_SPARK_FLEX);
+
+     private RollerMechanism() {
          super(leader);
      }
+
+    public static RollerMechanism getInstance() {
+        if (instance == null) {
+            instance = new RollerMechanism();
+        }
+
+        return instance;
+    }
 
      @Override
      protected void configMotors() {

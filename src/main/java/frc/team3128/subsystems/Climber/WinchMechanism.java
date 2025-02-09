@@ -9,17 +9,23 @@ import static frc.team3128.Constants.ClimberConstants.*;
 
 public class WinchMechanism extends PositionSubsystemBase {
 
-    private static PIDFFConfig config = new PIDFFConfig(1, 1, 1);
+    public static WinchMechanism instance;
+
+    private static PIDFFConfig config = new PIDFFConfig(0, 0, 0);
     protected static Controller controller = new Controller(config, Controller.Type.POSITION);
 
-    public static NAR_CANSpark leader = new NAR_CANSpark(CLIMBER_LEADER_ID);
-    // public static NAR_CANSpark follower = new NAR_CANSpark(CLIMBER_FOLLOWER_ID);
+    public static NAR_CANSpark leader = new NAR_CANSpark(CLIMBER_WINCH_ID);
 
-    // public PWM winchServo = new PWM(WINCH_SERVO_ID);
-    // public PWM lockServo = new PWM(LOCK_SERVO_ID);
-
-    public WinchMechanism() {
+    private WinchMechanism() {
         super(controller, leader);
+    }
+
+    public static WinchMechanism getInstance() {
+        if (instance == null) {
+            instance = new WinchMechanism();
+        }
+
+        return instance;
     }
 
     @Override
@@ -33,8 +39,6 @@ public class WinchMechanism extends PositionSubsystemBase {
         CLIMBER_STATUS_FRAME);
 
         leader.configMotor(motorConfig);
-        //TODO: fix follower config
-        // follower.configMotor(motorConfig);
     }
 
     @Override
@@ -42,5 +46,9 @@ public class WinchMechanism extends PositionSubsystemBase {
        controller.setInputRange(CLIMBER_POSITiON_MIN, CLIMBER_POSITION_MAX);
        controller.configureFeedback(leader);
        controller.setTolerance(CLIMBER_TOLERANCE);
-    }   
+    } 
+    
+    public boolean atSetpoint(double setpoint){
+        return Math.abs(controller.getMeasurement() - setpoint) < CLIMBER_TOLERANCE;
+    }
 }
