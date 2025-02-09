@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -253,6 +254,9 @@ public class Constants {
             snapToAngles.add(Rotation2d.fromDegrees(120));
             snapToAngles.add(Rotation2d.fromDegrees(180));
         }
+
+        public static final Translation2d MANIP_OFFSET= new Translation2d(Units.inchesToMeters(13), Units.inchesToMeters(-6.25));
+
     }
 
     public static class VisionConstants {

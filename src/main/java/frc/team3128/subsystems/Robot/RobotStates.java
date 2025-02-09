@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.team3128.subsystems.Climber.ClimberStates;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Intake.IntakeStates;
+import frc.team3128.subsystems.Led.LedStates;
 import frc.team3128.subsystems.Manipulator.ManipulatorStates;
 import io.vavr.collection.List;
 
@@ -33,6 +34,7 @@ public enum RobotStates {
     private IntakeStates intake;
     private ManipulatorStates manipulator;
     private ClimberStates climber;
+    private LedStates led;
     private double throttle;
     private Translation2d position;
 

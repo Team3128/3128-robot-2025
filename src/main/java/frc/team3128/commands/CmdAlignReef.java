@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -13,12 +14,15 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.Robot;
+import frc.team3128.Constants.LedConstants.Colors;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Led.Led;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
 
 import static frc.team3128.Constants.FieldConstants.FieldStates.*;
 import static frc.team3128.Constants.FieldConstants.*;
+import static frc.team3128.Constants.SwerveConstants.*;
 
 
 public class CmdAlignReef extends Command {
@@ -29,12 +33,13 @@ public class CmdAlignReef extends Command {
     private Translation2d rightShift;
     private Translation2d leftShift;
 
-    private Translation2d MANIP_OFFSET = new Translation2d(Units.inchesToMeters(12), Units.inchesToMeters(0.25));
-
-    private double tolerance;
+    private double tolerance = 0.05;
+    private Led led;
 
     public CmdAlignReef() {
         swerve = Swerve.getInstance();
+        led = Led.getInstance();
+        addRequirements(led);
     }
 
     @Override
@@ -60,14 +65,17 @@ public class CmdAlignReef extends Command {
         double error = pose.minus(tracking).getNorm();
 
         if(error < tolerance) {
+            led.setLedColor(Colors.GREEN, 1);
             return;
         }
 
         if(cross > 0) {
             //left led
+            led.setLedColor(Colors.PURPLE, tolerance/error);
         }
         else if(cross < 0) {
             //right led
+            led.setLedColor(Colors.ORANGE, tolerance/error);
         }
     }
 

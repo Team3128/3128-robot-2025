@@ -17,8 +17,12 @@ public enum LedStates {
 
     public static List<LedStates> functionalStates = List.of(DISABLED, ENABLED, PROXIMITY, AUTO);
 
-    private LedStates(Colors color) {
+    private LedStates(Colors color, boolean proximity) {
         this.color = color;
+    }
+
+    private LedStates(Colors color) {
+        this(color, false);
     }
 
     public Colors getColor() {

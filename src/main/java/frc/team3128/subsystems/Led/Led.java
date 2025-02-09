@@ -2,7 +2,10 @@ package frc.team3128.subsystems.Led;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.team3128.commands.CmdAlignReef;
 
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
@@ -13,8 +16,12 @@ import com.ctre.phoenix.led.FireAnimation;
 import static frc.team3128.Constants.LedConstants.*;
 import static frc.team3128.subsystems.Led.LedStates.*;
 
+import java.util.List;
+
 public class Led extends FSMSubsystemBase<LedStates> {
-    private static Led instance;
+
+    public static Led instance;
+
     private final CANdle m_candle = new CANdle(CANDLE_ID);
 
     private static TransitionMap<LedStates> transitionMap = new TransitionMap<LedStates>(LedStates.class);
@@ -28,7 +35,7 @@ public class Led extends FSMSubsystemBase<LedStates> {
         return instance;
     }
 
-    public Led() {
+    private Led() {
         super(LedStates.class, transitionMap);
         configCandle();   
     }
@@ -43,25 +50,22 @@ public class Led extends FSMSubsystemBase<LedStates> {
 
     @Override
     public void registerTransitions() {
-        transitionMap.addCommutativeTransition(functionalStates.asJava(), state -> {return runOnce(()-> setLedColor(state));});
+        transitionMap.addConvergingTransition(PROXIMITY, new CmdAlignReef());
+        transitionMap.addCommutativeTransition(List.of(DISABLED, ENABLED, AUTO), state -> runOnce(() -> setLedColor(state)));
+        transitionMap.addDivergingTransition(PROXIMITY, state -> runOnce(() -> setLedColor(state)).beforeStarting(() -> CommandScheduler.getInstance().requiring(Led.getInstance()).cancel()));
     }
 
     //Set Elevator Leds
     public void setLedColor(LedStates ledState) {
-        if (ledState != LedStates.PROXIMITY) {
-            resetAnimationSlot(2);
+        setLedColor(ledState, 1);
+    }
 
-            if (ledState.getColor().animation) {
-                if (ledState.getColor() == Colors.FLAME) {
-                    m_candle.animate(new FireAnimation(BRIGHTNESS, r_SPEED, NUM_LED, SPARKING, COOLING), 1);
-                }
-            } else {
-                m_candle.animate(new ColorFlowAnimation(ledState.getColor().r, ledState.getColor().g, ledState.getColor().b, WHITE_VALUE, r_SPEED, NUM_LED, ColorFlowAnimation.Direction.Forward, 5), 0);
-            }
-        } else {
-            //help
-            //level raise with closeness yes
-        }
+    public void setLedColor(LedStates ledState, double percent) {
+        m_candle.setLEDs(ledState.getColor().r, ledState.getColor().g, ledState.getColor().b, 0, 4, MathUtil.clamp((int) (percent * 27), 0, 27));
+    }
+
+    public void setLedColor(Colors color, double percent) {
+        m_candle.setLEDs(color.r, color.g, color.b, 0, 4, MathUtil.clamp((int) (percent * 27), 0, 27));
     }
 
     public void resetAnimationSlot(int slots) {
