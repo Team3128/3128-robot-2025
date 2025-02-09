@@ -34,6 +34,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Climber.Climber;
+import frc.team3128.subsystems.Climber.WinchMechanism;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
@@ -69,8 +71,10 @@ public class RobotContainer {
     // Create all subsystems
     private RobotManager robot;
     private ElevatorMechanism elevator;
-    private Manipulator manipulator;
+    // private Manipulator manipulator;
     private Swerve swerve;
+
+    private WinchMechanism winch;
 
     // private NAR_ButtonBoard judgePad;
     private NAR_ButtonBoard buttonPad;
@@ -86,6 +90,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         swerve = Swerve.getInstance();
+        winch = WinchMechanism.getInstance();
         
         NAR_CANSpark.maximumRetries = 2;
         NAR_TalonFX.maximumRetries = 2;
@@ -101,7 +106,7 @@ public class RobotContainer {
 
         robot = RobotManager.getInstance();
         elevator = ElevatorMechanism.getInstance();
-        manipulator = Manipulator.getInstance();
+        // manipulator = Manipulator.getInstance();
 
         //uncomment line below to enable driving
         // CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
@@ -118,11 +123,12 @@ public class RobotContainer {
         // buttonPad.getButton(1).whileTrue(runOnce(()-> swerve.setBrakeMode(false))).onFalse(runOnce(()-> swerve.setBrakeMode(true)));
         // buttonPad.getButton(2).onTrue(swerve.identifyOffsetsCommand().ignoringDisable(true));
         // buttonPad.getButton(3).onTrue(runOnce(()-> robot.setNeutralMode(Neutral.COAST))).onFalse(runOnce(()-> robot.setNeutralMode(Neutral.BRAKE)));
+        buttonPad.getButton(4).onTrue(Climber.getInstance().resetCommand().ignoringDisable(true));
 
-        // controller.getButton(kA).onTrue(robot.getTempToggleCommand(RPL1, RSL1));
-        // controller.getButton(kB).onTrue(robot.getTempToggleCommand(RPL2, RSL2));
-        // controller.getButton(kX).onTrue(robot.getTempToggleCommand(RPL3, RSL3));
-        // controller.getButton(kY).onTrue(robot.getTempToggleCommand(RPL4, RSL4));
+         controller.getButton(kA).onTrue(robot.getTempToggleCommand(RPL1, RSL1));
+         controller.getButton(kB).onTrue(robot.getTempToggleCommand(RPL2, RSL2));
+         controller.getButton(kX).onTrue(robot.getTempToggleCommand(RPL3, RSL3));
+         controller.getButton(kY).onTrue(robot.getTempToggleCommand(RPL4, RSL4));
 
         controller.getButton(kLeftTrigger).onTrue(robot.getToggleCommand(INTAKE));
         controller.getButton(kLeftBumper).onTrue(robot.getToggleCommand(EJECT_OUTTAKE));
@@ -132,17 +138,21 @@ public class RobotContainer {
         controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
         controller.getButton(kStart).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
 
-        // controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
-        // controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetEncoders()));
+        controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
+        controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetEncoders()));
 
-        controller2.getButton(kX).onTrue(
-            swerve.characterize(0, 1, 10)
-                .beforeStarting(() -> swerve.zeroLock())
-        );
-        controller2.getButton(kY).onTrue(
-            swerve.characterize(0, 1, 10)
-                .beforeStarting(() -> swerve.oLock())
-        );
+        // controller2.getButton(kX).onTrue(
+        //     swerve.characterize(0, 1, 10)
+        //         .beforeStarting(() -> swerve.zeroLock())
+        // );
+        // controller2.getButton(kY).onTrue(
+        //     swerve.characterize(0, 1, 10)
+        //         .beforeStarting(() -> swerve.oLock())
+        // );
+
+        controller2.getButton(kA).onTrue(winch.runCommand(0.8)).onFalse(winch.runCommand(0));
+        controller2.getButton(kB).onTrue(winch.runCommand(-0.8)).onFalse(winch.runCommand(0));
+        controller2.getButton(kX).onTrue(winch.resetCommand());
 
         new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
         // new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));
@@ -157,9 +167,9 @@ public class RobotContainer {
         Camera.setResources(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), new AprilTagFieldLayout(APRIL_TAGS, FIELD_X_LENGTH, FIELD_Y_LENGTH), () -> swerve.getPose());
         Camera.setThresholds(5,  10);
         if (Robot.isReal()) {
-            Camera backRightCamera = new Camera("BOTTOM_RIGHT", Units.inchesToMeters(10.055), -Units.inchesToMeters(9.79),  Units.degreesToRadians(-30), Units.degreesToRadians(-28.125), 0);
-            Camera backLeftCamera = new Camera("BOTTOM_LEFT", Units.inchesToMeters(10.055), Units.inchesToMeters(9.79), Units.degreesToRadians(30), Units.degreesToRadians(-28.125), 0);
-            Camera topCamera = new Camera("TOP", -Units.inchesToMeters(6), -Units.inchesToMeters(12.5), Units.degreesToRadians(180), Units.degreesToRadians(-45), 0);
+            Camera backRightCamera = new Camera("BOTTOM_RIGHT", Units.inchesToMeters(10.055), -Units.inchesToMeters(9.79),  0, Units.degreesToRadians(-28.125), 0);
+            Camera backLeftCamera = new Camera("BOTTOM_LEFT", Units.inchesToMeters(10.055), Units.inchesToMeters(9.79), 0, Units.degreesToRadians(-28.125), 0);
+            // Camera topCamera = new Camera("TOP", -Units.inchesToMeters(6), -Units.inchesToMeters(12.5), Units.degreesToRadians(180), Units.degreesToRadians(-45), 0);
         }
     }
 

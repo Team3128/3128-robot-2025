@@ -4,13 +4,14 @@ import static frc.team3128.Constants.ClimberConstants.*;
 
 import common.core.subsystems.VoltageSubsystemBase;
 import common.hardware.motorcontroller.NAR_CANSpark;
+import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 
 public class RollerMechanism extends VoltageSubsystemBase  {
 
     public static RollerMechanism instance;
 
-    protected static NAR_CANSpark leader = new NAR_CANSpark(CLIMB_ROLLER_ID);
+    protected static NAR_CANSpark leader = new NAR_CANSpark(CLIMB_ROLLER_ID, ControllerType.CAN_SPARK_FLEX);
 
     private RollerMechanism() {
         super(leader);

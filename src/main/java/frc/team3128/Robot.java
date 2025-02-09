@@ -7,21 +7,19 @@ package frc.team3128;
 import java.util.Optional;
 
 import common.core.misc.NAR_Robot;
-import common.core.swerve.SwerveModule;
 import common.hardware.camera.Camera;
 import common.utility.Log;
 import static common.utility.Log.Type.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Climber.WinchMechanism;
 // import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
-import static frc.team3128.Constants.SwerveConstants.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -71,13 +69,14 @@ public class Robot extends NAR_Robot {
     public void robotPeriodic(){
         CommandScheduler.getInstance().run();
         Camera.updateAll();
+        Log.info("Winch pos",""+WinchMechanism.getInstance().leader.getPosition());
+        Log.info("Winch measurement",""+WinchMechanism.getInstance().getController().getMeasurement());
     }
 
     @Override
     public void autonomousInit() {
         CommandScheduler.getInstance().cancelAll();
-        Command m_autonomousCommand = AutoPrograms.getInstance().getAutonomousCommand();
-        CommandScheduler.getInstance().schedule(m_autonomousCommand);
+        AutoPrograms.getInstance().getAutonomousCommand().schedule();
     }
 
     @Override
@@ -95,10 +94,6 @@ public class Robot extends NAR_Robot {
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
         RobotManager.getInstance().setState(RobotStates.NEUTRAL);
-        // for (SwerveModule module : Swerve.getInstance().getModules()) {
-        //     module.setBrakeMode(true);
-        // }
-        Log.info("Robot MOI", ""+ROBOT_MOI);
     }
 
     @Override
@@ -127,6 +122,7 @@ public class Robot extends NAR_Robot {
     @Override
     public void disabledExit() {
         Swerve.getInstance().setBrakeMode(true);
+        RobotManager.getInstance().stop();
     }
     
     // @Override

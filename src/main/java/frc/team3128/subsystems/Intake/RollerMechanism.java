@@ -1,12 +1,9 @@
 package frc.team3128.subsystems.Intake;
 
 import common.core.subsystems.VoltageSubsystemBase;
-import common.hardware.motorcontroller.NAR_TalonFX;
 import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
-import edu.wpi.first.wpilibj.DigitalInput;
- import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Command;
  import common.hardware.motorcontroller.NAR_CANSpark;
- import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
  import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
  import common.utility.shuffleboard.NAR_Shuffleboard;
 
@@ -19,7 +16,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
      protected static NAR_CANSpark leader = new NAR_CANSpark(ROLLER_LEADER_ID, ControllerType.CAN_SPARK_FLEX);
 
      private RollerMechanism() {
-         super(leader);
+        super(leader);
+        initShuffleboard();
      }
 
     public static RollerMechanism getInstance() {
@@ -56,6 +54,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
  	@Override
  	public void initShuffleboard() {
-        
+        NAR_Shuffleboard.addData("Intake Current", "Current", ()-> getCurrent(), 0, 0);
  	}
  }

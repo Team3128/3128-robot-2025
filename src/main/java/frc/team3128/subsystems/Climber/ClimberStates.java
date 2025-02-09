@@ -2,9 +2,9 @@ package frc.team3128.subsystems.Climber;
 
 public enum ClimberStates {
     UNDEFINED,
-    NEUTRAL,
-    CLIMB_PRIME(8000.0, 0.5, 0.5),
-    CLIMB(0.0, -0.5, 0);
+    NEUTRAL(0, -1, 0),
+    CLIMB_PRIME(100.0, 1, 0.5),
+    CLIMB(80, -1, 0);
 
     private double angle;
     private double winchPower;
