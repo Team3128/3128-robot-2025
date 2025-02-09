@@ -243,9 +243,38 @@ public class Swerve extends SwerveBase {
         Pose2d setpoint = pose.nearest(List.of(REEF_1, REEF_2, REEF_3, REEF_4, REEF_5, REEF_6)
                                 .stream().map(state -> state.getPose2d()).collect(Collectors.toList()));
         setpoint = allianceFlip(setpoint);
+        snappedReef = setpoint;
         rotateTo(setpoint.getRotation());
         Rotation2d shiftDirection = setpoint.getRotation().plus(Rotation2d.fromDegrees(90 * (isRight ? -1 : 1)));
         moveTo(setpoint.getTranslation().plus(reefShift.rotateBy(shiftDirection)));
+    }
+
+    public void snapToReef() {
+        final Pose2d pose = Swerve.getInstance().getPose();
+        Pose2d setpoint = pose.nearest(List.of(REEF_1, REEF_2, REEF_3, REEF_4, REEF_5, REEF_6)
+                                .stream().map(state -> state.getPose2d()).collect(Collectors.toList()));
+        setpoint = allianceFlip(setpoint);
+        snappedReef = setpoint;
+        rotateTo(setpoint.getRotation());
+
+        //CALCULATE isRight
+        Translation2d rotatedDistance = getDistanceTo(snappedReef.getTranslation()).rotateBy(snappedReef.getRotation().times(-1));
+        boolean isRight = (rotatedDistance.getY() > 0) ? true : false;
+
+        Rotation2d shiftDirection = setpoint.getRotation().plus(Rotation2d.fromDegrees(90 * (isRight ? -1 : 1)));
+        moveTo(setpoint.getTranslation().plus(reefShift.rotateBy(shiftDirection)));
+    }
+
+    public static Pose2d snappedReef;
+
+    public double getDistanceProximity() {
+        // y=100^(-x)
+        double distance = getDistanceTo(snappedReef.getTranslation()).getNorm();
+        return Math.round(Math.pow(100, -1 * distance));
+    }
+
+    public double getSideProximity() {
+        return 0.0;
     }
 
     public void snapToSource() {
