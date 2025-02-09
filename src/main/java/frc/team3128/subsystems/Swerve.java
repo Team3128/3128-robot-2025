@@ -97,7 +97,7 @@ public class Swerve extends SwerveBase {
 
     // x * kP = dx/dt && (v_max)^2 = 2*a_max*x
     public static final Constraints translationConstraints = new Constraints(MAX_DRIVE_SPEED, MAX_DRIVE_ACCELERATION);
-    public static final PIDFFConfig translationConfig = new PIDFFConfig(2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
+    public static final PIDFFConfig translationConfig = new PIDFFConfig(5);//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller translationController = new Controller(translationConfig, Controller.Type.POSITION); //Displacement error to output velocity
     public static final double translationTolerance = 0.02;
 
@@ -279,6 +279,7 @@ public class Swerve extends SwerveBase {
 
     public Command characterize(double startDelay, double rampRate, double targetPosition) {
         NAR_Motor driveMotor = modules[0].getDriveMotor();
+        final double startPos = driveMotor.getPosition();
         return new CmdSysId(
             getName(), 
             (volts)-> setDriveVoltage(volts), 
@@ -286,7 +287,7 @@ public class Swerve extends SwerveBase {
             ()-> driveMotor.getPosition(), 
             startDelay, 
             rampRate, 
-            targetPosition, 
+            startPos + targetPosition, 
             true, 
             this
         );

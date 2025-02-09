@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 5.15,
-        "y": 2.9
+        "y": 2.9000000000000004
       },
       "isLocked": false,
       "linkedName": "BLUE_BARGE"

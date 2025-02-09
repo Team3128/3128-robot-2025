@@ -7,17 +7,21 @@ package frc.team3128;
 import java.util.Optional;
 
 import common.core.misc.NAR_Robot;
+import common.core.swerve.SwerveModule;
 import common.hardware.camera.Camera;
 import common.utility.Log;
 import static common.utility.Log.Type.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Swerve;
 // import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
+import static frc.team3128.Constants.SwerveConstants.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -54,17 +58,13 @@ public class Robot extends NAR_Robot {
         LiveWindow.disableAllTelemetry();
         // Log.logDebug = true;
         Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM, MOTOR);
+
     }
 
     @Override
     public void driverStationConnected() {
         Log.info("State", "DS Connected");
         Log.info("Alliance", getAlliance().toString());
-        if (getAlliance() == Alliance.Red) {
-            Camera.addIgnoredTags(3, 4, 5, 11, 12);
-        } else {
-            Camera.addIgnoredTags(6, 7, 8, 15, 16);
-        }
     }
 
     @Override
@@ -76,11 +76,8 @@ public class Robot extends NAR_Robot {
     @Override
     public void autonomousInit() {
         CommandScheduler.getInstance().cancelAll();
-        Camera.enableAll();
-        // Command m_autonomousCommand = AutoPrograms.getInstance().getAutonomousCommand();
-        // if (m_autonomousCommand != null) {
-        //     m_autonomousCommand.schedule();
-        // }
+        Command m_autonomousCommand = AutoPrograms.getInstance().getAutonomousCommand();
+        CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
 
     @Override
@@ -90,10 +87,18 @@ public class Robot extends NAR_Robot {
     }
 
     @Override
+    public void autonomousExit() {
+        CommandScheduler.getInstance().cancelAll();
+    }
+
+    @Override
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
-        Camera.enableAll();
         RobotManager.getInstance().setState(RobotStates.NEUTRAL);
+        // for (SwerveModule module : Swerve.getInstance().getModules()) {
+        //     module.setBrakeMode(true);
+        // }
+        Log.info("Robot MOI", ""+ROBOT_MOI);
     }
 
     @Override
@@ -119,10 +124,10 @@ public class Robot extends NAR_Robot {
         RobotManager.getInstance().stop();
     }
 
-    // @Override
-    // public void disabledExit() {
-    //     Swerve.getInstance().setBrakeMode(true);
-    // }
+    @Override
+    public void disabledExit() {
+        Swerve.getInstance().setBrakeMode(true);
+    }
     
     // @Override
     // public void disabledPeriodic() {

@@ -135,7 +135,16 @@ public class RobotContainer {
         // controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
         // controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetEncoders()));
 
-        // new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
+        controller2.getButton(kX).onTrue(
+            swerve.characterize(0, 1, 10)
+                .beforeStarting(() -> swerve.zeroLock())
+        );
+        controller2.getButton(kY).onTrue(
+            swerve.characterize(0, 1, 10)
+                .beforeStarting(() -> swerve.oLock())
+        );
+
+        new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
         // new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
         // controller.getDownPOVButton().onTrue(runOnce(()-> swerve.setPose(FieldStates.PROCESSOR.getPose2d())));
@@ -148,10 +157,9 @@ public class RobotContainer {
         Camera.setResources(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), new AprilTagFieldLayout(APRIL_TAGS, FIELD_X_LENGTH, FIELD_Y_LENGTH), () -> swerve.getPose());
         Camera.setThresholds(5,  10);
         if (Robot.isReal()) {
-            // Camera frontRightCamera = new Camera("FRONT_RIGHT", Units.inchesToMeters(10.055), Units.inchesToMeters(9.79), Units.degreesToRadians(30), Units.degreesToRadians(-28.125), 0);
-            // Camera frontLeftCamera = new Camera("FRONT_LEFT", Units.inchesToMeters(13.5), -Units.inchesToMeters(0), Units.degreesToRadians(0), Units.degreesToRadians(0), 0);
-            // Camera backRightCamera = new Camera("BACK_RIGHT", -Units.inchesToMeters(10.055), Units.inchesToMeters(9.79),  Units.degreesToRadians(150), Units.degreesToRadians(-28.125), 0);
-            // Camera backLeftCamera = new Camera("BACK_LEFT", -Units.inchesToMeters(10.055), -Units.inchesToMeters(9.79), Units.degreesToRadians(-150), Units.degreesToRadians(-28.125), 0);
+            Camera backRightCamera = new Camera("BOTTOM_RIGHT", Units.inchesToMeters(10.055), -Units.inchesToMeters(9.79),  Units.degreesToRadians(-30), Units.degreesToRadians(-28.125), 0);
+            Camera backLeftCamera = new Camera("BOTTOM_LEFT", Units.inchesToMeters(10.055), Units.inchesToMeters(9.79), Units.degreesToRadians(30), Units.degreesToRadians(-28.125), 0);
+            Camera topCamera = new Camera("TOP", -Units.inchesToMeters(6), -Units.inchesToMeters(12.5), Units.degreesToRadians(180), Units.degreesToRadians(-45), 0);
         }
     }
 
