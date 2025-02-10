@@ -23,15 +23,8 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
     private Function<Neutral, Command> setNeutralMode = mode -> runOnce(() -> getMechanisms().forEach(subsystem -> subsystem.setNeutralMode(mode)));
     private Function<ClimberStates, Command> defaultTransitioner = state -> {
         return sequence(
-            RollerMechanism.getInstance().runCommand(state.getRollerPower()),
-            sequence(
-                // runOnce(()-> WinchMechanism.getInstance().getController().setSetpoint(state.getAngle())),
-                // WinchMechanism.getInstance().runCommand(state.getWinchPower()),
-                WinchMechanism.getInstance().pidTo(state.getAngle()),
-                waitUntil(()->WinchMechanism.getInstance().atSetpoint()),
-                WinchMechanism.getInstance().stopCommand()
-            )
-
+            roller.runCommand(state.getRollerPower()),
+            winch.pidTo(state.getAngle())
         );
     };
 

@@ -1,6 +1,6 @@
 package frc.team3128.subsystems.Climber;
 
-import common.core.controllers.Controller;
+import common.core.controllers.*;
 import common.core.controllers.PIDFFConfig;
 import common.core.subsystems.PositionSubsystemBase;
 import common.hardware.motorcontroller.NAR_CANSpark;
@@ -12,8 +12,8 @@ public class WinchMechanism extends PositionSubsystemBase {
 
     public static WinchMechanism instance;
 
-    private static PIDFFConfig config = new PIDFFConfig(0.00001, 0, 0, 12, 0, 0, 0);
-    protected static Controller controller = new Controller(config, Controller.Type.POSITION);
+    private static PIDFFConfig config = new PIDFFConfig(0, 0, 0, 12, 0, 0, 0);
+    protected static ControllerBase controller = new FFController(config, FFController.Type.POSITION);
 
     public static NAR_CANSpark leader = new NAR_CANSpark(CLIMBER_WINCH_ID, ControllerType.CAN_SPARK_FLEX);
 
