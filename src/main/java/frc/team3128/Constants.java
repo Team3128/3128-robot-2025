@@ -496,7 +496,7 @@ public class Constants {
         public static final int CLIMB_ROLLER_ID = 21;
 
 
-        public static final double CLIMBER_GEAR_RATIO = 90/450;
+        public static final double CLIMBER_GEAR_RATIO = 90.0 / 450.0;
         public static final double CLIMBER_SAMPLE_PER_MINUTE = 60;
         public static final int CLIMBER_STATOR_CURRENT_LIMIT = 40;
         public static final boolean CLIMBER_INVERT = false;
@@ -505,7 +505,7 @@ public class Constants {
 
         public static final double CLIMBER_POSITiON_MIN = 0;
         public static final double CLIMBER_POSITION_MAX = 180;
-        public static final double CLIMBER_TOLERANCE = 1;
+        public static final double CLIMBER_TOLERANCE = 5;
 
         public static final double CLIMB_ROLLER_GEAR_RATIO = 1;
         public static final double CLIMB_ROLLER_SAMPLE_PER_MINUTE = 60;
