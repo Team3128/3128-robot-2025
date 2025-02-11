@@ -298,7 +298,7 @@ public class Constants {
             BLUE_BARGE,
             CENTER_BARGE,
             RED_BARGE,
-            REEF_1(new Pose2d(new Translation2d(5.80, 4.05), Rotation2d.fromDegrees(180))),
+            REEF_1(new Pose2d(new Translation2d(5.75, 4.05), Rotation2d.fromDegrees(180))),
             REEF_2(new Pose2d(new Translation2d(5.15, 5.15), Rotation2d.fromDegrees(240))),
             REEF_3(new Pose2d(new Translation2d(3.80, 5.15), Rotation2d.fromDegrees(300))),
             REEF_4(new Pose2d(new Translation2d(3.15, 4.05), Rotation2d.fromDegrees(0))),
@@ -505,7 +505,7 @@ public class Constants {
 
         public static final double CLIMBER_POSITiON_MIN = 0;
         public static final double CLIMBER_POSITION_MAX = 180;
-        public static final double CLIMBER_TOLERANCE = 5;
+        public static final double CLIMBER_TOLERANCE = 1;
 
         public static final double CLIMB_ROLLER_GEAR_RATIO = 1;
         public static final double CLIMB_ROLLER_SAMPLE_PER_MINUTE = 60;

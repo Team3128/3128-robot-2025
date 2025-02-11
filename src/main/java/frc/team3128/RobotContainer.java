@@ -114,7 +114,7 @@ public class RobotContainer {
         NAR_Shuffleboard.addSendable("RobotContainer", "NEUTRAL", robot, 0, 0).withWidget(BuiltInWidgets.kToggleSwitch);
         
         DriverStation.silenceJoystickConnectionWarning(true);
-        // initCameras();
+        initCameras();
         configureButtonBindings();
         initDashboard();
     }   
@@ -125,10 +125,10 @@ public class RobotContainer {
         // buttonPad.getButton(3).onTrue(runOnce(()-> robot.setNeutralMode(Neutral.COAST))).onFalse(runOnce(()-> robot.setNeutralMode(Neutral.BRAKE)));
         buttonPad.getButton(4).onTrue(Climber.getInstance().resetCommand().ignoringDisable(true));
 
-         controller.getButton(kA).onTrue(robot.getTempToggleCommand(RPL1, RSL1));
-         controller.getButton(kB).onTrue(robot.getTempToggleCommand(RPL2, RSL2));
-         controller.getButton(kX).onTrue(robot.getTempToggleCommand(RPL3, RSL3));
-         controller.getButton(kY).onTrue(robot.getTempToggleCommand(RPL4, RSL4));
+        controller.getButton(kA).onTrue(robot.getTempToggleCommand(RPL1, RSL1));
+        controller.getButton(kB).onTrue(robot.getTempToggleCommand(RPL2, RSL2));
+        controller.getButton(kX).onTrue(robot.getTempToggleCommand(RPL3, RSL3));
+        controller.getButton(kY).onTrue(robot.getTempToggleCommand(RPL4, RSL4));
 
         controller.getButton(kLeftTrigger).onTrue(robot.getToggleCommand(INTAKE));
         controller.getButton(kLeftBumper).onTrue(robot.getToggleCommand(EJECT_OUTTAKE));
@@ -157,7 +157,7 @@ public class RobotContainer {
         new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
         // new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
-        // controller.getDownPOVButton().onTrue(runOnce(()-> swerve.setPose(FieldStates.PROCESSOR.getPose2d())));
+        controller.getDownPOVButton().onTrue(runOnce(()-> swerve.setPose(allianceFlip(FieldStates.REEF_1.getPose2d()))));
         // controller.getRightPOVButton().onTrue(runOnce(()-> swerve.snapToReef(true)));
         // controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.snapToReef(false)));
     }

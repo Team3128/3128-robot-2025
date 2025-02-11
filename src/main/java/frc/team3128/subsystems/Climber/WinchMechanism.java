@@ -12,8 +12,8 @@ public class WinchMechanism extends PositionSubsystemBase {
 
     public static WinchMechanism instance;
 
-    private static PIDFFConfig config = new PIDFFConfig(0, 0, 0, 12, 0, 0, 0);
-    protected static ControllerBase controller = new FFController(config, FFController.Type.POSITION);
+    private static PIDFFConfig config = new PIDFFConfig(0.00001, 0, 0, 12, 0, 0, 0);
+    protected static ControllerBase controller = new Controller(config, Controller.Type.POSITION);
 
     public static NAR_CANSpark leader = new NAR_CANSpark(CLIMBER_WINCH_ID, ControllerType.CAN_SPARK_FLEX);
 

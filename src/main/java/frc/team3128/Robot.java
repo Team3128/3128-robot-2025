@@ -69,8 +69,6 @@ public class Robot extends NAR_Robot {
     public void robotPeriodic(){
         CommandScheduler.getInstance().run();
         Camera.updateAll();
-        Log.info("Winch pos",""+WinchMechanism.getInstance().leader.getPosition());
-        Log.info("Winch measurement",""+WinchMechanism.getInstance().getController().getMeasurement());
     }
 
     @Override
