@@ -2,9 +2,16 @@ package frc.team3128.subsystems.Elevator;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
+import common.utility.tester.Tester.SystemsTest;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.team3128.subsystems.Climber.ClimberStates;
+import frc.team3128.subsystems.Climber.WinchMechanism;
+import frc.team3128.subsystems.Intake.PivotMechanism;
+
 import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static frc.team3128.subsystems.Elevator.ElevatorStates.*;
+import static frc.team3128.Constants.TestingConstants.*;
+
 
 import java.util.function.Function;
 
@@ -27,6 +34,18 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
         }
 
         return instance;
+    }
+    
+    public SystemsTest getElevatorTest(ElevatorStates state){
+       return new SystemsTest(
+            "Elevator Test: " + state, 
+            setStateCommand(state).withTimeout(ELEVATOR_TEST_TIMEOUT), 
+            ()-> atState()
+        );
+    }
+
+    public boolean atState(){
+        return ElevatorMechanism.controller.atSetpoint();
     }
 
 	@Override

@@ -2,9 +2,19 @@ package frc.team3128.subsystems.Manipulator;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
+import common.utility.tester.Tester.SystemsTest;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.team3128.subsystems.Elevator.ElevatorMechanism;
+import frc.team3128.subsystems.Elevator.ElevatorStates;
+import frc.team3128.subsystems.Intake.IntakeStates;
+import frc.team3128.subsystems.Intake.PivotMechanism;
+
 import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
+import static edu.wpi.first.wpilibj2.command.Commands.sequence;
+import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static frc.team3128.subsystems.Manipulator.ManipulatorStates.*;
+
+import static frc.team3128.Constants.TestingConstants.*;
 
 import java.util.function.Function;
 
@@ -13,7 +23,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 
     public RollerMechanism roller;
     private static TransitionMap<ManipulatorStates> transitionMap = new TransitionMap<ManipulatorStates>(ManipulatorStates.class);
-    private Function<ManipulatorStates, Command> defaultTransitioner = state -> {return runVoltsCommand(state.getVolts());};
+    private Function<ManipulatorStates, Command> defaultTransitioner = state -> {return runOnce(() -> roller.run(state.getPower()));};
 
     public Manipulator() {
         super(ManipulatorStates.class, transitionMap, UNDEFINED);
@@ -27,7 +37,17 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
         }
         return instance;
     }
+    public SystemsTest getManipulatorTest(ManipulatorStates state){
+       return new SystemsTest(
+            "Manipulator Test: " + state, 
+            setStateCommand(state).withTimeout(MANIPULATOR_TEST_TIMEOUT), 
+            ()-> atState()
+        );
+    }
 
+    public boolean atState(){
+        return Math.abs(RollerMechanism.leader.getAppliedOutput() - getState().getPower()) <= ROLLER_POWER_TOLERANCE;
+    }
 	@Override
 	public void registerTransitions() {
 

@@ -2,16 +2,25 @@ package frc.team3128.subsystems.Climber;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
+import common.core.subsystems.NAR_PIDSubsystem.SetpointTest;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
+import common.utility.tester.Tester;
+import common.utility.tester.Tester.SystemsTest;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.team3128.subsystems.Elevator.ElevatorMechanism;
+
 import static frc.team3128.subsystems.Climber.ClimberStates.*;
+import static edu.wpi.first.wpilibj2.command.Commands.sequence;
+import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
+import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
+import static frc.team3128.Constants.TestingConstants.*;
 
 import java.util.function.Function;
 
 public class Climber extends FSMSubsystemBase<ClimberStates> {
     private static Climber instance;
 
-    // public WinchMechanism winch;
+    public WinchMechanism winch;
 
     private static TransitionMap<ClimberStates> transitionMap = new TransitionMap<ClimberStates>(ClimberStates.class);
 
@@ -36,6 +45,33 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 
         return instance;
     }
+
+    public SystemsTest getClimberTest(ClimberStates state){
+       return new SystemsTest(
+            "Climb Test: " + state, 
+            setStateCommand(state).withTimeout(CLIMBER_TEST_TIMEOUT), 
+            ()-> atState()
+        );
+    }
+
+    public SystemsTest getClimberTestNeutral(ClimberStates state){
+       return new SystemsTest(
+            "Climb Test: " + state, 
+            sequence(setStateCommand(NEUTRAL), waitSeconds(2), setStateCommand(state).withTimeout(CLIMBER_TEST_TIMEOUT)), 
+            ()-> atState()
+        );
+    }
+
+    public boolean atState(){
+        return WinchMechanism.controller.atSetpoint();
+    }
+    
+    // private void addClimberTests() {
+    //     Tester tester = Tester.getInstance();
+    //     for(ClimberStates state : ClimberStates.values()){
+    //         tester.addTest("Climber", getClimberTestNeutral(state));
+    //     }
+    // }
 
 	@Override
 	public void registerTransitions() {

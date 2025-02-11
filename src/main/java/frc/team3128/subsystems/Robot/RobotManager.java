@@ -2,17 +2,23 @@ package frc.team3128.subsystems.Robot;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
+import common.utility.tester.Tester.SystemsTest;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Climber.Climber;
+import frc.team3128.subsystems.Climber.WinchMechanism;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Intake.Intake;
+import frc.team3128.subsystems.Intake.IntakeStates;
 import frc.team3128.subsystems.Manipulator.Manipulator;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+
+import static frc.team3128.Constants.TestingConstants.*;
 
 public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static RobotManager instance;
@@ -39,6 +45,18 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         }
 
         return instance;
+    }
+
+    public SystemsTest getRobotTest(RobotStates state){
+        return new SystemsTest(
+            "Robot Test: " + state, 
+            updateSubsystemStates(state).withTimeout(ROBOT_TEST_TIMEOUT),
+            ()-> atState()
+        );
+    }
+
+    public boolean atState(){
+        return (elevator.atState() && climber.atState() && intake.atState() && manipulator.atState());
     }
 
     public Command updateSubsystemStates(RobotStates nextState) {

@@ -11,23 +11,23 @@ public enum ManipulatorStates {
     IN(2),
     OUT(-6);
 
-    private double volts;
+    private double power;
     private Neutral neutral;
 
     public static final List<ManipulatorStates> functionalStates = List.of(NEUTRAL, IN, OUT);
 
-    private ManipulatorStates(double volts) {
-        this.volts = volts;
+    private ManipulatorStates(double power) {
+        this.power = power;
         this.neutral = Neutral.BRAKE;
     }
 
     private ManipulatorStates() {
-        this.volts = 0;
+        this.power = 0;
         this.neutral = COAST;
     }
 
-    public double getVolts() {
-        return this.volts;
+    public double getPower() {
+        return this.power;
     }
 
     public Neutral getNeutral() {
