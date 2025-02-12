@@ -10,13 +10,16 @@ import common.core.misc.NAR_Robot;
 import common.hardware.camera.Camera;
 import common.utility.Log;
 import static common.utility.Log.Type.*;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Swerve;
-import frc.team3128.subsystems.Climber.WinchMechanism;
+import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 // import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
@@ -74,7 +77,17 @@ public class Robot extends NAR_Robot {
     @Override
     public void autonomousInit() {
         CommandScheduler.getInstance().cancelAll();
-        AutoPrograms.getInstance().getAutonomousCommand().schedule();
+        // AutoPrograms.getInstance().getAutonomousCommand().schedule();
+        sequence(
+            runOnce(()-> Swerve.getInstance().setPose(FieldStates.REEF_2.getPose2d())),
+            waitUntil(()-> (Swerve.getInstance().atRotationSetpoint() && Swerve.getInstance().atTranslationSetpoint())),
+            waitSeconds(3),
+            RobotManager.getInstance().setStateCommand(RobotStates.RPL4),
+            waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
+            RobotManager.getInstance().setStateCommand(RobotStates.RSL4),
+            waitSeconds(1),
+            RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL)
+        ).schedule();
     }
 
     @Override
@@ -114,6 +127,7 @@ public class Robot extends NAR_Robot {
     public void disabledInit() {
         CommandScheduler.getInstance().cancelAll();
         Swerve.getInstance().setBrakeMode(false);
+        Swerve.disable();
         RobotManager.getInstance().stop();
     }
 

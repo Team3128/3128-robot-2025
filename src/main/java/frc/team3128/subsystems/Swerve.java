@@ -170,7 +170,7 @@ public class Swerve extends SwerveBase {
     public void drive(ChassisSpeeds velocity){
         ChassisSpeeds initialRequest = velocity;
 
-        if(Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) < TRANSLATIONAL_DEADBAND && rotationController.isEnabled()) {
+        if(Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) < TRANSLATIONAL_DEADBAND && translationController.isEnabled() && !rotationController.isEnabled()) {
             Translation2d error = getDistanceTo(translationSetpoint);
             Translation2d output = new Translation2d(translationController.calculate(error.getNorm()), error.getAngle());
             velocity.vxMetersPerSecond = output.getX();
@@ -208,8 +208,8 @@ public class Swerve extends SwerveBase {
     }
 
     public void setPose(Pose2d pose){
-        moveTo(pose.getTranslation());
         rotateTo(pose.getRotation());
+        moveTo(pose.getTranslation());
     }
 
     public void moveTo(Translation2d translation) {
@@ -329,5 +329,10 @@ public class Swerve extends SwerveBase {
         super.initShuffleboard();
         NAR_Shuffleboard.addData("Swerve", "Throttle", ()-> this.throttle, 4, 3);
         NAR_Shuffleboard.addData("Rotation Controller", "SETPOINT POSE", ()-> getNearestReef().toString(), 0, 1);
+    }
+
+    public static void disable() {
+        translationController.disable();
+        rotationController.disable();
     }
 }
