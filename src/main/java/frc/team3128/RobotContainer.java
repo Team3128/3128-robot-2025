@@ -165,7 +165,10 @@ public class RobotContainer {
         new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
         // new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
-        controller.getDownPOVButton().onTrue(runOnce(()-> swerve.setPose(allianceFlip(FieldStates.REEF_1.getPose2d()))));
+        controller.getDownPOVButton().onTrue(runOnce(()-> swerve.moveTo(allianceFlip(FieldStates.REEF_1.getPose2d()).getTranslation())));
+        controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToAngle()));
+        controller.getRightPOVButton().onTrue(runOnce(()-> swerve.snapToReef(true)));
+        controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.snapToReef(false)));
         // controller.getRightPOVButton().onTrue(runOnce(()-> swerve.snapToReef(true)));
         // controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.snapToReef(false)));
     }
@@ -173,7 +176,7 @@ public class RobotContainer {
     public void initCameras() {
         Log.info("tags", APRIL_TAGS.get(0).toString());
         Camera.setResources(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), new AprilTagFieldLayout(APRIL_TAGS, FIELD_X_LENGTH, FIELD_Y_LENGTH), () -> swerve.getPose());
-        Camera.setThresholds(5,  10);
+        Camera.setThresholds(0.35, 3, 10);
         if (Robot.isReal()) {
             Camera backRightCamera = new Camera("BOTTOM_RIGHT", Units.inchesToMeters(10.055), -Units.inchesToMeters(9.79),  0, Units.degreesToRadians(-28.125), 0);
             Camera backLeftCamera = new Camera("BOTTOM_LEFT", Units.inchesToMeters(10.055), Units.inchesToMeters(9.79), 0, Units.degreesToRadians(-28.125), 0);

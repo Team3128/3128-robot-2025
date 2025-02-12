@@ -218,7 +218,7 @@ public class Constants {
         // Theoretical: v = 4.96824, omega = 11.5
         // Real: v = 4.5, omega = 10
         // For safety, use less than theoretical and real values
-        public static final double MAX_DRIVE_SPEED = 6;//4.57;//4.8; //meters per second - 16.3 ft/sec
+        public static final double MAX_DRIVE_SPEED = 3;//4.57;//4.8; //meters per second - 16.3 ft/sec
         public static final double MAX_ATTAINABLE_DRIVE_SPEED = MAX_DRIVE_SPEED; //Stole from citrus.
         public static final double MAX_DRIVE_ACCELERATION = 5;
         public static final double MAX_DRIVE_ANGULAR_VELOCITY = 8;
@@ -293,8 +293,8 @@ public class Constants {
     
     public static class FieldConstants{
 
-        public static final double FIELD_X_LENGTH = Units.inchesToMeters(651.25); // meters
-        public static final double FIELD_Y_LENGTH = Units.inchesToMeters(315.5); // meters
+        public static final double FIELD_X_LENGTH = Units.inchesToMeters(690.875); // meters
+        public static final double FIELD_Y_LENGTH = Units.inchesToMeters(317); // meters
         public static final Translation2d FIELD = new Translation2d(FIELD_X_LENGTH, FIELD_Y_LENGTH);
         public static final Translation2d CENTER_FIELD = FIELD.div(2);
 
@@ -304,7 +304,7 @@ public class Constants {
             BLUE_BARGE,
             CENTER_BARGE,
             RED_BARGE,
-            REEF_1(new Pose2d(new Translation2d(5.75, 4.05), Rotation2d.fromDegrees(180))),
+            REEF_1(new Pose2d(new Translation2d(5.5, 4.05), Rotation2d.fromDegrees(180))),//TODO:Fix others
             REEF_2(new Pose2d(new Translation2d(5.15, 5.15), Rotation2d.fromDegrees(240))),
             REEF_3(new Pose2d(new Translation2d(3.80, 5.15), Rotation2d.fromDegrees(300))),
             REEF_4(new Pose2d(new Translation2d(3.15, 4.05), Rotation2d.fromDegrees(0))),
@@ -330,7 +330,7 @@ public class Constants {
             }
 
             public Pose2d getPose2d() {
-                return pose;
+                return this.pose;
             }
 
             public Translation2d getTranslation2d() {
