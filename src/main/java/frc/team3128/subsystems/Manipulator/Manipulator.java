@@ -2,6 +2,7 @@ package frc.team3128.subsystems.Manipulator;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
+import common.utility.tester.Tester;
 import common.utility.tester.Tester.SystemsTest;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
@@ -43,6 +44,23 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
             setStateCommand(state).withTimeout(MANIPULATOR_TEST_TIMEOUT), 
             ()-> atState()
         );
+    }
+    
+    public SystemsTest getManipulatorTestNeutral(ManipulatorStates state){
+        return new SystemsTest(
+             "Manipulator Test: " + state, 
+             sequence(setStateCommand(NEUTRAL), waitSeconds(MANIPULATOR_TEST_TIMEOUT), setStateCommand(state).withTimeout(MANIPULATOR_TEST_TIMEOUT)), 
+             ()-> atState()
+         );
+     }
+
+    public void addManipulatorTests() {
+        Tester tester = Tester.getInstance();
+        for(ManipulatorStates state : ManipulatorStates.values()){
+            if(state == NEUTRAL) tester.addTest("Intake", getManipulatorTest(NEUTRAL));
+            else tester.addTest("Elevator", getManipulatorTestNeutral(state));
+        }
+        tester.getTest("Manipulator").setTimeBetweenTests(1);
     }
 
     public boolean atState(){

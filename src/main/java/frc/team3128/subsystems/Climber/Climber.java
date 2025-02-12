@@ -57,7 +57,7 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
     public SystemsTest getClimberTestNeutral(ClimberStates state){
        return new SystemsTest(
             "Climb Test: " + state, 
-            sequence(setStateCommand(NEUTRAL), waitSeconds(2), setStateCommand(state).withTimeout(CLIMBER_TEST_TIMEOUT)), 
+            sequence(setStateCommand(NEUTRAL), waitSeconds(CLIMBER_TEST_TIMEOUT), setStateCommand(state).withTimeout(CLIMBER_TEST_TIMEOUT)), 
             ()-> atState()
         );
     }
@@ -66,12 +66,14 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
         return WinchMechanism.controller.atSetpoint();
     }
     
-    // private void addClimberTests() {
-    //     Tester tester = Tester.getInstance();
-    //     for(ClimberStates state : ClimberStates.values()){
-    //         tester.addTest("Climber", getClimberTestNeutral(state));
-    //     }
-    // }
+    public void addClimberTests() {
+        Tester tester = Tester.getInstance();
+        for(ClimberStates state : ClimberStates.values()){
+            if(state == NEUTRAL) tester.addTest("Climber", getClimberTest(NEUTRAL));
+            else tester.addTest("Climber", getClimberTestNeutral(state));
+        }
+        tester.getTest("Climber").setTimeBetweenTests(1);
+    }
 
 	@Override
 	public void registerTransitions() {

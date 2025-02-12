@@ -38,8 +38,8 @@ public enum RobotStates {
 
     public static final List<RobotStates> defaultElevatorStates = List.of(RPL1, RPL2, RPL3, RPL4);
     public static final List<RobotStates> exclusiveElevatorStates = List.of(RSL1, RSL2, RSL3, RSL4);
-    public static final List<RobotStates> defaultIntakeStates = List.of(INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME);
-    public static final List<RobotStates> exclusiveIntakeStates = List.of(PROCESSOR_PRIME);
+    public static final List<RobotStates> defaultIntakeStates = List.of(EJECT_OUTTAKE, INTAKE, PROCESSOR_PRIME);
+    public static final List<RobotStates> exclusiveIntakeStates = List.of(PROCESSOR_OUTTAKE);
     public static final List<RobotStates> defaultClimbStates = List.of(CLIMB_PRIME);
     public static final List<RobotStates> exclusiveClimbStates = List.of(CLIMB);
 

@@ -7,6 +7,7 @@ import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
+import common.utility.tester.Tester;
 import common.utility.tester.Tester.SystemsTest;
 
 import static frc.team3128.subsystems.Intake.IntakeStates.*;
@@ -47,9 +48,34 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
             ()-> atState()
         );
     }
+    
+    public SystemsTest getIntakeTestNeutral(IntakeStates state){
+        return new SystemsTest(
+             "Intake Test: " + state, 
+             sequence(setStateCommand(NEUTRAL), waitSeconds(INTAKE_TEST_TIMEOUT), setStateCommand(state).withTimeout(INTAKE_TEST_TIMEOUT)), 
+             ()-> atState()
+         );
+     }
+
+     public SystemsTest getIntakeTestWait(){
+        return new SystemsTest(
+             "Intake Test: ", 
+             sequence(waitSeconds(INTAKE_TEST_TIMEOUT), setStateCommand(INTAKE).withTimeout(INTAKE_TEST_TIMEOUT)), 
+             ()-> atState()
+         );
+     }
 
     public boolean atState(){
         return PivotMechanism.controller.atSetpoint() && Math.abs(RollerMechanism.leader.getAppliedOutput() - getState().getPower()) <= ROLLER_POWER_TOLERANCE;
+    }
+
+    public void addIntakeTests() {
+        Tester tester = Tester.getInstance();
+        for(IntakeStates state : IntakeStates.values()){
+            if(state == NEUTRAL) tester.addTest("Intake", getIntakeTest(NEUTRAL));
+            else tester.addTest("Intake", getIntakeTestNeutral(state));
+        }
+        tester.getTest("Intake").setTimeBetweenTests(1);
     }
 
 	@Override

@@ -2,11 +2,13 @@ package frc.team3128.subsystems.Robot;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
+import common.utility.tester.Tester;
 import common.utility.tester.Tester.SystemsTest;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Climber.Climber;
+import frc.team3128.subsystems.Climber.ClimberStates;
 import frc.team3128.subsystems.Climber.WinchMechanism;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Intake.Intake;
@@ -54,6 +56,42 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             ()-> atState()
         );
     }
+
+
+    public SystemsTest getRobotTestNeutral(RobotStates state){
+        return new SystemsTest(
+            "Robot Test: " + state, 
+            sequence(updateSubsystemStates(NEUTRAL), waitSeconds(ROBOT_TEST_TIMEOUT), updateSubsystemStates(state).withTimeout(ROBOT_TEST_TIMEOUT)),
+            ()-> atState()
+        );
+    }
+
+    public SystemsTest getRobotTestWait(RobotStates state){
+        return new SystemsTest(
+            "Robot Test: " + state, 
+            sequence(waitSeconds(ROBOT_TEST_TIMEOUT), updateSubsystemStates(state).withTimeout(ROBOT_TEST_TIMEOUT)),
+            ()-> atState()
+        );
+    }
+    private void addRobotTests() {
+        Tester tester = Tester.getInstance();
+        tester.addTest("Robot", tester.getTest("Intake"));
+        tester.addTest("Robot", tester.getTest("Manipulator"));
+        tester.addTest("Robot", tester.getTest("Elevator"));
+        tester.addTest("Robot", tester.getTest("Climber"));
+        for(int i = 0; i < defaultElevatorStates.size(); i++){
+            tester.addTest("Robot", getRobotTestNeutral(defaultElevatorStates.get(i)));
+            tester.addTest("Robot", getRobotTest(exclusiveElevatorStates.get(i)));
+        }
+        tester.addTest("Robot", getRobotTestNeutral(INTAKE));
+        tester.addTest("Robot", getRobotTestWait(EJECT_OUTTAKE));
+        tester.addTest("Robot", getRobotTestNeutral(INTAKE));
+        tester.addTest("Robot", getRobotTestWait(PROCESSOR_OUTTAKE));
+        tester.addTest("Robot", getRobotTestNeutral(CLIMB_PRIME));
+        tester.addTest("Robot", getRobotTest(CLIMB));
+        tester.getTest("Robot").setTimeBetweenTests(1);        
+    }
+
 
     public boolean atState(){
         return (elevator.atState() && climber.atState() && intake.atState() && manipulator.atState());
