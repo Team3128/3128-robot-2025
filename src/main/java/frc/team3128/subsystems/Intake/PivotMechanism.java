@@ -4,7 +4,6 @@ import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.core.subsystems.PositionSubsystemBase;
 import common.hardware.motorcontroller.NAR_CANSpark;
-import common.hardware.motorcontroller.NAR_TalonFX;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import static frc.team3128.Constants.IntakeConstants.*;
 
@@ -19,6 +18,7 @@ public class PivotMechanism extends PositionSubsystemBase {
 
     private PivotMechanism() {
         super(controller, leader);
+        initShuffleboard();
     }
 
     public static PivotMechanism getInstance() {

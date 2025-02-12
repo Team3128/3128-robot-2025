@@ -8,9 +8,6 @@ import common.core.fsm.TransitionMap;
 import static frc.team3128.subsystems.Intake.IntakeStates.*;
 import java.util.function.Function;
 
-import frc.team3128.subsystems.Intake.PivotMechanism;
-import frc.team3128.subsystems.Intake.RollerMechanism;
-
 public class Intake extends FSMSubsystemBase<IntakeStates> {
     
     private static Intake instance;
@@ -22,7 +19,7 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
     private Function<IntakeStates, Command> defaultTransitioner = state -> {
         return sequence(
             // PivotMechanism.getInstance().pidTo(state.getAngle()),
-            // RollerMechanism.getInstance().run(state.getPower())
+            RollerMechanism.getInstance().runCommand(state.getPower())
         );
     };
 
@@ -30,9 +27,9 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
         super(IntakeStates.class, transitionMap, UNDEFINED);
 
         // pivot = PivotMechanism.getInstance();
-        // roller = RollerMechanism.getInstance();
+        roller = RollerMechanism.getInstance();
 
-        // addMechanisms(pivot, roller);
+        addMechanisms(roller);
     }
 
     public static synchronized Intake getInstance() {

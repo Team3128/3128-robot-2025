@@ -46,7 +46,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             elevator.setStateCommand(nextState.getElevatorState()),
             manipulator.setStateCommand(nextState.getManipulatorState()),
             intake.setStateCommand(nextState.getIntakeState()),
-            // climber.setStateCommand(nextState.getClimberState())
+            climber.setStateCommand(nextState.getClimberState()),
             runOnce(()-> Swerve.getInstance().throttle = nextState.getThrottle())
         );
     }

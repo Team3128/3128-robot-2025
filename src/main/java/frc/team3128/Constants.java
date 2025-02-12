@@ -1,7 +1,5 @@
 package frc.team3128;
 
-import static frc.team3128.Constants.SwerveConstants.DRIVE_TRACK_WIDTH;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -306,7 +304,7 @@ public class Constants {
             BLUE_BARGE,
             CENTER_BARGE,
             RED_BARGE,
-            REEF_1(new Pose2d(new Translation2d(5.80, 4.05), Rotation2d.fromDegrees(180))),
+            REEF_1(new Pose2d(new Translation2d(5.75, 4.05), Rotation2d.fromDegrees(180))),
             REEF_2(new Pose2d(new Translation2d(5.15, 5.15), Rotation2d.fromDegrees(240))),
             REEF_3(new Pose2d(new Translation2d(3.80, 5.15), Rotation2d.fromDegrees(300))),
             REEF_4(new Pose2d(new Translation2d(3.15, 4.05), Rotation2d.fromDegrees(0))),
@@ -507,7 +505,8 @@ public class Constants {
         public static final int CLIMBER_WINCH_ID = 20;
         public static final int CLIMB_ROLLER_ID = 21;
 
-        public static final double CLIMBER_GEAR_RATIO = 1;
+
+        public static final double CLIMBER_GEAR_RATIO = 90.0 / 450.0;
         public static final double CLIMBER_SAMPLE_PER_MINUTE = 60;
         public static final int CLIMBER_STATOR_CURRENT_LIMIT = 40;
         public static final boolean CLIMBER_INVERT = false;
@@ -515,13 +514,13 @@ public class Constants {
         public static final StatusFrames CLIMBER_STATUS_FRAME = StatusFrames.POSITION;
 
         public static final double CLIMBER_POSITiON_MIN = 0;
-        public static final double CLIMBER_POSITION_MAX = 1;
-        public static final double CLIMBER_TOLERANCE = 0.01;
+        public static final double CLIMBER_POSITION_MAX = 180;
+        public static final double CLIMBER_TOLERANCE = 1;
 
-        public static final double CLIMB_ROLLER_GEAR_RATIO = 999999;
-        public static final double CLIMB_ROLLER_SAMPLE_PER_MINUTE = 999999;
-        public static final int CLIMB_ROLLER_STATOR_CURRENT_LIMIT = 999999;
-        public static final boolean CLIMB_ROLLER_INVERT = false;
+        public static final double CLIMB_ROLLER_GEAR_RATIO = 1;
+        public static final double CLIMB_ROLLER_SAMPLE_PER_MINUTE = 60;
+        public static final int CLIMB_ROLLER_STATOR_CURRENT_LIMIT = 40;
+        public static final boolean CLIMB_ROLLER_INVERT = true;
         public static final Neutral CLIMB_ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
 
     }

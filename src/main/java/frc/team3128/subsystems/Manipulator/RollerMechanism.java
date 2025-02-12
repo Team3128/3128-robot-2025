@@ -1,5 +1,4 @@
 package frc.team3128.subsystems.Manipulator;
-import edu.wpi.first.wpilibj.DigitalInput;
 import common.core.subsystems.VoltageSubsystemBase;
 import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
@@ -23,7 +22,7 @@ public class RollerMechanism extends VoltageSubsystemBase {
 
     public RollerMechanism() {
         super(leader);
-        initShuffleboard();
+        // initShuffleboard();
     }
 
     @Override

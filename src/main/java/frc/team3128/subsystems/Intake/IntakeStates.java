@@ -7,16 +7,19 @@ import io.vavr.collection.List;
 public enum IntakeStates {
     UNDEFINED,
     NEUTRAL(0),
-    INTAKE(45, 0.8),
+    INTAKE(55, 0.8),
     EJECT_OUTTAKE(0, -0.8),
     PROCESSOR_PRIME(0),
-    PROCESSOR_OUTTAKE(0, -0.8);
+    PROCESSOR_OUTTAKE(0, -0.8),
+    CLIMB_PRIME(20),
+    CLIMB(20);
 
-    public static final List<IntakeStates> defaultStates = List.of(NEUTRAL, INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME);
-    public static final List<IntakeStates> exclusiveStates = List.of(PROCESSOR_OUTTAKE);
+    public static final List<IntakeStates> defaultStates = List.of(NEUTRAL, INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME, CLIMB_PRIME);
+    public static final List<IntakeStates> exclusiveStates = List.of(PROCESSOR_OUTTAKE, CLIMB);
 
     public static final List<Pair<IntakeStates, IntakeStates>> coupledStates = List.of(
-        Pair.of(PROCESSOR_PRIME, PROCESSOR_OUTTAKE)
+        Pair.of(PROCESSOR_PRIME, PROCESSOR_OUTTAKE),
+        Pair.of(CLIMB_PRIME, CLIMB)
     );
 
     private double angle;

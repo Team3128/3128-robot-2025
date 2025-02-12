@@ -1,9 +1,10 @@
 package frc.team3128.subsystems.Climber;
 
-import common.core.controllers.Controller;
+import common.core.controllers.*;
 import common.core.controllers.PIDFFConfig;
 import common.core.subsystems.PositionSubsystemBase;
 import common.hardware.motorcontroller.NAR_CANSpark;
+import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import static frc.team3128.Constants.ClimberConstants.*;
 
@@ -11,10 +12,10 @@ public class WinchMechanism extends PositionSubsystemBase {
 
     public static WinchMechanism instance;
 
-    private static PIDFFConfig config = new PIDFFConfig(0, 0, 0);
-    protected static Controller controller = new Controller(config, Controller.Type.POSITION);
+    private static PIDFFConfig config = new PIDFFConfig(0.00001, 0, 0, 12, 0, 0, 0);
+    protected static ControllerBase controller = new Controller(config, Controller.Type.POSITION);
 
-    public static NAR_CANSpark leader = new NAR_CANSpark(CLIMBER_WINCH_ID);
+    public static NAR_CANSpark leader = new NAR_CANSpark(CLIMBER_WINCH_ID, ControllerType.CAN_SPARK_FLEX);
 
     private WinchMechanism() {
         super(controller, leader);
@@ -39,6 +40,8 @@ public class WinchMechanism extends PositionSubsystemBase {
         CLIMBER_STATUS_FRAME);
 
         leader.configMotor(motorConfig);
+
+        initShuffleboard();
     }
 
     @Override
@@ -47,8 +50,4 @@ public class WinchMechanism extends PositionSubsystemBase {
        controller.configureFeedback(leader);
        controller.setTolerance(CLIMBER_TOLERANCE);
     } 
-    
-    public boolean atSetpoint(double setpoint){
-        return Math.abs(controller.getMeasurement() - setpoint) < CLIMBER_TOLERANCE;
-    }
 }
