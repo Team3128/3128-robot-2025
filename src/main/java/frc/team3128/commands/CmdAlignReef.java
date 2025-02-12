@@ -11,12 +11,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.team3128.Robot;
-import frc.team3128.Constants.LedConstants.Colors;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Led.Led;
+import frc.team3128.subsystems.Led.LedStates;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
 
@@ -65,17 +63,17 @@ public class CmdAlignReef extends Command {
         double error = pose.minus(tracking).getNorm();
 
         if(error < tolerance) {
-            led.setLedColor(Colors.GREEN, 1);
+            led.setLedColor(LedStates.GREEN, 1);
             return;
         }
 
         if(cross > 0) {
             //left led
-            led.setLedColor(Colors.PURPLE, tolerance/error);
+            led.setLedColor(LedStates.PURPLE, tolerance/error);
         }
         else if(cross < 0) {
             //right led
-            led.setLedColor(Colors.ORANGE, tolerance/error);
+            led.setLedColor(LedStates.ORANGE, tolerance/error);
         }
     }
 

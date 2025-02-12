@@ -237,7 +237,7 @@ public class Swerve extends SwerveBase {
                             );
         rotateTo(setpoint);
     }
-
+    
     public void snapToReef(boolean isRight) {
         final Pose2d pose = Swerve.getInstance().getPose();
         Pose2d setpoint = pose.nearest(List.of(REEF_1, REEF_2, REEF_3, REEF_4, REEF_5, REEF_6)
@@ -266,16 +266,6 @@ public class Swerve extends SwerveBase {
     }
 
     public static Pose2d snappedReef;
-
-    public double getDistanceProximity() {
-        // y=100^(-x)
-        double distance = getDistanceTo(snappedReef.getTranslation()).getNorm();
-        return Math.round(Math.pow(100, -1 * distance));
-    }
-
-    public double getSideProximity() {
-        return 0.0;
-    }
 
     public void snapToSource() {
         final Pose2d pose = Swerve.getInstance().getPose();

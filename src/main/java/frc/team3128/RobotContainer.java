@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.Constants.DriveConstants;
 import frc.team3128.Constants.RobotConstants;
 import frc.team3128.Constants.FieldConstants.FieldStates;
+import frc.team3128.commands.CmdAlignReef;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -154,6 +155,12 @@ public class RobotContainer {
         controller2.getButton(kA).onTrue(winch.runCommand(0.8)).onFalse(winch.runCommand(0));
         controller2.getButton(kB).onTrue(winch.runCommand(-0.8)).onFalse(winch.runCommand(0));
         controller2.getButton(kX).onTrue(winch.resetCommand());
+
+        controller2.getLeftPOVButton().onTrue(runOnce(()->swerve.snapToReef(true)));
+        controller2.getRightPOVButton().onTrue(runOnce(()->swerve.snapToReef(false)));
+        controller2.getDownPOVButton().onTrue(runOnce(()->swerve.snapToReef()));
+        controller2.getUpPOVButton().onTrue(new CmdAlignReef());
+
 
         new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
         // new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));
