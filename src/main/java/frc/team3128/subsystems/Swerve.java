@@ -112,11 +112,13 @@ public class Swerve extends SwerveBase {
         translationController.setTolerance(translationTolerance);
         translationController.setConstraints(translationConstraints);
         translationController.setDisableAtSetpoint(true);
+        translationController.setSetpoint(0);
         
         rotationController.setTolerance(rotationTolerance);
         rotationController.setConstraints(rotationConstraints);
         rotationController.setDisableAtSetpoint(true);
         rotationController.enableContinuousInput(-Math.PI, Math.PI);
+        rotationController.setSetpoint(0);
     }
 
     private static Translation2d translationSetpoint = new Translation2d();
@@ -167,22 +169,24 @@ public class Swerve extends SwerveBase {
      */
     public void drive(ChassisSpeeds velocity){
         ChassisSpeeds initialRequest = velocity;
-        if(Math.abs(velocity.vxMetersPerSecond) < TRANSLATIONAL_DEADBAND && translationController.isEnabled())
-            velocity.vxMetersPerSecond = translationController.calculate(getPose().getTranslation().getX(), translationSetpoint.getX());
-        
-        if(Math.abs(velocity.vyMetersPerSecond) < TRANSLATIONAL_DEADBAND && translationController.isEnabled())
-            velocity.vyMetersPerSecond = translationController.calculate(getPose().getTranslation().getY(), translationSetpoint.getY());
 
-        if((Math.abs(velocity.omegaRadiansPerSecond) < ROTATIONAL_DEADBAND || DriverStation.isAutonomous()) && rotationController.isEnabled())
-            velocity.omegaRadiansPerSecond = rotationController.calculate(getPose().getRotation().getRadians(), rotationSetpointSupplier.get().getRadians());
+        if(Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) < TRANSLATIONAL_DEADBAND && rotationController.isEnabled()) {
+            Translation2d error = getDistanceTo(translationSetpoint);
+            Translation2d output = new Translation2d(translationController.calculate(error.getNorm()), error.getAngle());
+            velocity.vxMetersPerSecond = output.getX();
+            velocity.vyMetersPerSecond = output.getY();
+        }
+        else translationController.disable();
+
+        if(Math.abs(velocity.omegaRadiansPerSecond) < ROTATIONAL_DEADBAND && rotationController.isEnabled()) {
+            Rotation2d error = getAngleTo(rotationSetpointSupplier.get());
+            velocity.omegaRadiansPerSecond = rotationController.calculate(error.getRadians()); 
+        }
         else rotationController.disable();
-
-        NAR_Shuffleboard.addData("Rotation Controller", "Setpoint", ()-> rotationSetpointSupplier.get().getRadians(), 0, 0);
-        NAR_Shuffleboard.addData("Rotation Controller", "Measurment", MathUtil.inputModulus(getPose().getRotation().getRadians(), -Math.PI, Math.PI), 1, 0);
-        NAR_Shuffleboard.addData("Rotation Controller", "Output", ()-> -rotationController.calculate(getPose().getRotation().getRadians(), rotationSetpointSupplier.get().getRadians()), 2, 0);      
+      
         assign(velocity);
-        if(translationController.isEnabled() && translationController.atSetpoint()) translationController.disable();
-        if(rotationController.isEnabled() && rotationController.atSetpoint()) rotationController.disable();
+        if(translationController.isEnabled() && atTranslationSetpoint()) translationController.disable();
+        if(rotationController.isEnabled() && atRotationSetpoint()) rotationController.disable();
         
         if(velocity.equals(initialRequest)) autoEnabled = false;
         else autoEnabled = true;
@@ -232,6 +236,24 @@ public class Swerve extends SwerveBase {
         Rotation2d curGyroRotation = getGyroRotation2d();
         rotationSetpointSupplier = ()-> curGyroRotation.plus(dTheta);
         rotationController.enable();
+    }
+
+    public boolean atRotationSetpoint() {
+        Rotation2d error = getAngleTo(rotationSetpointSupplier.get());
+        return Math.abs(MathUtil.angleModulus(error.getRadians())) < rotationTolerance;
+    }
+
+    public boolean atXTranslationSetpoint() {
+        return Math.abs(getPose().getX() - translationSetpoint.getX()) < translationTolerance;
+    }
+
+    public boolean atYTranslationSetpoint() {
+        return Math.abs(getPose().getY() - translationSetpoint.getY()) < translationTolerance;
+    }
+
+    public boolean atTranslationSetpoint() {
+        Translation2d error = getDistanceTo(translationSetpoint);
+        return Math.abs(error.getNorm()) < translationTolerance;
     }
 
     public void snapToAngle() {
