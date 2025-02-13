@@ -3,6 +3,9 @@ package frc.team3128;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
@@ -313,6 +316,7 @@ public class Constants {
 
             private final Pose2d pose;
             public static List<Pose2d> reefPoses = List.of(REEF_1.getPose2d(), REEF_2.getPose2d(), REEF_3.getPose2d(), REEF_4.getPose2d(), REEF_5.getPose2d(), REEF_6.getPose2d());
+            public static List<Pose2d> sourcePoses = List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d());
 
             private FieldStates(Pose2d pose) {
                 this.pose = pose;
@@ -341,7 +345,11 @@ public class Constants {
                 return flip(pose);
             }
             return pose;
-        } 
+        }
+
+        public static List<Pose2d> allianceFlip(List<Pose2d> poses) {
+            return poses.stream().map(pose -> allianceFlip(pose)).collect(Collectors.toList());
+        }
 
         public static Translation2d allianceFlip(Translation2d translation) {
             if (Robot.getAlliance() == Alliance.Red) {
