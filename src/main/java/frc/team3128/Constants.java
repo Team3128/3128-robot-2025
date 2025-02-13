@@ -312,6 +312,7 @@ public class Constants {
             PROCESSOR(new Pose2d(new Translation2d(6.35, 0.60), Rotation2d.fromDegrees(270)));
 
             private final Pose2d pose;
+            public static List<Pose2d> reefPoses = List.of(REEF_1.getPose2d(), REEF_2.getPose2d(), REEF_3.getPose2d(), REEF_4.getPose2d(), REEF_5.getPose2d(), REEF_6.getPose2d());
 
             private FieldStates(Pose2d pose) {
                 this.pose = pose;

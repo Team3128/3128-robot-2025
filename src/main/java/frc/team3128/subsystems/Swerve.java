@@ -168,10 +168,8 @@ public class Swerve extends SwerveBase {
      * @param velocity Desired robot velocity ROBOT RELATIVE
      */
     public void drive(ChassisSpeeds velocity){
-        ChassisSpeeds initialRequest = velocity;
-
         if(Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) < TRANSLATIONAL_DEADBAND && translationController.isEnabled() && !rotationController.isEnabled()) {
-            Translation2d error = getDistanceTo(translationSetpoint);
+            Translation2d error = getDisplacementTo(translationSetpoint);
             Translation2d output = new Translation2d(translationController.calculate(error.getNorm()), error.getAngle());
             velocity.vxMetersPerSecond = output.getX();
             velocity.vyMetersPerSecond = output.getY();
@@ -179,17 +177,14 @@ public class Swerve extends SwerveBase {
         else translationController.disable();
 
         if(Math.abs(velocity.omegaRadiansPerSecond) < ROTATIONAL_DEADBAND && rotationController.isEnabled()) {
-            Rotation2d error = getAngleTo(rotationSetpointSupplier.get());
+            Rotation2d error = getAngularDisplacementTo(rotationSetpointSupplier.get());
             velocity.omegaRadiansPerSecond = rotationController.calculate(error.getRadians()); 
         }
         else rotationController.disable();
-      
+        
         assign(velocity);
         if(translationController.isEnabled() && atTranslationSetpoint()) translationController.disable();
         if(rotationController.isEnabled() && atRotationSetpoint()) rotationController.disable();
-        
-        if(velocity.equals(initialRequest)) autoEnabled = false;
-        else autoEnabled = true;
     }
 
     public Command getDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta){
@@ -228,7 +223,7 @@ public class Swerve extends SwerveBase {
     }
     
     public void rotateTo(Translation2d translation) {
-        rotationSetpointSupplier = ()-> getAngleTo(translation);
+        rotationSetpointSupplier = ()-> new Rotation2d(translation.getX(), translation.getY());
         rotationController.enable();
     }
 
@@ -239,21 +234,11 @@ public class Swerve extends SwerveBase {
     }
 
     public boolean atRotationSetpoint() {
-        Rotation2d error = getAngleTo(rotationSetpointSupplier.get());
-        return Math.abs(MathUtil.angleModulus(error.getRadians())) < rotationTolerance;
-    }
-
-    public boolean atXTranslationSetpoint() {
-        return Math.abs(getPose().getX() - translationSetpoint.getX()) < translationTolerance;
-    }
-
-    public boolean atYTranslationSetpoint() {
-        return Math.abs(getPose().getY() - translationSetpoint.getY()) < translationTolerance;
+        return Math.abs(getAngleTo(rotationSetpointSupplier.get())) < rotationTolerance;
     }
 
     public boolean atTranslationSetpoint() {
-        Translation2d error = getDistanceTo(translationSetpoint);
-        return Math.abs(error.getNorm()) < translationTolerance;
+        return getDistanceTo(translationSetpoint) < translationTolerance;
     }
 
     public void snapToAngle() {
@@ -268,7 +253,7 @@ public class Swerve extends SwerveBase {
 
     public void snapToReef(boolean isRight) {
         final Pose2d pose = Swerve.getInstance().getPose();
-        Pose2d setpoint = pose.nearest(List.of(REEF_1.getPose2d(), REEF_2.getPose2d(), REEF_3.getPose2d(), REEF_4.getPose2d(), REEF_5.getPose2d(), REEF_6.getPose2d()));
+        Pose2d setpoint = pose.nearest(reefPoses);
         setpoint = allianceFlip(setpoint);
         rotateTo(setpoint.getRotation());
         Rotation2d shiftDirection = setpoint.getRotation().plus(Rotation2d.fromDegrees(90 * (isRight ? -1 : 1)));
@@ -320,15 +305,10 @@ public class Swerve extends SwerveBase {
         );
     }
 
-    public Pose2d getNearestReef() {
-        return getPose().nearest(List.of(REEF_1.getPose2d(), REEF_2.getPose2d(), REEF_3.getPose2d(), REEF_4.getPose2d(), REEF_5.getPose2d(), REEF_6.getPose2d()));
-    }
-
     @Override
     public void initShuffleboard() {
         super.initShuffleboard();
         NAR_Shuffleboard.addData("Swerve", "Throttle", ()-> this.throttle, 4, 3);
-        NAR_Shuffleboard.addData("Rotation Controller", "SETPOINT POSE", ()-> getNearestReef().toString(), 0, 1);
     }
 
     public static void disable() {
