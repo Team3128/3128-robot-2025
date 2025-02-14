@@ -244,16 +244,15 @@ public class Constants {
         public static final double DRIVE_TURN_KA = 0.0064; //0.0064
         public static final double DRIVE_TURN_KG = 0;
 
-        public static final List<Rotation2d> snapToAngles = new ArrayList<>();
-        static {
-            snapToAngles.add(Rotation2d.fromDegrees(-180));
-            snapToAngles.add(Rotation2d.fromDegrees(-120));
-            snapToAngles.add(Rotation2d.fromDegrees(-60));
-            snapToAngles.add(Rotation2d.fromDegrees(0));
-            snapToAngles.add(Rotation2d.fromDegrees(60));
-            snapToAngles.add(Rotation2d.fromDegrees(120));
-            snapToAngles.add(Rotation2d.fromDegrees(180));
-        }
+        public static final List<Rotation2d> snapToAngles = List.of(
+            Rotation2d.fromDegrees(-180),
+            Rotation2d.fromDegrees(-120),
+            Rotation2d.fromDegrees(-60),
+            Rotation2d.fromDegrees(0),
+            Rotation2d.fromDegrees(60),
+            Rotation2d.fromDegrees(120),
+            Rotation2d.fromDegrees(180)
+        );
     }
 
     public static class VisionConstants {
@@ -315,8 +314,8 @@ public class Constants {
             PROCESSOR(new Pose2d(new Translation2d(6.35, 0.60), Rotation2d.fromDegrees(270)));
 
             private final Pose2d pose;
-            public static List<Pose2d> reefPoses = List.of(REEF_1.getPose2d(), REEF_2.getPose2d(), REEF_3.getPose2d(), REEF_4.getPose2d(), REEF_5.getPose2d(), REEF_6.getPose2d());
-            public static List<Pose2d> sourcePoses = List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d());
+            public static io.vavr.collection.List<Pose2d> reefPoses = io.vavr.collection.List.of(REEF_1.getPose2d(), REEF_2.getPose2d(), REEF_3.getPose2d(), REEF_4.getPose2d(), REEF_5.getPose2d(), REEF_6.getPose2d());
+            public static io.vavr.collection.List<Pose2d> sourcePoses = io.vavr.collection.List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d());
 
             private FieldStates(Pose2d pose) {
                 this.pose = pose;

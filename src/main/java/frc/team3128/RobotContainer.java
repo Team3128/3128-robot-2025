@@ -159,8 +159,8 @@ public class RobotContainer {
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.moveTo(allianceFlip(FieldStates.REEF_1.getPose2d()).getTranslation())));
         controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToAngle()));
-        controller.getRightPOVButton().onTrue(runOnce(()-> swerve.snapToReef(true)));
-        controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.snapToReef(false)));
+        controller.getRightPOVButton().onTrue(runOnce(()-> swerve.pathToReef(true)));
+        controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.pathToReef(false)));
         // controller.getRightPOVButton().onTrue(runOnce(()-> swerve.snapToReef(true)));
         // controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.snapToReef(false)));
     }

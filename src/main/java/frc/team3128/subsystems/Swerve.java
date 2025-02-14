@@ -252,15 +252,20 @@ public class Swerve extends SwerveBase {
         rotateTo(setpoint);
     }
 
-    public void snapToReef(boolean isRight) {
-        final Pose2d setpoint = getPose().nearest(allianceFlip(reefPoses));
+    public void snapToElement() {
+        final Pose2d setpoint = getPose().nearest(allianceFlip(reefPoses.appendAll(sourcePoses).asJava()));
+        rotateTo(setpoint.getRotation());
+    }
+
+    public void pathToReef(boolean isRight) {
+        final Pose2d setpoint = getPose().nearest(allianceFlip(reefPoses.asJava()));
         rotateTo(setpoint.getRotation());
         Rotation2d shiftDirection = setpoint.getRotation().plus(Rotation2d.fromDegrees(90 * (isRight ? -1 : 1)));
         moveTo(setpoint.getTranslation().plus(reefShift.rotateBy(shiftDirection)));
     }
 
-    public void snapToSource() {
-        Pose2d setpoint = getPose().nearest(allianceFlip(sourcePoses));
+    public void pathToSource() {
+        Pose2d setpoint = getPose().nearest(allianceFlip(sourcePoses.asJava()));
         setPose(setpoint);
     }
 
