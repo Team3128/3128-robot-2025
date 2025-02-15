@@ -11,14 +11,14 @@ import java.util.function.Function;
 public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
     private static Manipulator instance;
 
-    public RollerMechanism roller;
+    // public RollerMechanism roller;
     private static TransitionMap<ManipulatorStates> transitionMap = new TransitionMap<ManipulatorStates>(ManipulatorStates.class);
     private Function<ManipulatorStates, Command> defaultTransitioner = state -> {return runVoltsCommand(state.getVolts());};
 
     public Manipulator() {
-        super(ManipulatorStates.class, transitionMap, UNDEFINED);
-        roller = RollerMechanism.getInstance();
-        addMechanisms(roller);
+        super(ManipulatorStates.class, transitionMap, NEUTRAL);
+        // roller = RollerMechanism.getInstance();
+        // addMechanisms(roller);
     }
 
     public static synchronized Manipulator getInstance() {

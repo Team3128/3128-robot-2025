@@ -3,6 +3,7 @@ package frc.team3128;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import common.core.controllers.Controller;
@@ -244,19 +245,15 @@ public class Constants {
         public static final double DRIVE_TURN_KA = 0.0064; //0.0064
         public static final double DRIVE_TURN_KG = 0;
 
-        public static final List<Rotation2d> snapToAngles = new ArrayList<>();
-        static {
-            snapToAngles.add(Rotation2d.fromDegrees(-180));
-            snapToAngles.add(Rotation2d.fromDegrees(-120));
-            snapToAngles.add(Rotation2d.fromDegrees(-60));
-            snapToAngles.add(Rotation2d.fromDegrees(0));
-            snapToAngles.add(Rotation2d.fromDegrees(60));
-            snapToAngles.add(Rotation2d.fromDegrees(120));
-            snapToAngles.add(Rotation2d.fromDegrees(180));
-        }
-
-        public static final Translation2d MANIP_OFFSET= new Translation2d(Units.inchesToMeters(13), Units.inchesToMeters(-6.25));
-
+        public static final List<Rotation2d> snapToAngles = List.of(
+            Rotation2d.fromDegrees(-180),
+            Rotation2d.fromDegrees(-120),
+            Rotation2d.fromDegrees(-60),
+            Rotation2d.fromDegrees(0),
+            Rotation2d.fromDegrees(60),
+            Rotation2d.fromDegrees(120),
+            Rotation2d.fromDegrees(180)
+        );
     }
 
     public static class VisionConstants {
@@ -318,8 +315,8 @@ public class Constants {
             PROCESSOR(new Pose2d(new Translation2d(6.35, 0.60), Rotation2d.fromDegrees(270)));
 
             private final Pose2d pose;
-            public static List<Pose2d> reefPoses = List.of(REEF_1, REEF_2, REEF_3, REEF_4, REEF_5, REEF_6)
-                            .stream().map(state -> state.getPose2d()).collect(Collectors.toList());
+            public static io.vavr.collection.List<Pose2d> reefPoses = io.vavr.collection.List.of(REEF_1.getPose2d(), REEF_2.getPose2d(), REEF_3.getPose2d(), REEF_4.getPose2d(), REEF_5.getPose2d(), REEF_6.getPose2d());
+            public static io.vavr.collection.List<Pose2d> sourcePoses = io.vavr.collection.List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d());
 
             private FieldStates(Pose2d pose) {
                 this.pose = pose;
@@ -348,7 +345,11 @@ public class Constants {
                 return flip(pose);
             }
             return pose;
-        } 
+        }
+
+        public static List<Pose2d> allianceFlip(List<Pose2d> poses) {
+            return poses.stream().map(pose -> allianceFlip(pose)).collect(Collectors.toList());
+        }
 
         public static Translation2d allianceFlip(Translation2d translation) {
             if (Robot.getAlliance() == Alliance.Red) {
@@ -487,7 +488,7 @@ public class Constants {
         public static final double CLIMB_ROLLER_GEAR_RATIO = 1;
         public static final double CLIMB_ROLLER_SAMPLE_PER_MINUTE = 60;
         public static final int CLIMB_ROLLER_STATOR_CURRENT_LIMIT = 40;
-        public static final boolean CLIMB_ROLLER_INVERT = true;
+        public static final boolean CLIMB_ROLLER_INVERT = false;
         public static final Neutral CLIMB_ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
 
     }

@@ -80,11 +80,9 @@ public class Robot extends NAR_Robot {
             runOnce(()-> Swerve.getInstance().setPose(FieldStates.REEF_2.getPose2d())),
             waitUntil(()-> (Swerve.getInstance().atRotationSetpoint() && Swerve.getInstance().atTranslationSetpoint())),
             waitSeconds(3),
-            RobotManager.getInstance().setStateCommand(RobotStates.RPL4),
-            waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
-            RobotManager.getInstance().setStateCommand(RobotStates.RSL4),
+            RobotManager.getInstance().getTempToggleCommand(RobotStates.RPL2, RobotStates.RSL2),
             waitSeconds(1),
-            RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL)
+            RobotManager.getInstance().getTempToggleCommand(RobotStates.RPL2, RobotStates.RSL2)
         ).schedule();
     }
 
@@ -102,7 +100,7 @@ public class Robot extends NAR_Robot {
     @Override
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
-        RobotManager.getInstance().setState(RobotStates.NEUTRAL);
+        // RobotManager.getInstance().setState(RobotStates.NEUTRAL);
     }
 
     @Override

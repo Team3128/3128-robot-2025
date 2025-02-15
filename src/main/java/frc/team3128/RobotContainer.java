@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Climber.Climber;
+import frc.team3128.subsystems.Climber.ClimberStates;
 import frc.team3128.subsystems.Climber.WinchMechanism;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
@@ -155,6 +156,8 @@ public class RobotContainer {
         controller2.getButton(kA).onTrue(winch.runCommand(0.8)).onFalse(winch.runCommand(0));
         controller2.getButton(kB).onTrue(winch.runCommand(-0.8)).onFalse(winch.runCommand(0));
         controller2.getButton(kX).onTrue(winch.resetCommand());
+        controller2.getButton(kY).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB_PRIME));
+        controller2.getButton(kRightBumper).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB));
 
         controller2.getLeftPOVButton().onTrue(runOnce(()->swerve.snapToReef(true)));
         controller2.getRightPOVButton().onTrue(runOnce(()->swerve.snapToReef(false)));
@@ -167,8 +170,8 @@ public class RobotContainer {
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.moveTo(allianceFlip(FieldStates.REEF_1.getPose2d()).getTranslation())));
         controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToAngle()));
-        controller.getRightPOVButton().onTrue(runOnce(()-> swerve.snapToReef(true)));
-        controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.snapToReef(false)));
+        controller.getRightPOVButton().onTrue(runOnce(()-> swerve.pathToReef(true)));
+        controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.pathToReef(false)));
         // controller.getRightPOVButton().onTrue(runOnce(()-> swerve.snapToReef(true)));
         // controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.snapToReef(false)));
     }

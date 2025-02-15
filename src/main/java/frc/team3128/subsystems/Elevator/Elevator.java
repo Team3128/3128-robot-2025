@@ -16,7 +16,7 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
     private Function<ElevatorStates, Command> defaultTransitioner = state -> {return elevator.pidTo(state.getSetpoint());};
 
     public Elevator() {
-        super(ElevatorStates.class, transitionMap, UNDEFINED);
+        super(ElevatorStates.class, transitionMap, NEUTRAL);
         elevator = ElevatorMechanism.getInstance();
         addMechanisms(elevator);
     }

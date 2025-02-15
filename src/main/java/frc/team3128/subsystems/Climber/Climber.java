@@ -15,7 +15,7 @@ import java.util.function.Function;
 public class Climber extends FSMSubsystemBase<ClimberStates> {
     private static Climber instance;
 
-    public WinchMechanism winch;
+    // public WinchMechanism winch;
     // public RollerMechanism roller;
 
     private static TransitionMap<ClimberStates> transitionMap = new TransitionMap<ClimberStates>(ClimberStates.class);
@@ -23,19 +23,20 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
     private Function<Neutral, Command> setNeutralMode = mode -> runOnce(() -> getMechanisms().forEach(subsystem -> subsystem.setNeutralMode(mode)));
     private Function<ClimberStates, Command> defaultTransitioner = state -> {
         return sequence(
+            none()
             // roller.runCommand(state.getRollerPower()),
-            winch.pidTo(state.getAngle())
+            // winch.pidTo(state.getAngle())
         );
     };
 
     public Climber() {
-        super(ClimberStates.class, transitionMap, UNDEFINED);
+        super(ClimberStates.class, transitionMap, NEUTRAL);
 
-        winch = WinchMechanism.getInstance();
+        // winch = WinchMechanism.getInstance();
         // roller = RollerMechanism.getInstance();
 
         // addMechanisms(winch, roller);
-        addMechanisms(winch);
+        // addMechanisms(winch);
 
         initShuffleboard();
     }

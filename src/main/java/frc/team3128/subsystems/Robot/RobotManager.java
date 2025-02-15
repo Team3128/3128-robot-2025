@@ -25,7 +25,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private Function<RobotStates, Command> defaultTransitioner = state -> {return updateSubsystemStates(state);};
 
     private RobotManager() {
-        super(RobotStates.class, transitionMap, UNDEFINED);
+        super(RobotStates.class, transitionMap, NEUTRAL);
 
         elevator = Elevator.getInstance();
         manipulator = Manipulator.getInstance();
