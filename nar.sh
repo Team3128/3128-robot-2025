@@ -151,3 +151,34 @@ if [ "$OPTION" = "submodule" ]; then
 
     printf "\nScript executed successfully. Submodule setup complete!\n"
 fi
+
+if [ "$OPTION" = "forcebranch" ]; then
+    BRANCH="$2"
+    if [ -z "$BRANCH" ]; then
+        printf "\nNo branch name provided. Exiting.\n"
+        exit 1
+    fi
+    printf "\nSwitching main project to branch: $BRANCH\n"
+    git checkout "$BRANCH" || {
+        printf "\nFailed to checkout branch in main repo.\n"
+        exit 1
+    }
+
+    if [ ! -d "libs/3128-common" ]; then
+        printf "\nSubmodule directory not found. Attempting to initialize...\n"
+        git submodule update --init
+    fi
+
+    if [ -d "libs/3128-common" ]; then
+        cd libs/3128-common || exit 1
+        printf "\nSwitching submodule to branch: $BRANCH\n"
+        git checkout "$BRANCH" || {
+            printf "\nFailed to checkout branch in submodule.\n"
+            exit 1
+        }
+        cd ../..
+    else
+        printf "\nSubmodule directory still not found. Exiting.\n"
+        exit 1
+    fi
+fi

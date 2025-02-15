@@ -144,7 +144,7 @@ public class RobotContainer {
 
         controller.getButton(kLeftTrigger).onTrue(robot.getToggleCommand(INTAKE));
         controller.getButton(kLeftBumper).onTrue(robot.getToggleCommand(EJECT_OUTTAKE));
-        controller.getButton(kBack).onTrue(robot.getTempToggleCommand(PROCESSOR_PRIME, PROCESSOR_OUTTAKE));
+        // controller.getButton(kBack).onTrue(robot.getTempToggleCommand(PROCESSOR_PRIME, PROCESSOR_OUTTAKE));
 
         controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
         controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
@@ -164,7 +164,7 @@ public class RobotContainer {
     public void initCameras() {
         Log.info("tags", APRIL_TAGS.get(0).toString());
         Camera.setResources(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), new AprilTagFieldLayout(APRIL_TAGS, FIELD_X_LENGTH, FIELD_Y_LENGTH), () -> swerve.getPose());
-        Camera.setThresholds(5,  10);
+        // Camera.setThresholds(5,  10);
         if (Robot.isReal()) {
             // Camera frontRightCamera = new Camera("FRONT_RIGHT", Units.inchesToMeters(10.055), Units.inchesToMeters(9.79), Units.degreesToRadians(30), Units.degreesToRadians(-28.125), 0);
             // Camera frontLeftCamera = new Camera("FRONT_LEFT", Units.inchesToMeters(13.5), -Units.inchesToMeters(0), Units.degreesToRadians(0), Units.degreesToRadians(0), 0);

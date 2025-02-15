@@ -23,8 +23,6 @@ public enum RobotStates {
     
     INTAKE(ElevatorStates.NEUTRAL, IntakeStates.INTAKE, ManipulatorStates.NEUTRAL, 1),
     EJECT_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.EJECT_OUTTAKE, ManipulatorStates.NEUTRAL, 1),
-    PROCESSOR_PRIME(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_PRIME, ManipulatorStates.NEUTRAL, 0.5),
-    PROCESSOR_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_OUTTAKE, ManipulatorStates.NEUTRAL, 0.5),
     
     CLIMB_PRIME(IntakeStates.CLIMB_PRIME, ClimberStates.CLIMB_PRIME),
     CLIMB(IntakeStates.CLIMB, ClimberStates.CLIMB);
@@ -38,8 +36,8 @@ public enum RobotStates {
 
     public static final List<RobotStates> defaultElevatorStates = List.of(RPL1, RPL2, RPL3, RPL4);
     public static final List<RobotStates> exclusiveElevatorStates = List.of(RSL1, RSL2, RSL3, RSL4);
-    public static final List<RobotStates> defaultIntakeStates = List.of(EJECT_OUTTAKE, INTAKE, PROCESSOR_PRIME);
-    public static final List<RobotStates> exclusiveIntakeStates = List.of(PROCESSOR_OUTTAKE);
+    public static final List<RobotStates> defaultIntakeStates = List.of(EJECT_OUTTAKE, INTAKE);
+    public static final List<RobotStates> exclusiveIntakeStates = List.of(CLIMB);
     public static final List<RobotStates> defaultClimbStates = List.of(CLIMB_PRIME);
     public static final List<RobotStates> exclusiveClimbStates = List.of(CLIMB);
 
@@ -49,7 +47,6 @@ public enum RobotStates {
         Pair.of(RPL3, RSL3),
         Pair.of(RPL4, RSL4),
         Pair.of(UNDEFINED, NEUTRAL),
-        Pair.of(PROCESSOR_PRIME, PROCESSOR_OUTTAKE),
         Pair.of(CLIMB_PRIME, CLIMB)
     );
 

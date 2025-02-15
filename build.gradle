@@ -74,6 +74,7 @@ dependencies {
     implementation 'org.java-websocket:Java-WebSocket:1.5.3'
 
     implementation 'io.vavr:vavr:0.10.4'
+    implementation project(':libs:3128-common')
 }
 
 repositories {

@@ -218,8 +218,8 @@ public class Swerve extends SwerveBase {
     }
     
     public void rotateTo(Translation2d translation) {
-        rotationSetpointSupplier = ()-> getAngleTo(translation);
-        rotationController.enable();
+        // rotationSetpointSupplier = ()-> getAngleTo(translation);
+        // rotationController.enable();
     }
 
     public void rotateBy(Rotation2d dTheta) {
