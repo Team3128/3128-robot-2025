@@ -48,6 +48,7 @@ import frc.team3128.subsystems.Manipulator.RollerMechanism;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
 import frc.team3128.subsystems.Led.Led;
+import frc.team3128.subsystems.Led.LedStates;
 
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 
@@ -168,10 +169,11 @@ public class RobotContainer {
         new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
         // new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
-        controller.getDownPOVButton().onTrue(runOnce(()-> swerve.moveTo(allianceFlip(FieldStates.REEF_1.getPose2d()).getTranslation())));
-        controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToAngle()));
-        controller.getRightPOVButton().onTrue(runOnce(()-> swerve.pathToReef(true)));
-        controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.pathToReef(false)));
+        // controller.getDownPOVButton().onTrue(runOnce(()-> swerve.moveTo(allianceFlip(FieldStates.REEF_1.getPose2d()).getTranslation())));
+        controller.getDownPOVButton().onTrue(Led.getInstance().setStateCommand(LedStates.REEF_PRIME));
+        controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToReef()));
+        controller.getRightPOVButton().onTrue(runOnce(()-> swerve.snapToReef(true)));
+        controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.snapToReef(false)));
         // controller.getRightPOVButton().onTrue(runOnce(()-> swerve.snapToReef(true)));
         // controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.snapToReef(false)));
     }

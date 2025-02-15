@@ -38,7 +38,7 @@ public class Led extends FSMSubsystemBase<LedStates> {
     }
 
     private Led() {
-        super(LedStates.class, transitionMap);
+        super(LedStates.class, transitionMap, NEUTRAL);
         configCandle();   
     }
 
@@ -54,7 +54,7 @@ public class Led extends FSMSubsystemBase<LedStates> {
     public void registerTransitions() {
         transitionMap.addConvergingTransition(REEF_PRIME, new CmdAlignReef());
 
-        transitionMap.addCommutativeTransition(List.of(DISABLED, NEUTRAL, REEF_SCORE), state -> runOnce(() -> setLedColor(state)));
+        transitionMap.addCommutativeTransition(List.of(UNDEFINED, NEUTRAL, REEF_SCORE), state -> runOnce(() -> setLedColor(state)));
         
         transitionMap.addDivergingTransition(REEF_PRIME, state -> runOnce(() -> setLedColor(state)).beforeStarting(() -> CommandScheduler.getInstance().requiring(Led.getInstance()).cancel()));
     }
@@ -62,10 +62,9 @@ public class Led extends FSMSubsystemBase<LedStates> {
     //Set Elevator Leds
     public void setLedColor(LedStates ledState) {
         resetAnimationSlot();
-        candle.configBrightnessScalar(BRIGHTNESS);
 
         switch (ledState) {
-            case DISABLED:
+            case UNDEFINED:
                 candle.animate(new RainbowAnimation(BRIGHTNESS, r_SPEED, TOTAL_LEDS, false, STARTING_ID), 0);
                 break;
             case NEUTRAL:
@@ -79,7 +78,6 @@ public class Led extends FSMSubsystemBase<LedStates> {
     }
 
     public void setLedColor(LedStates ledState, double percent) {
-        candle.configBrightnessScalar(percent);
         candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, MathUtil.clamp((int) (percent * NUM_LED), 0, NUM_LED));
     }
 

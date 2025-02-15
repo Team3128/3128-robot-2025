@@ -25,14 +25,10 @@ import static frc.team3128.Constants.SwerveConstants.*;
 
 public class CmdAlignReef extends Command {
     
-    private static boolean trackRight;
-    private Translation2d tracking;
     private Swerve swerve;
-    private Translation2d rightShift;
-    private Translation2d leftShift;
+    private Led led;
 
     private double tolerance = 0.05;
-    private Led led;
 
     public CmdAlignReef() {
         swerve = Swerve.getInstance();
@@ -42,25 +38,18 @@ public class CmdAlignReef extends Command {
 
     @Override
     public void initialize() {
-        Pose2d target = swerve.nearestPose2d(reefPoses);
-        rightShift = target.getTranslation().plus(reefShift.rotateBy(target.getRotation().plus(Rotation2d.fromDegrees(-90))));
-        leftShift = target.getTranslation().plus(reefShift.rotateBy(target.getRotation().plus(Rotation2d.fromDegrees(90))));
-        tracking  = swerve.nearestTranslation2d(List.of(rightShift, leftShift));
-        trackRight = tracking.equals(rightShift);
-    }
-
-    public void toggleTracking() {
-        trackRight = !trackRight;
-        if(trackRight) tracking = rightShift;
-        else tracking = leftShift;
+        if (swerve.snappedReef == null) {
+            swerve.snapToReef();
+        }
     }
 
     @Override
     public void execute() {
-        Translation2d pose = swerve.getPose().transformBy(new Transform2d(MANIP_OFFSET.rotateBy(swerve.getGyroRotation2d()), new Rotation2d())).getTranslation();
+        Translation2d pose = swerve.getPose().getTranslation();
+        Translation2d snappedReef = swerve.snappedReef.getTranslation();
         
-        double cross = Vector.cross(VecBuilder.fill(tracking.getX(), tracking.getY(), 0), VecBuilder.fill(pose.getX(), pose.getY(), 0)).get(2);
-        double error = pose.minus(tracking).getNorm();
+        double cross = Vector.cross(VecBuilder.fill(snappedReef.getX(), snappedReef.getY(), 0), VecBuilder.fill(pose.getX(), pose.getY(), 0)).get(2);
+        double error = pose.minus(snappedReef).getNorm();
 
         if(error < tolerance) {
             led.setLedColor(LedStates.GREEN, 1);
@@ -79,7 +68,7 @@ public class CmdAlignReef extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        
+        swerve.snappedReef = null;
     }
 
     @Override

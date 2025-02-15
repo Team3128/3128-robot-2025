@@ -126,6 +126,8 @@ public class Swerve extends SwerveBase {
 
     public static boolean autoEnabled = false;
 
+    public Pose2d snappedReef = null;
+
     public static synchronized Swerve getInstance() {
         if (instance == null) {
             instance = new Swerve();
@@ -250,6 +252,30 @@ public class Swerve extends SwerveBase {
                                 (Rotation2d angle) -> Math.abs(gyroAngle.minus(angle).getDegrees()))
                             );
         rotateTo(setpoint);
+    }
+
+    public void snapToReef(boolean isRight) {
+        Pose2d setpoint = getPose().nearest(allianceFlip(reefPoses.asJava()));
+        rotateTo(setpoint.getRotation());
+
+        Rotation2d shiftDirection = setpoint.getRotation().plus(Rotation2d.fromDegrees(90 * (isRight ? -1 : 1)));
+
+        setpoint = new Pose2d(setpoint.getTranslation().plus(reefShift.rotateBy(shiftDirection)), setpoint.getRotation());
+        snappedReef = setpoint;
+    }
+
+    public void snapToReef() {
+        Pose2d setpoint = getPose().nearest(allianceFlip(reefPoses.asJava()));
+        rotateTo(setpoint.getRotation());
+
+        Rotation2d rightShift = setpoint.getRotation().plus(Rotation2d.fromDegrees(-90));
+        Rotation2d leftShift = setpoint.getRotation().plus(Rotation2d.fromDegrees(90));
+
+        Pose2d right = new Pose2d(setpoint.getTranslation().plus(reefShift.rotateBy(rightShift)), setpoint.getRotation());
+        Pose2d left = new Pose2d(setpoint.getTranslation().plus(reefShift.rotateBy(leftShift)), setpoint.getRotation());
+
+        setpoint = getPose().nearest(List.of(right, left));
+        snappedReef = setpoint;
     }
 
     public void snapToElement() {

@@ -100,7 +100,7 @@ public class Robot extends NAR_Robot {
     @Override
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
-        // RobotManager.getInstance().setState(RobotStates.NEUTRAL);
+        RobotManager.getInstance().setState(RobotStates.NEUTRAL);
     }
 
     @Override

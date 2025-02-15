@@ -16,7 +16,7 @@ public enum LedStates {
     ORANGE(255, 50, 0, false),
 
 
-    DISABLED(0, 0, 0, false), //RAINBOW
+    UNDEFINED(0, 0, 0, false), //RAINBOW
     NEUTRAL(0,0,0,true), //FLAME
     REEF_PRIME(255, 0, 0, false), //PROXIMITY
     REEF_SCORE(0, 255, 0, false);
@@ -26,7 +26,7 @@ public enum LedStates {
     public final int g;
     public final boolean animation;
 
-    public static List<LedStates> functionalStates = List.of(DISABLED, NEUTRAL, REEF_PRIME, REEF_SCORE);
+    public static List<LedStates> functionalStates = List.of(UNDEFINED, NEUTRAL, REEF_PRIME, REEF_SCORE);
 
     LedStates(int r, int g, int b, boolean animation) {
         this.r = r;
