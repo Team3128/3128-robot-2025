@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Climber.Climber;
+import frc.team3128.subsystems.Climber.ClimberStates;
 import frc.team3128.subsystems.Climber.WinchMechanism;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
@@ -153,6 +154,8 @@ public class RobotContainer {
         controller2.getButton(kA).onTrue(winch.runCommand(0.8)).onFalse(winch.runCommand(0));
         controller2.getButton(kB).onTrue(winch.runCommand(-0.8)).onFalse(winch.runCommand(0));
         controller2.getButton(kX).onTrue(winch.resetCommand());
+        controller2.getButton(kY).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB_PRIME));
+        controller2.getButton(kRightBumper).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB));
 
         new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
         // new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));

@@ -518,7 +518,7 @@ public class Constants {
         public static final double CLIMB_ROLLER_GEAR_RATIO = 1;
         public static final double CLIMB_ROLLER_SAMPLE_PER_MINUTE = 60;
         public static final int CLIMB_ROLLER_STATOR_CURRENT_LIMIT = 40;
-        public static final boolean CLIMB_ROLLER_INVERT = true;
+        public static final boolean CLIMB_ROLLER_INVERT = false;
         public static final Neutral CLIMB_ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
 
     }

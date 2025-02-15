@@ -311,13 +311,15 @@ public class Swerve extends SwerveBase {
         super.initShuffleboard();
         NAR_Shuffleboard.addData("Swerve", "Throttle", ()-> this.throttle, 4, 3);
 
+        NAR_Shuffleboard.addData("Auto", "Reef", ()-> getPose().nearest(allianceFlip(reefPoses.asJava())).toString(), 3, 3);
+
         NAR_Shuffleboard.addData("Auto", "Translation Enabled", ()-> translationController.isEnabled(), 0, 0);
         NAR_Shuffleboard.addData("Auto", "At Setpoint", ()-> atTranslationSetpoint(), 0, 1);
-        NAR_Shuffleboard.addData("Auto", "Error", ()-> translationController.getError(), 1, 0);
+        NAR_Shuffleboard.addData("Auto", "Error", ()-> getDistanceTo(translationSetpoint), 1, 0);
 
         NAR_Shuffleboard.addData("Auto", "Rotation Enabled", ()-> rotationController.isEnabled(), 0, 3);
         NAR_Shuffleboard.addData("Auto", "At Setpoint", ()-> atRotationSetpoint(), 0, 4);
-        NAR_Shuffleboard.addData("Auto", "Error", ()-> rotationController.getError(), 1, 3);
+        NAR_Shuffleboard.addData("Auto", "Error", ()-> getAngleTo(rotationSetpointSupplier.get()), 1, 3);
     }
 
     public static void disable() {
