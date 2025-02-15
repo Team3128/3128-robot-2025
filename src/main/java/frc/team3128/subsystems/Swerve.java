@@ -264,8 +264,9 @@ public class Swerve extends SwerveBase {
         rotateTo(setpoint.getRotation());
 
         Rotation2d shiftDirection = setpoint.getRotation().plus(Rotation2d.fromDegrees(90 * (isRight ? -1 : 1)));
+        Translation2d manipOffset = new Translation2d(0,edu.wpi.first.math.util.Units.inchesToMeters(6.25)).rotateBy(setpoint.getRotation());
 
-        setpoint = new Pose2d(setpoint.getTranslation().plus(reefShift.rotateBy(shiftDirection)), setpoint.getRotation());
+        setpoint = new Pose2d(setpoint.getTranslation().plus(reefShift.rotateBy(shiftDirection)).plus(manipOffset), setpoint.getRotation());
         snappedReef = setpoint;
     }
 
@@ -280,6 +281,10 @@ public class Swerve extends SwerveBase {
         Pose2d left = new Pose2d(setpoint.getTranslation().plus(reefShift.rotateBy(leftShift)), setpoint.getRotation());
 
         setpoint = getPose().nearest(List.of(right, left));
+        Translation2d manipOffset = new Translation2d(0,edu.wpi.first.math.util.Units.inchesToMeters(6.25)).rotateBy(setpoint.getRotation());
+
+        setpoint = new Pose2d(setpoint.getTranslation().plus(manipOffset), setpoint.getRotation());
+
         snappedReef = setpoint;
     }
 
