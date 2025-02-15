@@ -38,9 +38,7 @@ public class CmdAlignReef extends Command {
 
     @Override
     public void initialize() {
-        if (swerve.snappedReef == null) {
-            swerve.snapToReef();
-        }
+        swerve.snapToReef();
     }
 
     @Override

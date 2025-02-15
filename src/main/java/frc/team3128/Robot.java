@@ -20,6 +20,8 @@ import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
+import frc.team3128.subsystems.Led.Led;
+import frc.team3128.subsystems.Led.LedStates;
 // import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
@@ -57,7 +59,7 @@ public class Robot extends NAR_Robot {
         m_robotContainer.initDashboard();
         LiveWindow.disableAllTelemetry();
         Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM, MOTOR);
-
+        Led.getInstance().setState(LedStates.UNDEFINED);
     }
 
     @Override
@@ -125,6 +127,7 @@ public class Robot extends NAR_Robot {
         Swerve.getInstance().setBrakeMode(false);
         Swerve.disable();
         RobotManager.getInstance().stop();
+        Led.getInstance().setState(LedStates.UNDEFINED);
     }
 
     @Override
