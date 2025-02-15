@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.Robot;
 // import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Robot.RobotManager;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
@@ -28,6 +30,7 @@ import common.utility.Log;
 import common.utility.narwhaldashboard.NarwhalDashboard;
 
 import static frc.team3128.Constants.SwerveConstants.*;
+import static frc.team3128.subsystems.Robot.RobotStates.*;
 
 
 /**
@@ -42,9 +45,12 @@ public class AutoPrograms {
     private static Swerve swerve = Swerve.getInstance();
     private RobotConfig robotConfig;
     private static AutoPrograms instance;
+    private RobotManager robot;
     SendableChooser<Command> autoChooser;
 
     public AutoPrograms() {
+        robot = RobotManager.getInstance();
+
         configPathPlanner();
         initAutoSelector();
         autoChooser = new SendableChooser<Command>();
@@ -70,6 +76,16 @@ public class AutoPrograms {
     }
 
     private void configPathPlanner() {
+        NamedCommands.registerCommand("pathToReefLeft", sequence(
+            runOnce(() -> swerve.pathToReef(false)),
+            waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(3)
+        ));
+        NamedCommands.registerCommand("scoreL2", sequence(
+            robot.getTempToggleCommand(RPL2, RSL2),
+            waitSeconds(0.75),
+            robot.getTempToggleCommand(RPL2, RSL2)
+        ));
+
         Pathfinding.setPathfinder(new LocalADStar());
 
         // try {
@@ -123,7 +139,7 @@ public class AutoPrograms {
     }
 
     public Command getAutonomousCommand() {
-        String selectedAutoName = "CB_1p"; //NarwhalDashboard.getInstance().getSelectedAuto();
+        String selectedAutoName = "CB_1p_align"; //NarwhalDashboard.getInstance().getSelectedAuto();
         String hardcode = "";
         
         Command autoCommand;
