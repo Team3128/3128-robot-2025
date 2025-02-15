@@ -183,7 +183,7 @@ public class Constants {
         public static final double DRIVE_TRACK_WIDTH = Units.inchesToMeters(20.75); //Hand measure later
         public static final double DRIVE_WHEEL_BASE = Units.inchesToMeters(20.75); //Hand measure later
         public static final double ROBOT_LENGTH = Units.inchesToMeters(26.5) + DRIVE_BUMPER_LENGTH; // bumperLength + trackWidth;
-        public static final double DRIVE_WHEEL_DIAMETER = Units.inchesToMeters(4);
+        public static final double DRIVE_WHEEL_DIAMETER = Units.inchesToMeters(3.782);
         public static final double DRIVE_WHEEL_CIRCUMFERENCE = DRIVE_WHEEL_DIAMETER * Math.PI;
         public static final double ROBOT_MOI = ROBOT_MASS * (DRIVE_TRACK_WIDTH / 2) * 0.44965 / 0.4443; //kg m^2 mass * (trackWidth / 2) * (Ka angular / Ka linear)
 
@@ -294,13 +294,13 @@ public class Constants {
         public static final Translation2d FIELD = new Translation2d(FIELD_X_LENGTH, FIELD_Y_LENGTH);
         public static final Translation2d CENTER_FIELD = FIELD.div(2);
 
-        public static final Translation2d reefShift = new Translation2d(0.35/2, 0);
+        public static final Translation2d reefShift = new Translation2d(0.35/2, 0.);
 
         public enum FieldStates {
             BLUE_BARGE,
             CENTER_BARGE,
             RED_BARGE,
-            REEF_1(new Pose2d(new Translation2d(5.5, 4.05), Rotation2d.fromDegrees(180))),//TODO:Fix others
+            REEF_1(new Pose2d(new Translation2d(5.75, 4.05), Rotation2d.fromDegrees(180))),//TODO:Fix others
             REEF_2(new Pose2d(new Translation2d(5.15, 5.15), Rotation2d.fromDegrees(240))),
             REEF_3(new Pose2d(new Translation2d(3.80, 5.15), Rotation2d.fromDegrees(300))),
             REEF_4(new Pose2d(new Translation2d(3.15, 4.05), Rotation2d.fromDegrees(0))),
@@ -504,7 +504,7 @@ public class Constants {
         public static final int CLIMB_ROLLER_ID = 21;
 
 
-        public static final double CLIMBER_GEAR_RATIO = 90.0 / 450.0;
+        public static final double CLIMBER_GEAR_RATIO = (90.0 / 450.0) * (5.0 / 3.0);
         public static final double CLIMBER_SAMPLE_PER_MINUTE = 60;
         public static final int CLIMBER_STATOR_CURRENT_LIMIT = 40;
         public static final boolean CLIMBER_INVERT = false;

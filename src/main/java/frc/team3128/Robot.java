@@ -102,7 +102,10 @@ public class Robot extends NAR_Robot {
     @Override
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
-        // RobotManager.getInstance().setState(RobotStates.NEUTRAL);
+        RobotManager.getInstance().stop();
+        Log.info("State", RobotManager.getInstance().getState().name());
+        RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL).schedule();
+        Log.info("State", RobotManager.getInstance().getState().name());
     }
 
     @Override
@@ -122,17 +125,25 @@ public class Robot extends NAR_Robot {
     // }
 
     @Override
+    public void teleopExit() {
+        RobotManager.getInstance().stop();
+        Log.info("State", RobotManager.getInstance().getState().name());
+    }
+
+    @Override
     public void disabledInit() {
         CommandScheduler.getInstance().cancelAll();
         Swerve.getInstance().setBrakeMode(false);
         Swerve.disable();
         RobotManager.getInstance().stop();
+        Log.info("State", RobotManager.getInstance().getState().name());
     }
 
     @Override
     public void disabledExit() {
         Swerve.getInstance().setBrakeMode(true);
         RobotManager.getInstance().stop();
+        Log.info("State", RobotManager.getInstance().getState().name());
     }
     
     // @Override
