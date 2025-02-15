@@ -35,6 +35,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Climber.Climber;
+import frc.team3128.subsystems.Climber.ClimberStates;
+import frc.team3128.subsystems.Climber.WinchMechanism;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
@@ -69,12 +71,14 @@ public class RobotContainer {
 
     // Create all subsystems
     private RobotManager robot;
-    private ElevatorMechanism elevatorMechanism;
-    private Manipulator manipulator;
+    private ElevatorMechanism elevator;
+    // private Manipulator manipulator;
     private Swerve swerve;
     private Climber climber;
     private Intake intake;
     private Elevator elevator;
+
+    // private WinchMechanism winch;
 
     // private NAR_ButtonBoard judgePad;
     private NAR_ButtonBoard buttonPad;
@@ -90,6 +94,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         swerve = Swerve.getInstance();
+        // winch = WinchMechanism.getInstance();
         
         NAR_CANSpark.maximumRetries = 2;
         NAR_TalonFX.maximumRetries = 2;
@@ -133,9 +138,14 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        buttonPad.getButton(1).whileTrue(runOnce(()-> swerve.setBrakeMode(false))).onFalse(runOnce(()-> swerve.setBrakeMode(true)));
-        buttonPad.getButton(2).onTrue(swerve.identifyOffsetsCommand().ignoringDisable(true));
-        buttonPad.getButton(3).onTrue(runOnce(()-> robot.setNeutralMode(Neutral.COAST))).onFalse(runOnce(()-> robot.setNeutralMode(Neutral.BRAKE)));
+        // buttonPad.getButton(1).whileTrue(runOnce(()-> swerve.setBrakeMode(false))).onFalse(runOnce(()-> swerve.setBrakeMode(true)));
+        // buttonPad.getButton(2).onTrue(swerve.identifyOffsetsCommand().ignoringDisable(true));
+        // buttonPad.getButton(3).onTrue(runOnce(()-> robot.setNeutralMode(Neutral.COAST))).onFalse(runOnce(()-> robot.setNeutralMode(Neutral.BRAKE)));
+        buttonPad.getButton(4).onTrue(Climber.getInstance().resetCommand().ignoringDisable(true));
+
+        controller2.getButton(kA).onTrue(Climber.getInstance().runCommand(0.8)).onFalse(Climber.getInstance().stopCommand());
+        controller2.getButton(kB).onTrue(Climber.getInstance().runCommand(-0.8)).onFalse(Climber.getInstance().stopCommand());
+        controller2.getButton(kX).onTrue(Climber.getInstance().resetCommand());
 
         controller.getButton(kA).onTrue(robot.getTempToggleCommand(RPL1, RSL1));
         controller.getButton(kB).onTrue(robot.getTempToggleCommand(RPL2, RSL2));
@@ -154,9 +164,28 @@ public class RobotContainer {
         controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetEncoders()));
 
         new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevatorMechanism.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
+        // controller2.getButton(kX).onTrue(
+        //     swerve.characterize(0, 1, 10)
+        //         .beforeStarting(() -> swerve.zeroLock())
+        // );
+        // controller2.getButton(kY).onTrue(
+        //     swerve.characterize(0, 1, 10)
+        //         .beforeStarting(() -> swerve.oLock())
+        // );
+
+        // controller2.getButton(kA).onTrue(winch.runCommand(0.8)).onFalse(winch.runCommand(0));
+        // controller2.getButton(kB).onTrue(winch.runCommand(-0.8)).onFalse(winch.runCommand(0));
+        // controller2.getButton(kX).onTrue(winch.resetCommand());
+        // controller2.getButton(kY).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB_PRIME));
+        // controller2.getButton(kRightBumper).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB));
+
+        new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
         // new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
-        // controller.getDownPOVButton().onTrue(runOnce(()-> swerve.setPose(FieldStates.PROCESSOR.getPose2d())));
+        controller.getDownPOVButton().onTrue(runOnce(()-> swerve.moveTo(allianceFlip(FieldStates.REEF_1.getPose2d()).getTranslation())));
+        controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
+        controller.getRightPOVButton().onTrue(runOnce(()-> swerve.pathToReef(true)));
+        controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.pathToReef(false)));
         // controller.getRightPOVButton().onTrue(runOnce(()-> swerve.snapToReef(true)));
         // controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.snapToReef(false)));
     }
@@ -164,12 +193,11 @@ public class RobotContainer {
     public void initCameras() {
         Log.info("tags", APRIL_TAGS.get(0).toString());
         Camera.setResources(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), new AprilTagFieldLayout(APRIL_TAGS, FIELD_X_LENGTH, FIELD_Y_LENGTH), () -> swerve.getPose());
-        // Camera.setThresholds(5,  10);
+        Camera.setThresholds(0.35, 3, 10);
         if (Robot.isReal()) {
-            // Camera frontRightCamera = new Camera("FRONT_RIGHT", Units.inchesToMeters(10.055), Units.inchesToMeters(9.79), Units.degreesToRadians(30), Units.degreesToRadians(-28.125), 0);
-            // Camera frontLeftCamera = new Camera("FRONT_LEFT", Units.inchesToMeters(13.5), -Units.inchesToMeters(0), Units.degreesToRadians(0), Units.degreesToRadians(0), 0);
-            // Camera backRightCamera = new Camera("BACK_RIGHT", -Units.inchesToMeters(10.055), Units.inchesToMeters(9.79),  Units.degreesToRadians(150), Units.degreesToRadians(-28.125), 0);
-            // Camera backLeftCamera = new Camera("BACK_LEFT", -Units.inchesToMeters(10.055), -Units.inchesToMeters(9.79), Units.degreesToRadians(-150), Units.degreesToRadians(-28.125), 0);
+            Camera backRightCamera = new Camera("BOTTOM_RIGHT", Units.inchesToMeters(10.055), -Units.inchesToMeters(9.79),  0, Units.degreesToRadians(-28.125), 0);
+            Camera backLeftCamera = new Camera("BOTTOM_LEFT", Units.inchesToMeters(10.055), Units.inchesToMeters(9.79), 0, Units.degreesToRadians(-28.125), 0);
+            Camera topCamera = new Camera("TOP", -Units.inchesToMeters(6), -Units.inchesToMeters(12.5), Units.degreesToRadians(180), Units.degreesToRadians(-45), 0);
         }
     }
 

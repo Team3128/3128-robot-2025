@@ -9,8 +9,8 @@
   "defaultMaxAngVel": 286.0,
   "defaultMaxAngAccel": 360.0,
   "defaultNominalVoltage": 12.0,
-  "robotMass": 35.21,
-  "robotMOI": 3.385,
+  "robotMass": 62.0,
+  "robotMOI": 13.0,
   "robotTrackwidth": 0.546,
   "driveWheelRadius": 0.051,
   "driveGearing": 5.357,
@@ -28,5 +28,7 @@
   "brModuleY": -0.263525,
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
-  "robotFeatures": []
+  "robotFeatures": [
+    "{\"name\":\"Line\",\"type\":\"line\",\"data\":{\"start\":{\"x\":0.0,\"y\":-0.159},\"end\":{\"x\":0.35,\"y\":-0.159},\"strokeWidth\":0.02}}"
+  ]
 }

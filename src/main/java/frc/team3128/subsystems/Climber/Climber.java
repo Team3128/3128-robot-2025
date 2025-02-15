@@ -9,12 +9,16 @@ import common.utility.tester.Tester.SystemsTest;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 
+import edu.wpi.first.wpilibj2.command.Commands;
+
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.subsystems.Climber.ClimberStates.*;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static frc.team3128.Constants.TestingConstants.*;
 
+import java.util.List;
 import java.util.function.Function;
 
 public class Climber extends FSMSubsystemBase<ClimberStates> {
@@ -24,18 +28,25 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 
     private static TransitionMap<ClimberStates> transitionMap = new TransitionMap<ClimberStates>(ClimberStates.class);
 
-    // private Function<Neutral, Command> setNeutralMode = mode -> runOnce(() -> getMechanisms().forEach(subsystem -> subsystem.setNeutralMode(mode)));
-    // private Function<ClimberStates, Command> transitioner = state -> {
-    //     return sequence(
-    //         setNeutralMode.apply(BRAKE),
-    //         winch.pidTo(state.getAngle())
-    //         runOnce(()->winch.lockServo.setPosition(state.getHasClaw() ? 1 : 0)),
-    //         runOnce(()->winch.winchServo.setPosition(state.getHasWinch() ? 1 : 0))
-    //     );
-    // };
+    private Function<Neutral, Command> setNeutralMode = mode -> runOnce(() -> getMechanisms().forEach(subsystem -> subsystem.setNeutralMode(mode)));
+    private Function<ClimberStates, Command> defaultTransitioner = state -> {
+        return sequence(
+            none(),
+            roller.runCommand(state.getRollerPower()),
+            winch.pidTo(state.getAngle())
+        );
+    };
 
     public Climber() {
-        super(ClimberStates.class, transitionMap, UNDEFINED);
+        super(ClimberStates.class, transitionMap, NEUTRAL);
+
+        winch = WinchMechanism.getInstance();
+        roller = RollerMechanism.getInstance();
+
+        addMechanisms(winch, roller);
+        // addMechanisms(winch);
+
+        initShuffleboard();
     }
 
     public static synchronized Climber getInstance() {
@@ -77,33 +88,13 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 
 	@Override
 	public void registerTransitions() {
+        transitionMap.addUndefinedState(
+            UNDEFINED, 
+            NEUTRAL, 
+            stopCommand().andThen(() -> setNeutralMode(Neutral.COAST)),
+            defaultTransitioner.apply(NEUTRAL).beforeStarting(() -> setNeutralMode(Neutral.BRAKE))
+        );
 
-        // //ALL STATES -> UNDEFINED
-        // transitionMap.addConvergingTransition(
-        //     UNDEFINED,
-        //     sequence(
-        //     runOnce(()-> setNeutralMode(COAST))//,
-        //     // runOnce(()-> winch.stop())
-        // )
-        // );
-
-        // //UNDEFINED, PRIME, LOCKED -> NEUTRAL
-        // transitionMap.addConvergingTransitions(
-        //     transitioner.apply(NEUTRAL), 
-        //     NEUTRAL, 
-        //     UNDEFINED, CLIMB_PRIME, CLIMB_LOCKED
-        // );
-
-        // //NEUTRAL -> PRIME
-        // transitionMap.addTransition(NEUTRAL, CLIMB_PRIME, transitioner.apply(CLIMB_PRIME));
-
-        // //PRIME -> LOCKED
-        // transitionMap.addTransition(CLIMB_PRIME, CLIMB_LOCKED, transitioner.apply(CLIMB_LOCKED));
-
-        // //LOCKED -> WINCH
-        // transitionMap.addTransition(CLIMB_LOCKED, CLIMB_WINCH, transitioner.apply(CLIMB_WINCH));
-
-        // //WINCH -> PRIME
-        // transitionMap.addTransition(CLIMB_LOCKED, CLIMB_PRIME, transitioner.apply(CLIMB_PRIME));
+        transitionMap.addCommutativeTransition(List.of(NEUTRAL, CLIMB_PRIME, CLIMB), defaultTransitioner);
 	}
 }

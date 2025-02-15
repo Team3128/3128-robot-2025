@@ -27,7 +27,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
     private Function<ManipulatorStates, Command> defaultTransitioner = state -> {return runOnce(() -> roller.run(state.getPower()));};
 
     public Manipulator() {
-        super(ManipulatorStates.class, transitionMap, UNDEFINED);
+        super(ManipulatorStates.class, transitionMap, NEUTRAL);
         roller = RollerMechanism.getInstance();
         addMechanisms(roller);
     }

@@ -2,37 +2,33 @@ package frc.team3128.subsystems.Climber;
 
 public enum ClimberStates {
     UNDEFINED,
-    NEUTRAL,
-    CLIMB_PRIME(90.0,false,false),
-    CLIMB(0.0,true,true);
+    NEUTRAL(0, -1, 0),
+    CLIMB_PRIME(95.0, 1, 0.5),
+    CLIMB(27.5, -1, 0);
 
     private double angle;
-    private boolean hasClaw;
-    private boolean hasWinch;
+    private double winchPower;
+    private double rollerPower;
 
-    private ClimberStates(double angle, boolean hasClaw, boolean hasWinch) {
+    private ClimberStates(double angle, double winchPower, double rollerPower) {
         this.angle = angle;
-        this.hasClaw = hasClaw;
-        this.hasWinch = hasWinch;
-    }
-
-    private ClimberStates(double angle) {
-        this(angle, false, false);
+        this.winchPower = winchPower;
+        this.rollerPower = rollerPower;
     }
 
     private ClimberStates() {
-        this(0);
+        this(0, 0, 0);
     }
 
     public double getAngle() {
-        return angle;
+        return this.angle;
     }
 
-    public boolean getHasClaw() {
-        return hasClaw;
+    public double getWinchPower() {
+        return this.winchPower;
     }
 
-    public boolean getHasWinch() {
-        return hasWinch;
+    public double getRollerPower() {
+        return this.rollerPower;
     }
 }

@@ -1,25 +1,32 @@
 package frc.team3128.subsystems.Climber;
 
-import common.core.controllers.Controller;
+import common.core.controllers.*;
 import common.core.controllers.PIDFFConfig;
 import common.core.subsystems.PositionSubsystemBase;
 import common.hardware.motorcontroller.NAR_CANSpark;
+import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import static frc.team3128.Constants.ClimberConstants.*;
 
 public class WinchMechanism extends PositionSubsystemBase {
 
-    private static PIDFFConfig config = new PIDFFConfig(1, 1, 1);
-    protected static Controller controller = new Controller(config, Controller.Type.POSITION);
+    public static WinchMechanism instance;
 
-    public static NAR_CANSpark leader = new NAR_CANSpark(CLIMBER_LEADER_ID);
-    // public static NAR_CANSpark follower = new NAR_CANSpark(CLIMBER_FOLLOWER_ID);
+    private static PIDFFConfig config = new PIDFFConfig(0.00001, 0, 0, 12, 0, 0, 0);
+    protected static ControllerBase controller = new Controller(config, Controller.Type.POSITION);
 
-    // public PWM winchServo = new PWM(WINCH_SERVO_ID);
-    // public PWM lockServo = new PWM(LOCK_SERVO_ID);
+    public static NAR_CANSpark leader = new NAR_CANSpark(CLIMBER_WINCH_ID, ControllerType.CAN_SPARK_FLEX);
 
-    public WinchMechanism() {
+    private WinchMechanism() {
         super(controller, leader);
+    }
+
+    public static WinchMechanism getInstance() {
+        if (instance == null) {
+            instance = new WinchMechanism();
+        }
+
+        return instance;
     }
 
     @Override
@@ -33,8 +40,8 @@ public class WinchMechanism extends PositionSubsystemBase {
         CLIMBER_STATUS_FRAME);
 
         leader.configMotor(motorConfig);
-        //TODO: fix follower config
-        // follower.configMotor(motorConfig);
+
+        initShuffleboard();
     }
 
     @Override
@@ -42,5 +49,5 @@ public class WinchMechanism extends PositionSubsystemBase {
        controller.setInputRange(CLIMBER_POSITiON_MIN, CLIMBER_POSITION_MAX);
        controller.configureFeedback(leader);
        controller.setTolerance(CLIMBER_TOLERANCE);
-    }   
+    } 
 }

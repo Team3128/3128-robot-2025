@@ -24,20 +24,22 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
     private static TransitionMap<IntakeStates> transitionMap = new TransitionMap<IntakeStates>(IntakeStates.class);
     private Function<IntakeStates, Command> defaultTransitioner = state -> {
         return sequence(
-            // pivot.pidTo(state.getAngle()),
-            // roller.run(state.getPower())
+            // PivotMechanism.getInstance().pidTo(state.getAngle()),
+            RollerMechanism.getInstance().runCommand(state.getPower())
         );
     };
 
     public Intake() {
-        super(IntakeStates.class, transitionMap, UNDEFINED);
+        super(IntakeStates.class, transitionMap, NEUTRAL);
+
+        // pivot = PivotMechanism.getInstance();
+        roller = RollerMechanism.getInstance();
+
+        addMechanisms(roller);
     }
 
     public static synchronized Intake getInstance() {
-        if (instance == null) {
-            instance = new Intake();
-        }
-
+        if (instance == null) instance = new Intake();
         return instance;
     }
 
@@ -83,10 +85,13 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
         //ALL STATES -> UNDEFINED
 		transitionMap.addUndefinedState(UNDEFINED, NEUTRAL, stopCommand().andThen(()-> setNeutralMode(COAST)), defaultTransitioner.apply(NEUTRAL).beforeStarting(()-> setNeutralMode(BRAKE)));
 
+        //DEFAULT STATES -> DEFAULT STATES
         transitionMap.addCommutativeTransition(defaultStates.asJava(), defaultTransitioner);
 
+        //EXCLUSIVE STATES -> NEUTRAL
         transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, defaultTransitioner);
 
+        //PRIME STATES -> OUTPUT STATES
         transitionMap.addMappedTransition(coupledStates.asJava(), defaultTransitioner);
 
 
