@@ -171,11 +171,13 @@ public class Swerve extends SwerveBase {
      */
     @Override
     public void drive(ChassisSpeeds velocity){
-        if(Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) < TRANSLATIONAL_DEADBAND && translationController.isEnabled() && !rotationController.isEnabled()) {
-            Translation2d error = getDisplacementTo(translationSetpoint);
-            Translation2d output = new Translation2d(translationController.calculate(error.getNorm()), error.getAngle());
-            velocity.vxMetersPerSecond = output.getX();
-            velocity.vyMetersPerSecond = output.getY();
+        if(Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) < TRANSLATIONAL_DEADBAND && translationController.isEnabled()) {
+            if (!rotationController.isEnabled()) {
+                Translation2d error = getDisplacementTo(translationSetpoint);
+                Translation2d output = new Translation2d(translationController.calculate(error.getNorm()), error.getAngle());
+                velocity.vxMetersPerSecond = output.getX();
+                velocity.vyMetersPerSecond = output.getY();
+            }
         }
         else translationController.disable();
 
@@ -186,7 +188,10 @@ public class Swerve extends SwerveBase {
         else rotationController.disable();
 
         assign(velocity);
-        if(translationController.isEnabled() && atTranslationSetpoint()) translationController.disable();
+        if(translationController.isEnabled() && atTranslationSetpoint()){
+            translationController.disable();
+            rotationController.enable();
+        }
         if(rotationController.isEnabled() && atRotationSetpoint()) rotationController.disable();
     }
 
@@ -287,7 +292,8 @@ public class Swerve extends SwerveBase {
         final Pose2d setpoint = getPose().nearest(allianceFlip(reefPoses.asJava()));
         rotateTo(setpoint.getRotation());
         Rotation2d shiftDirection = setpoint.getRotation().plus(Rotation2d.fromDegrees(90 * (isRight ? -1 : 1)));
-        moveTo(setpoint.getTranslation().plus(reefShift.rotateBy(shiftDirection)));
+        Translation2d ram = new Translation2d(0.25,edu.wpi.first.math.util.Units.inchesToMeters(6.25)).rotateBy(setpoint.getRotation());
+        moveTo(setpoint.getTranslation().plus(reefShift.rotateBy(shiftDirection)).plus(ram));
     }
 
     public void pathToSource() {
@@ -343,9 +349,9 @@ public class Swerve extends SwerveBase {
         NAR_Shuffleboard.addData("Auto", "At Setpoint", ()-> atTranslationSetpoint(), 0, 1);
         NAR_Shuffleboard.addData("Auto", "Error", ()-> getDistanceTo(translationSetpoint), 1, 0);
 
-        NAR_Shuffleboard.addData("Auto", "Rotation Enabled", ()-> rotationController.isEnabled(), 0, 3);
-        NAR_Shuffleboard.addData("Auto", "At Setpoint", ()-> atRotationSetpoint(), 0, 4);
-        NAR_Shuffleboard.addData("Auto", "Error", ()-> getAngleTo(rotationSetpointSupplier.get()), 1, 3);
+        // NAR_Shuffleboard.addData("Auto", "Rotation Enabled", ()-> rotationController.isEnabled(), 0, 2);
+        // NAR_Shuffleboard.addData("Auto", "At Setpoint", ()-> atRotationSetpoint(), 0, 3);
+        // NAR_Shuffleboard.addData("Auto", "Error", ()-> getAngleTo(rotationSetpointSupplier.get()), 1, 3);
     }
 
     public static void disable() {

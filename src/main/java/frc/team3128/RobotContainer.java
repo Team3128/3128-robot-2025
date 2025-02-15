@@ -78,7 +78,7 @@ public class RobotContainer {
     private Swerve swerve;
     private Led led;
 
-    private WinchMechanism winch;
+    // private WinchMechanism winch;
 
     // private NAR_ButtonBoard judgePad;
     private NAR_ButtonBoard buttonPad;
@@ -94,7 +94,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         swerve = Swerve.getInstance();
-        winch = WinchMechanism.getInstance();
+        // winch = WinchMechanism.getInstance();
         
         NAR_CANSpark.maximumRetries = 2;
         NAR_TalonFX.maximumRetries = 2;
@@ -129,6 +129,10 @@ public class RobotContainer {
         // buttonPad.getButton(3).onTrue(runOnce(()-> robot.setNeutralMode(Neutral.COAST))).onFalse(runOnce(()-> robot.setNeutralMode(Neutral.BRAKE)));
         buttonPad.getButton(4).onTrue(Climber.getInstance().resetCommand().ignoringDisable(true));
 
+        controller2.getButton(kA).onTrue(Climber.getInstance().runCommand(0.8)).onFalse(Climber.getInstance().stopCommand());
+        controller2.getButton(kB).onTrue(Climber.getInstance().runCommand(-0.8)).onFalse(Climber.getInstance().stopCommand());
+        controller2.getButton(kX).onTrue(Climber.getInstance().resetCommand());
+
         controller.getButton(kA).onTrue(robot.getTempToggleCommand(RPL1, RSL1));
         controller.getButton(kB).onTrue(robot.getTempToggleCommand(RPL2, RSL2));
         controller.getButton(kX).onTrue(robot.getTempToggleCommand(RPL3, RSL3));
@@ -154,11 +158,11 @@ public class RobotContainer {
         //         .beforeStarting(() -> swerve.oLock())
         // );
 
-        controller2.getButton(kA).onTrue(winch.runCommand(0.8)).onFalse(winch.runCommand(0));
-        controller2.getButton(kB).onTrue(winch.runCommand(-0.8)).onFalse(winch.runCommand(0));
-        controller2.getButton(kX).onTrue(winch.resetCommand());
-        controller2.getButton(kY).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB_PRIME));
-        controller2.getButton(kRightBumper).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB));
+        // controller2.getButton(kA).onTrue(winch.runCommand(0.8)).onFalse(winch.runCommand(0));
+        // controller2.getButton(kB).onTrue(winch.runCommand(-0.8)).onFalse(winch.runCommand(0));
+        // controller2.getButton(kX).onTrue(winch.resetCommand());
+        // controller2.getButton(kY).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB_PRIME));
+        // controller2.getButton(kRightBumper).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB));
 
         controller2.getLeftPOVButton().onTrue(runOnce(()->swerve.snapToReef(true)));
         controller2.getRightPOVButton().onTrue(runOnce(()->swerve.snapToReef(false)));
@@ -185,7 +189,7 @@ public class RobotContainer {
         if (Robot.isReal()) {
             Camera backRightCamera = new Camera("BOTTOM_RIGHT", Units.inchesToMeters(10.055), -Units.inchesToMeters(9.79),  0, Units.degreesToRadians(-28.125), 0);
             Camera backLeftCamera = new Camera("BOTTOM_LEFT", Units.inchesToMeters(10.055), Units.inchesToMeters(9.79), 0, Units.degreesToRadians(-28.125), 0);
-            // Camera topCamera = new Camera("TOP", -Units.inchesToMeters(6), -Units.inchesToMeters(12.5), Units.degreesToRadians(180), Units.degreesToRadians(-45), 0);
+            Camera topCamera = new Camera("TOP", -Units.inchesToMeters(6), -Units.inchesToMeters(12.5), Units.degreesToRadians(180), Units.degreesToRadians(-45), 0);
         }
     }
 
