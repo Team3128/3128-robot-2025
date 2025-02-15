@@ -220,8 +220,8 @@ public class Constants {
         // For safety, use less than theoretical and real values
         public static final double MAX_DRIVE_SPEED = 3;//4.57;//4.8; //meters per second - 16.3 ft/sec
         public static final double MAX_ATTAINABLE_DRIVE_SPEED = MAX_DRIVE_SPEED; //Stole from citrus.
-        public static final double MAX_DRIVE_ACCELERATION = 5;
-        public static final double MAX_DRIVE_ANGULAR_VELOCITY = 8;
+        public static final double MAX_DRIVE_ACCELERATION = 6.6;//5;
+        public static final double MAX_DRIVE_ANGULAR_VELOCITY = 1364 / 360;
         public static final double MAX_DRIVE_ANGULAR_ACCELERATION = 2 * Math.PI; //I stole from citrus.
 
         /* Motor and Sensor IDs */

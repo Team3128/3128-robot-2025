@@ -15,6 +15,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.autonomous.AutoPrograms;
@@ -77,15 +78,11 @@ public class Robot extends NAR_Robot {
     @Override
     public void autonomousInit() {
         CommandScheduler.getInstance().cancelAll();
-        // AutoPrograms.getInstance().getAutonomousCommand().schedule();
-        sequence(
-            runOnce(()-> Swerve.getInstance().setPose(FieldStates.REEF_2.getPose2d())),
-            waitUntil(()-> (Swerve.getInstance().atRotationSetpoint() && Swerve.getInstance().atTranslationSetpoint())),
-            waitSeconds(3),
-            RobotManager.getInstance().getTempToggleCommand(RobotStates.RPL2, RobotStates.RSL2),
-            waitSeconds(1),
-            RobotManager.getInstance().getTempToggleCommand(RobotStates.RPL2, RobotStates.RSL2)
-        ).schedule();
+        Camera.enableAll();
+        Command m_autonomousCommand = AutoPrograms.getInstance().getAutonomousCommand();
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.schedule();
+        }
     }
 
     @Override
@@ -106,6 +103,7 @@ public class Robot extends NAR_Robot {
         Log.info("State", RobotManager.getInstance().getState().name());
         RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL).schedule();
         Log.info("State", RobotManager.getInstance().getState().name());
+        Camera.enableAll();
     }
 
     @Override

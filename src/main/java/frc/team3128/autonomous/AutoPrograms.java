@@ -48,7 +48,7 @@ public class AutoPrograms {
     private RobotManager robot;
     SendableChooser<Command> autoChooser;
 
-    public AutoPrograms() {
+    private AutoPrograms() {
         robot = RobotManager.getInstance();
 
         configPathPlanner();
@@ -96,11 +96,11 @@ public class AutoPrograms {
                 ROBOT_MOI, 
                 new ModuleConfig(
                     DRIVE_WHEEL_DIAMETER / 2, 
-                    MAX_DRIVE_SPEED, 
+                    5.3, 
                     WHEEL_COF, 
                     DCMotor.getKrakenX60(1),
                     DRIVE_MOTOR_GEAR_RATIO, 
-                    (double) DRIVE_MOTOR_CURRENT_LIMIT, 
+                    DRIVE_MOTOR_CURRENT_LIMIT, 
                     1
                 ),
                 Swerve.moduleOffsets

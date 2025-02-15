@@ -40,11 +40,7 @@ import frc.team3128.subsystems.Climber.WinchMechanism;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
-// import frc.team3128.subsystems.Swerve;
-import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Manipulator.Manipulator;
-import frc.team3128.subsystems.Manipulator.ManipulatorStates;
-import frc.team3128.subsystems.Manipulator.RollerMechanism;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
 
@@ -59,6 +55,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.Constants.FieldConstants.*;
 import static frc.team3128.Constants.FieldConstants.*;
 import static frc.team3128.Constants.VisionConstants.*;
+import static frc.team3128.subsystems.Robot.RobotStates.*;
 
 /**
  * Command-based is a "declarative" paradigm, very little robot logic should
