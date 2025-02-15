@@ -73,7 +73,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             ()-> atState()
         );
     }
-    private void addRobotTests() {
+    public void addRobotTests() {
         Tester tester = Tester.getInstance();
         tester.addTest("Robot", tester.getTest("Intake"));
         tester.addTest("Robot", tester.getTest("Manipulator"));

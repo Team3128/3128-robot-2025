@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Climber.Climber;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
@@ -68,9 +69,12 @@ public class RobotContainer {
 
     // Create all subsystems
     private RobotManager robot;
-    private ElevatorMechanism elevator;
+    private ElevatorMechanism elevatorMechanism;
     private Manipulator manipulator;
     private Swerve swerve;
+    private Climber climber;
+    private Intake intake;
+    private Elevator elevator;
 
     // private NAR_ButtonBoard judgePad;
     private NAR_ButtonBoard buttonPad;
@@ -100,8 +104,14 @@ public class RobotContainer {
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
 
         robot = RobotManager.getInstance();
-        elevator = ElevatorMechanism.getInstance();
+        elevator = Elevator.getInstance();
+        elevatorMechanism = ElevatorMechanism.getInstance();
         manipulator = Manipulator.getInstance();
+        climber = Climber.getInstance();
+        intake = Intake.getInstance();
+
+        addTests();
+
 
         //uncomment line below to enable driving
         // CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
@@ -113,6 +123,14 @@ public class RobotContainer {
         configureButtonBindings();
         initDashboard();
     }   
+
+    private void addTests(){
+        robot.addRobotTests();
+        climber.addClimberTests();
+        elevator.addElevatorTests();
+        intake.addIntakeTests();
+        manipulator.addManipulatorTests();
+    }
 
     private void configureButtonBindings() {
         buttonPad.getButton(1).whileTrue(runOnce(()-> swerve.setBrakeMode(false))).onFalse(runOnce(()-> swerve.setBrakeMode(true)));
@@ -135,7 +153,7 @@ public class RobotContainer {
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
         controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetEncoders()));
 
-        new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
+        new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevatorMechanism.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
         // new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
         // controller.getDownPOVButton().onTrue(runOnce(()-> swerve.setPose(FieldStates.PROCESSOR.getPose2d())));

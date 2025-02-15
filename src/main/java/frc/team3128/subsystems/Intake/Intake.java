@@ -72,7 +72,7 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
     public void addIntakeTests() {
         Tester tester = Tester.getInstance();
         for(IntakeStates state : IntakeStates.values()){
-            if(state == NEUTRAL) tester.addTest("Intake", getIntakeTest(NEUTRAL));
+            if(state == NEUTRAL || state == CLIMB) tester.addTest("Intake", getIntakeTest(state));
             else tester.addTest("Intake", getIntakeTestNeutral(state));
         }
         tester.getTest("Intake").setTimeBetweenTests(1);
