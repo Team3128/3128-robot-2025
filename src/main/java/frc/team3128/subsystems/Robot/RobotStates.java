@@ -23,6 +23,8 @@ public enum RobotStates {
     
     INTAKE(ElevatorStates.NEUTRAL, IntakeStates.INTAKE, ManipulatorStates.NEUTRAL, 1),
     EJECT_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.EJECT_OUTTAKE, ManipulatorStates.NEUTRAL, 1),
+    PROCESSOR_PRIME(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_PRIME, ManipulatorStates.NEUTRAL, 0.5),
+    PROCESSOR_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_OUTTAKE, ManipulatorStates.NEUTRAL, 0.5),
     
     CLIMB_PRIME(ElevatorStates.L1, IntakeStates.CLIMB_PRIME, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB_PRIME, 0.3),
     CLIMB(ElevatorStates.NEUTRAL, IntakeStates.CLIMB, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB, 0.3);
@@ -47,6 +49,7 @@ public enum RobotStates {
         Pair.of(RPL3, RSL3),
         Pair.of(RPL4, RSL4),
         Pair.of(UNDEFINED, NEUTRAL),
+        Pair.of(PROCESSOR_PRIME, PROCESSOR_OUTTAKE),
         Pair.of(CLIMB_PRIME, CLIMB)
     );
 

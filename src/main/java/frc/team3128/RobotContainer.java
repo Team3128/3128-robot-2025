@@ -71,8 +71,8 @@ public class RobotContainer {
 
     // Create all subsystems
     private RobotManager robot;
-    private ElevatorMechanism elevator;
-    // private Manipulator manipulator;
+    private ElevatorMechanism elevatorMech;
+    private Manipulator manipulator;
     private Swerve swerve;
     private Climber climber;
     private Intake intake;
@@ -110,7 +110,7 @@ public class RobotContainer {
 
         robot = RobotManager.getInstance();
         elevator = Elevator.getInstance();
-        elevatorMechanism = ElevatorMechanism.getInstance();
+        elevatorMech = ElevatorMechanism.getInstance();
         manipulator = Manipulator.getInstance();
         climber = Climber.getInstance();
         intake = Intake.getInstance();
@@ -163,7 +163,7 @@ public class RobotContainer {
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
         controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetEncoders()));
 
-        new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevatorMechanism.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
+        new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevatorMech.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
         // controller2.getButton(kX).onTrue(
         //     swerve.characterize(0, 1, 10)
         //         .beforeStarting(() -> swerve.zeroLock())
@@ -179,7 +179,7 @@ public class RobotContainer {
         // controller2.getButton(kY).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB_PRIME));
         // controller2.getButton(kRightBumper).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB));
 
-        new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
+        new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevatorMech.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
         // new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.moveTo(allianceFlip(FieldStates.REEF_1.getPose2d()).getTranslation())));

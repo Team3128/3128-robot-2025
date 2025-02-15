@@ -25,6 +25,7 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
     private static Climber instance;
 
     public WinchMechanism winch;
+    public RollerMechanism roller;
 
     private static TransitionMap<ClimberStates> transitionMap = new TransitionMap<ClimberStates>(ClimberStates.class);
 
