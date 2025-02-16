@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Swerve;
@@ -88,7 +89,6 @@ public class Robot extends NAR_Robot {
     @Override
     public void autonomousPeriodic() {
         CommandScheduler.getInstance().run();
-        Camera.updateAll();
     }
 
     @Override
@@ -99,7 +99,7 @@ public class Robot extends NAR_Robot {
     @Override
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
-        RobotManager.getInstance().stop();
+        RobotManager.getInstance().stopCommand().schedule();
         Log.info("State", RobotManager.getInstance().getState().name());
         RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL).schedule();
         Log.info("State", RobotManager.getInstance().getState().name());
@@ -124,7 +124,6 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void teleopExit() {
-        RobotManager.getInstance().stop();
         Log.info("State", RobotManager.getInstance().getState().name());
     }
 
@@ -133,7 +132,7 @@ public class Robot extends NAR_Robot {
         CommandScheduler.getInstance().cancelAll();
         Swerve.getInstance().setBrakeMode(false);
         Swerve.disable();
-        RobotManager.getInstance().stop();
+        RobotManager.getInstance().stopCommand().ignoringDisable(true).schedule();
         Log.info("State", RobotManager.getInstance().getState().name());
     }
 

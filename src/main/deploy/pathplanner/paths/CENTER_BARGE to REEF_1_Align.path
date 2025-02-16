@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 7.25,
-        "y": 4.0
+        "y": 4.05
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.0,
-        "y": 4.0
+        "y": 4.05
       },
       "isLocked": false,
       "linkedName": "CENTER_BARGE"
     },
     {
       "anchor": {
-        "x": 6.317520491803278,
-        "y": 4.0
+        "x": 6.5,
+        "y": 4.05
       },
       "prevControl": {
-        "x": 6.567520491803278,
-        "y": 4.0
+        "x": 6.75,
+        "y": 4.05
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "REEF_1"
+      "linkedName": "REEF_1_Align"
     }
   ],
   "rotationTargets": [],

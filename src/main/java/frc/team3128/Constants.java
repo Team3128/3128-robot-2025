@@ -218,7 +218,7 @@ public class Constants {
         // Theoretical: v = 4.96824, omega = 11.5
         // Real: v = 4.5, omega = 10
         // For safety, use less than theoretical and real values
-        public static final double MAX_DRIVE_SPEED = 3;//4.57;//4.8; //meters per second - 16.3 ft/sec
+        public static final double MAX_DRIVE_SPEED = 5;//4.8; //meters per second - 16.3 ft/sec
         public static final double MAX_ATTAINABLE_DRIVE_SPEED = MAX_DRIVE_SPEED; //Stole from citrus.
         public static final double MAX_DRIVE_ACCELERATION = 6.6;//5;
         public static final double MAX_DRIVE_ANGULAR_VELOCITY = 1364 / 360;
@@ -309,8 +309,8 @@ public class Constants {
             PIECE_1,
             PIECE_2,
             PIECE_3,
-            SOURCE_1(new Pose2d(new Translation2d(1.20, 7.00), Rotation2d.fromDegrees(125))),
-            SOURCE_2(new Pose2d(new Translation2d(1.20, 7.00), Rotation2d.fromDegrees(235))),
+            SOURCE_1(new Pose2d(new Translation2d(1.20, 7.00), Rotation2d.fromDegrees(50.25))),
+            SOURCE_2(new Pose2d(new Translation2d(1.20, 7.00), Rotation2d.fromDegrees(-50.25))),
             PROCESSOR(new Pose2d(new Translation2d(6.35, 0.60), Rotation2d.fromDegrees(270)));
 
             private final Pose2d pose;
