@@ -162,10 +162,10 @@ public class RobotContainer {
         // controller2.getButton(kY).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB_PRIME));
         // controller2.getButton(kRightBumper).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB));
 
-        controller2.getLeftPOVButton().onTrue(runOnce(()->swerve.snapToReef(true)));
-        controller2.getRightPOVButton().onTrue(runOnce(()->swerve.snapToReef(false)));
-        controller2.getDownPOVButton().onTrue(runOnce(()->swerve.snapToReef()));
-        controller2.getUpPOVButton().onTrue(new CmdAlignReef());
+        controller2.getDownPOVButton().onTrue(Led.getInstance().setStateCommand(LedStates.REEF_PRIME));
+        controller2.getUpPOVButton().onTrue(Led.getInstance().setStateCommand(LedStates.UNDEFINED));
+        controller2.getRightPOVButton().onTrue(Led.getInstance().setStateCommand(LedStates.NEUTRAL));
+        controller2.getLeftPOVButton().onTrue(Led.getInstance().setStateCommand(LedStates.REEF_SCORE));
 
 
         new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());

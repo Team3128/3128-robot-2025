@@ -176,7 +176,7 @@ public class Swerve extends SwerveBase {
     public void drive(ChassisSpeeds velocity){
         if(Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) < TRANSLATIONAL_DEADBAND && translationController.isEnabled()) {
             // if (!rotationController.isEnabled()) {
-                Translation2d error = getDisplacementTo(translationSetpoint);
+                Translation2d error = getTranslation();
                 Translation2d output = new Translation2d(translationController.calculate(error.getNorm()), error.getAngle());
                 velocity.vxMetersPerSecond = output.getX();
                 velocity.vyMetersPerSecond = output.getY();
@@ -274,30 +274,16 @@ public class Swerve extends SwerveBase {
     }
 
     public void snapToReef(boolean isRight) {
-        Pose2d setpoint = getPose().nearest(allianceFlip(reefPoses.asJava()));
+        List<Pose2d> setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
+        Pose2d setpoint = getPose().nearest(allianceFlip(setpoints));
         rotateTo(setpoint.getRotation());
 
-        Rotation2d shiftDirection = setpoint.getRotation().plus(Rotation2d.fromDegrees(90 * (isRight ? -1 : 1)));
-        Translation2d manipOffset = new Translation2d(0,edu.wpi.first.math.util.Units.inchesToMeters(6.25)).rotateBy(setpoint.getRotation());
-
-        setpoint = new Pose2d(setpoint.getTranslation().plus(reefShift.rotateBy(shiftDirection)).plus(manipOffset), setpoint.getRotation());
         snappedReef = setpoint;
     }
 
     public void snapToReef() {
         Pose2d setpoint = getPose().nearest(allianceFlip(reefPoses.asJava()));
         rotateTo(setpoint.getRotation());
-
-        Rotation2d rightShift = setpoint.getRotation().plus(Rotation2d.fromDegrees(-90));
-        Rotation2d leftShift = setpoint.getRotation().plus(Rotation2d.fromDegrees(90));
-
-        Pose2d right = new Pose2d(setpoint.getTranslation().plus(reefShift.rotateBy(rightShift)), setpoint.getRotation());
-        Pose2d left = new Pose2d(setpoint.getTranslation().plus(reefShift.rotateBy(leftShift)), setpoint.getRotation());
-
-        setpoint = getPose().nearest(List.of(right, left));
-        Translation2d manipOffset = new Translation2d(0,edu.wpi.first.math.util.Units.inchesToMeters(6.25)).rotateBy(setpoint.getRotation());
-
-        setpoint = new Pose2d(setpoint.getTranslation().plus(manipOffset), setpoint.getRotation());
 
         snappedReef = setpoint;
     }

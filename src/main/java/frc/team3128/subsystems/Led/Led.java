@@ -16,6 +16,7 @@ import com.ctre.phoenix.led.ColorFlowAnimation;
 import com.ctre.phoenix.led.FireAnimation;
 
 import static frc.team3128.Constants.LedConstants.*;
+import static frc.team3128.Constants.SwerveConstants.DRIVETRAIN_CANBUS_NAME;
 import static frc.team3128.subsystems.Led.LedStates.*;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class Led extends FSMSubsystemBase<LedStates> {
 
     public static Led instance;
 
-    private final CANdle candle = new CANdle(CANDLE_ID);
+    private final CANdle candle = new CANdle(CANDLE_ID, DRIVETRAIN_CANBUS_NAME);
 
     private static TransitionMap<LedStates> transitionMap = new TransitionMap<LedStates>(LedStates.class);
 
@@ -65,10 +66,10 @@ public class Led extends FSMSubsystemBase<LedStates> {
 
         switch (ledState) {
             case UNDEFINED:
-                candle.animate(new RainbowAnimation(BRIGHTNESS, r_SPEED, TOTAL_LEDS, false, STARTING_ID), 0);
+                candle.animate(new RainbowAnimation(BRIGHTNESS, r_SPEED, NUM_LED, false, STARTING_ID), 0);
                 break;
             case NEUTRAL:
-                candle.animate(new FireAnimation(BRIGHTNESS, r_SPEED, TOTAL_LEDS, SPARKING, COOLING, false, STARTING_ID), 0);
+                candle.animate(new FireAnimation(BRIGHTNESS, r_SPEED, NUM_LED, SPARKING, COOLING, false, STARTING_ID), 0);
                 break;
             case REEF_SCORE:
                 candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
