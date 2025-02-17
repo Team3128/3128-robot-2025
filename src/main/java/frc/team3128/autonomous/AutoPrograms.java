@@ -33,6 +33,8 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import common.utility.Log;
 import common.utility.narwhaldashboard.NarwhalDashboard;
 
+// import static frc.team3128.Constants.FieldConstants.FieldStates.REEF_5;
+// import static frc.team3128.Constants.FieldConstants.FieldStates.REEF_6;
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 
@@ -148,7 +150,7 @@ public class AutoPrograms {
     }
 
     public Command getAutonomousCommand() {
-        String selectedAutoName = "CB_2p_align"; //NarwhalDashboard.getInstance().getSelectedAuto();
+        String selectedAutoName = "BB_2p_hp"; //NarwhalDashboard.getInstance().getSelectedAuto();
         String hardcode = "";
         
         Command autoCommand;
@@ -161,16 +163,26 @@ public class AutoPrograms {
         autoCommand = autoMap.get(selectedAutoName);
 
         Log.info("AUTO_SELECTED", selectedAutoName);
-        return sequence(
-            pathToReefWait().withTimeout(2),
-            scoreL2(),
-            pathToPoseWait(new Pose2d(3.357, 5.973, Rotation2d.fromDegrees(155.469))).withTimeout(2),
-            pathToSource().withTimeout(3),
-            waitSeconds(1),
-            pathToReefWait().withTimeout(2),
-            scoreL2()
-        );
-        // return autoCommand;
+        // return sequence(
+        //     runOnce(()-> swerve.pathToReef(REEF_6.getPose2d(), false)),
+        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
+        //     scoreL2(),
+        //     waitSeconds(2),
+        //     runOnce(()-> swerve.pathToSource()),
+        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
+        //     waitSeconds(2),
+        //     runOnce(()-> swerve.pathToReef(REEF_5.getPose2d(), true)),
+        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
+        //     scoreL2(),
+        //     waitSeconds(2),
+        //     runOnce(()-> swerve.pathToSource()),
+        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
+        //     waitSeconds(2),
+        //     runOnce(()-> swerve.pathToReef(REEF_5.getPose2d(), false)),
+        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
+        //     scoreL2()
+        // );
+        return autoCommand;
     }
 
     private Command scoreL2() {

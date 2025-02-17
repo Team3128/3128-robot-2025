@@ -47,6 +47,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             manipulator.setStateCommand(nextState.getManipulatorState()),
             intake.setStateCommand(nextState.getIntakeState()),
             climber.setStateCommand(nextState.getClimberState()),
+            waitUntil(()-> climber.winch.atSetpoint()),
             runOnce(()-> Swerve.getInstance().throttle = nextState.getThrottle())
         );
     }
@@ -55,7 +56,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         return either(
             sequence(
                 setStateCommand(exclusiveState),
-                waitSeconds(1),
+                waitSeconds(0.5),
                 setStateCommand(NEUTRAL)
             ),
             setStateCommand(defaultState), 

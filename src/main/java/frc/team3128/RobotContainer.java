@@ -141,7 +141,7 @@ public class RobotContainer {
         controller.getButton(kStart).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
 
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
-        controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetEncoders()));
+        controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.snapToElement()));
 
         // controller2.getButton(kX).onTrue(
         //     swerve.characterize(0, 1, 10)
@@ -152,9 +152,9 @@ public class RobotContainer {
         //         .beforeStarting(() -> swerve.oLock())
         // );
 
-        // controller2.getButton(kA).onTrue(winch.runCommand(0.8)).onFalse(winch.runCommand(0));
-        // controller2.getButton(kB).onTrue(winch.runCommand(-0.8)).onFalse(winch.runCommand(0));
-        // controller2.getButton(kX).onTrue(winch.resetCommand());
+        controller2.getButton(kA).onTrue(WinchMechanism.getInstance().runCommand(0.8)).onFalse(WinchMechanism.getInstance().runCommand(0));
+        controller2.getButton(kB).onTrue(WinchMechanism.getInstance().runCommand(-0.8)).onFalse(WinchMechanism.getInstance().runCommand(0));
+        controller2.getButton(kX).onTrue(WinchMechanism.getInstance().resetCommand());
         // controller2.getButton(kY).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB_PRIME));
         // controller2.getButton(kRightBumper).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB));
 
@@ -172,7 +172,7 @@ public class RobotContainer {
     public void initCameras() {
         Log.info("tags", APRIL_TAGS.get(0).toString());
         Camera.setResources(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), new AprilTagFieldLayout(APRIL_TAGS, FIELD_X_LENGTH, FIELD_Y_LENGTH), () -> swerve.getPose());
-        Camera.setThresholds(0.35, 3, 10);
+        Camera.setThresholds(0.3, 3, 10);
         if (Robot.isReal()) {
             Camera backRightCamera = new Camera("BOTTOM_RIGHT", Units.inchesToMeters(10.055), -Units.inchesToMeters(9.79),  0, Units.degreesToRadians(-28.125), 0);
             Camera backLeftCamera = new Camera("BOTTOM_LEFT", Units.inchesToMeters(10.055), Units.inchesToMeters(9.79), 0, Units.degreesToRadians(-28.125), 0);

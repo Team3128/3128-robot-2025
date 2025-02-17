@@ -8,7 +8,7 @@ import io.vavr.collection.List;
 public enum ManipulatorStates {
     UNDEFINED,
     NEUTRAL(0),
-    IN(2),
+    IN(4),
     OUT(-6);
 
     private double volts;
