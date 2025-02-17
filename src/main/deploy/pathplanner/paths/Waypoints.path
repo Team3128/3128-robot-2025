@@ -33,15 +33,15 @@
     {
       "anchor": {
         "x": 7.25,
-        "y": 4.0
+        "y": 4.05
       },
       "prevControl": {
         "x": 8.140620303267571,
-        "y": 3.290095764275758
+        "y": 3.3400957642757576
       },
       "nextControl": {
         "x": 6.579582542817907,
-        "y": 4.534382823758809
+        "y": 4.5843828237588085
       },
       "isLocked": true,
       "linkedName": "CENTER_BARGE"
@@ -312,7 +312,7 @@
   "globalConstraints": {
     "maxVelocity": 4.57,
     "maxAcceleration": 5.0,
-    "maxAngularVelocity": 286.0,
+    "maxAngularVelocity": 171.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
     "unlimited": false

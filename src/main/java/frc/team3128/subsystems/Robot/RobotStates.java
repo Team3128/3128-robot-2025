@@ -27,7 +27,7 @@ public enum RobotStates {
     PROCESSOR_PRIME(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_PRIME, ManipulatorStates.NEUTRAL, LedStates.NEUTRAL, 0.5),
     PROCESSOR_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_OUTTAKE, ManipulatorStates.NEUTRAL, LedStates.NEUTRAL, 0.5),
     
-    CLIMB_PRIME(ElevatorStates.L1, IntakeStates.CLIMB_PRIME, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB_PRIME, LedStates.NEUTRAL, 0.3),
+    CLIMB_PRIME(ElevatorStates.NEUTRAL, IntakeStates.CLIMB_PRIME, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB_PRIME, LedStates.NEUTRAL, 0.3),
     CLIMB(ElevatorStates.NEUTRAL, IntakeStates.CLIMB, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB, LedStates.NEUTRAL, 0.3);
 
     private ElevatorStates elevator;

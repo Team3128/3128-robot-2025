@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
@@ -12,7 +13,11 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.pathplanner.lib.util.FlippingUtil;
+import com.pathplanner.lib.util.FlippingUtil.FieldSymmetry;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -21,13 +26,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.Robot;
 // import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Robot.RobotManager;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import common.utility.Log;
 import common.utility.narwhaldashboard.NarwhalDashboard;
 
+// import static frc.team3128.Constants.FieldConstants.FieldStates.REEF_5;
+// import static frc.team3128.Constants.FieldConstants.FieldStates.REEF_6;
 import static frc.team3128.Constants.SwerveConstants.*;
+import static frc.team3128.subsystems.Robot.RobotStates.*;
 
 
 /**
@@ -42,9 +51,12 @@ public class AutoPrograms {
     private static Swerve swerve = Swerve.getInstance();
     private RobotConfig robotConfig;
     private static AutoPrograms instance;
+    private RobotManager robot;
     SendableChooser<Command> autoChooser;
 
-    public AutoPrograms() {
+    private AutoPrograms() {
+        robot = RobotManager.getInstance();
+
         configPathPlanner();
         initAutoSelector();
         autoChooser = new SendableChooser<Command>();
@@ -70,27 +82,42 @@ public class AutoPrograms {
     }
 
     private void configPathPlanner() {
+        NamedCommands.registerCommand("pathToReefLeft", sequence(
+            runOnce(() -> swerve.pathToReef(false)),
+            run(()-> Swerve.getInstance().drive(0,0,0)).withDeadline( waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint())).andThen(()->swerve.stop())
+        ));
+        NamedCommands.registerCommand("pathToSource", sequence(
+            runOnce(() -> swerve.pathToSource()),
+            run(()-> Swerve.getInstance().drive(0,0,0)).withDeadline( waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint())).andThen(()->swerve.stop())
+        ));
+        NamedCommands.registerCommand("scoreL2", sequence(
+            robot.getTempToggleCommand(RPL2, RSL2),
+            waitSeconds(0.75),
+            robot.getTempToggleCommand(RPL2, RSL2)
+        ));
+
         Pathfinding.setPathfinder(new LocalADStar());
 
-        // try {
-        //     robotConfig = RobotConfig.fromGUISettings();
-        // } catch (Exception e) {
+        try {
+            robotConfig = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
             robotConfig = new RobotConfig(
                 ROBOT_MASS,
                 ROBOT_MOI, 
                 new ModuleConfig(
                     DRIVE_WHEEL_DIAMETER / 2, 
-                    MAX_DRIVE_SPEED, 
+                    5.3, 
                     WHEEL_COF, 
                     DCMotor.getKrakenX60(1),
                     DRIVE_MOTOR_GEAR_RATIO, 
-                    (double) DRIVE_MOTOR_CURRENT_LIMIT, 
+                    DRIVE_MOTOR_CURRENT_LIMIT, 
                     1
                 ),
                 Swerve.moduleOffsets
             );
-        // }
+        }
 
+        FlippingUtil.symmetryType = FieldSymmetry.kMirrored;
         AutoBuilder.configure(
             swerve::getPose, 
             swerve::resetOdometry, 
@@ -123,7 +150,7 @@ public class AutoPrograms {
     }
 
     public Command getAutonomousCommand() {
-        String selectedAutoName = "CB_1p"; //NarwhalDashboard.getInstance().getSelectedAuto();
+        String selectedAutoName = "BB_2p_hp"; //NarwhalDashboard.getInstance().getSelectedAuto();
         String hardcode = "";
         
         Command autoCommand;
@@ -136,7 +163,55 @@ public class AutoPrograms {
         autoCommand = autoMap.get(selectedAutoName);
 
         Log.info("AUTO_SELECTED", selectedAutoName);
+        // return sequence(
+        //     runOnce(()-> swerve.pathToReef(REEF_6.getPose2d(), false)),
+        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
+        //     scoreL2(),
+        //     waitSeconds(2),
+        //     runOnce(()-> swerve.pathToSource()),
+        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
+        //     waitSeconds(2),
+        //     runOnce(()-> swerve.pathToReef(REEF_5.getPose2d(), true)),
+        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
+        //     scoreL2(),
+        //     waitSeconds(2),
+        //     runOnce(()-> swerve.pathToSource()),
+        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
+        //     waitSeconds(2),
+        //     runOnce(()-> swerve.pathToReef(REEF_5.getPose2d(), false)),
+        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
+        //     scoreL2()
+        // );
         return autoCommand;
+    }
+
+    private Command scoreL2() {
+        return sequence(
+            robot.getTempToggleCommand(RPL2, RSL2),
+            waitSeconds(0.75),
+            robot.getTempToggleCommand(RPL2, RSL2)
+        );
+    }
+
+    private Command pathToReefWait() {
+        return sequence(
+            runOnce(() -> swerve.pathToReef(false)),
+            run(()-> Swerve.getInstance().drive(0,0,0)).withDeadline( waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint())).andThen(()->swerve.stop())
+        );
+    }
+
+    private Command pathToPoseWait(Pose2d pose) {
+        return sequence(
+            runOnce(() -> swerve.setPose(pose)),
+            run(()-> Swerve.getInstance().drive(0,0,0)).withDeadline( waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint())).andThen(()->swerve.stop())
+        );
+    }
+
+    private Command pathToSource() {
+        return sequence(
+            runOnce(() -> swerve.pathToSource()),
+            run(()-> Swerve.getInstance().drive(0,0,0)).withDeadline( waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint())).andThen(()->swerve.stop())
+        );
     }
 
     private Command defaultAuto(){

@@ -219,10 +219,10 @@ public class Constants {
         // Theoretical: v = 4.96824, omega = 11.5
         // Real: v = 4.5, omega = 10
         // For safety, use less than theoretical and real values
-        public static final double MAX_DRIVE_SPEED = 3;//4.57;//4.8; //meters per second - 16.3 ft/sec
+        public static final double MAX_DRIVE_SPEED = 4;//4.8; //meters per second - 16.3 ft/sec
         public static final double MAX_ATTAINABLE_DRIVE_SPEED = MAX_DRIVE_SPEED; //Stole from citrus.
-        public static final double MAX_DRIVE_ACCELERATION = 5;
-        public static final double MAX_DRIVE_ANGULAR_VELOCITY = 8;
+        public static final double MAX_DRIVE_ACCELERATION = 6.6;//5;
+        public static final double MAX_DRIVE_ANGULAR_VELOCITY = 1364 / 360;
         public static final double MAX_DRIVE_ANGULAR_ACCELERATION = 2 * Math.PI; //I stole from citrus.
 
         /* Motor and Sensor IDs */
@@ -301,21 +301,42 @@ public class Constants {
             BLUE_BARGE,
             CENTER_BARGE,
             RED_BARGE,
-            REEF_1(new Pose2d(new Translation2d(5.75, 4.05), Rotation2d.fromDegrees(180))),//TODO:Fix others
-            REEF_2(new Pose2d(new Translation2d(5.15, 5.15), Rotation2d.fromDegrees(240))),
-            REEF_3(new Pose2d(new Translation2d(3.80, 5.15), Rotation2d.fromDegrees(300))),
-            REEF_4(new Pose2d(new Translation2d(3.15, 4.05), Rotation2d.fromDegrees(0))),
-            REEF_5(new Pose2d(new Translation2d(3.80, 2.90), Rotation2d.fromDegrees(600))),
-            REEF_6(new Pose2d(new Translation2d(5.15, 2.90), Rotation2d.fromDegrees(120))),
+
+            // REEF_1(new Pose2d(new Translation2d(5.75, 4.05), Rotation2d.fromDegrees(180))),//TODO:Fix others
+            REEF_1_L(new Pose2d(new Translation2d(5.693, 3.66), Rotation2d.fromDegrees(180))),
+            REEF_1_R(new Pose2d(new Translation2d(5.693, 4.09), Rotation2d.fromDegrees(180))),
+
+            // REEF_2(new Pose2d(new Translation2d(5.15, 5.15), Rotation2d.fromDegrees(240))),
+            REEF_2_L(new Pose2d(new Translation2d(5.3, 5.1), Rotation2d.fromDegrees(240))), // not experimentally found
+            REEF_2_R(new Pose2d(new Translation2d(5.015, 5.034), Rotation2d.fromDegrees(240))),
+
+            // REEF_3(new Pose2d(new Translation2d(3.80, 5.15), Rotation2d.fromDegrees(300))),
+            REEF_3_L(new Pose2d(new Translation2d(4.243, 5.192), Rotation2d.fromDegrees(300))),
+            REEF_3_R(new Pose2d(new Translation2d(4.14, 4.962), Rotation2d.fromDegrees(300))),
+
+            // REEF_4(new Pose2d(new Translation2d(3.15, 4.05), Rotation2d.fromDegrees(0))),
+            REEF_4_L(new Pose2d(new Translation2d(3.286, 4.318), Rotation2d.fromDegrees(0))),
+            REEF_4_R(new Pose2d(new Translation2d(3.495, 4.012), Rotation2d.fromDegrees(0))),
+
+            // REEF_5(new Pose2d(new Translation2d(3.80, 2.90), Rotation2d.fromDegrees(60))),
+            REEF_5_L(new Pose2d(new Translation2d(3.604, 3.165), Rotation2d.fromDegrees(60))),
+            REEF_5_R(new Pose2d(new Translation2d(3.9, 3.019), Rotation2d.fromDegrees(60))),
+
+            // REEF_6(new Pose2d(new Translation2d(5.15, 2.90), Rotation2d.fromDegrees(120))),
+            REEF_6_L(new Pose2d(new Translation2d(4.8, 2.815), Rotation2d.fromDegrees(120))),
+            REEF_6_R(new Pose2d(new Translation2d(5.193, 3.228), Rotation2d.fromDegrees(120))),
+
             PIECE_1,
             PIECE_2,
             PIECE_3,
-            SOURCE_1(new Pose2d(new Translation2d(1.20, 7.00), Rotation2d.fromDegrees(125))),
-            SOURCE_2(new Pose2d(new Translation2d(1.20, 7.00), Rotation2d.fromDegrees(235))),
+            SOURCE_1(new Pose2d(new Translation2d(1.267, 0.753), Rotation2d.fromDegrees(55))),
+            SOURCE_2(new Pose2d(new Translation2d(1.267, FIELD_Y_LENGTH-0.753), Rotation2d.fromDegrees(-55))),
             PROCESSOR(new Pose2d(new Translation2d(6.35, 0.60), Rotation2d.fromDegrees(270)));
 
             private final Pose2d pose;
-            public static io.vavr.collection.List<Pose2d> reefPoses = io.vavr.collection.List.of(REEF_1.getPose2d(), REEF_2.getPose2d(), REEF_3.getPose2d(), REEF_4.getPose2d(), REEF_5.getPose2d(), REEF_6.getPose2d());
+            public static io.vavr.collection.List<Pose2d> reefLeft = io.vavr.collection.List.of(REEF_1_L.getPose2d(), REEF_2_L.getPose2d(), REEF_3_L.getPose2d(), REEF_4_L.getPose2d(), REEF_5_L.getPose2d(), REEF_6_L.getPose2d());
+            public static io.vavr.collection.List<Pose2d> reefRight = io.vavr.collection.List.of(REEF_1_R.getPose2d(), REEF_2_R.getPose2d(), REEF_3_R.getPose2d(), REEF_4_R.getPose2d(), REEF_5_R.getPose2d(), REEF_6_R.getPose2d());
+            public static io.vavr.collection.List<Pose2d> reefPoses = reefLeft.appendAll(reefRight);
             public static io.vavr.collection.List<Pose2d> sourcePoses = io.vavr.collection.List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d());
 
             private FieldStates(Pose2d pose) {
