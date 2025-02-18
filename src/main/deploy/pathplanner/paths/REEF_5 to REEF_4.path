@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.8,
-        "y": 2.9
+        "x": 3.95,
+        "y": 2.78
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.048245903371273,
-        "y": 3.173616114660535
+        "x": 3.1982459033712733,
+        "y": 3.0536161146605347
       },
       "isLocked": false,
       "linkedName": "REEF_5"
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.57,
+    "maxVelocity": 4.0,
     "maxAcceleration": 5.0,
     "maxAngularVelocity": 171.0,
     "maxAngularAcceleration": 360.0,

@@ -168,28 +168,28 @@ public class Constants {
         public static final int MOD3_CANCODER_ID = 13;
 
         /* Cancoder Offsets */
-        public static final double MOD0_CANCODER_OFFSET = -119.970703125; 
-        public static final double MOD1_CANCODER_OFFSET = -64.951171875; 
-        public static final double MOD2_CANCODER_OFFSET = 66.26953125; 
-        public static final double MOD3_CANCODER_OFFSET = 18.720703125; 
+        public static final double MOD0_CANCODER_OFFSET = 60.556640625 - 180;
+        public static final double MOD1_CANCODER_OFFSET = 110.56640625 - 180;
+        public static final double MOD2_CANCODER_OFFSET = -112.67578125 - 180;
+        public static final double MOD3_CANCODER_OFFSET = -159.78515625 - 180;
 
 
         public static final double RAMP_TIME = 3;
 
         /* Drivetrain Constants */
         public static final double ROBOT_MASS = 62; //kg
-        public static final double WHEEL_COF = 1.43;
+        public static final double WHEEL_COF = 1.2;
         public static final double DRIVE_BUMPER_LENGTH = Units.inchesToMeters(5);
         public static final double DRIVE_TRACK_WIDTH = Units.inchesToMeters(20.75); //Hand measure later
         public static final double DRIVE_WHEEL_BASE = Units.inchesToMeters(20.75); //Hand measure later
         public static final double ROBOT_LENGTH = Units.inchesToMeters(26.5) + DRIVE_BUMPER_LENGTH; // bumperLength + trackWidth;
-        public static final double DRIVE_WHEEL_DIAMETER = Units.inchesToMeters(3.782);
+        public static final double DRIVE_WHEEL_DIAMETER = Units.inchesToMeters(3.815);
         public static final double DRIVE_WHEEL_CIRCUMFERENCE = DRIVE_WHEEL_DIAMETER * Math.PI;
         public static final double ROBOT_MOI = ROBOT_MASS * (DRIVE_TRACK_WIDTH / 2) * 0.44965 / 0.4443; //kg m^2 mass * (trackWidth / 2) * (Ka angular / Ka linear)
 
         public static final double closedLoopRamp = 0.0;
 
-        public static final double DRIVE_MOTOR_GEAR_RATIO = 225.0 / 42.0;
+        public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75;
         public static final double DRIVE_ANGLE_GEAR_RATIO = (150.0 / 7.0); // 300.0 / 13.0
 
         /* Swerve Current Limiting */
@@ -289,8 +289,8 @@ public class Constants {
     
     public static class FieldConstants{
 
-        public static final double FIELD_X_LENGTH = Units.inchesToMeters(690.875); // meters
-        public static final double FIELD_Y_LENGTH = Units.inchesToMeters(317); // meters
+        public static final double FIELD_X_LENGTH = Units.inchesToMeters(690.875); // meters = 17.548
+        public static final double FIELD_Y_LENGTH = Units.inchesToMeters(317); // meters = 8.052
         public static final Translation2d FIELD = new Translation2d(FIELD_X_LENGTH, FIELD_Y_LENGTH);
         public static final Translation2d CENTER_FIELD = FIELD.div(2);
 
@@ -532,8 +532,8 @@ public class Constants {
         public static final Neutral CLIMBER_NEUTRAL_MODE = Neutral.BRAKE;
         public static final StatusFrames CLIMBER_STATUS_FRAME = StatusFrames.POSITION;
 
-        public static final double CLIMBER_POSITiON_MIN = 0;
-        public static final double CLIMBER_POSITION_MAX = 180;
+        public static final double CLIMBER_POSITiON_MIN = 9;
+        public static final double CLIMBER_POSITION_MAX = 110;
         public static final double CLIMBER_TOLERANCE = 1;
 
         public static final double CLIMB_ROLLER_GEAR_RATIO = 1;

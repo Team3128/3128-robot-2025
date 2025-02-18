@@ -18,6 +18,7 @@ import com.pathplanner.lib.util.FlippingUtil.FieldSymmetry;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -68,7 +69,9 @@ public class AutoPrograms {
         return instance;
     }
 
-    private void initAutoSelector() {
+    public void initAutoSelector() {
+        autoMap.clear();
+        pathMap.clear();
         List<String> autoStrings = AutoBuilder.getAllAutoNames();
         
         for (String autoName : autoStrings) {
@@ -92,9 +95,20 @@ public class AutoPrograms {
         ));
         NamedCommands.registerCommand("scoreL2", sequence(
             robot.getTempToggleCommand(RPL2, RSL2),
-            waitSeconds(0.75),
+            waitSeconds(1.25),
             robot.getTempToggleCommand(RPL2, RSL2)
         ));
+        NamedCommands.registerCommand("scoreL3", sequence(
+            robot.getTempToggleCommand(RPL3, RSL3),
+            waitSeconds(1.25),
+            robot.getTempToggleCommand(RPL3, RSL3)
+        ));
+        NamedCommands.registerCommand("scoreL4", sequence(
+            robot.getTempToggleCommand(RPL4, RSL4),
+            waitSeconds(1.25),
+            robot.getTempToggleCommand(RPL4, RSL4)
+        ));
+        NamedCommands.registerCommand("setStateNeutral", robot.setStateCommand(NEUTRAL));
 
         Pathfinding.setPathfinder(new LocalADStar());
 
@@ -106,7 +120,7 @@ public class AutoPrograms {
                 ROBOT_MOI, 
                 new ModuleConfig(
                     DRIVE_WHEEL_DIAMETER / 2, 
-                    5.3, 
+                    4.1, 
                     WHEEL_COF, 
                     DCMotor.getKrakenX60(1),
                     DRIVE_MOTOR_GEAR_RATIO, 
@@ -117,12 +131,12 @@ public class AutoPrograms {
             );
         }
 
-        FlippingUtil.symmetryType = FieldSymmetry.kMirrored;
+        FlippingUtil.symmetryType = FieldSymmetry.kRotational;
         AutoBuilder.configure(
             swerve::getPose, 
             swerve::resetOdometry, 
             swerve::getRobotVelocity, 
-            (velocity, feedforwards)-> swerve.drive(velocity), 
+            (velocity, feedforwards)-> swerve.drive(ChassisSpeeds.fromRobotRelativeSpeeds(velocity, swerve.getGyroRotation2d())), 
             new PPHolonomicDriveController(
                 new PIDConstants(Swerve.translationConfig.kP, Swerve.translationConfig.kI, Swerve.translationConfig.kD),
                 new PIDConstants(Swerve.rotationConfig.kP, Swerve.rotationConfig.kI, Swerve.rotationConfig.kD)
@@ -150,7 +164,7 @@ public class AutoPrograms {
     }
 
     public Command getAutonomousCommand() {
-        String selectedAutoName = "BB_2p_hp"; //NarwhalDashboard.getInstance().getSelectedAuto();
+        String selectedAutoName = "BB_3p_hp"; //NarwhalDashboard.getInstance().getSelectedAuto();
         String hardcode = "";
         
         Command autoCommand;
@@ -188,7 +202,7 @@ public class AutoPrograms {
     private Command scoreL2() {
         return sequence(
             robot.getTempToggleCommand(RPL2, RSL2),
-            waitSeconds(0.75),
+            waitSeconds(1),
             robot.getTempToggleCommand(RPL2, RSL2)
         );
     }

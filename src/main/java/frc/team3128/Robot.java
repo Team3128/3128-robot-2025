@@ -80,6 +80,13 @@ public class Robot extends NAR_Robot {
     public void autonomousInit() {
         CommandScheduler.getInstance().cancelAll();
         Camera.enableAll();
+        runOnce(()-> {
+            Swerve.translationController.disable();
+            Swerve.rotationController.disable();
+        }).schedule();
+        
+
+        AutoPrograms.getInstance().initAutoSelector();
         Command m_autonomousCommand = AutoPrograms.getInstance().getAutonomousCommand();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();

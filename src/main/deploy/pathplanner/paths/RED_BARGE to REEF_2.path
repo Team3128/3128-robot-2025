@@ -8,32 +8,37 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.15,
-        "y": 5.15
+        "x": 6.153828632064188,
+        "y": 5.66172924302419
       },
       "isLocked": false,
       "linkedName": "RED_BARGE"
     },
     {
       "anchor": {
-        "x": 5.15,
-        "y": 5.15
+        "x": 4.814,
+        "y": 5.17
       },
       "prevControl": {
-        "x": 7.25,
-        "y": 6.15
+        "x": 5.90156934444398,
+        "y": 5.677141914088839
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "REEF_2"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.85,
+      "rotationDegrees": -119.99999999999999
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.57,
+    "maxVelocity": 4.0,
     "maxAcceleration": 5.0,
     "maxAngularVelocity": 171.0,
     "maxAngularAcceleration": 360.0,
@@ -48,7 +53,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

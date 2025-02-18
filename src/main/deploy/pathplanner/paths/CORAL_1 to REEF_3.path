@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8,
-        "y": 5.15
+        "x": 2.7335305719921097,
+        "y": 5.970019723865878
       },
       "isLocked": false,
-      "linkedName": "CORAL_1"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.8,
-        "y": 5.15
+        "x": 4.162524654832346,
+        "y": 5.223767258382643
       },
       "prevControl": {
-        "x": 1.1999999999999997,
-        "y": 7.0
+        "x": 2.9558185404339237,
+        "y": 6.081163708086785
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "REEF_3"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -38,7 +38,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.57,
+    "maxVelocity": 4.0,
     "maxAcceleration": 5.0,
     "maxAngularVelocity": 171.0,
     "maxAngularAcceleration": 360.0,
@@ -53,7 +53,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 125.00000000000001
+    "rotation": -55.0
   },
   "useDefaultConstraints": true
 }

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.8,
-        "y": 5.15
+        "x": 4.163250000000001,
+        "y": 5.2925
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.2151947530110654,
-        "y": 6.998236185709635
+        "x": 2.603250000000001,
+        "y": 6.27725
       },
       "isLocked": false,
       "linkedName": "REEF_3"
@@ -20,8 +20,8 @@
         "y": 7.0
       },
       "prevControl": {
-        "x": 3.8171114773220483,
-        "y": 5.156136841950593
+        "x": 2.6520000000000006,
+        "y": 6.247999999999999
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,14 +31,14 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.8987539190995076,
-      "rotationDegrees": 125.00000000000001
+      "rotationDegrees": -55.0
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.57,
+    "maxVelocity": 4.0,
     "maxAcceleration": 5.0,
     "maxAngularVelocity": 171.0,
     "maxAngularAcceleration": 360.0,
@@ -47,7 +47,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 125.00000000000001
+    "rotation": -55.0
   },
   "reversed": false,
   "folder": null,

@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 5.75,
-        "y": 4.05
+        "y": 3.86
       },
       "prevControl": null,
       "nextControl": {
         "x": 5.778073770491804,
-        "y": 5.565420081967212
+        "y": 5.3754200819672135
       },
       "isLocked": false,
       "linkedName": "REEF_1"
@@ -42,7 +42,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.57,
+    "maxVelocity": 4.0,
     "maxAcceleration": 5.0,
     "maxAngularVelocity": 171.0,
     "maxAngularAcceleration": 360.0,

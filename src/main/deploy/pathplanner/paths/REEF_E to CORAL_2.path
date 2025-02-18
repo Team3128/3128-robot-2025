@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.95,
-        "y": 2.78
+        "x": 4.814,
+        "y": 2.882
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.35,
-        "y": 0.8800000000000001
+        "x": 4.396188053703749,
+        "y": 2.3840711119726645
       },
       "isLocked": false,
-      "linkedName": "REEF_5"
+      "linkedName": "REEF_6"
     },
     {
       "anchor": {
@@ -20,7 +20,7 @@
         "y": 1.0
       },
       "prevControl": {
-        "x": 3.8,
+        "x": 5.15,
         "y": 2.9
       },
       "nextControl": null,
@@ -30,7 +30,11 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.8974349172491781,
+      "waypointRelativePos": 0.6,
+      "rotationDegrees": 119.99999999999999
+    },
+    {
+      "waypointRelativePos": 0.99,
       "rotationDegrees": -125.00000000000001
     }
   ],
@@ -53,7 +57,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": 119.99999999999999
   },
   "useDefaultConstraints": true
 }
