@@ -85,7 +85,7 @@ public class AutoPrograms {
     }
 
     private void configPathPlanner() {
-        NamedCommands.registerCommand("L4", sequence(
+        NamedCommands.registerCommand("Score L4", sequence(
             robot.setStateCommand(RPL4),
             waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
             robot.setStateCommand(RSL4),
@@ -95,6 +95,11 @@ public class AutoPrograms {
         NamedCommands.registerCommand("Neutral", sequence(
             waitSeconds(0.25),
             robot.setStateCommand(NEUTRAL)
+        ));
+
+        NamedCommands.registerCommand("L2", sequence(
+            waitSeconds(0.5),
+            robot.setStateCommand(RPL2)
         ));
 
         Pathfinding.setPathfinder(new LocalADStar());
