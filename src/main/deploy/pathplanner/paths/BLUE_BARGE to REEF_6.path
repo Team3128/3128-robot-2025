@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 7.17,
-        "y": 1.9
+        "y": 2.55
       },
       "prevControl": null,
       "nextControl": {
         "x": 5.07,
-        "y": 2.9000000000000004
+        "y": 3.5500000000000003
       },
       "isLocked": false,
       "linkedName": "BLUE_BARGE"
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 171.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,

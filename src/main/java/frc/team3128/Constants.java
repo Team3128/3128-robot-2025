@@ -183,8 +183,8 @@ public class Constants {
         public static final double DRIVE_TRACK_WIDTH = Units.inchesToMeters(20.75); //Hand measure later
         public static final double DRIVE_WHEEL_BASE = Units.inchesToMeters(20.75); //Hand measure later
         public static final double ROBOT_LENGTH = Units.inchesToMeters(26.5) + DRIVE_BUMPER_LENGTH; // bumperLength + trackWidth;
-        public static final double DRIVE_WHEEL_DIAMETER = Units.inchesToMeters(3.815);
-        public static final double DRIVE_WHEEL_CIRCUMFERENCE = DRIVE_WHEEL_DIAMETER * Math.PI;
+        public static final double DRIVE_WHEEL_DIAMETER = 0.0486 * 2;
+        public static final double DRIVE_WHEEL_CIRCUMFERENCE = (DRIVE_WHEEL_DIAMETER * Math.PI);
         public static final double ROBOT_MOI = ROBOT_MASS * (DRIVE_TRACK_WIDTH / 2) * 0.44965 / 0.4443; //kg m^2 mass * (trackWidth / 2) * (Ka angular / Ka linear)
 
         public static final double closedLoopRamp = 0.0;
@@ -473,10 +473,11 @@ public class Constants {
     
         public static final int PIVOT_LEADER_ID = 40;
 
-        public static final double PIVOT_GEAR_RATIO = 90/12.38;
+        //90/12.38
+        public static final double PIVOT_GEAR_RATIO = 90/11.785769;
         public static final double PIVOT_SAMPLE_PER_MINUTE = 60;
         public static final int PIVOT_STATOR_CURRENT_LIMIT = 40;
-        public static final boolean PIVOT_INVERT = false;
+        public static final boolean PIVOT_INVERT = true;
         public static final Neutral PIVOT_NEUTRAL_MODE = Neutral.BRAKE;
         public static final StatusFrames PIVOT_STATUS_FRAME = StatusFrames.POSITION;
 

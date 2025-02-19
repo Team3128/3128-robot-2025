@@ -28,6 +28,7 @@ import frc.team3128.Robot;
 // import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Robot.RobotManager;
+import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
@@ -58,10 +59,8 @@ public class AutoPrograms {
     private AutoPrograms() {
         robot = RobotManager.getInstance();
 
+        // initAutoSelector();
         configPathPlanner();
-        initAutoSelector();
-        autoChooser = new SendableChooser<Command>();
-        SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     public static synchronized AutoPrograms getInstance() {
@@ -69,46 +68,47 @@ public class AutoPrograms {
         return instance;
     }
 
+
     public void initAutoSelector() {
         autoMap.clear();
         pathMap.clear();
         List<String> autoStrings = AutoBuilder.getAllAutoNames();
-        
-        for (String autoName : autoStrings) {
+
+        for(String autoName: autoStrings) {
             autoMap.put(autoName, getPathPlannerAuto(autoName));
             try {
-                for (PathPlannerPath path : PathPlannerAuto.getPathGroupFromAutoFile(autoName)) {
+                for(PathPlannerPath path : PathPlannerAuto.getPathGroupFromAutoFile(autoName)) {
                     pathMap.put(path.name, AutoBuilder.followPath(path));
                 }
-            } catch (Exception e) {}
+            } catch(Exception e) {}
         }
     }
 
     private void configPathPlanner() {
-        NamedCommands.registerCommand("pathToReefLeft", sequence(
-            runOnce(() -> swerve.pathToReef(false)),
-            run(()-> Swerve.getInstance().drive(0,0,0)).withDeadline( waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint())).andThen(()->swerve.stop())
-        ));
-        NamedCommands.registerCommand("pathToSource", sequence(
-            runOnce(() -> swerve.pathToSource()),
-            run(()-> Swerve.getInstance().drive(0,0,0)).withDeadline( waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint())).andThen(()->swerve.stop())
-        ));
+        // NamedCommands.registerCommand("pathToReefLeft", sequence(
+        //     runOnce(() -> swerve.pathToReef(false)),
+        //     run(()-> Swerve.getInstance().drive(0,0,0)).withDeadline( waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint())).andThen(()->swerve.stop())
+        // ));
+        // NamedCommands.registerCommand("pathToSource", sequence(
+        //     runOnce(() -> swerve.pathToSource()),
+        //     run(()-> Swerve.getInstance().drive(0,0,0)).withDeadline( waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint())).andThen(()->swerve.stop())
+        // ));
         NamedCommands.registerCommand("scoreL2", sequence(
-            robot.getTempToggleCommand(RPL2, RSL2),
-            waitSeconds(1.25),
-            robot.getTempToggleCommand(RPL2, RSL2)
+            robot.setStateCommand(RPL4),
+            waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
+            robot.setStateCommand(RSL4),
+            waitSeconds(.25)
         ));
-        NamedCommands.registerCommand("scoreL3", sequence(
-            robot.getTempToggleCommand(RPL3, RSL3),
-            waitSeconds(1.25),
-            robot.getTempToggleCommand(RPL3, RSL3)
-        ));
+        // NamedCommands.registerCommand("scoreL3", sequence(
+        //     robot.getTempToggleCommand(RPL3, RSL3),
+        //     waitSeconds(1.25),
+        //     robot.getTempToggleCommand(RPL3, RSL3)
+        // ));
         NamedCommands.registerCommand("scoreL4", sequence(
-            robot.getTempToggleCommand(RPL4, RSL4),
-            waitSeconds(1.25),
-            robot.getTempToggleCommand(RPL4, RSL4)
+        waitSeconds(.25),
+        robot.setStateCommand(NEUTRAL)
         ));
-        NamedCommands.registerCommand("setStateNeutral", robot.setStateCommand(NEUTRAL));
+        // NamedCommands.registerCommand("setStateNeutral", robot.setStateCommand(NEUTRAL));
 
         Pathfinding.setPathfinder(new LocalADStar());
 
@@ -164,7 +164,7 @@ public class AutoPrograms {
     }
 
     public Command getAutonomousCommand() {
-        String selectedAutoName = "BB_3p_hp"; //NarwhalDashboard.getInstance().getSelectedAuto();
+        String selectedAutoName = "Line"; //NarwhalDashboard.getInstance().getSelectedAuto();
         String hardcode = "";
         
         Command autoCommand;
@@ -177,25 +177,6 @@ public class AutoPrograms {
         autoCommand = autoMap.get(selectedAutoName);
 
         Log.info("AUTO_SELECTED", selectedAutoName);
-        // return sequence(
-        //     runOnce(()-> swerve.pathToReef(REEF_6.getPose2d(), false)),
-        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
-        //     scoreL2(),
-        //     waitSeconds(2),
-        //     runOnce(()-> swerve.pathToSource()),
-        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
-        //     waitSeconds(2),
-        //     runOnce(()-> swerve.pathToReef(REEF_5.getPose2d(), true)),
-        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
-        //     scoreL2(),
-        //     waitSeconds(2),
-        //     runOnce(()-> swerve.pathToSource()),
-        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
-        //     waitSeconds(2),
-        //     runOnce(()-> swerve.pathToReef(REEF_5.getPose2d(), false)),
-        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
-        //     scoreL2()
-        // );
         return autoCommand;
     }
 

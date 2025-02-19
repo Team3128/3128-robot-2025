@@ -25,6 +25,7 @@ import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 // import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
+import com.pathplanner.lib.commands.PathfindingCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -56,12 +57,13 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void robotInit(){
-        Camera.enableAll();
+        //Camera.enableAll();
         m_robotContainer.initDashboard();
         LiveWindow.disableAllTelemetry();
         // Log.logDebug = true;
+        AutoPrograms.getInstance().initAutoSelector();
         Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM, MOTOR);
-
+        PathfindingCommand.warmupCommand().schedule();
     }
 
     @Override
@@ -85,12 +87,11 @@ public class Robot extends NAR_Robot {
             Swerve.rotationController.disable();
         }).schedule();
         
-
-        AutoPrograms.getInstance().initAutoSelector();
         Command m_autonomousCommand = AutoPrograms.getInstance().getAutonomousCommand();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
+        else System.out.println("Auto Command is null");
     }
 
     @Override

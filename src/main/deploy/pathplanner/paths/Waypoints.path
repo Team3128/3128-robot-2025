@@ -17,15 +17,15 @@
     {
       "anchor": {
         "x": 7.17,
-        "y": 1.9
+        "y": 2.55
       },
       "prevControl": {
         "x": 5.896860751934882,
-        "y": 1.671212479939535
+        "y": 2.3212124799395344
       },
       "nextControl": {
         "x": 7.791385543675572,
-        "y": 2.011665128347129
+        "y": 2.6616651283471295
       },
       "isLocked": true,
       "linkedName": "BLUE_BARGE"
@@ -310,8 +310,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 171.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
