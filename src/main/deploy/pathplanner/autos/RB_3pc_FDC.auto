@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BLUE_BARGE to REEF_F"
+            "pathName": "RIGHT_BARGE to F"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "scoreL2"
+            "name": "L4"
           }
         },
         {
@@ -23,13 +23,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "REEF_F to CORAL_2"
+                  "pathName": "F to RIGHT_SOURCE"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "scoreL4"
+                  "name": "Neutral"
                 }
               }
             ]
@@ -38,13 +38,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CORAL_2 to REEF_D"
+            "pathName": "RIGHT_SOURCE to D"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "scoreL2"
+            "name": "L4"
           }
         },
         {
@@ -54,13 +54,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "REEF_D to CORAL_2"
+                  "pathName": "D to RIGHT_SOURCE"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "scoreL4"
+                  "name": "Neutral"
                 }
               }
             ]
@@ -69,13 +69,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CORAL_2 to REEF_C"
+            "pathName": "RIGHT_SOURCE to C"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "scoreL2"
+            "name": "L4"
           }
         },
         {
@@ -85,13 +85,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "REEF_C to CORAL_2"
+                  "pathName": "C to RIGHT_SOURCE"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "scoreL4"
+                  "name": "Neutral"
                 }
               }
             ]

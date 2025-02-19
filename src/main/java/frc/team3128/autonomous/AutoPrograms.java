@@ -85,30 +85,17 @@ public class AutoPrograms {
     }
 
     private void configPathPlanner() {
-        // NamedCommands.registerCommand("pathToReefLeft", sequence(
-        //     runOnce(() -> swerve.pathToReef(false)),
-        //     run(()-> Swerve.getInstance().drive(0,0,0)).withDeadline( waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint())).andThen(()->swerve.stop())
-        // ));
-        // NamedCommands.registerCommand("pathToSource", sequence(
-        //     runOnce(() -> swerve.pathToSource()),
-        //     run(()-> Swerve.getInstance().drive(0,0,0)).withDeadline( waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint())).andThen(()->swerve.stop())
-        // ));
-        NamedCommands.registerCommand("scoreL2", sequence(
+        NamedCommands.registerCommand("L4", sequence(
             robot.setStateCommand(RPL4),
             waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
             robot.setStateCommand(RSL4),
             waitSeconds(.25)
         ));
-        // NamedCommands.registerCommand("scoreL3", sequence(
-        //     robot.getTempToggleCommand(RPL3, RSL3),
-        //     waitSeconds(1.25),
-        //     robot.getTempToggleCommand(RPL3, RSL3)
-        // ));
-        NamedCommands.registerCommand("scoreL4", sequence(
-        waitSeconds(.25),
-        robot.setStateCommand(NEUTRAL)
+
+        NamedCommands.registerCommand("Neutral", sequence(
+            waitSeconds(0.25),
+            robot.setStateCommand(NEUTRAL)
         ));
-        // NamedCommands.registerCommand("setStateNeutral", robot.setStateCommand(NEUTRAL));
 
         Pathfinding.setPathfinder(new LocalADStar());
 
@@ -164,7 +151,7 @@ public class AutoPrograms {
     }
 
     public Command getAutonomousCommand() {
-        String selectedAutoName = "Line"; //NarwhalDashboard.getInstance().getSelectedAuto();
+        String selectedAutoName = "RB_3pc_FDC"; //NarwhalDashboard.getInstance().getSelectedAuto();
         String hardcode = "";
         
         Command autoCommand;

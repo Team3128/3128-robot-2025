@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BLUE_BARGE to REEF_F"
+            "pathName": "LEFT_BARGE to J"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "scoreL2"
+            "name": "L4"
           }
         },
         {
@@ -23,13 +23,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "REEF_F to CORAL_2"
+                  "pathName": "J to LEFT_SOURCE"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "scoreL4"
+                  "name": "Neutral"
                 }
               }
             ]
@@ -38,13 +38,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CORAL_2 to REEF_D"
+            "pathName": "LEFT_SOURCE to L"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "scoreL2"
+            "name": "L4"
           }
         },
         {
@@ -54,13 +54,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "REEF_D to CORAL_2"
+                  "pathName": "L to LEFT_SOURCE"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "scoreL4"
+                  "name": "Neutral"
                 }
               }
             ]
@@ -69,13 +69,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CORAL_2 to REEF_E"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "scoreL2"
+            "pathName": "LEFT_SOURCE to K"
           }
         },
         {
@@ -85,13 +79,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "REEF_E to CORAL_2"
+                  "pathName": "K to LEFT_SOURCE"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "scoreL4"
+                  "name": "Neutral"
                 }
               }
             ]
