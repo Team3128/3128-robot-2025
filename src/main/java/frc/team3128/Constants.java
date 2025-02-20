@@ -558,4 +558,12 @@ public class Constants {
         public static final int FIRST_SENSOR_ID = 0;
         public static final int SECOND_SENSOR_ID = 1;
     }
+
+    public static class LimelightConstants {
+        public static final String HOST_NAME = "limelight-mason";
+        public static final double CAMERA_ANGLE = 0;
+        public static final double CAMERA_HEIGHT = 0;
+        public static final double FRONT_DISTANCE = 0;
+        public static final double ROBOT_CENTER_DISTANCE = 0;
+    }
 }

@@ -1,15 +1,20 @@
 package frc.team3128.subsystems;
 
+import static frc.team3128.Constants.FieldConstants.*;
+import static frc.team3128.Constants.FieldConstants.FieldStates.*;
+import static frc.team3128.Constants.SwerveConstants.*;
+import static frc.team3128.Constants.VisionConstants.*;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import common.core.commands.NAR_PIDCommand;
 import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.core.swerve.SwerveBase;
@@ -18,15 +23,15 @@ import common.core.swerve.SwerveModule;
 import common.core.swerve.SwerveModuleConfig;
 import common.core.swerve.SwerveModuleConfig.SwerveEncoderConfig;
 import common.core.swerve.SwerveModuleConfig.SwerveMotorConfig;
+import common.hardware.limelight.Limelight;
+import common.hardware.limelight.LimelightKey;
 import common.hardware.motorcontroller.NAR_Motor;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
 import common.hardware.motorcontroller.NAR_Motor.StatusFrames;
 import common.hardware.motorcontroller.NAR_TalonFX;
-import common.utility.Log;
 import common.utility.shuffleboard.NAR_Shuffleboard;
 import common.utility.sysid.CmdSysId;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -35,20 +40,18 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import static frc.team3128.Constants.SwerveConstants.*;
-import static frc.team3128.Constants.FieldConstants.*;
-import static frc.team3128.Constants.FieldConstants.FieldStates.*;
-import static frc.team3128.Constants.VisionConstants.*;
+import frc.team3128.RobotContainer;
 
 public class Swerve extends SwerveBase {
 
     private static Swerve instance;
 
     private Pigeon2 gyro;
+
+    private Limelight limelight;
 
     public Supplier<Double> yaw;
 
@@ -126,6 +129,8 @@ public class Swerve extends SwerveBase {
 
     private static Translation2d translationSetpoint = new Translation2d();
     private static Supplier<Rotation2d> rotationSetpointSupplier = ()-> new Rotation2d();
+    
+
 
     public static boolean autoEnabled = false;
 
@@ -147,6 +152,8 @@ public class Swerve extends SwerveBase {
         yaw = () -> gyro.getYaw().asSupplier().get().in(Units.Degree);
 
         gyro.optimizeBusUtilization();
+
+        limelight = RobotContainer.limelight;
 
         initShuffleboard();
         initStateCheck();
@@ -293,6 +300,21 @@ public class Swerve extends SwerveBase {
         // Translation2d ram = new Translation2d(-0.05,0).rotateBy(setpoint.getRotation());
         rotateTo(setpoint.getRotation());
         moveTo(setpoint.getTranslation());
+    }
+
+    public NAR_PIDCommand alignToRod() {
+        return new NAR_PIDCommand
+        (
+            translationController, 
+            () -> limelight.getValue(LimelightKey.HORIZONTAL_OFFSET), 
+            () -> 0, 
+            (double output) -> {
+                drive(new ChassisSpeeds(0, output, 0));
+            }, 
+            this
+        );
+        // DoubleSupplier x_offset = () -> limelight.getValue(LimelightKey.HORIZONTAL_OFFSET);
+        // DoubleSupplier x_length = () -> limelight.getValue(LimelightKey.LENGTH_HORIZONTAL);
     }
 
     public boolean isConfigured() {

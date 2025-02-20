@@ -55,6 +55,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.Constants.FieldConstants.*;
 import static frc.team3128.Constants.FieldConstants.*;
 import static frc.team3128.Constants.VisionConstants.*;
+import static frc.team3128.Constants.LimelightConstants.*;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 
 /**
@@ -105,6 +106,8 @@ public class RobotContainer {
         robot = RobotManager.getInstance();
         elevator = ElevatorMechanism.getInstance();
         // manipulator = Manipulator.getInstance();
+
+        limelight = new Limelight(HOST_NAME, CAMERA_ANGLE, CAMERA_HEIGHT, FRONT_DISTANCE, ROBOT_CENTER_DISTANCE);
 
         //uncomment line below to enable driving
         // CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
