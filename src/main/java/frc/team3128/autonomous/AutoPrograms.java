@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -39,6 +40,7 @@ import common.utility.narwhaldashboard.NarwhalDashboard;
 // import static frc.team3128.Constants.FieldConstants.FieldStates.REEF_6;
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
+import frc.team3128.subsystems.Robot.RobotStates;
 
 
 /**
@@ -85,7 +87,7 @@ public class AutoPrograms {
     }
 
     private void configPathPlanner() {
-        NamedCommands.registerCommand("L4", sequence(
+        NamedCommands.registerCommand("Score L4", sequence(
             robot.setStateCommand(RPL4),
             waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
             robot.setStateCommand(RSL4),
@@ -95,6 +97,11 @@ public class AutoPrograms {
         NamedCommands.registerCommand("Neutral", sequence(
             waitSeconds(0.25),
             robot.setStateCommand(NEUTRAL)
+        ));
+
+        NamedCommands.registerCommand("L4", sequence(
+            waitSeconds(0.25),
+            robot.setStateCommand(RPL4)
         ));
 
         Pathfinding.setPathfinder(new LocalADStar());
