@@ -10,6 +10,7 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -20,6 +21,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -61,7 +63,7 @@ public class AutoPrograms {
     private AutoPrograms() {
         robot = RobotManager.getInstance();
 
-        // initAutoSelector();
+        initAutoSelector();
         configPathPlanner();
     }
 
@@ -174,40 +176,27 @@ public class AutoPrograms {
         return autoCommand;
     }
 
-    private Command scoreL2() {
-        return sequence(
-            robot.getTempToggleCommand(RPL2, RSL2),
-            waitSeconds(1),
-            robot.getTempToggleCommand(RPL2, RSL2)
-        );
-    }
-
-    private Command pathToReefWait() {
-        return sequence(
-            runOnce(() -> swerve.pathToReef(false)),
-            run(()-> Swerve.getInstance().drive(0,0,0)).withDeadline( waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint())).andThen(()->swerve.stop())
-        );
-    }
-
-    private Command pathToPoseWait(Pose2d pose) {
-        return sequence(
-            runOnce(() -> swerve.setPose(pose)),
-            run(()-> Swerve.getInstance().drive(0,0,0)).withDeadline( waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint())).andThen(()->swerve.stop())
-        );
-    }
-
-    private Command pathToSource() {
-        return sequence(
-            runOnce(() -> swerve.pathToSource()),
-            run(()-> Swerve.getInstance().drive(0,0,0)).withDeadline( waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint())).andThen(()->swerve.stop())
-        );
-    }
-
     private Command defaultAuto(){
         return none();
     }
 
     private Command reset() {
         return runOnce(()->swerve.resetGyro(Robot.getAlliance() == Alliance.Red ? 0 : 180));
+    }
+
+    public Command pathToPose(Pose2d targetPose) {
+        PathConstraints constraints = new PathConstraints(
+                3.0, 3.0,
+                Units.degreesToRadians(171), Units.degreesToRadians(360));
+
+        return AutoBuilder.pathfindToPose(
+                targetPose,
+                constraints,
+                0.0
+        );
+    }
+
+    public Command pathToNearestPose(List<Pose2d> poses) {
+        return pathToPose(swerve.getPose().nearest(poses));
     }
 }

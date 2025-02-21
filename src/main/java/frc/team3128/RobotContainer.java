@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.Constants.DriveConstants;
 import frc.team3128.Constants.RobotConstants;
 import frc.team3128.Constants.FieldConstants.FieldStates;
+import frc.team3128.autonomous.AutoPrograms;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -163,11 +164,9 @@ public class RobotContainer {
         // new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
-        controller.getUpPOVButton().onTrue(runOnce(()-> swerve.pathToSource()));
-        controller.getRightPOVButton().onTrue(runOnce(()-> swerve.pathToReef(true)));
-        controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.pathToReef(false)));
-        // controller.getRightPOVButton().onTrue(runOnce(()-> swerve.snapToReef(true)));
-        // controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.snapToReef(false)));
+        controller.getUpPOVButton().onTrue(AutoPrograms.getInstance().pathToPose(swerve.getPose().nearest(allianceFlip(FieldStates.sourcePoses.asJava()))));
+        controller.getRightPOVButton().onTrue(AutoPrograms.getInstance().pathToNearestPose(allianceFlip(FieldStates.reefRight.asJava())));
+        controller.getLeftPOVButton().onTrue(AutoPrograms.getInstance().pathToNearestPose(allianceFlip(FieldStates.reefLeft.asJava())));
     }
 
     public void initCameras() {
