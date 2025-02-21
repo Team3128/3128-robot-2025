@@ -11,7 +11,9 @@ public class PivotMechanism extends PositionSubsystemBase {
 
     public static PivotMechanism instance;
 
-    private static PIDFFConfig config = new PIDFFConfig(0.165, 0, 0, 0.26778, 0.01694, 0.0, 0.0);
+    // private static PIDFFConfig config = new PIDFFConfig(0.165, 0, 0, 0.26778, 0.01694, 0.0, 0.0);
+    private static PIDFFConfig config = new PIDFFConfig(0.16, 0, 0, 0.23783, 0.01558, 0.00234, 0.0);
+
     protected static Controller controller = new Controller(config, Controller.Type.POSITION);
 
     protected static NAR_CANSpark leader = new NAR_CANSpark(PIVOT_LEADER_ID);

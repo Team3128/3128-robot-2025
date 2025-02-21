@@ -11,6 +11,7 @@ import frc.team3128.subsystems.Led.Led;
 import frc.team3128.subsystems.Manipulator.Manipulator;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
+import edu.wpi.first.wpilibj.DriverStation;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
@@ -53,7 +54,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             climber.setStateCommand(nextState.getClimberState()),
             led.setStateCommand(nextState.getLedState()),
             waitUntil(()-> climber.winch.atSetpoint()),
-            runOnce(()-> Swerve.getInstance().throttle = nextState.getThrottle())
+            runOnce(()-> Swerve.getInstance().throttle = nextState.getThrottle()).onlyIf(()-> DriverStation.isTeleop())
         );
     }
 

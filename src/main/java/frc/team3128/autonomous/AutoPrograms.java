@@ -18,7 +18,9 @@ import com.pathplanner.lib.util.FlippingUtil.FieldSymmetry;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,6 +29,7 @@ import frc.team3128.Robot;
 // import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Robot.RobotManager;
+import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
@@ -37,6 +40,7 @@ import common.utility.narwhaldashboard.NarwhalDashboard;
 // import static frc.team3128.Constants.FieldConstants.FieldStates.REEF_6;
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
+import frc.team3128.subsystems.Robot.RobotStates;
 
 
 /**
@@ -57,10 +61,8 @@ public class AutoPrograms {
     private AutoPrograms() {
         robot = RobotManager.getInstance();
 
+        // initAutoSelector();
         configPathPlanner();
-        initAutoSelector();
-        autoChooser = new SendableChooser<Command>();
-        SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     public static synchronized AutoPrograms getInstance() {
@@ -68,32 +70,38 @@ public class AutoPrograms {
         return instance;
     }
 
-    private void initAutoSelector() {
+
+    public void initAutoSelector() {
+        autoMap.clear();
+        pathMap.clear();
         List<String> autoStrings = AutoBuilder.getAllAutoNames();
-        
-        for (String autoName : autoStrings) {
+
+        for(String autoName: autoStrings) {
             autoMap.put(autoName, getPathPlannerAuto(autoName));
             try {
-                for (PathPlannerPath path : PathPlannerAuto.getPathGroupFromAutoFile(autoName)) {
+                for(PathPlannerPath path : PathPlannerAuto.getPathGroupFromAutoFile(autoName)) {
                     pathMap.put(path.name, AutoBuilder.followPath(path));
                 }
-            } catch (Exception e) {}
+            } catch(Exception e) {}
         }
     }
 
     private void configPathPlanner() {
-        NamedCommands.registerCommand("pathToReefLeft", sequence(
-            runOnce(() -> swerve.pathToReef(false)),
-            run(()-> Swerve.getInstance().drive(0,0,0)).withDeadline( waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint())).andThen(()->swerve.stop())
+        NamedCommands.registerCommand("Score L4", sequence(
+            robot.setStateCommand(RPL4),
+            waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
+            robot.setStateCommand(RSL4),
+            waitSeconds(.25)
         ));
-        NamedCommands.registerCommand("pathToSource", sequence(
-            runOnce(() -> swerve.pathToSource()),
-            run(()-> Swerve.getInstance().drive(0,0,0)).withDeadline( waitUntil(() -> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint())).andThen(()->swerve.stop())
+
+        NamedCommands.registerCommand("Neutral", sequence(
+            waitSeconds(0.25),
+            robot.setStateCommand(NEUTRAL)
         ));
-        NamedCommands.registerCommand("scoreL2", sequence(
-            robot.getTempToggleCommand(RPL2, RSL2),
-            waitSeconds(0.75),
-            robot.getTempToggleCommand(RPL2, RSL2)
+
+        NamedCommands.registerCommand("L4", sequence(
+            waitSeconds(0.25),
+            robot.setStateCommand(RPL4)
         ));
 
         Pathfinding.setPathfinder(new LocalADStar());
@@ -106,7 +114,7 @@ public class AutoPrograms {
                 ROBOT_MOI, 
                 new ModuleConfig(
                     DRIVE_WHEEL_DIAMETER / 2, 
-                    5.3, 
+                    4.1, 
                     WHEEL_COF, 
                     DCMotor.getKrakenX60(1),
                     DRIVE_MOTOR_GEAR_RATIO, 
@@ -117,12 +125,12 @@ public class AutoPrograms {
             );
         }
 
-        FlippingUtil.symmetryType = FieldSymmetry.kMirrored;
+        FlippingUtil.symmetryType = FieldSymmetry.kRotational;
         AutoBuilder.configure(
             swerve::getPose, 
             swerve::resetOdometry, 
             swerve::getRobotVelocity, 
-            (velocity, feedforwards)-> swerve.drive(velocity), 
+            (velocity, feedforwards)-> swerve.drive(ChassisSpeeds.fromRobotRelativeSpeeds(velocity, swerve.getGyroRotation2d())), 
             new PPHolonomicDriveController(
                 new PIDConstants(Swerve.translationConfig.kP, Swerve.translationConfig.kI, Swerve.translationConfig.kD),
                 new PIDConstants(Swerve.rotationConfig.kP, Swerve.rotationConfig.kI, Swerve.rotationConfig.kD)
@@ -150,7 +158,7 @@ public class AutoPrograms {
     }
 
     public Command getAutonomousCommand() {
-        String selectedAutoName = "BB_2p_hp"; //NarwhalDashboard.getInstance().getSelectedAuto();
+        String selectedAutoName = "RB_3pc_FDC"; //NarwhalDashboard.getInstance().getSelectedAuto();
         String hardcode = "";
         
         Command autoCommand;
@@ -163,32 +171,13 @@ public class AutoPrograms {
         autoCommand = autoMap.get(selectedAutoName);
 
         Log.info("AUTO_SELECTED", selectedAutoName);
-        // return sequence(
-        //     runOnce(()-> swerve.pathToReef(REEF_6.getPose2d(), false)),
-        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
-        //     scoreL2(),
-        //     waitSeconds(2),
-        //     runOnce(()-> swerve.pathToSource()),
-        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
-        //     waitSeconds(2),
-        //     runOnce(()-> swerve.pathToReef(REEF_5.getPose2d(), true)),
-        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
-        //     scoreL2(),
-        //     waitSeconds(2),
-        //     runOnce(()-> swerve.pathToSource()),
-        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
-        //     waitSeconds(2),
-        //     runOnce(()-> swerve.pathToReef(REEF_5.getPose2d(), false)),
-        //     waitUntil(()-> swerve.atRotationSetpoint() && swerve.atTranslationSetpoint()).withTimeout(2),
-        //     scoreL2()
-        // );
         return autoCommand;
     }
 
     private Command scoreL2() {
         return sequence(
             robot.getTempToggleCommand(RPL2, RSL2),
-            waitSeconds(0.75),
+            waitSeconds(1),
             robot.getTempToggleCommand(RPL2, RSL2)
         );
     }

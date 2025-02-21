@@ -18,7 +18,7 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
     private static TransitionMap<IntakeStates> transitionMap = new TransitionMap<IntakeStates>(IntakeStates.class);
     private Function<IntakeStates, Command> defaultTransitioner = state -> {
         return sequence(
-            // PivotMechanism.getInstance().pidTo(state.getAngle()),
+            PivotMechanism.getInstance().pidTo(state.getAngle()),
             RollerMechanism.getInstance().runCommand(state.getPower())
         );
     };
@@ -26,7 +26,7 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
     public Intake() {
         super(IntakeStates.class, transitionMap, NEUTRAL);
 
-        // pivot = PivotMechanism.getInstance();
+        pivot = PivotMechanism.getInstance();
         roller = RollerMechanism.getInstance();
 
         addMechanisms(roller);
