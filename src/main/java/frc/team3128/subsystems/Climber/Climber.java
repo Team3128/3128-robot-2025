@@ -80,10 +80,14 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
     
     public void addClimberTests() {
         Tester tester = Tester.getInstance();
-        for(ClimberStates state : ClimberStates.values()){
-            if(state == NEUTRAL || state == CLIMB) tester.addTest("Climber", getClimberTest(state));
-            else tester.addTest("Climber", getClimberTestNeutral(state));
-        }
+        // for(ClimberStates state : ClimberStates.values()){
+        //     if(state == NEUTRAL || state == CLIMB) tester.addTest("Climber", getClimberTest(state));
+        //     else tester.addTest("Climber", getClimberTestNeutral(state));
+        // }
+        tester.addTest("Climber", getClimberTest(CLIMB_PRIME));
+        tester.addTest("Climber", getClimberTest(NEUTRAL));
+        tester.addTest("Climber", getClimberTest(CLIMB));
+        tester.addTest("Climber", getClimberTest(NEUTRAL));
         tester.getTest("Climber").setTimeBetweenTests(1);
     }
 

@@ -73,6 +73,17 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             ()-> atState()
         );
     }
+
+    public void addCoralTest(){
+        Tester tester = Tester.getInstance();
+        
+        tester.addTest("Coral", getRobotTest(NEUTRAL));
+        tester.addTest("Coral", getRobotTest(RPL1));
+        tester.addTest("Coral", getRobotTest(RSL1));
+        tester.addTest("Coral", getRobotTest(NEUTRAL));
+        tester.getTest("Coral").setTimeBetweenTests(5);   
+    }
+
     public void addRobotTests() {
         Tester tester = Tester.getInstance();
         // All Subsystem Individual Tests
@@ -81,11 +92,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         tester.addTest("Robot", tester.getTest("Elevator"));
         tester.addTest("Robot", tester.getTest("Climber"));
         // Coral Intake and L4-L1 then Score
-        for(int i = 4; i > defaultElevatorStates.size(); i--){
-            if (i == 4) { tester.addTest("Robot", getRobotTestNeutral(defaultElevatorStates.get(i))); }
-            else { tester.addTest("Robot", getRobotTest(defaultElevatorStates.get(i))); }
-        }
-        tester.addTest("Robot", getRobotTest(RSL1));
+        tester.addTest("Robot", tester.getTest("Coral"));
         // Algae Intake and Outtake
         tester.addTest("Robot", getRobotTestNeutral(INTAKE));
         tester.addTest("Robot", getRobotTestWait(EJECT_OUTTAKE));

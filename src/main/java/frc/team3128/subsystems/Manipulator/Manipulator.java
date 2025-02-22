@@ -56,10 +56,14 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 
     public void addManipulatorTests() {
         Tester tester = Tester.getInstance();
-        for(ManipulatorStates state : ManipulatorStates.values()){
-            if(state == NEUTRAL) tester.addTest("Manipulator", getManipulatorTest(NEUTRAL));
-            else tester.addTest("Manipulator", getManipulatorTestNeutral(state));
-        }
+        // for(ManipulatorStates state : ManipulatorStates.values()){
+        //     if(state == NEUTRAL) tester.addTest("Manipulator", getManipulatorTest(NEUTRAL));
+        //     else tester.addTest("Manipulator", getManipulatorTestNeutral(state));
+        // }
+        tester.addTest("Manipulator", getManipulatorTest(IN));
+        tester.addTest("Manipulator", getManipulatorTest(NEUTRAL));
+        tester.addTest("Manipulator", getManipulatorTest(OUT));
+        tester.addTest("Manipulator", getManipulatorTest(NEUTRAL));
         tester.getTest("Manipulator").setTimeBetweenTests(1);
     }
 

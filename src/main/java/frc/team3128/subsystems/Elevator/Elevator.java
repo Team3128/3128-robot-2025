@@ -61,10 +61,12 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
 
     public void addElevatorTests() {
         Tester tester = Tester.getInstance();
-        for(ElevatorStates state : ElevatorStates.values()){
-            if(state == NEUTRAL) tester.addTest("Elevator", getElevatorTest(NEUTRAL));
-            else tester.addTest("Elevator", getElevatorTestNeutral(state));
-        }
+        // for(ElevatorStates state : ElevatorStates.values()){
+        //     if(state == NEUTRAL) tester.addTest("Elevator", getElevatorTest(NEUTRAL));
+        //     else tester.addTest("Elevator", getElevatorTestNeutral(state));
+        // }
+        tester.addTest("Elevator", getElevatorTest(L4));
+        tester.addTest("Elevator", getElevatorTest(NEUTRAL));
         tester.getTest("Elevator").setTimeBetweenTests(1);
     }
 
