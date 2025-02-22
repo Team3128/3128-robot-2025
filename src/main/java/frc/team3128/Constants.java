@@ -426,7 +426,7 @@ public class Constants {
         public static final double r_SPEED = 0.75;
         public static final double c_SPEED = 1;
 
-        public static final int STARTING_ID = 4;
+        public static final int STARTING_ID = 8;
         public static final int NUM_LED = 27;
         public static final int TOTAL_LEDS = STARTING_ID + NUM_LED;
 
