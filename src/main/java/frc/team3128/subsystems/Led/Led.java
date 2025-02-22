@@ -69,7 +69,7 @@ public class Led extends FSMSubsystemBase<LedStates> {
                 candle.animate(new RainbowAnimation(BRIGHTNESS, r_SPEED, NUM_LED, false, STARTING_ID), 0);
                 break;
             case NEUTRAL:
-                candle.animate(new FireAnimation(BRIGHTNESS, r_SPEED, NUM_LED, SPARKING, COOLING, false, STARTING_ID), 0);
+                candle.animate(new FireAnimation(BRIGHTNESS, r_SPEED, NUM_LED, SPARKING, COOLING, true, STARTING_ID), 0);
                 break;
             case REEF_SCORE:
                 candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
