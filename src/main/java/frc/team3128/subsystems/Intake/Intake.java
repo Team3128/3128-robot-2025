@@ -43,45 +43,8 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
         return instance;
     }
 
-    public SystemsTest getIntakeTest(IntakeStates state){
-       return new SystemsTest(
-            "Intake Test: " + state, 
-            setStateCommand(state).withTimeout(INTAKE_TEST_TIMEOUT), 
-            ()-> atState()
-        );
-    }
-    
-    public SystemsTest getIntakeTestNeutral(IntakeStates state){
-        return new SystemsTest(
-             "Intake Test: " + state, 
-             sequence(setStateCommand(NEUTRAL), waitSeconds(INTAKE_TEST_TIMEOUT), setStateCommand(state).withTimeout(INTAKE_TEST_TIMEOUT)), 
-             ()-> atState()
-         );
-     }
-
-     public SystemsTest getIntakeTestWait(){
-        return new SystemsTest(
-             "Intake Test: ", 
-             sequence(waitSeconds(INTAKE_TEST_TIMEOUT), setStateCommand(INTAKE).withTimeout(INTAKE_TEST_TIMEOUT)), 
-             ()-> atState()
-         );
-     }
-
-    public boolean atState(){
+    public boolean atTestState(){
         return PivotMechanism.controller.atSetpoint() && Math.abs(RollerMechanism.leader.getAppliedOutput() - getState().getPower()) <= ROLLER_POWER_TOLERANCE;
-    }
-
-    public void addIntakeTests() {
-        Tester tester = Tester.getInstance();
-        // for(IntakeStates state : IntakeStates.values()){
-        //     if(state == NEUTRAL || state == CLIMB) tester.addTest("Intake", getIntakeTest(state));
-        //     else tester.addTest("Intake", getIntakeTestNeutral(state));
-        // }
-        tester.addTest("Intake", getIntakeTest(INTAKE));
-        tester.addTest("Intake", getIntakeTest(NEUTRAL));
-        tester.addTest("Intake", getIntakeTest(EJECT_OUTTAKE));
-        tester.addTest("Intake", getIntakeTest(NEUTRAL));
-        tester.getTest("Intake").setTimeBetweenTests(1);
     }
 
 	@Override

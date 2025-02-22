@@ -50,65 +50,6 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         return instance;
     }
 
-    public SystemsTest getRobotTest(RobotStates state){
-        return new SystemsTest(
-            "Robot Test: " + state, 
-            updateSubsystemStates(state).withTimeout(ROBOT_TEST_TIMEOUT),
-            ()-> atState()
-        );
-    }
-
-
-    public SystemsTest getRobotTestNeutral(RobotStates state){
-        return new SystemsTest(
-            "Robot Test: " + state, 
-            sequence(updateSubsystemStates(NEUTRAL), waitSeconds(ROBOT_TEST_TIMEOUT), updateSubsystemStates(state).withTimeout(ROBOT_TEST_TIMEOUT)),
-            ()-> atState()
-        );
-    }
-
-    public SystemsTest getRobotTestWait(RobotStates state){
-        return new SystemsTest(
-            "Robot Test: " + state, 
-            sequence(waitSeconds(ROBOT_TEST_TIMEOUT), updateSubsystemStates(state).withTimeout(ROBOT_TEST_TIMEOUT)),
-            ()-> atState()
-        );
-    }
-
-    public void addCoralTest(){
-        Tester tester = Tester.getInstance();
-        
-        tester.addTest("Coral", getRobotTest(NEUTRAL));
-        tester.addTest("Coral", getRobotTest(RPL1));
-        tester.addTest("Coral", getRobotTest(RSL1));
-        tester.addTest("Coral", getRobotTest(NEUTRAL));
-        tester.getTest("Coral").setTimeBetweenTests(5);   
-    }
-
-    public void addRobotTests() {
-        Tester tester = Tester.getInstance();
-        // All Subsystem Individual Tests
-        tester.addTest("Robot", tester.getTest("Intake"));
-        tester.addTest("Robot", tester.getTest("Manipulator"));
-        tester.addTest("Robot", tester.getTest("Elevator"));
-        tester.addTest("Robot", tester.getTest("Climber"));
-        // Coral Intake and L4-L1 then Score
-        tester.addTest("Robot", tester.getTest("Coral"));
-        // Algae Intake and Outtake
-        tester.addTest("Robot", getRobotTestNeutral(INTAKE));
-        tester.addTest("Robot", getRobotTestWait(EJECT_OUTTAKE));
-        // Climb
-        tester.addTest("Robot", getRobotTestNeutral(CLIMB_PRIME));
-        tester.addTest("Robot", getRobotTest(CLIMB));
-        // Time
-        tester.getTest("Robot").setTimeBetweenTests(1);        
-    }
-
-
-    public boolean atState(){
-        return (elevator.atState() && climber.atState() && intake.atState() && manipulator.atState());
-    }
-
     public Command updateSubsystemStates(RobotStates nextState) {
         return sequence(
             elevator.setStateCommand(nextState.getElevatorState()),
@@ -171,5 +112,53 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         // From exclusive state to Neutral
         transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, defaultTransitioner);
 
+    }
+
+    public SystemsTest getRobotTest(String name, RobotStates state, double timeout, BooleanSupplier atTestState){
+        return new SystemsTest(
+            "Test - " + name, 
+            updateSubsystemStates(state).withTimeout(timeout),
+            atTestState
+        );
+    }
+
+    public void addCoralTest(){
+        Tester tester = Tester.getInstance();
+        
+        tester.addTest("Coral", getRobotTest("Coral", NEUTRAL, CORAL_TEST_TIMEOUT, ()-> elevator.atTestState() && manipulator.atTestState()));
+        tester.addTest("Coral", getRobotTest("Coral", RPL2, CORAL_TEST_TIMEOUT, ()-> elevator.atTestState() && manipulator.atTestState()));
+        tester.addTest("Coral", getRobotTest("Coral", RSL2, CORAL_TEST_TIMEOUT, ()-> elevator.atTestState() && manipulator.atTestState()));
+        tester.addTest("Coral", getRobotTest("Coral", NEUTRAL, CORAL_TEST_TIMEOUT, ()-> elevator.atTestState() && manipulator.atTestState()));
+        tester.getTest("Coral").setTimeBetweenTests(2);   
+    }
+
+    public void addClimberTest(){
+        Tester tester = Tester.getInstance();
+
+        tester.addTest("Climber", getRobotTest("Climber", NEUTRAL, CLIMBER_TEST_TIMEOUT, ()-> climber.atTestState()));
+        tester.addTest("Climber", getRobotTest("Climber", CLIMB_PRIME, CLIMBER_TEST_TIMEOUT, ()-> climber.atTestState()));
+        tester.addTest("Climber", getRobotTest("Climber", CLIMB, CLIMBER_TEST_TIMEOUT, ()-> climber.atTestState()));
+        tester.addTest("Climber", getRobotTest("Climber", NEUTRAL, CLIMBER_TEST_TIMEOUT, ()-> climber.atTestState()));
+        tester.getTest("Climber").setTimeBetweenTests(2);
+    }
+
+    public void addIntakeTest(){
+        Tester tester = Tester.getInstance();
+
+        tester.addTest("Intake", getRobotTest("Intake", NEUTRAL, INTAKE_TEST_TIMEOUT, ()-> intake.atTestState()));
+        tester.addTest("Intake", getRobotTest("Intake", INTAKE, INTAKE_TEST_TIMEOUT, ()-> intake.atTestState()));
+        tester.addTest("Intake", getRobotTest("Intake", NEUTRAL, INTAKE_TEST_TIMEOUT, ()-> intake.atTestState()));
+        tester.addTest("Intake", getRobotTest("Intake", EJECT_OUTTAKE, INTAKE_TEST_TIMEOUT, ()-> intake.atTestState()));
+        tester.addTest("Intake", getRobotTest("Intake", NEUTRAL, INTAKE_TEST_TIMEOUT, ()-> intake.atTestState()));
+        tester.getTest("Intake").setTimeBetweenTests(2);
+    }
+
+    public void addRobotTests() {
+        Tester tester = Tester.getInstance();
+
+        tester.addTest("Robot", tester.getTest("Coral"));
+        tester.addTest("Robot", tester.getTest("Climber"));
+        tester.addTest("Robot", tester.getTest("Intake"));
+        tester.getTest("Robot").setTimeBetweenTests(2);        
     }
 }

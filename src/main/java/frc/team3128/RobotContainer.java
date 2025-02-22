@@ -40,6 +40,7 @@ import frc.team3128.subsystems.Climber.WinchMechanism;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
+import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Manipulator.Manipulator;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
@@ -112,9 +113,6 @@ public class RobotContainer {
         climber = Climber.getInstance();
         intake = Intake.getInstance();
 
-        addTests();
-
-
         //uncomment line below to enable driving
         // CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
 
@@ -124,14 +122,14 @@ public class RobotContainer {
         initCameras();
         configureButtonBindings();
         initDashboard();
+        addTests();
     }   
 
     private void addTests(){
+        robot.addCoralTest();
+        robot.addClimberTest();
+        robot.addIntakeTest();
         robot.addRobotTests();
-        climber.addClimberTests();
-        elevator.addElevatorTests();
-        intake.addIntakeTests();
-        manipulator.addManipulatorTests();
     }
 
     private void configureButtonBindings() {

@@ -38,38 +38,11 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
         }
         return instance;
     }
-    public SystemsTest getManipulatorTest(ManipulatorStates state){
-       return new SystemsTest(
-            "Manipulator Test: " + state, 
-            setStateCommand(state).withTimeout(MANIPULATOR_TEST_TIMEOUT), 
-            ()-> atState()
-        );
-    }
-    
-    public SystemsTest getManipulatorTestNeutral(ManipulatorStates state){
-        return new SystemsTest(
-             "Manipulator Test: " + state, 
-             sequence(setStateCommand(NEUTRAL), waitSeconds(MANIPULATOR_TEST_TIMEOUT), setStateCommand(state).withTimeout(MANIPULATOR_TEST_TIMEOUT)), 
-             ()-> atState()
-         );
-     }
 
-    public void addManipulatorTests() {
-        Tester tester = Tester.getInstance();
-        // for(ManipulatorStates state : ManipulatorStates.values()){
-        //     if(state == NEUTRAL) tester.addTest("Manipulator", getManipulatorTest(NEUTRAL));
-        //     else tester.addTest("Manipulator", getManipulatorTestNeutral(state));
-        // }
-        tester.addTest("Manipulator", getManipulatorTest(IN));
-        tester.addTest("Manipulator", getManipulatorTest(NEUTRAL));
-        tester.addTest("Manipulator", getManipulatorTest(OUT));
-        tester.addTest("Manipulator", getManipulatorTest(NEUTRAL));
-        tester.getTest("Manipulator").setTimeBetweenTests(1);
-    }
-
-    public boolean atState(){
+    public boolean atTestState(){
         return Math.abs(RollerMechanism.leader.getAppliedOutput() - getState().getPower()) <= ROLLER_POWER_TOLERANCE;
     }
+
 	@Override
 	public void registerTransitions() {
 

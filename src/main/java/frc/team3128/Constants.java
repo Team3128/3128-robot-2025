@@ -561,12 +561,11 @@ public class Constants {
 
     public static class TestingConstants {
 
-        public static final double CLIMBER_TEST_TIMEOUT = 2; 
-        public static final double ELEVATOR_TEST_TIMEOUT = 2; 
+        public static final double CLIMBER_TEST_TIMEOUT = 4; 
+        public static final double CORAL_TEST_TIMEOUT = 3; 
         public static final double INTAKE_TEST_TIMEOUT = 2; 
-        public static final double MANIPULATOR_TEST_TIMEOUT = 2; 
 
-        public static final double ROBOT_TEST_TIMEOUT = 2; 
+        public static final double ROBOT_TEST_TIMEOUT = 4; 
 
         public static final double ROLLER_POWER_TOLERANCE = 0.1; 
 

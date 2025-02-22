@@ -60,37 +60,8 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
         return instance;
     }
 
-    public SystemsTest getClimberTest(ClimberStates state){
-       return new SystemsTest(
-            "Climb Test: " + state, 
-            setStateCommand(state).withTimeout(CLIMBER_TEST_TIMEOUT), 
-            ()-> atState()
-        );
-    }
-
-    public SystemsTest getClimberTestNeutral(ClimberStates state){
-       return new SystemsTest(
-            "Climb Test: " + state, 
-            sequence(setStateCommand(NEUTRAL), waitSeconds(CLIMBER_TEST_TIMEOUT), setStateCommand(state).withTimeout(CLIMBER_TEST_TIMEOUT)), 
-            ()-> atState()
-        );
-    }
-
-    public boolean atState(){
-        return WinchMechanism.controller.atSetpoint();
-    }
-    
-    public void addClimberTests() {
-        Tester tester = Tester.getInstance();
-        // for(ClimberStates state : ClimberStates.values()){
-        //     if(state == NEUTRAL || state == CLIMB) tester.addTest("Climber", getClimberTest(state));
-        //     else tester.addTest("Climber", getClimberTestNeutral(state));
-        // }
-        tester.addTest("Climber", getClimberTest(CLIMB_PRIME));
-        tester.addTest("Climber", getClimberTest(NEUTRAL));
-        tester.addTest("Climber", getClimberTest(CLIMB));
-        tester.addTest("Climber", getClimberTest(NEUTRAL));
-        tester.getTest("Climber").setTimeBetweenTests(1);
+    public boolean atTestState(){
+        return WinchMechanism.controller.atSetpoint() && Math.abs(RollerMechanism.leader.getAppliedOutput() - getState().getRollerPower()) <= ROLLER_POWER_TOLERANCE;
     }
 
 	@Override

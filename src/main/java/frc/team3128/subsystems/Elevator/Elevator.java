@@ -38,36 +38,9 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
 
         return instance;
     }
-    
-    public SystemsTest getElevatorTest(ElevatorStates state){
-       return new SystemsTest(
-            "Elevator Test: " + state, 
-            setStateCommand(state).withTimeout(ELEVATOR_TEST_TIMEOUT), 
-            ()-> atState()
-        );
-    }
-    public SystemsTest getElevatorTestNeutral(ElevatorStates state){
-        return new SystemsTest(
-             "Elevator Test: " + state, 
-             sequence(setStateCommand(NEUTRAL), waitSeconds(ELEVATOR_TEST_TIMEOUT), setStateCommand(state).withTimeout(ELEVATOR_TEST_TIMEOUT)), 
-             ()-> atState()
-         );
-     }
 
-
-    public boolean atState(){
+    public boolean atTestState(){
         return ElevatorMechanism.controller.atSetpoint();
-    }
-
-    public void addElevatorTests() {
-        Tester tester = Tester.getInstance();
-        // for(ElevatorStates state : ElevatorStates.values()){
-        //     if(state == NEUTRAL) tester.addTest("Elevator", getElevatorTest(NEUTRAL));
-        //     else tester.addTest("Elevator", getElevatorTestNeutral(state));
-        // }
-        tester.addTest("Elevator", getElevatorTest(L4));
-        tester.addTest("Elevator", getElevatorTest(NEUTRAL));
-        tester.getTest("Elevator").setTimeBetweenTests(1);
     }
 
 	@Override
