@@ -15,7 +15,9 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Swerve;
@@ -23,6 +25,7 @@ import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 // import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
+import com.pathplanner.lib.commands.PathfindingCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -54,12 +57,13 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void robotInit(){
-        Camera.enableAll();
+        //Camera.enableAll();
         m_robotContainer.initDashboard();
         LiveWindow.disableAllTelemetry();
         // Log.logDebug = true;
+        AutoPrograms.getInstance().initAutoSelector();
         Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM, MOTOR);
-
+        PathfindingCommand.warmupCommand().schedule();
     }
 
     @Override
@@ -77,21 +81,22 @@ public class Robot extends NAR_Robot {
     @Override
     public void autonomousInit() {
         CommandScheduler.getInstance().cancelAll();
-        // AutoPrograms.getInstance().getAutonomousCommand().schedule();
-        sequence(
-            runOnce(()-> Swerve.getInstance().setPose(FieldStates.REEF_2.getPose2d())),
-            waitUntil(()-> (Swerve.getInstance().atRotationSetpoint() && Swerve.getInstance().atTranslationSetpoint())),
-            waitSeconds(3),
-            RobotManager.getInstance().getTempToggleCommand(RobotStates.RPL2, RobotStates.RSL2),
-            waitSeconds(1),
-            RobotManager.getInstance().getTempToggleCommand(RobotStates.RPL2, RobotStates.RSL2)
-        ).schedule();
+        Camera.enableAll();
+        runOnce(()-> {
+            Swerve.translationController.disable();
+            Swerve.rotationController.disable();
+        }).schedule();
+        
+        Command m_autonomousCommand = AutoPrograms.getInstance().getAutonomousCommand();
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.schedule();
+        }
+        else System.out.println("Auto Command is null");
     }
 
     @Override
     public void autonomousPeriodic() {
         CommandScheduler.getInstance().run();
-        Camera.updateAll();
     }
 
     @Override
@@ -102,10 +107,11 @@ public class Robot extends NAR_Robot {
     @Override
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
-        RobotManager.getInstance().stop();
+        RobotManager.getInstance().stopCommand().schedule();
         Log.info("State", RobotManager.getInstance().getState().name());
         RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL).schedule();
         Log.info("State", RobotManager.getInstance().getState().name());
+        Camera.enableAll();
     }
 
     @Override
@@ -126,7 +132,6 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void teleopExit() {
-        RobotManager.getInstance().stop();
         Log.info("State", RobotManager.getInstance().getState().name());
     }
 
@@ -135,7 +140,7 @@ public class Robot extends NAR_Robot {
         CommandScheduler.getInstance().cancelAll();
         Swerve.getInstance().setBrakeMode(false);
         Swerve.disable();
-        RobotManager.getInstance().stop();
+        RobotManager.getInstance().stopCommand().ignoringDisable(true).schedule();
         Log.info("State", RobotManager.getInstance().getState().name());
     }
 

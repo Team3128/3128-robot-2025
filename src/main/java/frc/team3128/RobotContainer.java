@@ -40,11 +40,7 @@ import frc.team3128.subsystems.Climber.WinchMechanism;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
-// import frc.team3128.subsystems.Swerve;
-import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Manipulator.Manipulator;
-import frc.team3128.subsystems.Manipulator.ManipulatorStates;
-import frc.team3128.subsystems.Manipulator.RollerMechanism;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
 
@@ -59,6 +55,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.Constants.FieldConstants.*;
 import static frc.team3128.Constants.FieldConstants.*;
 import static frc.team3128.Constants.VisionConstants.*;
+import static frc.team3128.subsystems.Robot.RobotStates.*;
 
 /**
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -141,7 +138,8 @@ public class RobotContainer {
         // buttonPad.getButton(1).whileTrue(runOnce(()-> swerve.setBrakeMode(false))).onFalse(runOnce(()-> swerve.setBrakeMode(true)));
         // buttonPad.getButton(2).onTrue(swerve.identifyOffsetsCommand().ignoringDisable(true));
         // buttonPad.getButton(3).onTrue(runOnce(()-> robot.setNeutralMode(Neutral.COAST))).onFalse(runOnce(()-> robot.setNeutralMode(Neutral.BRAKE)));
-        buttonPad.getButton(4).onTrue(Climber.getInstance().resetCommand().ignoringDisable(true));
+        // buttonPad.getButton(4).onTrue(Climber.getInstance().resetCommand().ignoringDisable(true));
+        // buttonPad.getButton(1).whileTrue(runOnce(()->Swerve.fieldRelative = false)).whileFalse(runOnce(()->Swerve.fieldRelative = true));
 
         controller2.getButton(kA).onTrue(Climber.getInstance().runCommand(0.8)).onFalse(Climber.getInstance().stopCommand());
         controller2.getButton(kB).onTrue(Climber.getInstance().runCommand(-0.8)).onFalse(Climber.getInstance().stopCommand());
@@ -161,7 +159,7 @@ public class RobotContainer {
         controller.getButton(kStart).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
 
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
-        controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.resetEncoders()));
+        controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.snapToElement()));
 
         new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevatorMech.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
         // controller2.getButton(kX).onTrue(
@@ -173,17 +171,17 @@ public class RobotContainer {
         //         .beforeStarting(() -> swerve.oLock())
         // );
 
-        // controller2.getButton(kA).onTrue(winch.runCommand(0.8)).onFalse(winch.runCommand(0));
-        // controller2.getButton(kB).onTrue(winch.runCommand(-0.8)).onFalse(winch.runCommand(0));
-        // controller2.getButton(kX).onTrue(winch.resetCommand());
+        controller2.getButton(kA).onTrue(WinchMechanism.getInstance().runCommand(0.8)).onFalse(WinchMechanism.getInstance().runCommand(0));
+        controller2.getButton(kB).onTrue(WinchMechanism.getInstance().runCommand(-0.8)).onFalse(WinchMechanism.getInstance().runCommand(0));
+        controller2.getButton(kX).onTrue(WinchMechanism.getInstance().resetCommand());
         // controller2.getButton(kY).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB_PRIME));
         // controller2.getButton(kRightBumper).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB));
 
         new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevatorMech.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
         // new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
-        controller.getDownPOVButton().onTrue(runOnce(()-> swerve.moveTo(allianceFlip(FieldStates.REEF_1.getPose2d()).getTranslation())));
-        controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
+        controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
+        controller.getUpPOVButton().onTrue(runOnce(()-> swerve.pathToSource()));
         controller.getRightPOVButton().onTrue(runOnce(()-> swerve.pathToReef(true)));
         controller.getLeftPOVButton().onTrue(runOnce(()-> swerve.pathToReef(false)));
         // controller.getRightPOVButton().onTrue(runOnce(()-> swerve.snapToReef(true)));
@@ -193,11 +191,11 @@ public class RobotContainer {
     public void initCameras() {
         Log.info("tags", APRIL_TAGS.get(0).toString());
         Camera.setResources(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), new AprilTagFieldLayout(APRIL_TAGS, FIELD_X_LENGTH, FIELD_Y_LENGTH), () -> swerve.getPose());
-        Camera.setThresholds(0.35, 3, 10);
+        Camera.setThresholds(0.3, 1.5, 0.3);
         if (Robot.isReal()) {
-            Camera backRightCamera = new Camera("BOTTOM_RIGHT", Units.inchesToMeters(10.055), -Units.inchesToMeters(9.79),  0, Units.degreesToRadians(-28.125), 0);
-            Camera backLeftCamera = new Camera("BOTTOM_LEFT", Units.inchesToMeters(10.055), Units.inchesToMeters(9.79), 0, Units.degreesToRadians(-28.125), 0);
-            Camera topCamera = new Camera("TOP", -Units.inchesToMeters(6), -Units.inchesToMeters(12.5), Units.degreesToRadians(180), Units.degreesToRadians(-45), 0);
+            Camera backRightCamera = new Camera("BOTTOM_RIGHT", 0.27, -0.27,  Units.degreesToRadians(-15), 0, 0);
+            Camera backLeftCamera = new Camera("BOTTOM_LEFT", 0.09, 0.145, 0, 0, 0);
+            // Camera topCamera = new Camera("TOP", -Units.inchesToMeters(6), -Units.inchesToMeters(12.5), Units.degreesToRadians(180), Units.degreesToRadians(-45), 0);
         }
     }
 

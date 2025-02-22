@@ -99,14 +99,17 @@ public class Swerve extends SwerveBase {
 
     // x * kP = dx/dt && (v_max)^2 = 2*a_max*x
     public static final Constraints translationConstraints = new Constraints(MAX_DRIVE_SPEED, MAX_DRIVE_ACCELERATION);
-    public static final PIDFFConfig translationConfig = new PIDFFConfig(5);//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
+    public static final PIDFFConfig translationConfig = new PIDFFConfig(20);// used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller translationController = new Controller(translationConfig, Controller.Type.POSITION); //Displacement error to output velocity
-    public static final double translationTolerance = 0.05;
+    public static final double translationTolerance = 0.02;
 
     public static final Constraints rotationConstraints = new Constraints(MAX_DRIVE_ANGULAR_VELOCITY, MAX_DRIVE_ANGULAR_ACCELERATION);
     public static final PIDFFConfig rotationConfig = new PIDFFConfig(5); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller rotationController = new Controller(rotationConfig, Controller.Type.POSITION); //Angular displacement error to output angular velocity
     public static final double rotationTolerance = Angle.ofRelativeUnits(2, Units.Degree).in(Units.Radian);
+
+    private static double translationPlateauThreshold = 5;
+    private static double translationPlateauCount = 0;
 
     static {
         translationController.setTolerance(translationTolerance);
@@ -170,20 +173,20 @@ public class Swerve extends SwerveBase {
     @Override
     public void drive(ChassisSpeeds velocity){
         if(Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) < TRANSLATIONAL_DEADBAND && translationController.isEnabled()) {
-            if (!rotationController.isEnabled()) {
+            // if (!rotationController.isEnabled()) {
                 Translation2d error = getDisplacementTo(translationSetpoint);
                 Translation2d output = new Translation2d(translationController.calculate(error.getNorm()), error.getAngle());
                 velocity.vxMetersPerSecond = output.getX();
                 velocity.vyMetersPerSecond = output.getY();
-            }
+            // }
         }
-        else translationController.disable();
+        // else translationController.disable();
 
         if(Math.abs(velocity.omegaRadiansPerSecond) < ROTATIONAL_DEADBAND && rotationController.isEnabled()) {
             Rotation2d error = getAngularDisplacementTo(rotationSetpointSupplier.get());
             velocity.omegaRadiansPerSecond = rotationController.calculate(error.getRadians()); 
         }
-        else rotationController.disable();
+        // else rotationController.disable();
 
         assign(velocity);
         if(translationController.isEnabled() && atTranslationSetpoint()){
@@ -211,6 +214,12 @@ public class Swerve extends SwerveBase {
     public void setPose(Pose2d pose){
         rotateTo(pose.getRotation());
         moveTo(pose.getTranslation());
+    }
+
+    @Override
+    public void resetOdometry(Pose2d pose) {
+        resetGyro(pose.getRotation().getDegrees());
+        odometry.resetPosition(getGyroRotation2d(), getPositions(), pose);
     }
 
     public void moveTo(Translation2d translation) {
@@ -244,7 +253,12 @@ public class Swerve extends SwerveBase {
     }
 
     public boolean atTranslationSetpoint() {
-        return getDistanceTo(translationSetpoint) < translationTolerance;
+        if(getDistanceTo(translationSetpoint) < translationTolerance) translationPlateauCount++;
+        if(translationPlateauCount >= translationPlateauThreshold) {
+            translationPlateauCount = 0;
+            return true;
+        }
+        return false;
     }
 
     public void snapToAngle() {
@@ -262,17 +276,23 @@ public class Swerve extends SwerveBase {
         rotateTo(setpoint.getRotation());
     }
 
-    public void pathToReef(boolean isRight) {
-        final Pose2d setpoint = getPose().nearest(allianceFlip(reefPoses.asJava()));
+    public void pathToReef(Pose2d setpoint, boolean isRight) {
         rotateTo(setpoint.getRotation());
-        Rotation2d shiftDirection = setpoint.getRotation().plus(Rotation2d.fromDegrees(90 * (isRight ? -1 : 1)));
-        Translation2d ram = new Translation2d(0.25,edu.wpi.first.math.util.Units.inchesToMeters(6.25)).rotateBy(setpoint.getRotation());
-        moveTo(setpoint.getTranslation().plus(reefShift.rotateBy(shiftDirection)).plus(ram));
+        moveTo(setpoint.getTranslation());
+    }
+
+    public void pathToReef(boolean isRight) {
+        final List<Pose2d> setpoints;
+        setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
+        final Pose2d setpoint = getPose().nearest(allianceFlip(setpoints));
+        pathToReef(setpoint, isRight);
     }
 
     public void pathToSource() {
         Pose2d setpoint = getPose().nearest(allianceFlip(sourcePoses.asJava()));
-        setPose(setpoint);
+        // Translation2d ram = new Translation2d(-0.05,0).rotateBy(setpoint.getRotation());
+        rotateTo(setpoint.getRotation());
+        moveTo(setpoint.getTranslation());
     }
 
     public boolean isConfigured() {

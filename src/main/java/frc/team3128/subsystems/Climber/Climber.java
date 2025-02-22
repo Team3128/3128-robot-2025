@@ -33,8 +33,10 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
     private Function<ClimberStates, Command> defaultTransitioner = state -> {
         return sequence(
             none(),
-            roller.runCommand(state.getRollerPower()),
-            winch.pidTo(state.getAngle())
+            roller.stopCommand(),
+            winch.pidTo(state.getAngle()),
+            waitUntil(()-> winch.atSetpoint()),
+            roller.runCommand(state.getRollerPower())
         );
     };
 
