@@ -40,7 +40,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
     }
 
     public boolean atTestState(){
-        return Math.abs(RollerMechanism.leader.getAppliedOutput() - getState().getPower()) <= ROLLER_POWER_TOLERANCE;
+        return Math.abs(RollerMechanism.leader.getAppliedOutput() - getState().getPower()/12) <= ROLLER_POWER_TOLERANCE;
     }
 
 	@Override
