@@ -20,7 +20,7 @@ public class PivotMechanism extends PositionSubsystemBase {
 
     private PivotMechanism() {
         super(controller, leader);
-        initShuffleboard();
+        // initShuffleboard();
     }
 
     public static PivotMechanism getInstance() {

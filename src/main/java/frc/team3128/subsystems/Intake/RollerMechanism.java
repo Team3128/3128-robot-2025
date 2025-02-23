@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
      private RollerMechanism() {
         super(leader);
-        initShuffleboard();
+        // initShuffleboard();
      }
 
     public static RollerMechanism getInstance() {

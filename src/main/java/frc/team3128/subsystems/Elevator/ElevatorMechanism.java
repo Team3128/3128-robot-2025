@@ -41,7 +41,7 @@ public class ElevatorMechanism extends PositionSubsystemBase {
         left.configMotor(motorConfig);
         right.configMotor(motorConfig.follower());
 
-        initShuffleboard();
+        // initShuffleboard();
     }
 
     @Override

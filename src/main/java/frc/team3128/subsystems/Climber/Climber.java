@@ -40,7 +40,7 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
         addMechanisms(winch, roller);
         // addMechanisms(winch);
 
-        initShuffleboard();
+        // initShuffleboard();
     }
 
     public static synchronized Climber getInstance() {
