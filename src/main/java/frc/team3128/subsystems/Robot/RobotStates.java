@@ -18,7 +18,7 @@ public enum RobotStates {
     RPL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, 0.3),
     RPL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, 0.3), 
     RPL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, 0.3),
-    RSL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.OUT, 0.3),
+    RSL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.OUT_L1, 0.3),
     RSL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.OUT, 0.3),
     RSL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.OUT, 0.3),
     RSL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.OUT, 0.3),
