@@ -39,19 +39,6 @@ if [ "$OPTION" = "build" ]; then
     }
 fi
 
-if [ "$OPTION" == "forcebranch" ]; then
-    git stash
-    git checkout "$2"
-    git pull
-    cd libs/3128-common || {
-        printf "\nSubmodule directory not found. Ensure the submodule was added successfully."
-        exit 1
-    }
-    git stash
-    git checkout "$3"
-    git pull
-fi
-
 if [ "$OPTION" == "status" ]; then
     printf "\nChecking status of main project...\n"
     git status
@@ -61,6 +48,29 @@ if [ "$OPTION" == "status" ]; then
     }
     printf "\nChecking status of submodule project...\n"
     git status
+fi
+
+if [ "$OPTION" == "init"]; then
+    # Define paths
+    SUBMODULE_DIR="libs/3128-common"
+    SUBMODULE_FILE="$SUBMODULE_DIR/build.gradle"
+    GIT_MODULES_FILE=".gitmodules"
+
+    # Check if both the submodule directory and .gitmodules file exist
+    if [[ -d "$SUBMODULE_DIR" && -f "$GIT_MODULES_FILE" ]]; then
+        echo "Submodule directory and .gitmodules file found."
+        
+        # Check if build.gradle is present in the submodule directory
+        if [[ ! -f "$SUBMODULE_FILE" ]]; then
+            echo "build.gradle not found in $SUBMODULE_DIR. Updating submodule..."
+            git submodule update --init
+        else
+            echo "build.gradle found. No need to update submodule."
+        fi
+    else
+        echo "Either $SUBMODULE_DIR or $GIT_MODULES_FILE is missing. Exiting."
+        exit 1
+    fi
 fi
 
 if [ "$OPTION" = "submodule" ]; then
@@ -108,6 +118,15 @@ if [ "$OPTION" = "submodule" ]; then
         fi
     fi
 
+    printf "\nWould you like to delete the jit pack vendor dependency? (y/n)\n"
+    read -r remove
+    if [ "$remove" = "y" ]; then
+        printf "\nRemoving jit pack vendor dependency..."
+        rm vendordeps/3128-common.json || {
+            printf "\nNo existing directories or cache present. Proceeding."
+        }
+    fi
+
     # Step 5: Build the submodule project
     printf "\nBuilding the submodule project..."
     cd libs/3128-common || {
@@ -129,15 +148,6 @@ if [ "$OPTION" = "submodule" ]; then
         printf "\nFailed to build the main project. Resolve build issues and try again."
         exit 1
     }
-
-    printf "\nWould you like to delete the jit pack vendor dependency? (y/n)\n"
-    read -r remove
-    if [ "$remove" = "y" ]; then
-        printf "\nRemoving jit pack vendor dependency..."
-        rm vendordeps/3128-common.json || {
-            printf "\nNo existing directories or cache present. Proceeding."
-        }
-    fi
 
     printf "\nScript executed successfully. Submodule setup complete!\n"
 fi
