@@ -86,27 +86,10 @@ public class AutoPrograms {
                 }
             } catch(Exception e) {}
         }
-        // NarwhalDashboard.getInstance().addAutos(autoStrings);
+        NarwhalDashboard.getInstance().addAutos(autoStrings.toArray(new String[0]));
     }
 
     private void configPathPlanner() {
-        NamedCommands.registerCommand("Score L4", sequence(
-            robot.setStateCommand(RPL4),
-            waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
-            robot.setStateCommand(RSL4),
-            waitSeconds(.25)
-        ));
-
-        NamedCommands.registerCommand("Neutral", sequence(
-            waitSeconds(0.25),
-            robot.setStateCommand(NEUTRAL)
-        ));
-
-        NamedCommands.registerCommand("L4", sequence(
-            waitSeconds(0.25),
-            robot.setStateCommand(RPL4)
-        ));
-
         Pathfinding.setPathfinder(new LocalADStar());
 
         try {
@@ -142,6 +125,23 @@ public class AutoPrograms {
             ()-> Robot.getAlliance() == Alliance.Red,
             swerve
             );
+
+        NamedCommands.registerCommand("Score L4", sequence(
+            robot.setStateCommand(RPL4),
+            waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
+            robot.setStateCommand(RSL4),
+            waitSeconds(.25)
+        ));
+
+        NamedCommands.registerCommand("Neutral", sequence(
+            waitSeconds(0.25),
+            robot.setStateCommand(NEUTRAL)
+        ));
+
+        NamedCommands.registerCommand("L4", sequence(
+            waitSeconds(0.25),
+            robot.setStateCommand(RPL4)
+        ));
     }
 
     public static Command getPathPlannerAuto(String trajectoryName) {
