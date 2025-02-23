@@ -63,8 +63,8 @@ public class AutoPrograms {
     private AutoPrograms() {
         robot = RobotManager.getInstance();
 
-        initAutoSelector();
         configPathPlanner();
+        initAutoSelector();
     }
 
     public static synchronized AutoPrograms getInstance() {
@@ -86,7 +86,7 @@ public class AutoPrograms {
                 }
             } catch(Exception e) {}
         }
-        NarwhalDashboard.getInstance().addAutos(autoStrings);
+        // NarwhalDashboard.getInstance().addAutos(autoStrings);
     }
 
     private void configPathPlanner() {

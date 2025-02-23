@@ -1,5 +1,7 @@
 package frc.team3128.subsystems.Robot;
 
+import static frc.team3128.subsystems.Intake.IntakeStates.INTAKE;
+
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.team3128.subsystems.Climber.ClimberStates;
@@ -23,8 +25,7 @@ public enum RobotStates {
     
     INTAKE(ElevatorStates.NEUTRAL, IntakeStates.INTAKE, ManipulatorStates.NEUTRAL, 1),
     EJECT_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.EJECT_OUTTAKE, ManipulatorStates.NEUTRAL, 1),
-    PROCESSOR_PRIME(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_PRIME, ManipulatorStates.NEUTRAL, 0.5),
-    PROCESSOR_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_OUTTAKE, ManipulatorStates.NEUTRAL, 0.5),
+    HIGH_INTAKE(ElevatorStates.NEUTRAL, IntakeStates.HIGH_INTAKE, ManipulatorStates.NEUTRAL, 1),
     
     CLIMB_PRIME(ElevatorStates.NEUTRAL, IntakeStates.CLIMB_PRIME, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB_PRIME, 0.3),
     CLIMB(ElevatorStates.NEUTRAL, IntakeStates.CLIMB, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB, 0.3);
@@ -38,8 +39,7 @@ public enum RobotStates {
 
     public static final List<RobotStates> defaultElevatorStates = List.of(RPL1, RPL2, RPL3, RPL4);
     public static final List<RobotStates> exclusiveElevatorStates = List.of(RSL1, RSL2, RSL3, RSL4);
-    public static final List<RobotStates> defaultIntakeStates = List.of(INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME);
-    public static final List<RobotStates> exclusiveIntakeStates = List.of(PROCESSOR_OUTTAKE);
+    public static final List<RobotStates> defaultIntakeStates = List.of(INTAKE, EJECT_OUTTAKE, HIGH_INTAKE);
     public static final List<RobotStates> defaultClimbStates = List.of(CLIMB_PRIME);
     public static final List<RobotStates> exclusiveClimbStates = List.of(CLIMB);
 
@@ -49,12 +49,11 @@ public enum RobotStates {
         Pair.of(RPL3, RSL3),
         Pair.of(RPL4, RSL4),
         Pair.of(UNDEFINED, NEUTRAL),
-        Pair.of(PROCESSOR_PRIME, PROCESSOR_OUTTAKE),
         Pair.of(CLIMB_PRIME, CLIMB)
     );
 
     public static final List<RobotStates> defaultStates = List.of(NEUTRAL).appendAll(defaultElevatorStates).appendAll(defaultIntakeStates).appendAll(defaultClimbStates);
-    public static final List<RobotStates> exclusiveStates = exclusiveElevatorStates.appendAll(exclusiveIntakeStates).appendAll(exclusiveClimbStates);
+    public static final List<RobotStates> exclusiveStates = exclusiveElevatorStates.appendAll(exclusiveClimbStates);
 
     private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator, ClimberStates climber, Translation2d position, double throttle) {
         this.elevator = elevator;

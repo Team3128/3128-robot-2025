@@ -168,10 +168,10 @@ public class Constants {
         public static final int MOD3_CANCODER_ID = 13;
 
         /* Cancoder Offsets */
-        public static final double MOD0_CANCODER_OFFSET = 60.556640625 - 180;
-        public static final double MOD1_CANCODER_OFFSET = 110.56640625 - 180;
-        public static final double MOD2_CANCODER_OFFSET = -112.67578125 - 180;
-        public static final double MOD3_CANCODER_OFFSET = -159.78515625 - 180;
+        public static final double MOD0_CANCODER_OFFSET = -116.01562499999999;
+        public static final double MOD1_CANCODER_OFFSET = -67.587890625;
+        public static final double MOD2_CANCODER_OFFSET = 65.0390625;
+        public static final double MOD3_CANCODER_OFFSET = 19.248046875000004;
 
 
         public static final double RAMP_TIME = 3;
