@@ -45,6 +45,7 @@ public class Robot extends NAR_Robot {
 
     public static Robot instance;
 
+    public static AutoPrograms autoPrograms = AutoPrograms.getInstance();
     public static RobotContainer m_robotContainer = new RobotContainer();
     // public static AutoPrograms autoPrograms;
 
@@ -61,7 +62,7 @@ public class Robot extends NAR_Robot {
         m_robotContainer.initDashboard();
         LiveWindow.disableAllTelemetry();
         // Log.logDebug = true;
-        AutoPrograms.getInstance().initAutoSelector();
+        autoPrograms.initAutoSelector();
         Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM, MOTOR);
         PathfindingCommand.warmupCommand().schedule();
     }
@@ -87,7 +88,7 @@ public class Robot extends NAR_Robot {
             Swerve.rotationController.disable();
         }).schedule();
         
-        Command m_autonomousCommand = AutoPrograms.getInstance().getAutonomousCommand();
+        Command m_autonomousCommand = autoPrograms.getAutonomousCommand();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
