@@ -1,10 +1,14 @@
 package frc.team3128;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import com.pathplanner.lib.util.FlippingUtil;
 
 import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
@@ -300,6 +304,19 @@ public class Constants {
             BLUE_BARGE,
             CENTER_BARGE,
             RED_BARGE,
+            
+            A(new Pose2d(new Translation2d(2.2, 4.324), Rotation2d.fromDegrees(0))),
+            B(new Pose2d(new Translation2d(2.2, 4.004), Rotation2d.fromDegrees(0))),
+            C(new Pose2d(new Translation2d(3.096, 2.23), Rotation2d.fromDegrees(60))),
+            D(new Pose2d(new Translation2d(3.384, 2.074), Rotation2d.fromDegrees(60))),
+            E(new Pose2d(new Translation2d(5.367, 1.894), Rotation2d.fromDegrees(120))),
+            F(new Pose2d(new Translation2d(5.661, 2.067), Rotation2d.fromDegrees(120))),
+            G(new Pose2d(new Translation2d(3.096, 3.72), Rotation2d.fromDegrees(180))),
+            H(new Pose2d(new Translation2d(6.761, 4.04), Rotation2d.fromDegrees(180))),
+            I(new Pose2d(new Translation2d(5.874, 5.852), Rotation2d.fromDegrees(-60))),
+            J(new Pose2d(new Translation2d(5.608, 6.011), Rotation2d.fromDegrees(-60))),
+            K(new Pose2d(new Translation2d(3.605, 6.146), Rotation2d.fromDegrees(-120))),
+            L(new Pose2d(new Translation2d(3.310, 5.991), Rotation2d.fromDegrees(-120))),
 
             // REEF_1(new Pose2d(new Translation2d(5.75, 4.05), Rotation2d.fromDegrees(180))),//TODO:Fix others
             REEF_1_L(new Pose2d(new Translation2d(5.693, 3.66), Rotation2d.fromDegrees(180))),
@@ -333,9 +350,9 @@ public class Constants {
             PROCESSOR(new Pose2d(new Translation2d(6.35, 0.60), Rotation2d.fromDegrees(270)));
 
             private final Pose2d pose;
-            public static io.vavr.collection.List<Pose2d> reefLeft = io.vavr.collection.List.of(REEF_1_L.getPose2d(), REEF_2_L.getPose2d(), REEF_3_L.getPose2d(), REEF_4_L.getPose2d(), REEF_5_L.getPose2d(), REEF_6_L.getPose2d());
-            public static io.vavr.collection.List<Pose2d> reefRight = io.vavr.collection.List.of(REEF_1_R.getPose2d(), REEF_2_R.getPose2d(), REEF_3_R.getPose2d(), REEF_4_R.getPose2d(), REEF_5_R.getPose2d(), REEF_6_R.getPose2d());
-            public static io.vavr.collection.List<Pose2d> reefPoses = reefLeft.appendAll(reefRight);
+            public static io.vavr.collection.List<Pose2d> reefLeft = io.vavr.collection.List.of(A.getPose2d(), C.getPose2d(), E.getPose2d(), G.getPose2d(), I.getPose2d(), K.getPose2d());
+            public static io.vavr.collection.List<Pose2d> reefRight = io.vavr.collection.List.of(B.getPose2d(), D.getPose2d(), F.getPose2d(), H.getPose2d(), J.getPose2d(), L.getPose2d());
+            public static io.vavr.collection.List<Pose2d> reefPoses = io.vavr.collection.List.of(A.getPose2d(), B.getPose2d(), C.getPose2d(), D.getPose2d(), E.getPose2d(), F.getPose2d(), G.getPose2d(), H.getPose2d(), I.getPose2d(), J.getPose2d(), K.getPose2d(), L.getPose2d());
             public static io.vavr.collection.List<Pose2d> sourcePoses = io.vavr.collection.List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d());
 
             private FieldStates(Pose2d pose) {
@@ -368,7 +385,7 @@ public class Constants {
         }
 
         public static List<Pose2d> allianceFlip(List<Pose2d> poses) {
-            return poses.stream().map(pose -> allianceFlip(pose)).collect(Collectors.toList());
+            return poses.stream().map(pose -> FlippingUtil.flipFieldPose(pose)).collect(Collectors.toList());
         }
 
         public static Translation2d allianceFlip(Translation2d translation) {

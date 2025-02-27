@@ -29,6 +29,7 @@ import frc.team3128.Constants.RobotConstants;
 import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.autonomous.AutoPrograms;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -167,7 +168,18 @@ public class RobotContainer {
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
         controller.getUpPOVButton().onTrue(AutoPrograms.getInstance().pathToPose(swerve.getPose().nearest(allianceFlip(FieldStates.sourcePoses.asJava()))));
-        // controller.getRightPOVButton().onTrue(AutoPrograms.getInstance().pathToNearestPose(allianceFlip(FieldStates.reefRight.asJava())));
+        controller.getRightPOVButton().onTrue(sequence(
+            runOnce(()-> swerve.pathToReef(true)),
+            waitUntil(()-> swerve.atTranslationSetpoint()),
+            robot.setStateCommand(RPL2),
+            runOnce(()-> swerve.moveBy(new Translation2d(1, 0).rotateBy(swerve.getClosestReef().getRotation()))).withTimeout(2)
+        ));
+        controller.getLeftPOVButton().onTrue(sequence(
+            runOnce(()-> swerve.pathToReef(false)),
+            waitUntil(()-> swerve.atTranslationSetpoint()),
+            robot.setStateCommand(RPL2),
+            runOnce(()-> swerve.moveBy(new Translation2d(1, 0).rotateBy(swerve.getClosestReef().getRotation()))).withTimeout(2)
+        ));
         // controller.getLeftPOVButton().onTrue(AutoPrograms.getInstance().pathToNearestPose(allianceFlip(FieldStates.reefLeft.asJava())));
     }
 

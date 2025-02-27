@@ -288,6 +288,10 @@ public class Swerve extends SwerveBase {
         pathToReef(setpoint);
     }
 
+    public Pose2d getClosestReef() {
+        return getPose().nearest(allianceFlip(reefPoses.asJava()));
+    }
+
     public void pathToSource() {
         Pose2d setpoint = getPose().nearest(allianceFlip(sourcePoses.asJava()));
         // Translation2d ram = new Translation2d(-0.05,0).rotateBy(setpoint.getRotation());
@@ -337,7 +341,6 @@ public class Swerve extends SwerveBase {
         super.initShuffleboard();
         NAR_Shuffleboard.addData("Swerve", "Throttle", ()-> this.throttle, 4, 3);
 
-        NAR_Shuffleboard.addData("Auto", "Reef", ()-> getPose().nearest(allianceFlip(reefPoses.asJava())).toString(), 3, 3);
 
         NAR_Shuffleboard.addData("Auto", "Translation Enabled", ()-> translationController.isEnabled(), 0, 0);
         NAR_Shuffleboard.addData("Auto", "At Setpoint", ()-> atTranslationSetpoint(), 0, 1);
