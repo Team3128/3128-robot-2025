@@ -22,6 +22,7 @@ import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
+import frc.team3128.subsystems.Intake.PivotMechanism;
 // import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
@@ -58,7 +59,7 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void robotInit(){
-        //Camera.enableAll();
+        Camera.enableAll();
         m_robotContainer.initDashboard();
         LiveWindow.disableAllTelemetry();
         // Log.logDebug = true;
@@ -109,9 +110,10 @@ public class Robot extends NAR_Robot {
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
         RobotManager.getInstance().stopCommand().schedule();
-        Log.info("State", RobotManager.getInstance().getState().name());
+        // Log.info("State", RobotManager.getInstance().getState().name());
         RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL).schedule();
-        Log.info("State", RobotManager.getInstance().getState().name());
+        PivotMechanism.getInstance().stopCommand().schedule();
+        // Log.info("State", RobotManager.getInstance().getState().name());
         Camera.enableAll();
     }
 
