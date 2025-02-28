@@ -168,18 +168,44 @@ public class RobotContainer {
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
         controller.getUpPOVButton().onTrue(AutoPrograms.getInstance().pathToPose(swerve.getPose().nearest(allianceFlip(FieldStates.sourcePoses.asJava()))));
-        controller.getRightPOVButton().onTrue(sequence(
-            runOnce(()-> swerve.pathToReef(true)),
-            waitUntil(()-> swerve.atTranslationSetpoint()),
-            robot.setStateCommand(RPL2),
-            runOnce(()-> swerve.moveBy(new Translation2d(1, 0).rotateBy(swerve.getClosestReef().getRotation()))).withTimeout(2)
-        ));
-        controller.getLeftPOVButton().onTrue(sequence(
-            runOnce(()-> swerve.pathToReef(false)),
-            waitUntil(()-> swerve.atTranslationSetpoint()),
-            robot.setStateCommand(RPL2),
-            runOnce(()-> swerve.moveBy(new Translation2d(1, 0).rotateBy(swerve.getClosestReef().getRotation()))).withTimeout(2)
-        ));
+        // controller.getRightPOVButton().onTrue(sequence(
+        //     runOnce(()-> swerve.pathToReef(true)),
+        //     waitUntil(()-> swerve.atTranslationSetpoint()),
+        //     robot.setStateCommand(RPL2),
+        //     runOnce(()-> swerve.moveBy(new Translation2d(1, 0).rotateBy(swerve.getClosestReef().getRotation()))).withTimeout(2)
+        // ));
+        // controller.getLeftPOVButton().onTrue(sequence(
+        //     runOnce(()-> swerve.pathToReef(false)),
+        //     waitUntil(()-> swerve.atTranslationSetpoint()),
+        //     robot.setStateCommand(RPL2),
+        //     runOnce(()-> swerve.moveBy(new Translation2d(1, 0).rotateBy(swerve.getClosestReef().getRotation()))).withTimeout(2)
+        // ));
+        controller.getRightPOVButton().onTrue(
+            either(
+                sequence(
+                    runOnce(()-> swerve.pathToReef(true)),
+                    waitUntil(()-> swerve.atTranslationSetpoint()),
+                    robot.setStateCommand(RPL2),
+                    runOnce(() -> swerve.fieldRelative = false),
+                    swerve.getDriveCommand(controller::getLeftX, () -> 0, () -> 0)
+                ),
+                runOnce(() -> swerve.fieldRelative = true).andThen(() -> CommandScheduler.getInstance().requiring(swerve).cancel()),
+                () -> swerve.fieldRelative = true
+            )
+        );
+        controller.getLeftPOVButton().onTrue(
+            either(
+                sequence(
+                    runOnce(()-> swerve.pathToReef(false)),
+                    waitUntil(()-> swerve.atTranslationSetpoint()),
+                    robot.setStateCommand(RPL2),
+                    runOnce(() -> swerve.fieldRelative = false),
+                    swerve.getDriveCommand(controller::getLeftX, () -> 0, () -> 0)
+                ),
+                runOnce(() -> swerve.fieldRelative = true).andThen(() -> CommandScheduler.getInstance().requiring(swerve).cancel()),
+                () -> swerve.fieldRelative = true
+            )
+        );
         // controller.getLeftPOVButton().onTrue(AutoPrograms.getInstance().pathToNearestPose(allianceFlip(FieldStates.reefLeft.asJava())));
     }
 

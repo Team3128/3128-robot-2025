@@ -1,6 +1,7 @@
 package frc.team3128;
 
 import static edu.wpi.first.units.Units.Rotation;
+import static frc.team3128.Constants.VisionConstants.APRIL_TAGS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -301,53 +302,21 @@ public class Constants {
         public static final Translation2d reefShift = new Translation2d(0.35/2, 0.);
 
         public enum FieldStates {
-            BLUE_BARGE,
-            CENTER_BARGE,
-            RED_BARGE,
-            
-            A(new Pose2d(new Translation2d(2.2, 4.324), Rotation2d.fromDegrees(0))),
-            B(new Pose2d(new Translation2d(2.2, 4.004), Rotation2d.fromDegrees(0))),
-            C(new Pose2d(new Translation2d(3.096, 2.23), Rotation2d.fromDegrees(60))),
-            D(new Pose2d(new Translation2d(3.384, 2.074), Rotation2d.fromDegrees(60))),
-            E(new Pose2d(new Translation2d(5.367, 1.894), Rotation2d.fromDegrees(120))),
-            F(new Pose2d(new Translation2d(5.661, 2.067), Rotation2d.fromDegrees(120))),
-            G(new Pose2d(new Translation2d(3.096, 3.72), Rotation2d.fromDegrees(180))),
-            H(new Pose2d(new Translation2d(6.761, 4.04), Rotation2d.fromDegrees(180))),
-            I(new Pose2d(new Translation2d(5.874, 5.852), Rotation2d.fromDegrees(-120))),
-            J(new Pose2d(new Translation2d(5.608, 6.011), Rotation2d.fromDegrees(-120))),
-            K(new Pose2d(new Translation2d(3.605, 6.146), Rotation2d.fromDegrees(-60))),
-            L(new Pose2d(new Translation2d(3.310, 5.991), Rotation2d.fromDegrees(-60))),
+            A(18, false),
+            B(18, true),
+            C(17, false),
+            D(17, true),
+            E(22, false),
+            F(22, true),
+            G(21, false),
+            H(21, true),
+            I(20, false),
+            J(20, true),
+            K(19, false),
+            L(19, true),
 
-            // REEF_1(new Pose2d(new Translation2d(5.75, 4.05), Rotation2d.fromDegrees(180))),//TODO:Fix others
-            REEF_1_L(new Pose2d(new Translation2d(5.693, 3.66), Rotation2d.fromDegrees(180))),
-            REEF_1_R(new Pose2d(new Translation2d(5.693, 4.09), Rotation2d.fromDegrees(180))),
-
-            // REEF_2(new Pose2d(new Translation2d(5.15, 5.15), Rotation2d.fromDegrees(240))),
-            REEF_2_L(new Pose2d(new Translation2d(5.3, 5.1), Rotation2d.fromDegrees(240))), // not experimentally found
-            REEF_2_R(new Pose2d(new Translation2d(5.015, 5.034), Rotation2d.fromDegrees(240))),
-
-            // REEF_3(new Pose2d(new Translation2d(3.80, 5.15), Rotation2d.fromDegrees(300))),
-            REEF_3_L(new Pose2d(new Translation2d(4.243, 5.192), Rotation2d.fromDegrees(300))),
-            REEF_3_R(new Pose2d(new Translation2d(4.14, 4.962), Rotation2d.fromDegrees(300))),
-
-            // REEF_4(new Pose2d(new Translation2d(3.15, 4.05), Rotation2d.fromDegrees(0))),
-            REEF_4_L(new Pose2d(new Translation2d(3.286, 4.318), Rotation2d.fromDegrees(0))),
-            REEF_4_R(new Pose2d(new Translation2d(3.495, 4.012), Rotation2d.fromDegrees(0))),
-
-            // REEF_5(new Pose2d(new Translation2d(3.80, 2.90), Rotation2d.fromDegrees(60))),
-            REEF_5_L(new Pose2d(new Translation2d(3.604, 3.165), Rotation2d.fromDegrees(60))),
-            REEF_5_R(new Pose2d(new Translation2d(3.9, 3.019), Rotation2d.fromDegrees(60))),
-
-            // REEF_6(new Pose2d(new Translation2d(5.15, 2.90), Rotation2d.fromDegrees(120))),
-            REEF_6_L(new Pose2d(new Translation2d(4.8, 2.815), Rotation2d.fromDegrees(120))),
-            REEF_6_R(new Pose2d(new Translation2d(5.193, 3.228), Rotation2d.fromDegrees(120))),
-
-            PIECE_1,
-            PIECE_2,
-            PIECE_3,
             SOURCE_1(new Pose2d(new Translation2d(1.267, 0.753), Rotation2d.fromDegrees(55))),
-            SOURCE_2(new Pose2d(new Translation2d(1.267, FIELD_Y_LENGTH-0.753), Rotation2d.fromDegrees(-55))),
-            PROCESSOR(new Pose2d(new Translation2d(6.35, 0.60), Rotation2d.fromDegrees(270)));
+            SOURCE_2(new Pose2d(new Translation2d(1.267, FIELD_Y_LENGTH-0.753), Rotation2d.fromDegrees(-55)));
 
             private final Pose2d pose;
             public static io.vavr.collection.List<Pose2d> reefLeft = io.vavr.collection.List.of(A.getPose2d(), C.getPose2d(), E.getPose2d(), G.getPose2d(), I.getPose2d(), K.getPose2d());
@@ -355,12 +324,16 @@ public class Constants {
             public static io.vavr.collection.List<Pose2d> reefPoses = io.vavr.collection.List.of(A.getPose2d(), B.getPose2d(), C.getPose2d(), D.getPose2d(), E.getPose2d(), F.getPose2d(), G.getPose2d(), H.getPose2d(), I.getPose2d(), J.getPose2d(), K.getPose2d(), L.getPose2d());
             public static io.vavr.collection.List<Pose2d> sourcePoses = io.vavr.collection.List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d());
 
-            private FieldStates(Pose2d pose) {
-                this.pose = pose;
+            private FieldStates(int id, boolean isRight) {
+                Pose2d apriltag = APRIL_TAGS.get(id - 1).pose.toPose2d();
+                Translation2d offset = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(-6.25)).rotateBy(apriltag.getRotation());
+                Translation2d fudgeFactor  = new Translation2d(0.4, 0).rotateBy(apriltag.getRotation());
+                Translation2d leftRight = new Translation2d(0, Units.inchesToMeters(isRight ? 14.5 / 2 : -14.5 / 2)).rotateBy(apriltag.getRotation());
+                this.pose = new Pose2d(apriltag.getX() + offset.getX() + fudgeFactor.getX() + leftRight.getX(), apriltag.getY() + offset.getY() + fudgeFactor.getY() + leftRight.getY(), apriltag.getRotation().plus(Rotation2d.k180deg));
             }
 
-            private FieldStates() {
-                this(new Pose2d());
+            private FieldStates(Pose2d pose) {
+                this.pose = pose;
             }
 
             public Pose2d getPose2d() {
