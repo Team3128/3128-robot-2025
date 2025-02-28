@@ -108,7 +108,7 @@ public class Swerve extends SwerveBase {
     public static final Controller rotationController = new Controller(rotationConfig, Controller.Type.POSITION); //Angular displacement error to output angular velocity
     public static final double rotationTolerance = Angle.ofRelativeUnits(2, Units.Degree).in(Units.Radian);
 
-    private static double translationPlateauThreshold = 5;
+    private static double translationPlateauThreshold = 10;
     private static double translationPlateauCount = 0;
 
     static {

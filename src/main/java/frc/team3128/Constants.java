@@ -313,10 +313,10 @@ public class Constants {
             F(new Pose2d(new Translation2d(5.661, 2.067), Rotation2d.fromDegrees(120))),
             G(new Pose2d(new Translation2d(3.096, 3.72), Rotation2d.fromDegrees(180))),
             H(new Pose2d(new Translation2d(6.761, 4.04), Rotation2d.fromDegrees(180))),
-            I(new Pose2d(new Translation2d(5.874, 5.852), Rotation2d.fromDegrees(-60))),
-            J(new Pose2d(new Translation2d(5.608, 6.011), Rotation2d.fromDegrees(-60))),
-            K(new Pose2d(new Translation2d(3.605, 6.146), Rotation2d.fromDegrees(-120))),
-            L(new Pose2d(new Translation2d(3.310, 5.991), Rotation2d.fromDegrees(-120))),
+            I(new Pose2d(new Translation2d(5.874, 5.852), Rotation2d.fromDegrees(-120))),
+            J(new Pose2d(new Translation2d(5.608, 6.011), Rotation2d.fromDegrees(-120))),
+            K(new Pose2d(new Translation2d(3.605, 6.146), Rotation2d.fromDegrees(-60))),
+            L(new Pose2d(new Translation2d(3.310, 5.991), Rotation2d.fromDegrees(-60))),
 
             // REEF_1(new Pose2d(new Translation2d(5.75, 4.05), Rotation2d.fromDegrees(180))),//TODO:Fix others
             REEF_1_L(new Pose2d(new Translation2d(5.693, 3.66), Rotation2d.fromDegrees(180))),
@@ -384,8 +384,15 @@ public class Constants {
             return pose;
         }
 
+        public static Pose2d allianceFlipRotationally(Pose2d pose) {
+            if (Robot.getAlliance() == Alliance.Red) {
+                return flipRotationally(pose);
+            }
+            return pose;
+        }
+
         public static List<Pose2d> allianceFlip(List<Pose2d> poses) {
-            return poses.stream().map(pose -> FlippingUtil.flipFieldPose(pose)).collect(Collectors.toList());
+            return poses.stream().map(pose -> allianceFlipRotationally(pose)).collect(Collectors.toList());
         }
 
         public static Translation2d allianceFlip(Translation2d translation) {
@@ -406,10 +413,21 @@ public class Constants {
             return new Pose2d(flipTranslation(pose.getTranslation()), flipRotation(pose.getRotation()));
         }
 
+        public static Pose2d flipRotationally(Pose2d pose) {
+            return new Pose2d(flipTranslationRotationally(pose.getTranslation()), Rotation2d.fromDegrees(pose.getRotation().getDegrees() + 180));
+        }
+
         public static Translation2d flipTranslation(Translation2d translation) {
             return new Translation2d (
                 FIELD_X_LENGTH - translation.getX(),
                 translation.getY()
+            );
+        }
+
+        public static Translation2d flipTranslationRotationally(Translation2d translation) {
+            return new Translation2d (
+                FIELD_X_LENGTH - translation.getX(),
+                FIELD_Y_LENGTH - translation.getY()
             );
         }
 
