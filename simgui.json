@@ -32,6 +32,10 @@
       "/Shuffleboard/Shooter/rightController": "PIDController",
       "/Shuffleboard/Swerve/Identify Offsets": "Command",
       "/Shuffleboard/Swerve/Reset Gyro": "Command",
+      "/Shuffleboard/WinchMechanism/Characterize": "Command",
+      "/Shuffleboard/WinchMechanism/Enable": "Command",
+      "/Shuffleboard/WinchMechanism/PID_Controller": "PIDController",
+      "/Shuffleboard/WinchMechanism/Run Volts": "Command",
       "/SmartDashboard/Alerts": "Alerts",
       "/SmartDashboard/Auto Chooser": "String Chooser"
     }

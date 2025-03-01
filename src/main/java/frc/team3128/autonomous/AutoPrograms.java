@@ -129,7 +129,15 @@ public class AutoPrograms {
         NamedCommands.registerCommand("Score L4", sequence(
             robot.setStateCommand(RPL4),
             waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
+            waitSeconds(0.2),
             robot.setStateCommand(RSL4),
+            waitSeconds(.25)
+        ));
+
+        NamedCommands.registerCommand("Score L2", sequence(
+            robot.setStateCommand(RPL2),
+            waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
+            robot.setStateCommand(RSL2),
             waitSeconds(.25)
         ));
 

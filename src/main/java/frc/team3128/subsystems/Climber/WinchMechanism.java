@@ -41,7 +41,7 @@ public class WinchMechanism extends PositionSubsystemBase {
 
         leader.configMotor(motorConfig);
 
-        // initShuffleboard();
+        initShuffleboard();
     }
 
     @Override

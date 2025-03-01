@@ -25,6 +25,7 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
         return sequence(
             none(),
             roller.stopCommand(),
+            runOnce(() -> WinchMechanism.controller.getConfig().kS = () -> 12 * state.getWinchPower()),
             winch.pidTo(state.getAngle()),
             waitUntil(()-> winch.atSetpoint()),
             roller.runCommand(state.getRollerPower())
