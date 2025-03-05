@@ -32,7 +32,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 	public void registerTransitions() {
 
         //ALL STATES -> UNDEFINED & UNDEFINED -> NEUTRAL
-		transitionMap.addUndefinedState(UNDEFINED, NEUTRAL, stopCommand().andThen(()-> setNeutralMode(COAST)), defaultTransitioner.apply(NEUTRAL).beforeStarting(()-> setNeutralMode(BRAKE)));
+		// transitionMap.addUndefinedState(UNDEFINED, NEUTRAL, stopCommand().andThen(()-> setNeutralMode(COAST)), defaultTransitioner.apply(NEUTRAL).beforeStarting(()-> setNeutralMode(BRAKE)));
 
         //NEUTRAL, IN, OUT are able to transition between each other
         transitionMap.addCommutativeTransition(functionalStates.asJava(), defaultTransitioner);

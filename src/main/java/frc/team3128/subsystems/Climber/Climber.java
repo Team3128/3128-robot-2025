@@ -54,12 +54,12 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 
 	@Override
 	public void registerTransitions() {
-        transitionMap.addUndefinedState(
-            UNDEFINED, 
-            NEUTRAL, 
-            stopCommand().andThen(() -> setNeutralMode(Neutral.COAST)),
-            defaultTransitioner.apply(NEUTRAL).beforeStarting(() -> setNeutralMode(Neutral.BRAKE))
-        );
+        // transitionMap.addUndefinedState(
+        //     UNDEFINED, 
+        //     NEUTRAL, 
+        //     stopCommand().andThen(() -> setNeutralMode(Neutral.COAST)),
+        //     defaultTransitioner.apply(NEUTRAL).beforeStarting(() -> setNeutralMode(Neutral.BRAKE))
+        // );
 
         transitionMap.addCommutativeTransition(List.of(NEUTRAL, CLIMB_PRIME, CLIMB), defaultTransitioner);
 	}
