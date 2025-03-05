@@ -327,7 +327,7 @@ public class Constants {
             private FieldStates(int id, boolean isRight) {
                 Pose2d apriltag = APRIL_TAGS.get(id - 1).pose.toPose2d();
                 Translation2d offset = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(-6.25)).rotateBy(apriltag.getRotation());
-                Translation2d fudgeFactor  = new Translation2d(0.4, 0).rotateBy(apriltag.getRotation());
+                Translation2d fudgeFactor  = new Translation2d(0.0, 0).rotateBy(apriltag.getRotation());
                 Translation2d leftRight = new Translation2d(0, Units.inchesToMeters(isRight ? 14.5 / 2 : -14.5 / 2)).rotateBy(apriltag.getRotation());
                 this.pose = new Pose2d(apriltag.getX() + offset.getX() + fudgeFactor.getX() + leftRight.getX(), apriltag.getY() + offset.getY() + fudgeFactor.getY() + leftRight.getY(), apriltag.getRotation().plus(Rotation2d.k180deg));
             }
@@ -525,7 +525,7 @@ public class Constants {
 
         public static final double ELEVATOR_POSITION_MIN = 0;
         public static final double ELEVATOR_POSITION_MAX = Units.inchesToMeters(62.625);
-        public static final double ELEVATOR_TOLERANCE = 0.02;
+        public static final double ELEVATOR_TOLERANCE = 0.01;
     }
 
     public static class ClimberConstants {

@@ -9,7 +9,7 @@ public enum ManipulatorStates {
     UNDEFINED,
     NEUTRAL(0),
     IN(4),
-    OUT(-6),
+    OUT(-4.5),
     OUT_L1(-4);
 
     private double volts;

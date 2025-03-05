@@ -10,8 +10,8 @@ public enum IntakeStates {
     INTAKE(65, 0.8),
     EJECT_OUTTAKE(0, -0.8),
     HIGH_INTAKE(0, 0.8),
-    CLIMB_PRIME(5),
-    CLIMB(5);
+    CLIMB_PRIME(10),
+    CLIMB(10);
 
     public static final List<IntakeStates> defaultStates = List.of(NEUTRAL, INTAKE, EJECT_OUTTAKE, CLIMB_PRIME, HIGH_INTAKE);
     public static final List<IntakeStates> exclusiveStates = List.of(CLIMB);

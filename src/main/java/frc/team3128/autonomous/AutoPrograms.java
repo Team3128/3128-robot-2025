@@ -131,7 +131,7 @@ public class AutoPrograms {
             waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
             waitSeconds(0.2),
             robot.setStateCommand(RSL4),
-            waitSeconds(.25)
+            waitSeconds(0.1)
         ));
 
         NamedCommands.registerCommand("Score L2", sequence(
@@ -172,7 +172,7 @@ public class AutoPrograms {
         String selectedAutoName = NarwhalDashboard.getInstance().getSelectedAuto(); //NarwhalDashboard.getInstance().getSelectedAuto();
         String hardcode = "RB_3pc_FDC";
         
-        
+         
         Command autoCommand;
         if (selectedAutoName == null) {
             selectedAutoName = hardcode;
