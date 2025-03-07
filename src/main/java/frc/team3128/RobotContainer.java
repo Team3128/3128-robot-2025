@@ -168,18 +168,40 @@ public class RobotContainer {
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
         controller.getUpPOVButton().onTrue(AutoPrograms.getInstance().pathToPose(swerve.getPose().nearest(allianceFlip(FieldStates.sourcePoses.asJava()))));
-        // controller.getRightPOVButton().onTrue(sequence(
-        //     runOnce(()-> swerve.pathToReef(true)),
-        //     waitUntil(()-> swerve.atTranslationSetpoint()),
-        //     robot.setStateCommand(RPL2),
-        //     runOnce(()-> swerve.moveBy(new Translation2d(1, 0).rotateBy(swerve.getClosestReef().getRotation()))).withTimeout(2)
-        // ));
-        // controller.getLeftPOVButton().onTrue(sequence(
-        //     runOnce(()-> swerve.pathToReef(false)),
-        //     waitUntil(()-> swerve.atTranslationSetpoint()),
-        //     robot.setStateCommand(RPL2),
-        //     runOnce(()-> swerve.moveBy(new Translation2d(1, 0).rotateBy(swerve.getClosestReef().getRotation()))).withTimeout(2)
-        // ));
+        controller.getRightPOVButton().onTrue(sequence(
+            runOnce(() -> swerve.throttle = 0.3),
+            runOnce(()-> swerve.pathToReef(true)),
+            waitUntil(()-> swerve.atTranslationSetpoint()),
+            robot.setStateCommand(RPL2),
+            runOnce(()->swerve.zeroLock()),
+            waitSeconds(2),
+            runOnce(()-> {
+                Camera.disable();
+                swerve.moveBy(new Translation2d(FUDGE_FACTOR, 0).rotateBy(swerve.getClosestReef().getRotation()));
+            }),
+            waitUntil(() -> swerve.atTranslationSetpoint()).withTimeout(2),
+            runOnce(() -> {
+                Camera.enable();
+                swerve.throttle = 1;
+            })
+        ));
+        controller.getLeftPOVButton().onTrue(sequence(
+            runOnce(() -> swerve.throttle = 0.3),
+            runOnce(()-> swerve.pathToReef(false)),
+            waitUntil(()-> swerve.atTranslationSetpoint()),
+            robot.setStateCommand(RPL2),
+            runOnce(()->swerve.zeroLock()),
+            waitSeconds(2),
+            runOnce(()-> {
+                Camera.disable();
+                swerve.moveBy(new Translation2d(FUDGE_FACTOR, 0).rotateBy(swerve.getClosestReef().getRotation()));
+            }),
+            waitUntil(() -> swerve.atTranslationSetpoint()).withTimeout(2),
+            runOnce(() -> {
+                Camera.enable();
+                swerve.throttle = 1;
+            })
+        ));
         // controller.getRightPOVButton().onTrue(
         //     either(
         //         sequence(

@@ -298,6 +298,7 @@ public class Constants {
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(317); // meters = 8.052
         public static final Translation2d FIELD = new Translation2d(FIELD_X_LENGTH, FIELD_Y_LENGTH);
         public static final Translation2d CENTER_FIELD = FIELD.div(2);
+        public static final double FUDGE_FACTOR = 0.5;
 
         public static final Translation2d reefShift = new Translation2d(0.35/2, 0.);
 
@@ -327,8 +328,8 @@ public class Constants {
             private FieldStates(int id, boolean isRight) {
                 Pose2d apriltag = APRIL_TAGS.get(id - 1).pose.toPose2d();
                 Translation2d offset = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(-6.25)).rotateBy(apriltag.getRotation());
-                Translation2d fudgeFactor  = new Translation2d(0.0, 0).rotateBy(apriltag.getRotation());
-                Translation2d leftRight = new Translation2d(0, Units.inchesToMeters(isRight ? 14.5 / 2 : -14.5 / 2)).rotateBy(apriltag.getRotation());
+                Translation2d fudgeFactor  = new Translation2d(FUDGE_FACTOR, Units.inchesToMeters(-2)).rotateBy(apriltag.getRotation());
+                Translation2d leftRight = new Translation2d(0, Units.inchesToMeters(isRight ? 13.0 / 2 : -13.0 / 2)).rotateBy(apriltag.getRotation());
                 this.pose = new Pose2d(apriltag.getX() + offset.getX() + fudgeFactor.getX() + leftRight.getX(), apriltag.getY() + offset.getY() + fudgeFactor.getY() + leftRight.getY(), apriltag.getRotation().plus(Rotation2d.k180deg));
             }
 
