@@ -64,21 +64,21 @@ public class Constants {
         public static final double neutralHeight = 0;
     }
 
-    public static class AutoConstants {
+    // public static class AutoConstants {
 
-        // public static final var autoConstraints = null;
+    //     // public static final var autoConstraints = null;
 
-        /* Translation PID Values */
-        public static final double translationKP = DriveConstants.translationConfig.kP;
-        public static final double translationKI = DriveConstants.translationConfig.kI;
-        public static final double translationKD = DriveConstants.translationConfig.kD;
+    //     /* Translation PID Values */
+    //     public static final double translationKP = DriveConstants.translationConfig.kP;
+    //     public static final double translationKI = DriveConstants.translationConfig.kI;
+    //     public static final double translationKD = DriveConstants.translationConfig.kD;
       
-        /* Rotation PID Values */
-        public static final double rotationKP = DriveConstants.rotationConfig.kP;
-        public static final double rotationKI = DriveConstants.rotationConfig.kI;
-        public static final double rotationKD = DriveConstants.rotationConfig.kD;
+    //     /* Rotation PID Values */
+    //     public static final double rotationKP = DriveConstants.rotationConfig.kP;
+    //     public static final double rotationKI = DriveConstants.rotationConfig.kI;
+    //     public static final double rotationKD = DriveConstants.rotationConfig.kD;
 
-    }
+    // }
 
     public static class DriveConstants {
 
@@ -350,37 +350,37 @@ public class Constants {
         }
 
 
-        public static Pose2d allianceFlip(Pose2d pose) {
-            if (Robot.getAlliance() == Alliance.Red) {
-                return flip(pose);
-            }
-            return pose;
-        }
+        // public static Pose2d allianceFlip(Pose2d pose) {
+        //     if (Robot.getAlliance() == Alliance.Red) {
+        //         return flip(pose);
+        //     }
+        //     return pose;
+        // }
 
-        public static Pose2d allianceFlipRotationally(Pose2d pose) {
-            if (Robot.getAlliance() == Alliance.Red) {
-                return flipRotationally(pose);
-            }
-            return pose;
-        }
+        // public static Pose2d allianceFlipRotationally(Pose2d pose) {
+        //     if (Robot.getAlliance() == Alliance.Red) {
+        //         return flipRotationally(pose);
+        //     }
+        //     return pose;
+        // }
 
-        public static List<Pose2d> allianceFlip(List<Pose2d> poses) {
-            return poses.stream().map(pose -> allianceFlipRotationally(pose)).collect(Collectors.toList());
-        }
+        // public static List<Pose2d> allianceFlip(List<Pose2d> poses) {
+        //     return poses.stream().map(pose -> allianceFlipRotationally(pose)).collect(Collectors.toList());
+        // }
 
-        public static Translation2d allianceFlip(Translation2d translation) {
-            if (Robot.getAlliance() == Alliance.Red) {
-                return flipTranslation(translation);
-            }
-            return translation;
-        }
+        // public static Translation2d allianceFlip(Translation2d translation) {
+        //     if (Robot.getAlliance() == Alliance.Red) {
+        //         return flipTranslation(translation);
+        //     }
+        //     return translation;
+        // }
 
-        public static Rotation2d allianceFlip(Rotation2d rotation) {
-            if (Robot.getAlliance() == Alliance.Red) {
-                return flipRotation(rotation);
-            }
-            return rotation;
-        }
+        // public static Rotation2d allianceFlip(Rotation2d rotation) {
+        //     if (Robot.getAlliance() == Alliance.Red) {
+        //         return flipRotation(rotation);
+        //     }
+        //     return rotation;
+        // }
 
         public static Pose2d flip(Pose2d pose) {
             return new Pose2d(flipTranslation(pose.getTranslation()), flipRotation(pose.getRotation()));
@@ -418,152 +418,152 @@ public class Constants {
 
         public static Translation2d adjustControllerInputs(Translation2d translation, boolean fieldRelative) {
             Rotation2d rotation = Rotation2d.fromDegrees(DriveConstants.controllerPOVOffset);
-            if(Robot.getAlliance() == Alliance.Red || !fieldRelative) {
-                rotation = Rotation2d.fromDegrees(DriveConstants.controllerPOVOffset * -1);
-            }
+            // if(Robot.getAlliance() == Alliance.Red || !fieldRelative) {
+            //     rotation = Rotation2d.fromDegrees(DriveConstants.controllerPOVOffset * -1);
+            // }
             return translation.rotateBy(rotation);
         }
     }
 
-    public static class LedConstants{
+    // public static class LedConstants{
 
-        public static final int WHITE_VALUE = 0; //leds used don't have a white value
-        public static final double r_SPEED = 0.75;
-        public static final double c_SPEED = 1;
-        public static final int STARTING_ID = 8;
-        public static final int PIVOT_COUNT = 200;
-        public static final int PIVOT_FRONT = 40;
-        public static final int PIVOT_BACK = 50;
-        public static final int NUM_LED = PIVOT_FRONT - 10;
-        public static final int SPARKING = 1;
-        public static final double COOLING = 0.3;
-        public static final double HOLDING_SPEED = 2;
-        public static final double BRIGHTNESS = 1;
-        public static final int OFFSET = 5 + 55;
+    //     public static final int WHITE_VALUE = 0; //leds used don't have a white value
+    //     public static final double r_SPEED = 0.75;
+    //     public static final double c_SPEED = 1;
+    //     public static final int STARTING_ID = 8;
+    //     public static final int PIVOT_COUNT = 200;
+    //     public static final int PIVOT_FRONT = 40;
+    //     public static final int PIVOT_BACK = 50;
+    //     public static final int NUM_LED = PIVOT_FRONT - 10;
+    //     public static final int SPARKING = 1;
+    //     public static final double COOLING = 0.3;
+    //     public static final double HOLDING_SPEED = 2;
+    //     public static final double BRIGHTNESS = 1;
+    //     public static final int OFFSET = 5 + 55;
 
-        public static class RainbowAnimation {
-            public static final double BRIGHTNESS = 1;
-            public static final double SPEED = 1;
+    //     public static class RainbowAnimation {
+    //         public static final double BRIGHTNESS = 1;
+    //         public static final double SPEED = 1;
 
-        }
+    //     }
 
-        public enum Colors {
-            OFF(0,0,0,false),
-            ERROR(255, 0, 0, false),
-            PIECE(0, 255, 0, false),
-            CONFIGURED(0,255,0,false),
-            BLUE(48, 122, 171, false),
-            RED(171, 48, 97, false),
-            PURPLE(255, 0, 255, false),
-            GREEN(0, 255, 0, false),
-            ORANGE(255, 50, 0, false),
+    //     public enum Colors {
+    //         OFF(0,0,0,false),
+    //         ERROR(255, 0, 0, false),
+    //         PIECE(0, 255, 0, false),
+    //         CONFIGURED(0,255,0,false),
+    //         BLUE(48, 122, 171, false),
+    //         RED(171, 48, 97, false),
+    //         PURPLE(255, 0, 255, false),
+    //         GREEN(0, 255, 0, false),
+    //         ORANGE(255, 50, 0, false),
     
-            FLAME(0,0,0,true),
-            CHARGE(255, 0, 0, true),
-            DISCHARGE(0, 0, 0, true);
+    //         FLAME(0,0,0,true),
+    //         CHARGE(255, 0, 0, true),
+    //         DISCHARGE(0, 0, 0, true);
     
-            public final int r;
-            public final int b;
-            public final int g;
-            public final boolean animation;
+    //         public final int r;
+    //         public final int b;
+    //         public final int g;
+    //         public final boolean animation;
     
-            Colors(int r, int g, int b,boolean animation) {
-                this.r = r;
-                this.g = g;
-                this.b = b;
-                this.animation = animation;
-            }
+    //         Colors(int r, int g, int b,boolean animation) {
+    //             this.r = r;
+    //             this.g = g;
+    //             this.b = b;
+    //             this.animation = animation;
+    //         }
     
-        }
-    }
+    //     }
+    // }
 
-    public static class IntakeConstants {
+    // public static class IntakeConstants {
     
-        public static final int PIVOT_LEADER_ID = 40;
+    //     public static final int PIVOT_LEADER_ID = 40;
 
-        //90/12.38
-        public static final double PIVOT_GEAR_RATIO = 90/11.785769;
-        public static final double PIVOT_SAMPLE_PER_MINUTE = 60;
-        public static final int PIVOT_STATOR_CURRENT_LIMIT = 40;
-        public static final boolean PIVOT_INVERT = true;
-        public static final Neutral PIVOT_NEUTRAL_MODE = Neutral.BRAKE;
-        public static final StatusFrames PIVOT_STATUS_FRAME = StatusFrames.POSITION;
+    //     //90/12.38
+    //     public static final double PIVOT_GEAR_RATIO = 90/11.785769;
+    //     public static final double PIVOT_SAMPLE_PER_MINUTE = 60;
+    //     public static final int PIVOT_STATOR_CURRENT_LIMIT = 40;
+    //     public static final boolean PIVOT_INVERT = true;
+    //     public static final Neutral PIVOT_NEUTRAL_MODE = Neutral.BRAKE;
+    //     public static final StatusFrames PIVOT_STATUS_FRAME = StatusFrames.POSITION;
 
-        public static final double PIVOT_POSITION_MIN = 0;
-        public static final double PIVOT_POSITION_MAX = 180;
-        public static final double PIVOT_TOLERANCE = 1;
+    //     public static final double PIVOT_POSITION_MIN = 0;
+    //     public static final double PIVOT_POSITION_MAX = 180;
+    //     public static final double PIVOT_TOLERANCE = 1;
 
-        public static final int ROLLER_LEADER_ID = 41;
+    //     public static final int ROLLER_LEADER_ID = 41;
 
-        public static final double ROLLER_GEAR_RATIO = 1;
-        public static final double ROLLER_SAMPLE_PER_MINUTE = 60;
-        public static final int ROLLER_STATOR_CURRENT_LIMIT = 40;
-        public static final boolean ROLLER_INVERT = true;
-        public static final Neutral ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
-        public static final StatusFrames ROLLER_STATUS_FRAME = StatusFrames.POSITION;
+    //     public static final double ROLLER_GEAR_RATIO = 1;
+    //     public static final double ROLLER_SAMPLE_PER_MINUTE = 60;
+    //     public static final int ROLLER_STATOR_CURRENT_LIMIT = 40;
+    //     public static final boolean ROLLER_INVERT = true;
+    //     public static final Neutral ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
+    //     public static final StatusFrames ROLLER_STATUS_FRAME = StatusFrames.POSITION;
 
-        public static final double ROLLER_pose_MIN = 0;
-        public static final double ROLLER_pose_MAX = 1;
-        public static final double ROLLER_TOLERANCE = 0.01;
+    //     public static final double ROLLER_pose_MIN = 0;
+    //     public static final double ROLLER_pose_MAX = 1;
+    //     public static final double ROLLER_TOLERANCE = 0.01;
 
-        public static final int FIRST_SENSOR_ID = 0;
+    //     public static final int FIRST_SENSOR_ID = 0;
 
-    }
+    // }
 
-    public static class ElevatorConstants {
+    // public static class ElevatorConstants {
 
-        public static final int ELEVATOR_LEFT_ID = 30;
-        public static final int ELEVATOR_RIGHT_ID = 31;
+    //     public static final int ELEVATOR_LEFT_ID = 30;
+    //     public static final int ELEVATOR_RIGHT_ID = 31;
 
-        //1/14 gear ratio based on wom
-        public static final double ELEVATOR_GEAR_RATIO = Units.inchesToMeters(62.625) / 67.5;
-        public static final double ELEVATOR_SAMPLE_PER_MINUTE = 60;
-        public static final int ELEVATOR_STATOR_CURRENT_LIMIT = 40;
-        public static final boolean ELEVATOR_INVERT = false;
-        public static final Neutral ELEVATOR_NEUTRAL_MODE = Neutral.COAST;
-        public static final StatusFrames ELEVATOR_STATUS_FRAME = StatusFrames.POSITION;
+    //     //1/14 gear ratio based on wom
+    //     public static final double ELEVATOR_GEAR_RATIO = Units.inchesToMeters(62.625) / 67.5;
+    //     public static final double ELEVATOR_SAMPLE_PER_MINUTE = 60;
+    //     public static final int ELEVATOR_STATOR_CURRENT_LIMIT = 40;
+    //     public static final boolean ELEVATOR_INVERT = false;
+    //     public static final Neutral ELEVATOR_NEUTRAL_MODE = Neutral.COAST;
+    //     public static final StatusFrames ELEVATOR_STATUS_FRAME = StatusFrames.POSITION;
 
-        public static final double ELEVATOR_POSITION_MIN = 0;
-        public static final double ELEVATOR_POSITION_MAX = Units.inchesToMeters(62.625);
-        public static final double ELEVATOR_TOLERANCE = 0.01;
-    }
+    //     public static final double ELEVATOR_POSITION_MIN = 0;
+    //     public static final double ELEVATOR_POSITION_MAX = Units.inchesToMeters(62.625);
+    //     public static final double ELEVATOR_TOLERANCE = 0.01;
+    // }
 
-    public static class ClimberConstants {
+    // public static class ClimberConstants {
         
-        public static final int CLIMBER_WINCH_ID = 20;
-        public static final int CLIMB_ROLLER_ID = 21;
+    //     public static final int CLIMBER_WINCH_ID = 20;
+    //     public static final int CLIMB_ROLLER_ID = 21;
 
 
-        public static final double CLIMBER_GEAR_RATIO = (90.0 / 450.0) * (5.0 / 3.0);
-        public static final double CLIMBER_SAMPLE_PER_MINUTE = 60;
-        public static final int CLIMBER_STATOR_CURRENT_LIMIT = 40;
-        public static final boolean CLIMBER_INVERT = false;
-        public static final Neutral CLIMBER_NEUTRAL_MODE = Neutral.BRAKE;
-        public static final StatusFrames CLIMBER_STATUS_FRAME = StatusFrames.POSITION;
+    //     public static final double CLIMBER_GEAR_RATIO = (90.0 / 450.0) * (5.0 / 3.0);
+    //     public static final double CLIMBER_SAMPLE_PER_MINUTE = 60;
+    //     public static final int CLIMBER_STATOR_CURRENT_LIMIT = 40;
+    //     public static final boolean CLIMBER_INVERT = false;
+    //     public static final Neutral CLIMBER_NEUTRAL_MODE = Neutral.BRAKE;
+    //     public static final StatusFrames CLIMBER_STATUS_FRAME = StatusFrames.POSITION;
 
-        public static final double CLIMBER_POSITiON_MIN = 9;
-        public static final double CLIMBER_POSITION_MAX = 110;
-        public static final double CLIMBER_TOLERANCE = 1;
+    //     public static final double CLIMBER_POSITiON_MIN = 9;
+    //     public static final double CLIMBER_POSITION_MAX = 110;
+    //     public static final double CLIMBER_TOLERANCE = 1;
 
-        public static final double CLIMB_ROLLER_GEAR_RATIO = 1;
-        public static final double CLIMB_ROLLER_SAMPLE_PER_MINUTE = 60;
-        public static final int CLIMB_ROLLER_STATOR_CURRENT_LIMIT = 40;
-        public static final boolean CLIMB_ROLLER_INVERT = false;
-        public static final Neutral CLIMB_ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
+    //     public static final double CLIMB_ROLLER_GEAR_RATIO = 1;
+    //     public static final double CLIMB_ROLLER_SAMPLE_PER_MINUTE = 60;
+    //     public static final int CLIMB_ROLLER_STATOR_CURRENT_LIMIT = 40;
+    //     public static final boolean CLIMB_ROLLER_INVERT = false;
+    //     public static final Neutral CLIMB_ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
 
-    }
+    // }
 
-    public static class ManipulatorConstants {
-        public static final int ROLLER_LEADER_ID = 50;
+    // public static class ManipulatorConstants {
+    //     public static final int ROLLER_LEADER_ID = 50;
 
-        public static final double ROLLER_GEAR_RATIO = 1;
-        public static final double ROLLER_SAMPLE_PER_MINUTE = 60;
-        public static final int ROLLER_STATOR_CURRENT_LIMIT = 60;
-        public static final boolean ROLLER_INVERT = true;
-        public static final Neutral ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
-        public static final StatusFrames ROLLER_STATUS_FRAME = StatusFrames.DEFAULT;
+    //     public static final double ROLLER_GEAR_RATIO = 1;
+    //     public static final double ROLLER_SAMPLE_PER_MINUTE = 60;
+    //     public static final int ROLLER_STATOR_CURRENT_LIMIT = 60;
+    //     public static final boolean ROLLER_INVERT = true;
+    //     public static final Neutral ROLLER_NEUTRAL_MODE = Neutral.BRAKE;
+    //     public static final StatusFrames ROLLER_STATUS_FRAME = StatusFrames.DEFAULT;
 
-        public static final int FIRST_SENSOR_ID = 0;
-        public static final int SECOND_SENSOR_ID = 1;
-    }
+    //     public static final int FIRST_SENSOR_ID = 0;
+    //     public static final int SECOND_SENSOR_ID = 1;
+    // }
 }

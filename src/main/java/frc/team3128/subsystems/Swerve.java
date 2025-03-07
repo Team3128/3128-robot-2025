@@ -271,33 +271,33 @@ public class Swerve extends SwerveBase {
         rotateTo(setpoint);
     }
 
-    public void snapToElement() {
-        final Pose2d setpoint = getPose().nearest(allianceFlip(reefPoses.appendAll(sourcePoses).asJava()));
-        rotateTo(setpoint.getRotation());
-    }
+    // public void snapToElement() {
+    //     // final Pose2d setpoint = getPose().nearest(allianceFlip(reefPoses.appendAll(sourcePoses).asJava()));
+    //     rotateTo(setpoint.getRotation());
+    // }
 
     public void pathToReef(Pose2d setpoint) {
         rotateTo(setpoint.getRotation());
         moveTo(setpoint.getTranslation());
     }
 
-    public void pathToReef(boolean isRight) {
-        final List<Pose2d> setpoints;
-        setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
-        final Pose2d setpoint = getPose().nearest(allianceFlip(setpoints));
-        pathToReef(setpoint);
-    }
+    // public void pathToReef(boolean isRight) {
+    //     final List<Pose2d> setpoints;
+    //     setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
+    //     // final Pose2d setpoint = getPose().nearest(allianceFlip(setpoints));
+    //     // pathToReef(setpoint);
+    // }
 
-    public Pose2d getClosestReef() {
-        return getPose().nearest(allianceFlip(reefPoses.asJava()));
-    }
+    // public Pose2d getClosestReef() {
+    //     return getPose().nearest(allianceFlip(reefPoses.asJava()));
+    // }
 
-    public void pathToSource() {
-        Pose2d setpoint = getPose().nearest(allianceFlip(sourcePoses.asJava()));
-        // Translation2d ram = new Translation2d(-0.05,0).rotateBy(setpoint.getRotation());
-        rotateTo(setpoint.getRotation());
-        moveTo(setpoint.getTranslation());
-    }
+    // public void pathToSource() {
+    //     // Pose2d setpoint = getPose().nearest(allianceFlip(sourcePoses.asJava()));
+    //     // Translation2d ram = new Translation2d(-0.05,0).rotateBy(setpoint.getRotation());
+    //     rotateTo(setpoint.getRotation());
+    //     moveTo(setpoint.getTranslation());
+    // }
 
     public boolean isConfigured() {
         for (final SwerveModule module : modules) {
