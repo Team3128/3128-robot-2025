@@ -33,6 +33,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
+
+import frc.team3128.subsystems.Intake;
 import frc.team3128.subsystems.Swerve;
 import java.io.IOException;
 
@@ -55,6 +57,7 @@ public class RobotContainer {
 
     // Create all subsystems
     private Swerve swerve;
+    private Intake intake;
 
     // private NAR_ButtonBoard judgePad;
     private NAR_ButtonBoard buttonPad;
@@ -70,6 +73,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         swerve = Swerve.getInstance();
+        intake = Intake.getInstance();
         
         NAR_CANSpark.maximumRetries = 2;
         NAR_TalonFX.maximumRetries = 2;
@@ -94,6 +98,8 @@ public class RobotContainer {
         buttonPad.getButton(2).onTrue(swerve.identifyOffsetsCommand());
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
         controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.zeroLock()).andThen(runOnce(()-> swerve.resetEncoders())));
+
+        controller.getButton(XboxButton.kA).onTrue(runOnce(() -> intake.run(.6))).onFalse(runOnce(() -> intake.stop()));
 
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
         // controller.getDownPOVButton().onTrue(runOnce(()-> swerve.setPose(FieldStates.PROCESSOR.getPose2d())));

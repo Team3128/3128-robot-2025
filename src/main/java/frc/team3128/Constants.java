@@ -457,7 +457,7 @@ public class Constants {
 
         public static final int FIRST_SENSOR_ID = 0;
 
-        public static final int CURRENT_THRESHOLD = 12345;
+        public static final double CURRENT_THRESHOLD = 60;
 
     }
 
