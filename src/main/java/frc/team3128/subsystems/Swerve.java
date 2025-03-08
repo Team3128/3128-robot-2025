@@ -38,6 +38,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.Constants.FieldConstants.*;
@@ -334,6 +335,14 @@ public class Swerve extends SwerveBase {
             true, 
             this
         );
+    }
+
+    public FunctionalCommand getMoveForwardCommand(double meters){
+        zeroLock();
+        NAR_Motor driveMotor = modules[0].getDriveMotor();
+        final double startPos = driveMotor.getPosition();
+        return new FunctionalCommand(()->zeroLock(), () -> setDriveVoltage(1), (Boolean interrupted) -> setDriveVoltage(0), ()-> ((driveMotor.getPosition() - startPos + meters/DRIVE_WHEEL_CIRCUMFERENCE) < 0.5), Swerve.getInstance());
+        // characterize(0, rampRate, meters/DRIVE_WHEEL_CIRCUMFERENCE);
     }
 
     @Override
