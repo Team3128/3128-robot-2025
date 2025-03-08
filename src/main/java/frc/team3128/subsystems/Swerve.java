@@ -323,20 +323,24 @@ public class Swerve extends SwerveBase {
     public Command autoAlign(boolean isRight) {
         return sequence(
             runOnce(() -> {
+                Swerve.autoEnabled = true;
                 setThrottle(0.3);
                 Camera.enableAll();
                 pathToReef(isRight);
             }),
             waitUntil(()-> atTranslationSetpoint()).withTimeout(1.5),
             runOnce(()-> {
+                disable();
                 angleLock(90);
                 Camera.disableAll();
                 moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(getClosestReef().getRotation()));
             }),
             waitUntil(() -> atTranslationSetpoint()).withTimeout(1.5),
             runOnce(()-> {
+                disable();
                 Camera.enableAll();
                 setThrottle(1);
+                Swerve.autoEnabled = false;
             })
         );
     }
