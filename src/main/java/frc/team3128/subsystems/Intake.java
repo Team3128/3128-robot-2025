@@ -10,9 +10,12 @@ public class Intake extends VoltageSubsystemBase {
     private static Intake instance;
 
     public static NAR_CANSpark rollerMotor = new NAR_CANSpark(ROLLER_ID, ControllerType.CAN_SPARK_FLEX);
+    public static NAR_CANSpark serial = new NAR_CANSpark(SERIAL_ID, ControllerType.CAN_SPARK_FLEX);
     
-        private Intake() {
-            super(CURRENT_THRESHOLD, rollerMotor);
+    private Intake() {
+        super(CURRENT_THRESHOLD, rollerMotor);
+
+        configMotors();
     }
 
     @Override
@@ -33,6 +36,18 @@ public class Intake extends VoltageSubsystemBase {
         );
 
         rollerMotor.configMotor(intakeConfig);
+
+        MotorConfig serialConfig = new MotorConfig(
+            SERIAL_GEAR_RATIO,
+            SERIAL_SAMPLE_PER_MINUTE,
+            SERIAL_STATOR_CURRENT_LIMIT,
+            SERIAL_INVERT,
+            SERIAL_NEUTRAL_MODE,
+            SERIAL_STATUS_FRAME
+        );
+
+        serial.configMotor(serialConfig);
+        
     }
 
     public static Intake getInstance() {

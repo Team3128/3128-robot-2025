@@ -88,19 +88,33 @@ public class RobotContainer {
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
 
         DriverStation.silenceJoystickConnectionWarning(true);
-        initCameras();
+        // initCameras();
         configureButtonBindings();
         initDashboard();
     }   
 
     private void configureButtonBindings() {
-        buttonPad.getButton(1).onTrue(runOnce(()-> swerve.setBrakeMode(false)).ignoringDisable(true)).onFalse(runOnce(()-> swerve.setBrakeMode(true)).ignoringDisable(true));
-        buttonPad.getButton(2).onTrue(swerve.identifyOffsetsCommand());
-        controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
-        controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.zeroLock()).andThen(runOnce(()-> swerve.resetEncoders())));
+        // buttonPad.getButton(1).onTrue(runOnce(()-> swerve.setBrakeMode(false)).ignoringDisable(true)).onFalse(runOnce(()-> swerve.setBrakeMode(true)).ignoringDisable(true));
+        // buttonPad.getButton(2).onTrue(swerve.identifyOffsetsCommand());
+        controller.getButton(XboxButton.kY).onTrue(runOnce(()-> swerve.resetGyro(0)));
+        // controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.zeroLock()).andThen(runOnce(()-> swerve.resetEncoders())));
 
-        controller.getButton(XboxButton.kA).onTrue(runOnce(() -> intake.run(.6))).onFalse(runOnce(() -> intake.stop()));
+        controller.getButton(XboxButton.kA).onTrue(sequence(
+            runOnce(()->Intake.rollerMotor.set(0.6)),
+            runOnce(()->Intake.serial.set(0.4))
+        )).onFalse(sequence(
+            runOnce(()->Intake.rollerMotor.set(0)),
+            runOnce(()->Intake.serial.set(0))
+        ));
 
+        controller.getButton(XboxButton.kB).onTrue(sequence(
+            runOnce(()->Intake.rollerMotor.set(-0.6)),
+            runOnce(()->Intake.serial.set(-0.4))
+        )).onFalse(sequence(
+            runOnce(()->Intake.rollerMotor.set(0)),
+            runOnce(()->Intake.serial.set(0))
+        ));
+            
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
         // controller.getDownPOVButton().onTrue(runOnce(()-> swerve.setPose(FieldStates.PROCESSOR.getPose2d())));
         // controller.getRightPOVButton().onTrue(runOnce(()-> swerve.snapToReef(true)));
@@ -114,7 +128,7 @@ public class RobotContainer {
     public void initCameras() {
         Log.info("tags", APRIL_TAGS.get(0).toString());
         Camera.setResources(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), new AprilTagFieldLayout(APRIL_TAGS, FIELD_X_LENGTH, FIELD_Y_LENGTH), () -> swerve.getPose());
-        Camera.setThresholds(5,  10);
+        // Camera.setThresholds(5,  10);
         if (Robot.isReal()) {
             // Camera frontRightCamera = new Camera("FRONT_RIGHT", Units.inchesToMeters(10.055), Units.inchesToMeters(9.79), Units.degreesToRadians(30), Units.degreesToRadians(-28.125), 0);
             Camera frontLeftCamera = new Camera("FRONT_LEFT", Units.inchesToMeters(13.5), -Units.inchesToMeters(0), Units.degreesToRadians(0), Units.degreesToRadians(0), 0);

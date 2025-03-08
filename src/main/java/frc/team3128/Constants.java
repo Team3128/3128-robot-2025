@@ -443,6 +443,7 @@ public class Constants {
     public static class IntakeConstants {
 
         public static final int ROLLER_ID = 41;
+        public static final int SERIAL_ID = 42;
 
         public static final double ROLLER_GEAR_RATIO = 1;
         public static final double ROLLER_SAMPLE_PER_MINUTE = 60;
@@ -454,6 +455,17 @@ public class Constants {
         public static final double ROLLER_pose_MIN = 0;
         public static final double ROLLER_pose_MAX = 1;
         public static final double ROLLER_TOLERANCE = 0.01;
+
+        public static final double SERIAL_GEAR_RATIO = 1;
+        public static final double SERIAL_SAMPLE_PER_MINUTE = 60;
+        public static final int SERIAL_STATOR_CURRENT_LIMIT = 40;
+        public static final boolean SERIAL_INVERT = false;
+        public static final Neutral SERIAL_NEUTRAL_MODE = Neutral.BRAKE;
+        public static final StatusFrames SERIAL_STATUS_FRAME = StatusFrames.POSITION;
+
+        public static final double SERIAL_pose_MIN = 0;
+        public static final double SERIAL_pose_MAX = 1;
+        public static final double SERIAL_TOLERANCE = 0.01;
 
         public static final int FIRST_SENSOR_ID = 0;
 
