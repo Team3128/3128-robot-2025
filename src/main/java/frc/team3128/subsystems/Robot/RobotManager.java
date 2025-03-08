@@ -26,6 +26,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static Manipulator manipulator;
     private static Intake intake;
     private static Climber climber;
+    private static Swerve swerve;
 
     private static TransitionMap<RobotStates> transitionMap = new TransitionMap<>(RobotStates.class);
     private Function<RobotStates, Command> defaultTransitioner = state -> {return updateSubsystemStates(state);};
@@ -37,6 +38,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         manipulator = Manipulator.getInstance();
         intake = Intake.getInstance();
         climber = Climber.getInstance();
+        swerve = Swerve.getInstance();
     }
 
     public static synchronized RobotManager getInstance() {
@@ -54,7 +56,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             intake.setStateCommand(nextState.getIntakeState()).unless(()-> nextState.getIntakeState() == IntakeStates.UNDEFINED),
             climber.setStateCommand(nextState.getClimberState()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED),
             waitUntil(()-> climber.winch.atSetpoint()),
-            runOnce(()-> Swerve.getInstance().throttle = nextState.getThrottle()).onlyIf(()-> DriverStation.isTeleop())
+            runOnce(()-> swerve.setThrottle(nextState.getThrottle())).onlyIf(()-> DriverStation.isTeleop())
         );
     }
 
@@ -96,9 +98,6 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     @Override
     public void registerTransitions() {
-        
-        // From all transitions to Undefined and Undefined to Neutral
-        // transitionMap.addUndefinedState(UNDEFINED, NEUTRAL, defaultTransitioner);
 
         // Between all default states
         transitionMap.addCommutativeTransition(defaultStates.asJava(), defaultTransitioner);

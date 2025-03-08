@@ -36,53 +36,23 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class Constants {
 
-    public static class RobotConstants {
+    public static class DriveConstants {
 
-        public static final double maxVelocity = 0;
-        public static final double maxAcceleration = 0;
-
-        public static final double maxAngularVelocity = 0;
-        public static final double maxAngularAcceleration = 0;
+        public static final double controllerPOVOffset = -90;
 
         public static final double slow = 0.3;
         public static final double medium = 0.6;
         public static final double fast = 1;
 
-        // Distance between front and rear wheels
-        public static final double wheelBase = 0;
-        // Distance between the left and right wheels
-        public static final double trackWidth = 0;
-
-        public static final double robotLength = 0;
-        public static final double robotWidth = 0;
-        public static final double bumperLength = 0;
-        public static final double bumperWidth = 0;
-
-        public static final double wheelDiameter = 0;
-        public static final double wheelCircumference = wheelDiameter * Math.PI;
-
-        public static final double neutralHeight = 0;
-    }
-
-    public static class AutoConstants {
-
-        // public static final var autoConstraints = null;
-
-        /* Translation PID Values */
-        public static final double translationKP = DriveConstants.translationConfig.kP;
-        public static final double translationKI = DriveConstants.translationConfig.kI;
-        public static final double translationKD = DriveConstants.translationConfig.kD;
-      
-        /* Rotation PID Values */
-        public static final double rotationKP = DriveConstants.rotationConfig.kP;
-        public static final double rotationKI = DriveConstants.rotationConfig.kI;
-        public static final double rotationKD = DriveConstants.rotationConfig.kD;
-
-    }
-
-    public static class DriveConstants {
-
-        public static final double controllerPOVOffset = -90;
+        /* Swerve Profiling Values */
+        // Theoretical: v = 4.96824, omega = 11.5
+        // Real: v = 4.5, omega = 10
+        // For safety, use less than theoretical and real values
+        public static final double MAX_DRIVE_SPEED = 4;//4.8; //meters per second - 16.3 ft/sec
+        public static final double MAX_ATTAINABLE_DRIVE_SPEED = MAX_DRIVE_SPEED; //Stole from citrus.
+        public static final double MAX_DRIVE_ACCELERATION = 6.6;//5;
+        public static final double MAX_DRIVE_ANGULAR_VELOCITY = 1364 / 360;
+        public static final double MAX_DRIVE_ANGULAR_ACCELERATION = 2 * Math.PI; //I stole from citrus.
 
         public static final double driveMotorGearRatio = 0;
         public static final double angleMotorGearRatio = 150 / 7; 
@@ -125,27 +95,6 @@ public class Constants {
         public static final PIDFFConfig drivePIDConfig = new PIDFFConfig(driveKP, driveKI, driveKD, driveKS, driveKV, driveKA);
 
         public static final PIDFFConfig anglePIDConfig = new PIDFFConfig(angleKP, angleKI, angleKD);
-
-        public static final Constraints translationConstraints = new Constraints(RobotConstants.maxVelocity, RobotConstants.maxAcceleration);
-        public static final PIDFFConfig translationConfig = new PIDFFConfig(0, 0, 0, 0, 0, 0);
-        public static final Controller translationController = new Controller(translationConfig, Controller.Type.POSITION);
-        public static final double TRANSLATION_TOLERANCE = 0;
-
-        public static final Constraints rotationConstraints = new Constraints(Units.radiansToDegrees(RobotConstants.maxAngularAcceleration), Units.radiansToDegrees(RobotConstants.maxAngularAcceleration));
-        public static final PIDFFConfig rotationConfig = new PIDFFConfig(0, 0, 0, 0, 0, 0);
-        public static final Controller rotationController = new Controller(rotationConfig, Controller.Type.POSITION);
-        public static final double TURN_TOLERANCE = 0;
-
-        static {
-            translationController.setTolerance(TRANSLATION_TOLERANCE);
-            translationController.setOutputRange(-RobotConstants.maxVelocity, RobotConstants.maxVelocity);
-            translationController.setDisableAtSetpoint(true);
-            
-            rotationController.setTolerance(TURN_TOLERANCE);
-            rotationController.setOutputRange(-RobotConstants.maxAngularVelocity, RobotConstants.maxAngularVelocity);
-            rotationController.setDisableAtSetpoint(true);
-            rotationController.enableContinuousInput(-180, 180);
-        }
 
         public static final List<Rotation2d> snapToAngles = new ArrayList<>();
         static {
@@ -218,16 +167,6 @@ public class Constants {
         public static final double DRIVE_MOTOR_KS = 0.16746;//0.13023; //0.19057;//0.60094; // 0.19225;
         public static final double DRIVE_MOTOR_KV = 1.95619;//1.92348; //2.01208;//1.1559;  // 2.4366
         public static final double DRIVE_MOTOR_KA = 0.4443;//0.10274; //0.09043; //0.12348; // 0.34415
-
-        /* Swerve Profiling Values */
-        // Theoretical: v = 4.96824, omega = 11.5
-        // Real: v = 4.5, omega = 10
-        // For safety, use less than theoretical and real values
-        public static final double MAX_DRIVE_SPEED = 4;//4.8; //meters per second - 16.3 ft/sec
-        public static final double MAX_ATTAINABLE_DRIVE_SPEED = MAX_DRIVE_SPEED; //Stole from citrus.
-        public static final double MAX_DRIVE_ACCELERATION = 6.6;//5;
-        public static final double MAX_DRIVE_ANGULAR_VELOCITY = 1364 / 360;
-        public static final double MAX_DRIVE_ANGULAR_ACCELERATION = 2 * Math.PI; //I stole from citrus.
 
         /* Motor and Sensor IDs */
         public static final int PIDGEON_ID = 9; 

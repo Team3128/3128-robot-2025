@@ -28,24 +28,23 @@ import edu.wpi.first.wpilibj2.command.Command;
         return instance;
     }
 
-     @Override
-     protected void configMotors() {
-         MotorConfig motorConfig = new MotorConfig(
-         ROLLER_GEAR_RATIO, 
-         ROLLER_SAMPLE_PER_MINUTE,
-         ROLLER_STATOR_CURRENT_LIMIT,
-         ROLLER_INVERT,
-         ROLLER_NEUTRAL_MODE,
-         ROLLER_STATUS_FRAME);
+    @Override
+    protected void configMotors() {
+        MotorConfig motorConfig = new MotorConfig(
+        ROLLER_GEAR_RATIO, 
+        ROLLER_SAMPLE_PER_MINUTE,
+        ROLLER_STATOR_CURRENT_LIMIT,
+        ROLLER_INVERT,
+        ROLLER_NEUTRAL_MODE,
+        ROLLER_STATUS_FRAME);
 
-         leader.configMotor(motorConfig);
-     }
+        leader.configMotor(motorConfig);
+    }
 
-     @Override
-     public boolean hasObjectPresent() {
-         // return firstSensor.get();
-         return true;
-     }
+    @Override
+    public boolean hasObjectPresent() {
+        return true;
+    }
 
  	@Override
  	public Command resetCommand() {

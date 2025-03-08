@@ -9,33 +9,43 @@ import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Intake.IntakeStates;
 import frc.team3128.subsystems.Manipulator.ManipulatorStates;
 import io.vavr.collection.List;
+import static frc.team3128.Constants.DriveConstants.slow;
 
 public enum RobotStates {
-    UNDEFINED(ElevatorStates.UNDEFINED, IntakeStates.UNDEFINED, ManipulatorStates.UNDEFINED, ClimberStates.UNDEFINED, 0),
-    NEUTRAL(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.IN, ClimberStates.NEUTRAL, 1),
-
-    RPL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, 0.3),
-    RPL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, 0.3),
-    RPL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, 0.3), 
-    RPL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, 0.3),
-    RSL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.OUT_L1, 0.3),
-    RSL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.OUT, 0.3),
-    RSL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.OUT, 0.3),
-    RSL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.OUT, 0.3),
     
-    INTAKE(ElevatorStates.NEUTRAL, IntakeStates.INTAKE, ManipulatorStates.NEUTRAL, 1),
-    EJECT_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.EJECT_OUTTAKE, ManipulatorStates.NEUTRAL, 1),
-    HIGH_INTAKE(ElevatorStates.NEUTRAL, IntakeStates.HIGH_INTAKE, ManipulatorStates.NEUTRAL, 1),
     
-    CLIMB_PRIME(ElevatorStates.NEUTRAL, IntakeStates.CLIMB_PRIME, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB_PRIME, 0.3),
-    CLIMB(ElevatorStates.NEUTRAL, IntakeStates.CLIMB, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB, 0.3);
+    NEUTRAL(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.IN, ClimberStates.NEUTRAL),
 
+    RPL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow),
+    RPL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow),
+    RPL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow), 
+    RPL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow),
+    
+    RSL1(ElevatorStates.L1, IntakeStates.NEUTRAL, ManipulatorStates.OUT_L1, slow),
+    RSL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow),
+    RSL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow),
+    RSL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow),
+    
+    INTAKE(ElevatorStates.NEUTRAL, IntakeStates.INTAKE, ManipulatorStates.NEUTRAL),
+    EJECT_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.EJECT_OUTTAKE, ManipulatorStates.NEUTRAL),
+    HIGH_INTAKE(ElevatorStates.NEUTRAL, IntakeStates.HIGH_INTAKE, ManipulatorStates.NEUTRAL),
+    
+    PRE_CLIMB_PRIME(ClimberStates.PRE_CLIMB_PRIME),
+    CLIMB_PRIME(ElevatorStates.NEUTRAL, IntakeStates.CLIMB_PRIME, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB_PRIME, slow),
+    CLIMB(ElevatorStates.NEUTRAL, IntakeStates.CLIMB, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB, slow);
+
+    
+    
+    
+    
+    
+    
+    
     private ElevatorStates elevator;
     private IntakeStates intake;
     private ManipulatorStates manipulator;
     private ClimberStates climber;
     private double throttle;
-    private Translation2d position;
 
     public static final List<RobotStates> defaultElevatorStates = List.of(RPL1, RPL2, RPL3, RPL4);
     public static final List<RobotStates> exclusiveElevatorStates = List.of(RSL1, RSL2, RSL3, RSL4);
@@ -48,36 +58,39 @@ public enum RobotStates {
         Pair.of(RPL2, RSL2),
         Pair.of(RPL3, RSL3),
         Pair.of(RPL4, RSL4),
-        Pair.of(UNDEFINED, NEUTRAL),
         Pair.of(CLIMB_PRIME, CLIMB)
     );
 
     public static final List<RobotStates> defaultStates = List.of(NEUTRAL).appendAll(defaultElevatorStates).appendAll(defaultIntakeStates).appendAll(defaultClimbStates);
     public static final List<RobotStates> exclusiveStates = exclusiveElevatorStates.appendAll(exclusiveClimbStates);
 
-    private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator, ClimberStates climber, Translation2d position, double throttle) {
+    private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator, ClimberStates climber, double throttle) {
         this.elevator = elevator;
         this.intake = intake;
         this.manipulator = manipulator;
         this.climber = climber;
-        this.position = position;
         this.throttle = throttle;
     }
 
     private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator, ClimberStates climber) {
-        this(elevator, intake, manipulator, climber, new Translation2d(), 1);
+        this(elevator, intake, manipulator, climber, 1);
     }
 
-    private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator, ClimberStates climber, double throttle) {
-        this(elevator, intake, manipulator, climber, new Translation2d(), throttle);
-    }
 
     private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator, double throttle) {
-        this(elevator, intake, manipulator, ClimberStates.NEUTRAL, throttle);
+        this(elevator, intake, manipulator, ClimberStates.UNDEFINED, throttle);
+    }
+
+    private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator) {
+        this(elevator, intake, manipulator, ClimberStates.UNDEFINED, 1);
     }
 
     private RobotStates(ClimberStates climber, ElevatorStates elevator, double throttle) {
-        this(elevator, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, climber, throttle);
+        this(elevator, IntakeStates.UNDEFINED, ManipulatorStates.UNDEFINED, climber, throttle);
+    }
+
+    private RobotStates(ClimberStates climber) {
+        this(ElevatorStates.UNDEFINED, IntakeStates.UNDEFINED, ManipulatorStates.UNDEFINED, climber, 1);
     }
 
     private RobotStates() {

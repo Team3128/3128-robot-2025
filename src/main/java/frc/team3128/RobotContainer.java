@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team3128.Constants.DriveConstants;
-import frc.team3128.Constants.RobotConstants;
 import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.autonomous.AutoPrograms;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -149,80 +148,22 @@ public class RobotContainer {
         controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.snapToElement()));
 
         // controller2.getButton(kX).onTrue(
-        //     swerve.characterize(0, 1, 10)
-        //         .beforeStarting(() -> swerve.zeroLock())
+        //     swerve.characterizeTranslation(0, 1, 10))
         // );
         // controller2.getButton(kY).onTrue(
-        //     swerve.characterize(0, 1, 10)
-        //         .beforeStarting(() -> swerve.oLock())
+        //     swerve.characterizeRotation(0, 1, 10))
         // );
 
         controller2.getButton(kA).onTrue(WinchMechanism.getInstance().runCommand(0.8)).onFalse(WinchMechanism.getInstance().runCommand(0));
         controller2.getButton(kB).onTrue(WinchMechanism.getInstance().runCommand(-0.8)).onFalse(WinchMechanism.getInstance().runCommand(0));
         controller2.getButton(kX).onTrue(WinchMechanism.getInstance().resetCommand());
-        // controller2.getButton(kY).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB_PRIME));
-        // controller2.getButton(kRightBumper).onTrue(Climber.getInstance().setStateCommand(ClimberStates.CLIMB));
+        
 
-        new Trigger(()-> Elevator.getInstance().stateEquals(ElevatorStates.NEUTRAL)).and(()-> elevator.atSetpoint()).debounce(5).onTrue(Elevator.getInstance().resetCommand());
-        // new Trigger(()-> !RobotManager.getInstance().stateEquals(NEUTRAL)).onTrue(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.slow)).onFalse(runOnce(()->  Swerve.getInstance().throttle = RobotConstants.fast));
-        // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
+        new Trigger(()-> DriverStation.isTeleop()).debounce(115).onTrue(robot.setStateCommand(RobotStates.PRE_CLIMB_PRIME));
+        
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
-        controller.getUpPOVButton().onTrue(AutoPrograms.getInstance().pathToPose(swerve.getPose().nearest(allianceFlip(FieldStates.sourcePoses.asJava()))));
-        controller.getRightPOVButton().onTrue(sequence(
-            runOnce(() -> swerve.throttle = 0.3),
-            runOnce(()-> swerve.pathToReef(true)),
-            waitUntil(()-> swerve.atTranslationSetpoint()).withTimeout(1.5),
-            runOnce(()->swerve.ninetyLock()),
-            runOnce(()-> {
-                Camera.disableAll();
-                swerve.moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(swerve.getClosestReef().getRotation()));
-            }),
-            waitUntil(() -> swerve.atTranslationSetpoint()).withTimeout(1.5)
-        ).finallyDo(() -> {
-            Camera.enableAll();
-            swerve.throttle = 1;
-        }));
-        controller.getLeftPOVButton().onTrue(sequence(
-            runOnce(() -> swerve.throttle = 0.3),
-            runOnce(()-> swerve.pathToReef(false)),
-            waitUntil(()-> swerve.atTranslationSetpoint()),
-            runOnce(()->swerve.ninetyLock()),
-            runOnce(()-> {
-                Camera.disableAll();
-                swerve.moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(swerve.getClosestReef().getRotation()));
-            }),
-            waitUntil(() -> swerve.atTranslationSetpoint()).withTimeout(1.5)
-        ).finallyDo(() -> {
-            Camera.enableAll();
-            swerve.throttle = 1;
-        }));
-        // controller.getRightPOVButton().onTrue(
-        //     either(
-        //         sequence(
-        //             runOnce(()-> swerve.pathToReef(true)),
-        //             waitUntil(()-> swerve.atTranslationSetpoint()),
-        //             robot.setStateCommand(RPL2),
-        //             runOnce(() -> swerve.fieldRelative = false),
-        //             swerve.getDriveCommand(controller::getLeftX, () -> 0, () -> 0)
-        //         ),
-        //         runOnce(() -> swerve.fieldRelative = true).andThen(() -> CommandScheduler.getInstance().requiring(swerve).cancel()),
-        //         () -> swerve.fieldRelative = true
-        //     )
-        // );
-        // controller.getLeftPOVButton().onTrue(
-        //     either(
-        //         sequence(
-        //             runOnce(()-> swerve.pathToReef(false)),
-        //             waitUntil(()-> swerve.atTranslationSetpoint()),
-        //             robot.setStateCommand(RPL2),
-        //             runOnce(() -> swerve.fieldRelative = false),
-        //             swerve.getDriveCommand(controller::getLeftX, () -> 0, () -> 0)
-        //         ),
-        //         runOnce(() -> swerve.fieldRelative = true).andThen(() -> CommandScheduler.getInstance().requiring(swerve).cancel()),
-        //         () -> swerve.fieldRelative = true
-        //     )
-        // );
-        // controller.getLeftPOVButton().onTrue(AutoPrograms.getInstance().pathToNearestPose(allianceFlip(FieldStates.reefLeft.asJava())));
+        controller.getRightPOVButton().onTrue(swerve.autoAlign(true));
+        controller.getLeftPOVButton().onTrue(swerve.autoAlign(false));
     }
 
     public void initCameras() {
