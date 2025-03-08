@@ -86,7 +86,7 @@ public class AutoPrograms {
                 }
             } catch(Exception e) {}
         }
-        NarwhalDashboard.getInstance().addAutos(autoStrings.toArray(new String[0]));
+        // NarwhalDashboard.getInstance().addAutos(autoStrings.toArray(new String[0]));
     }
 
     private void configPathPlanner() {
@@ -169,7 +169,8 @@ public class AutoPrograms {
     }
 
     public Command getAutonomousCommand() {
-        String selectedAutoName = NarwhalDashboard.getInstance().getSelectedAuto(); //NarwhalDashboard.getInstance().getSelectedAuto();
+        String selectedAutoName = null;
+        // String selectedAutoName = NarwhalDashboard.getInstance().getSelectedAuto(); //NarwhalDashboard.getInstance().getSelectedAuto();
         String hardcode = "RB_3pc_FDC";
         
          

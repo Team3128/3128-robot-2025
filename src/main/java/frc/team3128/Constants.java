@@ -173,10 +173,10 @@ public class Constants {
         public static final int MOD3_CANCODER_ID = 13;
 
         /* Cancoder Offsets */
-        public static final double MOD0_CANCODER_OFFSET = -116.01562499999999;
-        public static final double MOD1_CANCODER_OFFSET = -67.587890625;
-        public static final double MOD2_CANCODER_OFFSET = 65.0390625;
-        public static final double MOD3_CANCODER_OFFSET = 19.248046875000004;
+        public static final double MOD0_CANCODER_OFFSET = -119.267578125;//-116.015625
+        public static final double MOD1_CANCODER_OFFSET = -68.115234375;//-67.58789
+        public static final double MOD2_CANCODER_OFFSET = 66.884765625;//65.0390625
+        public static final double MOD3_CANCODER_OFFSET = 19.072265625;//19.24805
 
 
         public static final double RAMP_TIME = 3;
@@ -298,7 +298,7 @@ public class Constants {
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(317); // meters = 8.052
         public static final Translation2d FIELD = new Translation2d(FIELD_X_LENGTH, FIELD_Y_LENGTH);
         public static final Translation2d CENTER_FIELD = FIELD.div(2);
-        public static final double FUDGE_FACTOR = 0.5;
+        public static final Translation2d FUDGE_FACTOR = new Translation2d(0.5, 0);
 
         public static final Translation2d reefShift = new Translation2d(0.35/2, 0.);
 
@@ -328,7 +328,7 @@ public class Constants {
             private FieldStates(int id, boolean isRight) {
                 Pose2d apriltag = APRIL_TAGS.get(id - 1).pose.toPose2d();
                 Translation2d offset = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(-6.25)).rotateBy(apriltag.getRotation());
-                Translation2d fudgeFactor  = new Translation2d(FUDGE_FACTOR, Units.inchesToMeters(-2)).rotateBy(apriltag.getRotation());
+                Translation2d fudgeFactor  = FUDGE_FACTOR.rotateBy(apriltag.getRotation());
                 Translation2d leftRight = new Translation2d(0, Units.inchesToMeters(isRight ? 13.0 / 2 : -13.0 / 2)).rotateBy(apriltag.getRotation());
                 this.pose = new Pose2d(apriltag.getX() + offset.getX() + fudgeFactor.getX() + leftRight.getX(), apriltag.getY() + offset.getY() + fudgeFactor.getY() + leftRight.getY(), apriltag.getRotation().plus(Rotation2d.k180deg));
             }

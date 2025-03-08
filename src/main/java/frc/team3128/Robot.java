@@ -61,6 +61,7 @@ public class Robot extends NAR_Robot {
     public void robotInit(){
         Camera.enableAll();
         m_robotContainer.initDashboard();
+        Log.info("Dashboard", "Done");
         LiveWindow.disableAllTelemetry();
         // Log.logDebug = true;
         autoPrograms.initAutoSelector();

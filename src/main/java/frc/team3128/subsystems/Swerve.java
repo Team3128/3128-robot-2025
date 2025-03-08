@@ -18,6 +18,7 @@ import common.core.swerve.SwerveModule;
 import common.core.swerve.SwerveModuleConfig;
 import common.core.swerve.SwerveModuleConfig.SwerveEncoderConfig;
 import common.core.swerve.SwerveModuleConfig.SwerveMotorConfig;
+import common.hardware.camera.Camera;
 import common.hardware.motorcontroller.NAR_Motor;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
@@ -106,10 +107,13 @@ public class Swerve extends SwerveBase {
     public static final Constraints rotationConstraints = new Constraints(MAX_DRIVE_ANGULAR_VELOCITY, MAX_DRIVE_ANGULAR_ACCELERATION);
     public static final PIDFFConfig rotationConfig = new PIDFFConfig(5); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller rotationController = new Controller(rotationConfig, Controller.Type.POSITION); //Angular displacement error to output angular velocity
-    public static final double rotationTolerance = Angle.ofRelativeUnits(2, Units.Degree).in(Units.Radian);
+    public static final double rotationTolerance = Angle.ofRelativeUnits(1, Units.Degree).in(Units.Radian);
 
     private static double translationPlateauThreshold = 10;
     private static double translationPlateauCount = 0;
+
+    private static double rotationPlateauThreshold = 10;
+    private static double rotationPlateauCount = 0;
 
     static {
         translationController.setTolerance(translationTolerance);
@@ -172,6 +176,15 @@ public class Swerve extends SwerveBase {
      */
     @Override
     public void drive(ChassisSpeeds velocity){
+        if ((Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) >= TRANSLATIONAL_DEADBAND) ||
+            (Math.abs(velocity.omegaRadiansPerSecond) >= ROTATIONAL_DEADBAND)
+        ) {
+            translationController.disable();
+            rotationController.disable();
+            Camera.enableAll();
+            throttle = 1;
+        }
+
         if(Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) < TRANSLATIONAL_DEADBAND && translationController.isEnabled()) {
             // if (!rotationController.isEnabled()) {
                 Translation2d error = getDisplacementTo(translationSetpoint);
@@ -249,7 +262,12 @@ public class Swerve extends SwerveBase {
     }
 
     public boolean atRotationSetpoint() {
-        return Math.abs(getAngleTo(rotationSetpointSupplier.get())) < rotationTolerance;
+        if(Math.abs(getAngleTo(rotationSetpointSupplier.get())) < rotationTolerance) rotationPlateauCount++;
+        if (rotationPlateauCount >= rotationPlateauThreshold) {
+            rotationPlateauCount = 0;
+            return true;
+        }
+        return false;
     }
 
     public boolean atTranslationSetpoint() {
