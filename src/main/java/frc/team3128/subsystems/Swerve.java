@@ -148,7 +148,7 @@ public class Swerve extends SwerveBase {
 
         gyro.optimizeBusUtilization();
 
-        // initShuffleboard();
+        initShuffleboard();
         initStateCheck();
     }
 

@@ -173,10 +173,10 @@ public class Constants {
         public static final int MOD3_CANCODER_ID = 13;
 
         /* Cancoder Offsets */
-        public static final double MOD0_CANCODER_OFFSET = -116.01562499999999;
-        public static final double MOD1_CANCODER_OFFSET = -67.587890625;
-        public static final double MOD2_CANCODER_OFFSET = 65.0390625;
-        public static final double MOD3_CANCODER_OFFSET = 19.248046875000004;
+        public static final double MOD0_CANCODER_OFFSET = -79.453125;
+        public static final double MOD1_CANCODER_OFFSET = 117.24609374999999;
+        public static final double MOD2_CANCODER_OFFSET = 95.09765625;
+        public static final double MOD3_CANCODER_OFFSET = -12.041015625;
 
 
         public static final double RAMP_TIME = 3;
@@ -194,8 +194,8 @@ public class Constants {
 
         public static final double closedLoopRamp = 0.0;
 
-        public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75;
-        public static final double DRIVE_ANGLE_GEAR_RATIO = (150.0 / 7.0); // 300.0 / 13.0
+        public static final double DRIVE_MOTOR_GEAR_RATIO = 225.0 / 42.0;
+        public static final double DRIVE_ANGLE_GEAR_RATIO = (300.0 / 13.0); 
 
         /* Swerve Current Limiting */
         public static final int DRIVE_ANGLE_CURRENT_LIMIT = 30; //30
@@ -231,7 +231,7 @@ public class Constants {
 
         /* Motor and Sensor IDs */
         public static final int PIDGEON_ID = 9; 
-        public static final String DRIVETRAIN_CANBUS_NAME = "drivetrain";
+        public static final String DRIVETRAIN_CANBUS_NAME = "Drivetrain";
         public static final double TRANSLATIONAL_DEADBAND = 0.5;
         public static final double ROTATIONAL_DEADBAND = 0.1;
         /* Motor Inverts */
