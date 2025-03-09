@@ -11,8 +11,8 @@ import static frc.team3128.Constants.ElevatorConstants.*;
 public class ElevatorMechanism extends PositionSubsystemBase {
 
     private static ElevatorMechanism instance;
-
-    private static PIDFFConfig config = new PIDFFConfig(30, 0, 0, 0.25086, 4.52908, 0.99630, 0);
+    //30, 0, 0, 0.25086, 4.52908, 0.99630, 0
+    private static PIDFFConfig config = new PIDFFConfig(27, 0, 5, 0.6, 2.91916, 0.67429, 0.4);
     protected static Controller controller = new Controller(config, Controller.Type.POSITION);
 
     protected static NAR_CANSpark left = new NAR_CANSpark(ELEVATOR_LEFT_ID, ControllerType.CAN_SPARK_FLEX);

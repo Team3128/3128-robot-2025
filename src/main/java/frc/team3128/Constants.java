@@ -456,15 +456,16 @@ public class Constants {
         public static final int ELEVATOR_RIGHT_ID = 31;
 
         //1/14 gear ratio based on wom
-        public static final double ELEVATOR_GEAR_RATIO = Units.inchesToMeters(62.625) / 67.5;
+        // Units.inchesToMeters(62.625) / 67.5
+        public static final double ELEVATOR_GEAR_RATIO = Units.inchesToMeters(60.4375)/40.18735;
         public static final double ELEVATOR_SAMPLE_PER_MINUTE = 60;
-        public static final int ELEVATOR_STATOR_CURRENT_LIMIT = 40;
+        public static final int ELEVATOR_STATOR_CURRENT_LIMIT = 60;
         public static final boolean ELEVATOR_INVERT = false;
         public static final Neutral ELEVATOR_NEUTRAL_MODE = Neutral.COAST;
         public static final StatusFrames ELEVATOR_STATUS_FRAME = StatusFrames.POSITION;
 
         public static final double ELEVATOR_POSITION_MIN = 0;
-        public static final double ELEVATOR_POSITION_MAX = Units.inchesToMeters(62.625);
+        public static final double ELEVATOR_POSITION_MAX = Units.inchesToMeters(60.4375);
         public static final double ELEVATOR_TOLERANCE = 0.01;
     }
 

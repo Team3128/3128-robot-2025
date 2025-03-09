@@ -18,6 +18,7 @@ import common.utility.shuffleboard.NAR_Shuffleboard;
 import common.utility.sysid.CmdSysId;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -131,6 +132,7 @@ public class RobotContainer {
         controller2.getButton(kB).onTrue(Climber.getInstance().runCommand(-0.8)).onFalse(Climber.getInstance().stopCommand());
         controller2.getButton(kX).onTrue(Climber.getInstance().resetCommand());
 
+
         controller.getButton(kA).onTrue(robot.getTempToggleCommand(RPL1, RSL1));
         controller.getButton(kB).onTrue(robot.getTempToggleCommand(RPL2, RSL2));
         controller.getButton(kX).onTrue(robot.getTempToggleCommand(RPL3, RSL3));
@@ -142,7 +144,7 @@ public class RobotContainer {
 
         controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
         controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
-        controller.getButton(kStart).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
+        controller.getButton(kStart).onTrue(robot.setStateCommand(FULL_NEUTRAL));
 
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
         controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.snapToElement()));
@@ -154,12 +156,7 @@ public class RobotContainer {
         //     swerve.characterizeRotation(0, 1, 10))
         // );
 
-        controller2.getButton(kA).onTrue(WinchMechanism.getInstance().runCommand(0.8)).onFalse(WinchMechanism.getInstance().runCommand(0));
-        controller2.getButton(kB).onTrue(WinchMechanism.getInstance().runCommand(-0.8)).onFalse(WinchMechanism.getInstance().runCommand(0));
-        controller2.getButton(kX).onTrue(WinchMechanism.getInstance().resetCommand());
-        
-
-        new Trigger(()-> DriverStation.isTeleop()).debounce(115).onTrue(robot.setStateCommand(RobotStates.PRE_CLIMB_PRIME));
+        // new Trigger(()-> DriverStation.isTeleop()).debounce(115).onTrue(robot.setStateCommand(RobotStates.PRE_CLIMB_PRIME));
         
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
         controller.getRightPOVButton().onTrue(swerve.autoAlign(true));
