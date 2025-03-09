@@ -156,11 +156,40 @@ public class RobotContainer {
         //     swerve.characterizeRotation(0, 1, 10))
         // );
 
-        // new Trigger(()-> DriverStation.isTeleop()).debounce(115).onTrue(robot.setStateCommand(RobotStates.PRE_CLIMB_PRIME));
+        new Trigger(()-> DriverStation.isTeleop()).debounce(5).onTrue(robot.setStateCommand(RobotStates.PRE_CLIMB_PRIME).beforeStarting(print("CLIMBING A")));
         
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
-        controller.getRightPOVButton().onTrue(swerve.autoAlign(true));
-        controller.getLeftPOVButton().onTrue(swerve.autoAlign(false));
+        // controller.getRightPOVButton().onTrue(swerve.autoAlign(true));
+        // controller.getLeftPOVButton().onTrue(swerve.autoAlign(false));
+        controller.getUpPOVButton().onTrue(AutoPrograms.getInstance().pathToPose(swerve.getPose().nearest(allianceFlip(FieldStates.sourcePoses.asJava()))));
+        controller.getRightPOVButton().onTrue(sequence(
+            runOnce(() -> swerve.throttle = 0.3),
+            runOnce(()-> swerve.pathToReef(true)),
+            waitUntil(()-> swerve.atTranslationSetpoint()).withTimeout(1.5),
+            runOnce(()->swerve.angleLock(90)),
+            runOnce(()-> {
+                Camera.disableAll();
+                swerve.moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(swerve.getClosestReef().getRotation()));
+            }),
+            waitUntil(() -> swerve.atTranslationSetpoint()).withTimeout(1.5)
+        ).finallyDo(() -> {
+            Camera.enableAll();
+            swerve.throttle = 1;
+        }));
+        controller.getLeftPOVButton().onTrue(sequence(
+            runOnce(() -> swerve.throttle = 0.3),
+            runOnce(()-> swerve.pathToReef(false)),
+            waitUntil(()-> swerve.atTranslationSetpoint()),
+            runOnce(()->swerve.angleLock(90)),
+            runOnce(()-> {
+                Camera.disableAll();
+                swerve.moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(swerve.getClosestReef().getRotation()));
+            }),
+            waitUntil(() -> swerve.atTranslationSetpoint()).withTimeout(1.5)
+        ).finallyDo(() -> {
+            Camera.enableAll();
+            swerve.throttle = 1;
+        }));
     }
 
     public void initCameras() {
@@ -177,9 +206,9 @@ public class RobotContainer {
     }
 
     public void initDashboard() {
-        // dashboard = NarwhalDashboard.getInstance();
-        // dashboard.addUpdate("robotX", ()-> swerve.getPose().getX());
-        // dashboard.addUpdate("robotY", ()-> swerve.getPose().getY());
-        // dashboard.addUpdate("robotYaw", ()-> swerve.getPose().getRotation().getDegrees());
+        dashboard = NarwhalDashboard.getInstance();
+        dashboard.addUpdate("robotX", ()-> swerve.getPose().getX());
+        dashboard.addUpdate("robotY", ()-> swerve.getPose().getY());
+        dashboard.addUpdate("robotYaw", ()-> swerve.getPose().getRotation().getDegrees());
     }
 }
