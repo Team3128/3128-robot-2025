@@ -6,6 +6,8 @@ import common.core.subsystems.PositionSubsystemBase;
 import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
 import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
+import frc.team3128.doglog.DogLog;
+
 import static frc.team3128.Constants.ElevatorConstants.*;
 
 public class ElevatorMechanism extends PositionSubsystemBase {
@@ -51,4 +53,11 @@ public class ElevatorMechanism extends PositionSubsystemBase {
        controller.setTolerance(ELEVATOR_TOLERANCE);
        addDisableCondition(()-> ((getPosition() >= 0.90 * ELEVATOR_POSITION_MAX) && (getVolts() > 6) && (getVelocity() > 0))); // if too close to top and going towards top and getting too much power then disable
     }   
+    
+    public void dogLogPeriodic(){
+        DogLog.log(getName() + "Velocity", left.getVelocity());
+        DogLog.log(getName() + "Position", left.getPosition());
+        DogLog.log(getName() + "Applied Output", left.getAppliedOutput());
+        DogLog.log(getName() + "State", left.getState());
+    }
 }

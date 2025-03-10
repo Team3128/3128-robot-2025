@@ -5,6 +5,7 @@ import common.core.fsm.TransitionMap;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.team3128.doglog.DogLog;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.subsystems.Climber.ClimberStates.*;
@@ -56,4 +57,9 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 	public void registerTransitions() {
         transitionMap.addCommutativeTransition(List.of(NEUTRAL, PRE_CLIMB_PRIME, CLIMB_PRIME, CLIMB), defaultTransitioner);
 	}
+
+    public void dogLogPeriodic(){
+        DogLog.log("State", getState());
+        RollerMechanism.getInstance().dogLogPeriodic();
+    }
 }

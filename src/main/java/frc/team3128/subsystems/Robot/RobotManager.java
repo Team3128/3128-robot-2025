@@ -3,6 +3,7 @@ package frc.team3128.subsystems.Robot;
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.team3128.doglog.DogLog;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Climber.Climber;
 import frc.team3128.subsystems.Climber.ClimberStates;
@@ -10,6 +11,7 @@ import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Intake.IntakeStates;
+import frc.team3128.subsystems.Intake.PivotMechanism;
 import frc.team3128.subsystems.Manipulator.Manipulator;
 import frc.team3128.subsystems.Manipulator.ManipulatorStates;
 
@@ -109,5 +111,9 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         // From exclusive state to Neutral
         transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, defaultTransitioner);
 
+    }
+
+    public void dogLogPeriodic(){
+        DogLog.log("State", getState());
     }
 }

@@ -3,6 +3,9 @@ package frc.team3128.subsystems.Manipulator;
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.team3128.doglog.DogLog;
+import frc.team3128.subsystems.Intake.PivotMechanism;
+
 import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static frc.team3128.subsystems.Manipulator.ManipulatorStates.*;
 
@@ -34,4 +37,9 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
         //NEUTRAL, IN, OUT are able to transition between each other
         transitionMap.addCommutativeTransition(List.of(NEUTRAL, IN, OUT, OUT_L1), defaultTransitioner);
 	}
+
+    public void dogLogPeriodic(){
+        DogLog.log("State", getState());
+        PivotMechanism.getInstance().dogLogPeriodic();
+    }
 }

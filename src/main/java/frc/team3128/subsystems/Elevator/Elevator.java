@@ -3,6 +3,8 @@ package frc.team3128.subsystems.Elevator;
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.team3128.doglog.DogLog;
+
 import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static frc.team3128.subsystems.Elevator.ElevatorStates.*;
 
@@ -33,4 +35,9 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
 	public void registerTransitions() {
         transitionMap.addCommutativeTransition(functionalStates.asJava(), defaultTransitioner);
 	}
+
+    public void dogLogPeriodic(){
+        DogLog.log("State", getState());
+        ElevatorMechanism.getInstance().dogLogPeriodic();
+    }
 }

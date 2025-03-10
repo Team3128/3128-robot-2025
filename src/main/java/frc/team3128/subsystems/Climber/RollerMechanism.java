@@ -6,6 +6,7 @@ import common.core.subsystems.VoltageSubsystemBase;
 import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
+import frc.team3128.doglog.DogLog;
 
 public class RollerMechanism extends VoltageSubsystemBase  {
 
@@ -41,4 +42,11 @@ public class RollerMechanism extends VoltageSubsystemBase  {
  	public void initShuffleboard() {
 
  	}
+
+    public void dogLogPeriodic(){
+        DogLog.log(getName() + "Velocity", leader.getVelocity());
+        DogLog.log(getName() + "Position", leader.getPosition());
+        DogLog.log(getName() + "Applied Output", leader.getAppliedOutput());
+        DogLog.log(getName() + "State", leader.getState());
+    }
 }

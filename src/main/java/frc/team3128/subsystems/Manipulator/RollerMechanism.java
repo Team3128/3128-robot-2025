@@ -4,6 +4,7 @@ import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import common.utility.shuffleboard.NAR_Shuffleboard;
+import frc.team3128.doglog.DogLog;
 
 import static frc.team3128.Constants.ManipulatorConstants.*;
 
@@ -51,4 +52,11 @@ public class RollerMechanism extends VoltageSubsystemBase {
         NAR_Shuffleboard.addData(getName(), "Current", ()->leader.getStallCurrent(), 1, 0);
         NAR_Shuffleboard.addData(getName(), "Torque", ()-> leader.getTorque(), 2, 0);
 	}
+
+    public void dogLogPeriodic(){
+        DogLog.log(getName() + "Velocity", leader.getVelocity());
+        DogLog.log(getName() + "Position", leader.getPosition());
+        DogLog.log(getName() + "Applied Output", leader.getAppliedOutput());
+        DogLog.log(getName() + "State", leader.getState());
+    }
 }

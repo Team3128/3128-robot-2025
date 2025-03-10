@@ -5,6 +5,8 @@ import common.core.controllers.PIDFFConfig;
 import common.core.subsystems.PositionSubsystemBase;
 import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
+import frc.team3128.doglog.DogLog;
+
 import static frc.team3128.Constants.IntakeConstants.*;
 
 public class PivotMechanism extends PositionSubsystemBase {
@@ -49,5 +51,12 @@ public class PivotMechanism extends PositionSubsystemBase {
        controller.setInputRange(PIVOT_POSITION_MIN, PIVOT_POSITION_MAX);
        controller.configureFeedback(leader);
        controller.setTolerance(PIVOT_TOLERANCE);
-    }   
+    }
+    
+    public void dogLogPeriodic(){
+        DogLog.log(getName() + "Velocity", leader.getVelocity());
+        DogLog.log(getName() + "Position", leader.getPosition());
+        DogLog.log(getName() + "Applied Output", leader.getAppliedOutput());
+        DogLog.log(getName() + "State", leader.getState());
+    }
 }

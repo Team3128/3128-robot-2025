@@ -47,6 +47,7 @@ import static frc.team3128.Constants.FieldConstants.FieldStates.*;
 import static frc.team3128.Constants.VisionConstants.*;
 import static frc.team3128.Constants.DriveConstants.*;
 import frc.team3128.Constants.DriveConstants;
+import frc.team3128.doglog.DogLog;
 
 public class Swerve extends SwerveBase {
 
@@ -388,5 +389,16 @@ public class Swerve extends SwerveBase {
         translationController.disable();
         rotationController.disable();
         getInstance().stop();
+    }
+
+    public void dogLogPeriodic(){
+        for(int i = 0; i < 4; i++){
+            DogLog.log("State Mod " + i, modules[i].getState());
+            DogLog.log("Drive Motor Current " + i, modules[i].getDriveMotor().getStallCurrent());
+            DogLog.log("Angle Motor Current " + i, modules[i].getAngleMotor().getStallCurrent());
+            DogLog.log("Running State Mod " + i, modules[i].getRunningState());
+        }
+        DogLog.log("Speed", getSpeed());
+        DogLog.log("Pose", getPose());
     }
 }
