@@ -31,3 +31,6 @@ props.setProperty("org.gradle.internal.native.headers.unresolved.dependencies.ig
 
 include ':libs:3128-common'
 project(':libs:3128-common').projectDir = file('libs/3128-common')
+
+include ':libs:3128-common'
+project(':libs:3128-common').projectDir = file('libs/3128-common')
