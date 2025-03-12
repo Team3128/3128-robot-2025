@@ -162,61 +162,48 @@ public class RobotContainer {
         // controller.getRightPOVButton().onTrue(runOnce(()-> swerve.zeroLock()));
         // controller.getLeftPOVButton().onTrue(swerve.autoAlign(false));
         controller.getUpPOVButton().onTrue(AutoPrograms.getInstance().pathToPose(swerve.getPose().nearest(allianceFlip(FieldStates.sourcePoses.asJava()))));
-        controller.getRightPOVButton().onTrue(sequence(
-            runOnce(() -> swerve.setThrottle(0.3)),
-            runOnce(()-> swerve.pathToReef(true)),
-            runOnce(()-> Swerve.autoEnabled = true),
-            waitUntil(()-> swerve.atTranslationSetpoint()).withTimeout(1.5),
-            runOnce(()-> swerve.snapToElement()),
-            waitUntil(()-> swerve.atRotationSetpoint()).withTimeout(1.5),
-            runOnce(()->swerve.angleLock(90)),
-            // waitSeconds(1),
-            runOnce(()-> {
-                Camera.disableAll();
-                Swerve.autoEnabled = false;
-                swerve.moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(swerve.getClosestReef().getRotation()));
-            }),
-            waitUntil(() -> swerve.atTranslationSetpoint()).withTimeout(1.5).finallyDo(()-> Swerve.disable())
-        ).finallyDo(() -> {
-            Camera.enableAll();
-            swerve.setThrottle(1);
-        }));
-        controller.getLeftPOVButton().onTrue(sequence(
-            runOnce(() -> swerve.setThrottle(0.3)),
-            runOnce(()-> swerve.pathToReef(false)),
-            runOnce(()-> Swerve.autoEnabled = true),
-            waitUntil(()-> swerve.atTranslationSetpoint()).withTimeout(1.5),
-            runOnce(()->swerve.angleLock(90)),
-            // waitSeconds(1),
-            runOnce(()-> {
-                Camera.disableAll();
-                Swerve.autoEnabled = false;
-                swerve.moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(swerve.getClosestReef().getRotation()));
-            }),
-            waitUntil(() -> swerve.atTranslationSetpoint()).withTimeout(1.5).finallyDo(()-> Swerve.disable())
-        ).finallyDo(() -> {
-            Camera.enableAll();
-            swerve.setThrottle(1);
-        }));
+        controller.getRightPOVButton().onTrue(swerve.autoAlign(true).andThen(() -> robot.autoScore()));
+        // ).finallyDo(() -> {
+        //     Camera.enableAll();
+        //     swerve.setThrottle(1);
+        // }));
+        controller.getLeftPOVButton().onTrue(swerve.autoAlign(false).andThen(() -> robot.autoScore()));
+        // controller.getLeftPOVButton().onTrue(sequence(
+        //     runOnce(() -> swerve.setThrottle(0.3)),
+        //     runOnce(()-> swerve.pathToReef(false)),
+        //     runOnce(()-> Swerve.autoEnabled = true),
+        //     waitUntil(()-> swerve.atTranslationSetpoint()).withTimeout(1.5),
+        //     runOnce(()->swerve.angleLock(90)),
+        //     // waitSeconds(1),
+        //     runOnce(()-> {
+        //         Camera.disableAll();
+        //         Swerve.autoEnabled = false;
+        //         swerve.moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(swerve.getClosestReef().getRotation()));
+        //     }),
+        //     waitUntil(() -> swerve.atTranslationSetpoint()).withTimeout(1.5).finallyDo(()-> Swerve.disable())
+        // ).finallyDo(() -> {
+        //     Camera.enableAll();
+        //     swerve.setThrottle(1);
+        // }));
     }
 
     public void initCameras() {
         Log.info("tags", APRIL_TAGS.get(0).toString());
         Camera.setResources(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), new AprilTagFieldLayout(APRIL_TAGS, FIELD_X_LENGTH, FIELD_Y_LENGTH), () -> swerve.getPose());
-        Camera.setThresholds(0.3, 3, 0.3);
+        // Camera.setThresholds(0.3, 3, 0.3);
         if (Robot.isReal()) {
             Camera backRightCamera = new Camera("BOTTOM_RIGHT", 0.27, -0.27,  Units.degreesToRadians(-15), 0, 0);
-            // backRightCamera.setThresholds(0.3, 1.5, 0.3);
+            backRightCamera.setThresholds(0.3, 3, 0.3);
             Camera backLeftCamera = new Camera("BOTTOM_LEFT", 0.09, 0.145, 0, 0, 0);
-            // backLeftCamera.setThresholds(0.3, 1.5, 0.3);
+            backLeftCamera.setThresholds(0, 3, 0.3);
             // Camera topCamera = new Camera("TOP", -Units.inchesToMeters(6), -Units.inchesToMeters(12.5), Units.degreesToRadians(180), Units.degreesToRadians(-45), 0);
         }
     }
 
     public void initDashboard() {
-        // dashboard = NarwhalDashboard.getInstance();
-        // dashboard.addUpdate("robotX", ()-> swerve.getPose().getX());
-        // dashboard.addUpdate("robotY", ()-> swerve.getPose().getY());
-        // dashboard.addUpdate("robotYaw", ()-> swerve.getPose().getRotation().getDegrees());
+        dashboard = NarwhalDashboard.getInstance();
+        dashboard.addUpdate("robotX", ()-> swerve.getPose().getX());
+        dashboard.addUpdate("robotY", ()-> swerve.getPose().getY());
+        dashboard.addUpdate("robotYaw", ()-> swerve.getPose().getRotation().getDegrees());
     }
 }

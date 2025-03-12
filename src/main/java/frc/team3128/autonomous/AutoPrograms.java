@@ -126,13 +126,23 @@ public class AutoPrograms {
             swerve
             );
 
-        NamedCommands.registerCommand("Score L4", sequence(
-            robot.setStateCommand(RPL4),
-            waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
-            waitSeconds(0.2),
-            robot.setStateCommand(RSL4),
-            waitSeconds(0.1)
-        ));
+        // NamedCommands.registerCommand("Score L4", sequence(
+        //     robot.setStateCommand(RPL4),
+        //     waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
+        //     waitSeconds(0.2),
+        //     robot.setStateCommand(RSL4),
+        //     waitSeconds(0.1)
+        // ));
+
+        NamedCommands.registerCommand("Score L4", 
+            parallel(
+                run(()-> swerve.drive(0,0,0)),
+                sequence(
+                    waitSeconds(0.5),
+                    robot.setStateCommand(RPL3)
+                )
+            ).withDeadline(swerve.autoAlign(false))
+        );
 
         NamedCommands.registerCommand("Score L2", sequence(
             robot.setStateCommand(RPL2),
@@ -171,7 +181,7 @@ public class AutoPrograms {
     public Command getAutonomousCommand() {
         String selectedAutoName = null;
         // String selectedAutoName = NarwhalDashboard.getInstance().getSelectedAuto(); //NarwhalDashboard.getInstance().getSelectedAuto();
-        String hardcode = "RB_3pc_FDC";
+        String hardcode = "RB_3pc_FDC_auto";
         
          
         Command autoCommand;

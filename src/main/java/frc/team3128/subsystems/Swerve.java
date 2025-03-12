@@ -39,6 +39,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import static frc.team3128.Constants.SwerveConstants.*;
@@ -47,6 +49,7 @@ import static frc.team3128.Constants.FieldConstants.FieldStates.*;
 import static frc.team3128.Constants.VisionConstants.*;
 import static frc.team3128.Constants.DriveConstants.*;
 import frc.team3128.Constants.DriveConstants;
+import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.RobotContainer;
 
 public class Swerve extends SwerveBase {
@@ -104,7 +107,7 @@ public class Swerve extends SwerveBase {
 
     // x * kP = dx/dt && (v_max)^2 = 2*a_max*x
     public static final Constraints translationConstraints = new Constraints(MAX_DRIVE_SPEED, MAX_DRIVE_ACCELERATION);
-    public static final PIDFFConfig translationConfig = new PIDFFConfig(10);// used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
+    public static final PIDFFConfig translationConfig = new PIDFFConfig(7);// used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller translationController = new Controller(translationConfig, Controller.Type.POSITION); //Displacement error to output velocity
     public static final double translationTolerance = 0.02;
 
@@ -157,7 +160,6 @@ public class Swerve extends SwerveBase {
         gyro.optimizeBusUtilization();
 
         initShuffleboard();
-        initStateCheck();
     }
 
     @Override
@@ -185,8 +187,6 @@ public class Swerve extends SwerveBase {
         ) {
             translationController.disable();
             rotationController.disable();
-            Camera.enableAll();
-            setThrottle(1);
         }
 
         if(Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) < TRANSLATIONAL_DEADBAND && translationController.isEnabled()) {
@@ -195,6 +195,7 @@ public class Swerve extends SwerveBase {
                 Translation2d output = new Translation2d(translationController.calculate(error.getNorm()), error.getAngle());
                 velocity.vxMetersPerSecond = output.getX();
                 velocity.vyMetersPerSecond = output.getY();
+                rotationController.enable();
             // }
         }
         // else translationController.disable();
@@ -322,37 +323,26 @@ public class Swerve extends SwerveBase {
     }
 
     public Command autoAlign(boolean isRight) {
-        return sequence(
-            // runOnce(() -> {
-            //     Swerve.autoEnabled = true;
-            //     setThrottle(0.3);
-            //     Camera.enableAll();
-            //     // pathToReef(isRight);
-            //     Log.info("Auto Align", "Auto Enabled: " + autoEnabled);
-            //     Log.info("Auto Align", "Throttle: " + getThrottle());
-            // }),
-            // runOnce(()-> pathToReef(isRight)),
-            // runOnce(()-> Log.info("Auto Align", "Controller Enabled: " + translationController.isEnabled())),
-            // waitUntil(()-> atTranslationSetpoint()).andThen(()-> Log.info("Auto Align", "Controller Setpoint Reached")).withTimeout(1.5),
-            // runOnce(()-> {
-            //     disable();
-            //     Log.info("Auto Align", "Controller Enabled: " + translationController.isEnabled());
-            //     angleLock(90);
-            //     Camera.disableAll();
-            //     // moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(getClosestReef().getRotation()));
-            // }),
-            // runOnce(()-> moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(getClosestReef().getRotation()))),
-            // waitUntil(() -> atTranslationSetpoint()).withTimeout(1.5),
-            // runOnce(()-> {
-            //     disable();
-            //     Camera.enableAll();
-            //     setThrottle(1);
-            //     Swerve.autoEnabled = false;
-
-            //     Log.info("Auto Align", "Auto Enabled: " + autoEnabled);
-            //     Log.info("Auto Align", "Throttle: " + getThrottle());
-            // })
-        );
+        return Commands.sequence(
+            Commands.runOnce(()-> {
+                setThrottle(0.6);
+                autoEnabled = true;
+                pathToReef(isRight);
+            }),
+            waitUntil(()-> atTranslationSetpoint()).finallyDo(()-> Swerve.disable()).withTimeout(1.5),
+            Commands.runOnce(()-> {
+                // Camera.disableAll();
+                setThrottle(0.5);
+                Swerve.autoEnabled = false;
+                moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(getClosestReef().getRotation()));
+                RobotManager.getInstance().autoScore();
+            }),
+            waitUntil(() -> atTranslationSetpoint()).withTimeout(1).finallyDo(()-> Swerve.disable()),
+            Commands.runOnce(()-> {
+                // Camera.enableAll();
+                setThrottle(1);
+            })
+        ).withTimeout(5);
     }
 
     public boolean isConfigured() {

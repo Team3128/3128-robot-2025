@@ -7,6 +7,7 @@ import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Climber.Climber;
 import frc.team3128.subsystems.Climber.ClimberStates;
 import frc.team3128.subsystems.Elevator.Elevator;
+import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Intake.IntakeStates;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import edu.wpi.first.math.Pair;
 
 public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static RobotManager instance;
@@ -56,9 +58,24 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             manipulator.setStateCommand(nextState.getManipulatorState()).unless(()-> nextState.getManipulatorState() == ManipulatorStates.UNDEFINED),
             intake.setStateCommand(nextState.getIntakeState()).unless(()-> nextState.getIntakeState() == IntakeStates.UNDEFINED),
             climber.setStateCommand(nextState.getClimberState()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED),
-            waitUntil(()-> climber.winch.atSetpoint()),
-            runOnce(()-> swerve.setThrottle(nextState.getThrottle())).onlyIf(()-> DriverStation.isTeleop())
+            waitUntil(()-> climber.winch.atSetpoint()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED),
+            runOnce(()-> swerve.setThrottle(nextState.getThrottle())).unless(()-> DriverStation.isAutonomous())
         );
+    }
+
+    public void autoScore() {
+        if (getState() == RobotStates.NEUTRAL || getState() == RobotStates.FULL_NEUTRAL)
+            return;
+        coupledStates.forEach((Pair<RobotStates, RobotStates> coupledState) -> {
+            if (coupledState.getFirst() == getState()) {
+                sequence(
+                    waitUntil(() -> ElevatorMechanism.getInstance().atSetpoint()),
+                    setStateCommand(coupledState.getSecond()),
+                    waitSeconds(0.5),
+                    setStateCommand(NEUTRAL)
+                ).schedule();
+            }
+        });
     }
 
     public Command getTempToggleCommand(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition, double delay) {
