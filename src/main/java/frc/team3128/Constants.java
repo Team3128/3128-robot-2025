@@ -222,7 +222,7 @@ public class Constants {
 
         /* Motor and Sensor IDs */
         public static final int PIDGEON_ID = 9; 
-        public static final String DRIVETRAIN_CANBUS_NAME = "drivetrain";
+        public static final String DRIVETRAIN_CANBUS_NAME = "Drivetrain";
         public static final double TRANSLATIONAL_DEADBAND = 0.5;
         public static final double ROTATIONAL_DEADBAND = 0.1;
 
@@ -442,8 +442,8 @@ public class Constants {
 
     public static class IntakeConstants {
 
-        public static final int ROLLER_ID = 41;
-        public static final int SERIAL_ID = 42;
+        public static final int ROLLER_ID = 42;
+        public static final int SERIAL_ID = 41;
 
         public static final double ROLLER_GEAR_RATIO = 1;
         public static final double ROLLER_SAMPLE_PER_MINUTE = 60;

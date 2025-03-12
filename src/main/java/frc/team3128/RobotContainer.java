@@ -100,19 +100,15 @@ public class RobotContainer {
         // controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.zeroLock()).andThen(runOnce(()-> swerve.resetEncoders())));
 
         controller.getButton(XboxButton.kA).onTrue(sequence(
-            runOnce(()->Intake.rollerMotor.set(0.6)),
-            runOnce(()->Intake.serial.set(0.4))
+            runOnce(()->Intake.rollerMotor.set(0.6))
         )).onFalse(sequence(
-            runOnce(()->Intake.rollerMotor.set(0)),
-            runOnce(()->Intake.serial.set(0))
+            runOnce(()->Intake.rollerMotor.set(0))
         ));
 
         controller.getButton(XboxButton.kB).onTrue(sequence(
-            runOnce(()->Intake.rollerMotor.set(-0.6)),
-            runOnce(()->Intake.serial.set(-0.4))
+            runOnce(()->Intake.rollerMotor.set(-0.6))
         )).onFalse(sequence(
-            runOnce(()->Intake.rollerMotor.set(0)),
-            runOnce(()->Intake.serial.set(0))
+            runOnce(()->Intake.rollerMotor.set(0))
         ));
             
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
