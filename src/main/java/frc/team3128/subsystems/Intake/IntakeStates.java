@@ -9,16 +9,14 @@ public enum IntakeStates {
     NEUTRAL(0, 0.1),
     INTAKE(65, 0.8),
     EJECT_OUTTAKE(0, -0.8),
-    PROCESSOR_PRIME(0),
-    PROCESSOR_OUTTAKE(0, -0.8),
-    CLIMB_PRIME(5),
-    CLIMB(5);
+    HIGH_INTAKE(0, 0.8),
+    CLIMB_PRIME(10),
+    CLIMB(10);
 
-    public static final List<IntakeStates> defaultStates = List.of(NEUTRAL, INTAKE, EJECT_OUTTAKE, PROCESSOR_PRIME, CLIMB_PRIME);
-    public static final List<IntakeStates> exclusiveStates = List.of(PROCESSOR_OUTTAKE, CLIMB);
+    public static final List<IntakeStates> defaultStates = List.of(NEUTRAL, INTAKE, EJECT_OUTTAKE, CLIMB_PRIME, HIGH_INTAKE);
+    public static final List<IntakeStates> exclusiveStates = List.of(CLIMB);
 
     public static final List<Pair<IntakeStates, IntakeStates>> coupledStates = List.of(
-        Pair.of(PROCESSOR_PRIME, PROCESSOR_OUTTAKE),
         Pair.of(CLIMB_PRIME, CLIMB)
     );
 

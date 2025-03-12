@@ -5,10 +5,15 @@ import common.core.fsm.TransitionMap;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Climber.Climber;
+import frc.team3128.subsystems.Climber.ClimberStates;
 import frc.team3128.subsystems.Elevator.Elevator;
+import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Intake.Intake;
+import frc.team3128.subsystems.Intake.IntakeStates;
 import frc.team3128.subsystems.Led.Led;
 import frc.team3128.subsystems.Manipulator.Manipulator;
+import frc.team3128.subsystems.Manipulator.ManipulatorStates;
+
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -23,7 +28,9 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static Manipulator manipulator;
     private static Intake intake;
     private static Climber climber;
+    private static Swerve swerve;
     private static Led led;
+
 
     private static TransitionMap<RobotStates> transitionMap = new TransitionMap<>(RobotStates.class);
     private Function<RobotStates, Command> defaultTransitioner = state -> {return updateSubsystemStates(state);};
@@ -35,6 +42,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         manipulator = Manipulator.getInstance();
         intake = Intake.getInstance();
         climber = Climber.getInstance();
+        swerve = Swerve.getInstance();
         led = Led.getInstance();
     }
 
@@ -48,13 +56,14 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     public Command updateSubsystemStates(RobotStates nextState) {
         return sequence(
-            elevator.setStateCommand(nextState.getElevatorState()),
-            manipulator.setStateCommand(nextState.getManipulatorState()),
-            intake.setStateCommand(nextState.getIntakeState()),
-            climber.setStateCommand(nextState.getClimberState()),
+            waitUntil(()-> !Swerve.autoEnabled),
+            elevator.setStateCommand(nextState.getElevatorState()).unless(()-> nextState.getElevatorState() == ElevatorStates.UNDEFINED),
+            manipulator.setStateCommand(nextState.getManipulatorState()).unless(()-> nextState.getManipulatorState() == ManipulatorStates.UNDEFINED),
+            intake.setStateCommand(nextState.getIntakeState()).unless(()-> nextState.getIntakeState() == IntakeStates.UNDEFINED),
+            climber.setStateCommand(nextState.getClimberState()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED),
             led.setStateCommand(nextState.getLedState()),
             waitUntil(()-> climber.winch.atSetpoint()),
-            runOnce(()-> Swerve.getInstance().throttle = nextState.getThrottle()).onlyIf(()-> DriverStation.isTeleop())
+            runOnce(()-> swerve.setThrottle(nextState.getThrottle())).onlyIf(()-> DriverStation.isTeleop())
         );
     }
 
@@ -96,9 +105,6 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     @Override
     public void registerTransitions() {
-        
-        // From all transitions to Undefined and Undefined to Neutral
-        transitionMap.addUndefinedState(UNDEFINED, NEUTRAL, defaultTransitioner);
 
         // Between all default states
         transitionMap.addCommutativeTransition(defaultStates.asJava(), defaultTransitioner);

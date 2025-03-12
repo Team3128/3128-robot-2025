@@ -22,6 +22,7 @@ import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
+import frc.team3128.subsystems.Intake.PivotMechanism;
 import frc.team3128.subsystems.Led.Led;
 import frc.team3128.subsystems.Led.LedStates;
 // import frc.team3128.autonomous.AutoPrograms;
@@ -47,6 +48,7 @@ public class Robot extends NAR_Robot {
 
     public static Robot instance;
 
+    public static AutoPrograms autoPrograms = AutoPrograms.getInstance();
     public static RobotContainer m_robotContainer = new RobotContainer();
 
     public static synchronized Robot getInstance() {
@@ -58,12 +60,13 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void robotInit(){
-        //Camera.enableAll();
+        Camera.enableAll();
         m_robotContainer.initDashboard();
+        Log.info("Dashboard", "Done");
         LiveWindow.disableAllTelemetry();
         Led.getInstance().setStateCommand(LedStates.UNDEFINED).schedule();
         // Log.logDebug = true;
-        AutoPrograms.getInstance().initAutoSelector();
+        autoPrograms.initAutoSelector();
         Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM, MOTOR);
         PathfindingCommand.warmupCommand().schedule();
     }
@@ -89,7 +92,7 @@ public class Robot extends NAR_Robot {
             Swerve.rotationController.disable();
         }).schedule();
         
-        Command m_autonomousCommand = AutoPrograms.getInstance().getAutonomousCommand();
+        Command m_autonomousCommand = autoPrograms.getAutonomousCommand();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
@@ -107,13 +110,37 @@ public class Robot extends NAR_Robot {
     }
 
     @Override
+    public void simulationInit() {
+        Log.info("A", FieldStates.A.getPose2d().toString());
+        Log.info("B", FieldStates.B.getPose2d().toString());
+        Log.info("C", FieldStates.C.getPose2d().toString());
+        Log.info("D", FieldStates.D.getPose2d().toString());
+        Log.info("E", FieldStates.E.getPose2d().toString());
+        Log.info("F", FieldStates.F.getPose2d().toString());
+        Log.info("G", FieldStates.G.getPose2d().toString());
+        Log.info("H", FieldStates.H.getPose2d().toString());
+        Log.info("I", FieldStates.I.getPose2d().toString());
+        Log.info("J", FieldStates.J.getPose2d().toString());
+        Log.info("K", FieldStates.K.getPose2d().toString());
+        Log.info("L", FieldStates.L.getPose2d().toString());
+    }
+
+    @Override
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
         RobotManager.getInstance().stopCommand().schedule();
-        Log.info("State", RobotManager.getInstance().getState().name());
+        // Log.info("State", RobotManager.getInstance().getState().name());
         RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL).schedule();
-        Log.info("State", RobotManager.getInstance().getState().name());
+        PivotMechanism.getInstance().stopCommand().schedule();
+        // Log.info("State", RobotManager.getInstance().getState().name());
         Camera.enableAll();
+        // sequence(
+        //     waitSeconds(115),
+        //     print("CLIMBING B"),
+        //     RobotManager.getInstance().setStateCommand(RobotStates.PRE_CLIMB_PRIME),
+        //     waitSeconds(17),
+        //     RobotManager.getInstance().setStateCommand(RobotStates.CLIMB)
+        // ).schedule();
     }
 
     @Override

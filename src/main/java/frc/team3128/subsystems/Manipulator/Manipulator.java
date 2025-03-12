@@ -7,6 +7,7 @@ import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static frc.team3128.subsystems.Manipulator.ManipulatorStates.*;
 
 import java.util.function.Function;
+import java.util.List;
 
 public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
     private static Manipulator instance;
@@ -30,11 +31,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 
 	@Override
 	public void registerTransitions() {
-
-        //ALL STATES -> UNDEFINED & UNDEFINED -> NEUTRAL
-		transitionMap.addUndefinedState(UNDEFINED, NEUTRAL, stopCommand().andThen(()-> setNeutralMode(COAST)), defaultTransitioner.apply(NEUTRAL).beforeStarting(()-> setNeutralMode(BRAKE)));
-
         //NEUTRAL, IN, OUT are able to transition between each other
-        transitionMap.addCommutativeTransition(functionalStates.asJava(), defaultTransitioner);
+        transitionMap.addCommutativeTransition(List.of(NEUTRAL, IN, OUT, OUT_L1), defaultTransitioner);
 	}
 }

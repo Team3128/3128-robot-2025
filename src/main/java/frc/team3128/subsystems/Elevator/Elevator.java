@@ -31,10 +31,6 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
 
 	@Override
 	public void registerTransitions() {
-
-        //ALL STATES -> UNDEFINED & UNDEFINED -> NEUTRAL
-		transitionMap.addUndefinedState(UNDEFINED, NEUTRAL, stopCommand().andThen(()-> setNeutralMode(COAST)), defaultTransitioner.apply(NEUTRAL).beforeStarting(()-> setNeutralMode(BRAKE)));
-
         transitionMap.addCommutativeTransition(functionalStates.asJava(), defaultTransitioner);
 	}
 }
