@@ -136,7 +136,7 @@ public class Robot extends NAR_Robot {
             waitSeconds(115),
             print("CLIMBING B"),
             RobotManager.getInstance().setStateCommand(RobotStates.PRE_CLIMB_PRIME),
-            waitSeconds(17),
+            waitSeconds(15),
             RobotManager.getInstance().setStateCommand(RobotStates.CLIMB)
         ).schedule();
     }

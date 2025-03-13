@@ -41,6 +41,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         intake = Intake.getInstance();
         climber = Climber.getInstance();
         swerve = Swerve.getInstance();
+
+        initShuffleboard();
     }
 
     public static synchronized RobotManager getInstance() {
@@ -125,6 +127,18 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
         // From exclusive state to Neutral
         transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, defaultTransitioner);
+
+        transitionMap.addTransition(RPL1, RSL1, sequence(
+            waitUntil(()-> !Swerve.autoEnabled),
+            intake.setStateCommand(RSL1.getIntakeState()).unless(()-> RSL1.getIntakeState() == IntakeStates.UNDEFINED),
+            climber.setStateCommand(RSL1.getClimberState()).unless(()-> RSL1.getClimberState() == ClimberStates.UNDEFINED),
+            waitUntil(()-> climber.winch.atSetpoint()).unless(()-> RSL1.getClimberState() == ClimberStates.UNDEFINED),
+            runOnce(()-> swerve.setThrottle(RSL1.getThrottle())).unless(()-> DriverStation.isAutonomous()),
+
+            manipulator.setStateCommand(RSL1.getManipulatorState()),
+            waitSeconds(0.25),
+            elevator.setStateCommand(RSL1.getElevatorState())
+        ));
 
     }
 }
