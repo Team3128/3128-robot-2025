@@ -105,6 +105,7 @@ public class Robot extends NAR_Robot {
     @Override
     public void autonomousExit() {
         CommandScheduler.getInstance().cancelAll();
+        ElevatorMechanism.getInstance().stopCommand().schedule();
     }
 
     @Override
