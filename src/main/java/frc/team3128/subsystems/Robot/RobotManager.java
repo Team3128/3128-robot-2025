@@ -11,6 +11,8 @@ import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Intake.IntakeStates;
+import frc.team3128.subsystems.Led.Led;
+import frc.team3128.subsystems.Led.LedStates;
 import frc.team3128.subsystems.Manipulator.Manipulator;
 import frc.team3128.subsystems.Manipulator.ManipulatorStates;
 
@@ -28,6 +30,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static Manipulator manipulator;
     private static Intake intake;
     private static Climber climber;
+    private static Led led;
     private static Swerve swerve;
 
     private static TransitionMap<RobotStates> transitionMap = new TransitionMap<>(RobotStates.class);
@@ -40,6 +43,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         manipulator = Manipulator.getInstance();
         intake = Intake.getInstance();
         climber = Climber.getInstance();
+        led = Led.getInstance();
         swerve = Swerve.getInstance();
 
         initShuffleboard();
@@ -60,6 +64,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             manipulator.setStateCommand(nextState.getManipulatorState()).unless(()-> nextState.getManipulatorState() == ManipulatorStates.UNDEFINED),
             intake.setStateCommand(nextState.getIntakeState()).unless(()-> nextState.getIntakeState() == IntakeStates.UNDEFINED),
             climber.setStateCommand(nextState.getClimberState()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED),
+            led.setStateCommand(nextState.getLedState()).unless(()-> nextState.getLedState() == LedStates.UNDEFINED),
             waitUntil(()-> climber.winch.atSetpoint()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED),
             runOnce(()-> swerve.setThrottle(nextState.getThrottle())).unless(()-> DriverStation.isAutonomous())
         );

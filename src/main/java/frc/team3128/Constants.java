@@ -31,6 +31,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 // import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Led.LedStates;
 
 
 
@@ -242,29 +243,31 @@ public class Constants {
         public static final Translation2d reefShift = new Translation2d(0.35/2, 0.);
 
         public enum FieldStates {
-            A(18, false),
-            B(18, true),
-            C(17, false),
-            D(17, true),
-            E(22, false),
-            F(22, true),
-            G(21, false),
-            H(21, true),
-            I(20, false),
-            J(20, true),
-            K(19, false),
-            L(19, true),
+            A(18, false, LedStates.REEF_1),
+            B(18, true, LedStates.REEF_1),
+            C(17, false, LedStates.REEF_2),
+            D(17, true, LedStates.REEF_2),
+            E(22, false, LedStates.REEF_3),
+            F(22, true, LedStates.REEF_3),
+            G(21, false, LedStates.REEF_4),
+            H(21, true, LedStates.REEF_4),
+            I(20, false, LedStates.REEF_5),
+            J(20, true, LedStates.REEF_5),
+            K(19, false, LedStates.REEF_6),
+            L(19, true, LedStates.REEF_6),
 
-            SOURCE_1(new Pose2d(new Translation2d(1.267, 0.753), Rotation2d.fromDegrees(55))),
-            SOURCE_2(new Pose2d(new Translation2d(1.267, FIELD_Y_LENGTH-0.753), Rotation2d.fromDegrees(-55)));
+            SOURCE_1(new Pose2d(new Translation2d(1.267, 0.753), Rotation2d.fromDegrees(55)), LedStates.SOURCE),
+            SOURCE_2(new Pose2d(new Translation2d(1.267, FIELD_Y_LENGTH-0.753), Rotation2d.fromDegrees(-55)), LedStates.SOURCE);
 
             private final Pose2d pose;
+            private final LedStates ledState;
             public static io.vavr.collection.List<Pose2d> reefLeft = io.vavr.collection.List.of(A.getPose2d(), C.getPose2d(), E.getPose2d(), G.getPose2d(), I.getPose2d(), K.getPose2d());
             public static io.vavr.collection.List<Pose2d> reefRight = io.vavr.collection.List.of(B.getPose2d(), D.getPose2d(), F.getPose2d(), H.getPose2d(), J.getPose2d(), L.getPose2d());
             public static io.vavr.collection.List<Pose2d> reefPoses = io.vavr.collection.List.of(A.getPose2d(), B.getPose2d(), C.getPose2d(), D.getPose2d(), E.getPose2d(), F.getPose2d(), G.getPose2d(), H.getPose2d(), I.getPose2d(), J.getPose2d(), K.getPose2d(), L.getPose2d());
             public static io.vavr.collection.List<Pose2d> sourcePoses = io.vavr.collection.List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d());
 
-            private FieldStates(int id, boolean isRight) {
+            private FieldStates(int id, boolean isRight, LedStates ledState) {
+                this.ledState = ledState;
                 Pose2d apriltag = APRIL_TAGS.get(id - 1).pose.toPose2d();
                 Translation2d offset = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(-6.25)).rotateBy(apriltag.getRotation());
                 Translation2d fudgeFactor  = FUDGE_FACTOR.rotateBy(apriltag.getRotation());
@@ -272,8 +275,13 @@ public class Constants {
                 this.pose = new Pose2d(apriltag.getX() + offset.getX() + fudgeFactor.getX() + leftRight.getX(), apriltag.getY() + offset.getY() + fudgeFactor.getY() + leftRight.getY(), apriltag.getRotation().plus(Rotation2d.k180deg));
             }
 
-            private FieldStates(Pose2d pose) {
+            private FieldStates(Pose2d pose, LedStates ledState) {
+                this.ledState = ledState;
                 this.pose = pose;
+            }
+
+            public LedStates getLedState() {
+                return this.ledState;
             }
 
             public Pose2d getPose2d() {
@@ -367,54 +375,23 @@ public class Constants {
 
     public static class LedConstants{
 
+        public static final int CANDLE_ID = 14;
+
         public static final int WHITE_VALUE = 0; //leds used don't have a white value
         public static final double r_SPEED = 0.75;
         public static final double c_SPEED = 1;
+
         public static final int STARTING_ID = 8;
-        public static final int PIVOT_COUNT = 200;
-        public static final int PIVOT_FRONT = 40;
-        public static final int PIVOT_BACK = 50;
-        public static final int NUM_LED = PIVOT_FRONT - 10;
+        public static final int NUM_LED = 27;
+        public static final int TOTAL_LEDS = STARTING_ID + NUM_LED;
+
         public static final int SPARKING = 1;
         public static final double COOLING = 0.3;
+        
         public static final double HOLDING_SPEED = 2;
+
         public static final double BRIGHTNESS = 1;
-        public static final int OFFSET = 5 + 55;
 
-        public static class RainbowAnimation {
-            public static final double BRIGHTNESS = 1;
-            public static final double SPEED = 1;
-
-        }
-
-        public enum Colors {
-            OFF(0,0,0,false),
-            ERROR(255, 0, 0, false),
-            PIECE(0, 255, 0, false),
-            CONFIGURED(0,255,0,false),
-            BLUE(48, 122, 171, false),
-            RED(171, 48, 97, false),
-            PURPLE(255, 0, 255, false),
-            GREEN(0, 255, 0, false),
-            ORANGE(255, 50, 0, false),
-    
-            FLAME(0,0,0,true),
-            CHARGE(255, 0, 0, true),
-            DISCHARGE(0, 0, 0, true);
-    
-            public final int r;
-            public final int b;
-            public final int g;
-            public final boolean animation;
-    
-            Colors(int r, int g, int b,boolean animation) {
-                this.r = r;
-                this.g = g;
-                this.b = b;
-                this.animation = animation;
-            }
-    
-        }
     }
 
     public static class IntakeConstants {
