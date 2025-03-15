@@ -6,7 +6,7 @@ public enum ElevatorStates {
     UNDEFINED,
     NEUTRAL(0),
     LOW_L1(0.13),
-    HIGH_L1(0.23),
+    HIGH_L1(0.26),
     L2(0.42),
     L3(0.845),
     L4(1.501),

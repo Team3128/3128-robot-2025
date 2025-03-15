@@ -1,5 +1,6 @@
 package frc.team3128.subsystems;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -329,14 +330,21 @@ public class Swerve extends SwerveBase {
     public Command autoAlign(boolean isRight) {
         final List<Pose2d> setpoints;
         setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
-        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)));
+        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), false);
     }
 
-    public Command autoAlign(Supplier<Pose2d> pose) {
+    public Command autoAlignSource() {
+        final List<Pose2d> setpoints = new ArrayList<>();
+        setpoints.add(FieldStates.SOURCE_1.getPose2d());
+        setpoints.add(FieldStates.SOURCE_2.getPose2d());
+        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), true);
+    }
+
+    public Command autoAlign(Supplier<Pose2d> pose, boolean backwards) {
         return Commands.sequence(
             Commands.runOnce(()-> {
-                setThrottle(0.6);
-                autoEnabled = true;
+                setThrottle(DriverStation.isAutonomous() ? 0.5 : 0.6);
+                Swerve.autoEnabled = true;
                 setPose(pose.get());
             }),
             waitUntil(()-> atTranslationSetpoint()).finallyDo(()-> Swerve.disable()).withTimeout(1.5),
@@ -344,10 +352,10 @@ public class Swerve extends SwerveBase {
                 // Camera.disableAll();
                 setThrottle(0.5);
                 Swerve.autoEnabled = false;
-                moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(getClosestReef().getRotation()));
+                moveBy(new Translation2d(FUDGE_FACTOR.getX() * (backwards ? 0 : 1), 0).rotateBy(getClosestReef().getRotation()));
                 RobotManager.getInstance().autoScore();
             }),
-            waitUntil(() -> atTranslationSetpoint()).withTimeout(1).finallyDo(()-> Swerve.disable()),
+            waitUntil(() -> backwards || atTranslationSetpoint()).withTimeout(1).finallyDo(()-> Swerve.disable()),
             Commands.runOnce(()-> {
                 // Camera.enableAll();
                 setThrottle(1);
@@ -356,7 +364,8 @@ public class Swerve extends SwerveBase {
     }
 
     public Command autoAlign(Pose2d pose) {
-        return autoAlign(() -> pose);
+        final Pose2d flippedPose = allianceFlipRotationally(pose);
+        return autoAlign(() -> flippedPose, false);
     }
 
     public boolean isConfigured() {
