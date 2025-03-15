@@ -55,9 +55,9 @@ public class ElevatorMechanism extends PositionSubsystemBase {
     }   
     
     public void dogLogPeriodic(){
-        DogLog.log(getName() + "Velocity", left.getVelocity());
-        DogLog.log(getName() + "Position", left.getPosition());
-        DogLog.log(getName() + "Applied Output", left.getAppliedOutput());
-        DogLog.log(getName() + "State", left.getState());
+        DogLog.log("Elevator/" + getName() + "Velocity", left.getVelocity());
+        DogLog.log("Elevator/" + getName() + "Position", left.getPosition());
+        DogLog.log("Elevator/" + getName() + "Applied Output", left.getAppliedOutput());
+        DogLog.log("Elevator/" + getName() + "State", left.getState());
     }
 }

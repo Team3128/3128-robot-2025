@@ -54,9 +54,9 @@ public class RollerMechanism extends VoltageSubsystemBase {
 	}
 
     public void dogLogPeriodic(){
-        DogLog.log(getName() + "Velocity", leader.getVelocity());
-        DogLog.log(getName() + "Position", leader.getPosition());
-        DogLog.log(getName() + "Applied Output", leader.getAppliedOutput());
-        DogLog.log(getName() + "State", leader.getState());
+        DogLog.log("Manipulator/" + getName() + "Velocity", leader.getVelocity());
+        DogLog.log("Manipulator/" + getName() + "Position", leader.getPosition());
+        DogLog.log("Manipulator/" + getName() + "Applied Output", leader.getAppliedOutput());
+        DogLog.log("Manipulator/" + getName() + "State", leader.getState());
     }
 }

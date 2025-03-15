@@ -37,7 +37,7 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
 	}
 
     public void dogLogPeriodic(){
-        DogLog.log("State", getState());
+        DogLog.log("Elevator/" + getName()+ " State: ", getState());
         ElevatorMechanism.getInstance().dogLogPeriodic();
     }
 }

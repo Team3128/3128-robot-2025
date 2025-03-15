@@ -54,9 +54,9 @@ public class PivotMechanism extends PositionSubsystemBase {
     }
     
     public void dogLogPeriodic(){
-        DogLog.log(getName() + "Velocity", leader.getVelocity());
-        DogLog.log(getName() + "Position", leader.getPosition());
-        DogLog.log(getName() + "Applied Output", leader.getAppliedOutput());
-        DogLog.log(getName() + "State", leader.getState());
+        DogLog.log("Intake/" + getName() + "Velocity", leader.getVelocity());
+        DogLog.log("Intake/" + getName() + "Position", leader.getPosition());
+        DogLog.log("Intake/" + getName() + "Applied Output", leader.getAppliedOutput());
+        DogLog.log("Intake/" + getName() + "State", leader.getState());
     }
 }

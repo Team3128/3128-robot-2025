@@ -42,6 +42,7 @@ import frc.team3128.subsystems.Climber.WinchMechanism;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
+import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Manipulator.Manipulator;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
@@ -73,6 +74,10 @@ public class RobotContainer {
     private ElevatorMechanism elevator;
     // private Manipulator manipulator;
     private Swerve swerve;
+    private Climber climber;
+    private Manipulator manip;
+    private Elevator elev;
+    private Intake intake;
 
     // private WinchMechanism winch;
 
@@ -90,6 +95,11 @@ public class RobotContainer {
 
     public RobotContainer() {
         swerve = Swerve.getInstance();
+        climber = Climber.getInstance();
+        manip = Manipulator.getInstance();
+        elev = Elevator.getInstance();
+        intake = Intake.getInstance();
+
         // winch = WinchMechanism.getInstance();
         
         NAR_CANSpark.maximumRetries = 2;
@@ -119,6 +129,7 @@ public class RobotContainer {
         initCameras();
         configureButtonBindings();
         initDashboard();
+        logData();
     }   
 
     private void configureButtonBindings() {
@@ -210,5 +221,16 @@ public class RobotContainer {
         dashboard.addUpdate("robotX", ()-> swerve.getPose().getX());
         dashboard.addUpdate("robotY", ()-> swerve.getPose().getY());
         dashboard.addUpdate("robotYaw", ()-> swerve.getPose().getRotation().getDegrees());
+    }
+
+    public void logData(){
+        swerve.dogLogPeriodic();
+        climber.dogLogPeriodic();
+        elev.dogLogPeriodic();
+        intake.dogLogPeriodic();
+        manip.dogLogPeriodic();
+        robot.dogLogPeriodic();
+
+
     }
 }

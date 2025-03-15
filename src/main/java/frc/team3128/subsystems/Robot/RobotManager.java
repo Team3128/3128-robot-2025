@@ -114,6 +114,6 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     }
 
     public void dogLogPeriodic(){
-        DogLog.log("State", getState());
+        DogLog.log("ROBOT/" +"State", getState());
     }
 }

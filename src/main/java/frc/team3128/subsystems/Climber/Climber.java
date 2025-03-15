@@ -59,7 +59,7 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 	}
 
     public void dogLogPeriodic(){
-        DogLog.log("State", getState());
+        DogLog.log("Climber/" +getName()+ " State: ", getState());
         RollerMechanism.getInstance().dogLogPeriodic();
     }
 }

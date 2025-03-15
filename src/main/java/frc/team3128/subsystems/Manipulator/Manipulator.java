@@ -39,7 +39,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 	}
 
     public void dogLogPeriodic(){
-        DogLog.log("State", getState());
-        PivotMechanism.getInstance().dogLogPeriodic();
+        DogLog.log("Manipulator/" + getName()+ " State: ", getState());
+        RollerMechanism.getInstance().dogLogPeriodic();
     }
 }

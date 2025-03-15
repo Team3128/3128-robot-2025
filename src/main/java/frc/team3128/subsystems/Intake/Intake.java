@@ -55,7 +55,7 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
 	}
 
     public void dogLogPeriodic(){
-        DogLog.log("State", getState());
+        DogLog.log("Intake/" + getName()+ " State: ", getState());
         PivotMechanism.getInstance().dogLogPeriodic();
     }
 }

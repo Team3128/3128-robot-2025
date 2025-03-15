@@ -393,12 +393,12 @@ public class Swerve extends SwerveBase {
 
     public void dogLogPeriodic(){
         for(int i = 0; i < 4; i++){
-            DogLog.log("State Mod " + i, modules[i].getState());
-            DogLog.log("Drive Motor Current " + i, modules[i].getDriveMotor().getStallCurrent());
-            DogLog.log("Angle Motor Current " + i, modules[i].getAngleMotor().getStallCurrent());
-            DogLog.log("Running State Mod " + i, modules[i].getRunningState());
+            DogLog.log("Swerve/" +"State Mod " + i, modules[i].getState());
+            DogLog.log("Swerve/" +"Drive Motor Current " + i, modules[i].getDriveMotor().getStallCurrent());
+            DogLog.log("Swerve/" +"Angle Motor Current " + i, modules[i].getAngleMotor().getStallCurrent());
+            DogLog.log("Swerve/" +"Running State Mod " + i, modules[i].getRunningState());
         }
-        DogLog.log("Speed", getSpeed());
-        DogLog.log("Pose", getPose());
+        DogLog.log("Swerve/" +"Speed", getSpeed());
+        DogLog.log("Swerve/" +"Pose", getPose());
     }
 }

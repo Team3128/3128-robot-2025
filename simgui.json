@@ -37,7 +37,8 @@
       "/Shuffleboard/WinchMechanism/PID_Controller": "PIDController",
       "/Shuffleboard/WinchMechanism/Run Volts": "Command",
       "/SmartDashboard/Alerts": "Alerts",
-      "/SmartDashboard/Auto Chooser": "String Chooser"
+      "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/PathPlanner": "Alerts"
     }
   },
   "NetworkTables": {
@@ -48,6 +49,12 @@
       "open": false
     },
     "transitory": {
+      "FMSInfo": {
+        "open": true
+      },
+      "Robot": {
+        "open": true
+      },
       "Shuffleboard": {
         ".metadata": {
           "open": true
