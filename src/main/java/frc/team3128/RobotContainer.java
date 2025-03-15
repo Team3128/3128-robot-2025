@@ -139,11 +139,11 @@ public class RobotContainer {
         controller.getButton(kY).onTrue(robot.getTempToggleCommand(RPL4, RSL4));
 
         controller.getButton(kLeftTrigger).onTrue(robot.getToggleCommand(INTAKE));
-        controller.getButton(kBack).onTrue(swerve.autoAlign(false).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(AUTO_HOLD)));
+        controller.getButton(kBack).onTrue(swerve.autoAlign(false).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(AUTO_HOLD).andThen(waitSeconds(0.1))));
         controller.getButton(kLeftBumper).onTrue(robot.getToggleCommand(EJECT_OUTTAKE));
 
         controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
-        controller.getButton(kStart).onTrue(swerve.autoAlign(true).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(AUTO_HOLD)));
+        controller.getButton(kStart).onTrue(swerve.autoAlign(true).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(AUTO_HOLD)).andThen(waitSeconds(0.1)));
         controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
 
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
