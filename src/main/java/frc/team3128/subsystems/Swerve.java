@@ -112,7 +112,7 @@ public class Swerve extends SwerveBase {
     public static final double translationTolerance = 0.02;
 
     public static final Constraints rotationConstraints = new Constraints(MAX_DRIVE_ANGULAR_VELOCITY, MAX_DRIVE_ANGULAR_ACCELERATION);
-    public static final PIDFFConfig rotationConfig = new PIDFFConfig(7); //Conservative Kp estimate (2*a_max/v_max)
+    public static final PIDFFConfig rotationConfig = new PIDFFConfig(10); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller rotationController = new Controller(rotationConfig, Controller.Type.POSITION); //Angular displacement error to output angular velocity
     public static final double rotationTolerance = Angle.ofRelativeUnits(1, Units.Degree).in(Units.Radian);
 
@@ -322,12 +322,22 @@ public class Swerve extends SwerveBase {
         moveTo(setpoint.getTranslation());
     }
 
+    public Command autoAlign(FieldStates state) {
+        return autoAlign(state.getPose2d());
+    }
+
     public Command autoAlign(boolean isRight) {
+        final List<Pose2d> setpoints;
+        setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
+        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)));
+    }
+
+    public Command autoAlign(Supplier<Pose2d> pose) {
         return Commands.sequence(
             Commands.runOnce(()-> {
                 setThrottle(0.6);
                 autoEnabled = true;
-                pathToReef(isRight);
+                setPose(pose.get());
             }),
             waitUntil(()-> atTranslationSetpoint()).finallyDo(()-> Swerve.disable()).withTimeout(1.5),
             Commands.runOnce(()-> {
@@ -343,6 +353,10 @@ public class Swerve extends SwerveBase {
                 setThrottle(1);
             })
         ).withTimeout(5);
+    }
+
+    public Command autoAlign(Pose2d pose) {
+        return autoAlign(() -> pose);
     }
 
     public boolean isConfigured() {

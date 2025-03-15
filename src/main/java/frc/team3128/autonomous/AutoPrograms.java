@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.Robot;
+import frc.team3128.Constants.FieldConstants.FieldStates;
 // import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Robot.RobotManager;
@@ -134,14 +135,30 @@ public class AutoPrograms {
         //     waitSeconds(0.1)
         // ));
 
-        NamedCommands.registerCommand("Score L4", 
+        for (FieldStates reef : FieldStates.values()) {
+            if (reef.name().length() == 1) {
+                NamedCommands.registerCommand(
+                    "Score L4 " + reef.name(),
+                    parallel(
+                        run(() -> swerve.drive(0, 0, 0)),
+                        sequence(
+                            waitSeconds(0.5),
+                            robot.setStateCommand(RPL4)
+                        )
+                    ).withDeadline(swerve.autoAlign(reef))
+                );
+            }
+        }
+
+        NamedCommands.registerCommand(
+            "Score L4",
             parallel(
-                run(()-> swerve.drive(0,0,0)),
+                run(() -> swerve.drive(0, 0, 0)),
                 sequence(
                     waitSeconds(0.5),
-                    robot.setStateCommand(RPL3)
+                    robot.setStateCommand(RPL4)
                 )
-            ).withDeadline(swerve.autoAlign(false))
+            ).withDeadline(swerve.autoAlign(true))
         );
 
         NamedCommands.registerCommand("Score L2", sequence(
