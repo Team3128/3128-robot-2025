@@ -352,7 +352,7 @@ public class Swerve extends SwerveBase {
                 // Camera.disableAll();
                 setThrottle(0.5);
                 Swerve.autoEnabled = false;
-                moveBy(new Translation2d(FUDGE_FACTOR.getX() * (backwards ? 0 : 1), 0).rotateBy(getClosestReef().getRotation()));
+                if (!backwards) moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(getClosestReef().getRotation()));
                 RobotManager.getInstance().autoScore();
             }),
             waitUntil(() -> backwards || atTranslationSetpoint()).withTimeout(1).finallyDo(()-> Swerve.disable()),
