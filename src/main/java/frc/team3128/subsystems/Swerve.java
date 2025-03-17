@@ -183,7 +183,8 @@ public class Swerve extends SwerveBase {
      */
     @Override
     public void drive(ChassisSpeeds velocity){
-        if ((Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) >= TRANSLATIONAL_DEADBAND) ||
+        // if ((Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) >= TRANSLATIONAL_DEADBAND) ||
+        if(
             (Math.abs(velocity.omegaRadiansPerSecond) >= ROTATIONAL_DEADBAND)
         ) {
             translationController.disable();
@@ -358,6 +359,7 @@ public class Swerve extends SwerveBase {
             waitUntil(() -> backwards || atTranslationSetpoint()).withTimeout(1).finallyDo(()-> Swerve.disable()),
             Commands.runOnce(()-> {
                 // Camera.enableAll();
+                Swerve.autoEnabled = false;
                 setThrottle(1);
             })
         ).withTimeout(5);

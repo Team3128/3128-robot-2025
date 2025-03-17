@@ -144,7 +144,7 @@ public class AutoPrograms {
                         run(() -> swerve.drive(0, 0, 0)),
                         sequence(
                             waitSeconds(0.5),
-                            robot.setStateCommand(RPL4)
+                            robot.setStateCommand(RPL3)
                         )
                     ).withDeadline(swerve.autoAlign(state.getPose2d()).
                         andThen(() -> robot.autoScore()).
