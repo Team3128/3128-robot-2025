@@ -331,17 +331,17 @@ public class Swerve extends SwerveBase {
     public Command autoAlign(boolean isRight) {
         final List<Pose2d> setpoints;
         setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
-        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), false);
+        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), true);
     }
 
     public Command autoAlignSource() {
         final List<Pose2d> setpoints = new ArrayList<>();
         setpoints.add(FieldStates.SOURCE_1.getPose2d());
         setpoints.add(FieldStates.SOURCE_2.getPose2d());
-        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), true);
+        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), false);
     }
 
-    public Command autoAlign(Supplier<Pose2d> pose, boolean backwards) {
+    public Command autoAlign(Supplier<Pose2d> pose, boolean shouldRam) {
         return Commands.sequence(
             Commands.runOnce(()-> {
                 setThrottle(DriverStation.isAutonomous() ? 0.5 : 0.6);
@@ -353,10 +353,10 @@ public class Swerve extends SwerveBase {
                 // Camera.disableAll();
                 setThrottle(0.5);
                 Swerve.autoEnabled = false;
-                if (!backwards) moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(getClosestReef().getRotation()));
+                if (shouldRam) moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(getClosestReef().getRotation()));
                 RobotManager.getInstance().autoScore();
             }),
-            waitUntil(() -> backwards || atTranslationSetpoint()).withTimeout(1).finallyDo(()-> Swerve.disable()),
+            waitUntil(() -> !shouldRam || atTranslationSetpoint()).withTimeout(1).finallyDo(()-> Swerve.disable()),
             Commands.runOnce(()-> {
                 // Camera.enableAll();
                 Swerve.autoEnabled = false;

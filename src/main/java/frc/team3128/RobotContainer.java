@@ -150,12 +150,12 @@ public class RobotContainer {
 
         controller.getButton(kBack).onTrue(sequence(
             swerve.autoAlign(false).andThen(() -> robot.autoScore())
-            //.beforeStarting(robot.setStateCommand(AUTO_HOLD).andThen(none()))
+            .beforeStarting(robot.setStateCommand(AUTO_HOLD))
         ));
 
         controller.getButton(kStart).onTrue(sequence(
             swerve.autoAlign(true).andThen(() -> robot.autoScore())
-            //.beforeStarting(robot.setStateCommand(AUTO_HOLD).andThen(none()))
+            .beforeStarting(robot.setStateCommand(AUTO_HOLD))
 
         ));
 

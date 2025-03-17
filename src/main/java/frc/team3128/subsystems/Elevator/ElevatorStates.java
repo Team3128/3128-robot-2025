@@ -10,7 +10,7 @@ public enum ElevatorStates {
     L2(0.42),
     L3(0.845),
     L4(1.501),
-    AUTO_HOLD(0.42);
+    AUTO_HOLD(0.65);
 
     private double setpoint;
     private Neutral neutral;

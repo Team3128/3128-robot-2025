@@ -57,7 +57,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     public Command updateSubsystemStates(RobotStates nextState) {
         return sequence(
-            waitUntil(()-> (!Swerve.autoEnabled)),
+            waitUntil(()-> (!Swerve.autoEnabled)).onlyIf(()-> nextState.getWaitForAutoEnabled()),
             elevator.setStateCommand(nextState.getElevatorState()).unless(()-> nextState.getElevatorState() == ElevatorStates.UNDEFINED),
             manipulator.setStateCommand(nextState.getManipulatorState()).unless(()-> nextState.getManipulatorState() == ManipulatorStates.UNDEFINED),
             intake.setStateCommand(nextState.getIntakeState()).unless(()-> nextState.getIntakeState() == IntakeStates.UNDEFINED),
@@ -132,11 +132,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
         transitionMap.addTransition(RPL1, RSL1, sequence(
             waitUntil(()-> !Swerve.autoEnabled),
-            intake.setStateCommand(RSL1.getIntakeState()).unless(()-> RSL1.getIntakeState() == IntakeStates.UNDEFINED),
-            climber.setStateCommand(RSL1.getClimberState()).unless(()-> RSL1.getClimberState() == ClimberStates.UNDEFINED),
-            waitUntil(()-> climber.winch.atSetpoint()).unless(()-> RSL1.getClimberState() == ClimberStates.UNDEFINED),
             runOnce(()-> swerve.setThrottle(RSL1.getThrottle())).unless(()-> DriverStation.isAutonomous()),
-
             manipulator.setStateCommand(RSL1.getManipulatorState()),
             waitSeconds(0.25),
             elevator.setStateCommand(RSL1.getElevatorState())
