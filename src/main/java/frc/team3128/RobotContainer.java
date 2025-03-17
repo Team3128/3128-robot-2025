@@ -139,15 +139,29 @@ public class RobotContainer {
         controller.getButton(kY).onTrue(robot.getTempToggleCommand(RPL4, RSL4));
 
         controller.getButton(kLeftTrigger).onTrue(robot.getToggleCommand(INTAKE));
-        controller.getButton(kBack).onTrue(swerve.autoAlign(false).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(AUTO_HOLD)));
         controller.getButton(kLeftBumper).onTrue(robot.getToggleCommand(EJECT_OUTTAKE));
 
         controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
-        controller.getButton(kStart).onTrue(swerve.autoAlign(true).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(AUTO_HOLD)));
         controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
 
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
-        controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.snapToElement()));
+        //controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.snapToElement()));
+        controller.getButton(kLeftStick).onTrue(swerve.autoAlignSource());
+
+        controller.getButton(kBack).onTrue(sequence(
+            swerve.autoAlign(false).andThen(() -> robot.autoScore())
+            //.beforeStarting(robot.setStateCommand(AUTO_HOLD).andThen(none()))
+        ));
+
+        controller.getButton(kStart).onTrue(sequence(
+            swerve.autoAlign(true).andThen(() -> robot.autoScore())
+            //.beforeStarting(robot.setStateCommand(AUTO_HOLD).andThen(none()))
+
+        ));
+
+        // controller.getButton(kBack).onTrue(swerve.autoAlign(false).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(AUTO_HOLD)).andThen(waitSeconds(0.1)));
+        // controller.getButton(kStart).onTrue(swerve.autoAlign(true).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(AUTO_HOLD)).andThen(waitSeconds(0.1)));
+
 
         // controller2.getButton(kX).onTrue(
         //     swerve.characterizeTranslation(0, 1, 10))
@@ -161,13 +175,13 @@ public class RobotContainer {
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
         // controller.getRightPOVButton().onTrue(runOnce(()-> swerve.zeroLock()));
         // controller.getLeftPOVButton().onTrue(swerve.autoAlign(false));
-        controller.getUpPOVButton().onTrue(AutoPrograms.getInstance().pathToPose(swerve.getPose().nearest(allianceFlip(FieldStates.sourcePoses.asJava()))));
-        controller.getRightPOVButton().onTrue(swerve.autoAlign(true).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(RPL2).andThen(waitSeconds(0.1))));
+        //controller.getUpPOVButton().onTrue(swerve.autoAlignSource());
+        // controller.getRightPOVButton().onTrue(swerve.autoAlign(true).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(AUTO_HOLD).andThen(waitSeconds(0.1))));
         // ).finallyDo(() -> {
         //     Camera.enableAll();
         //     swerve.setThrottle(1);
         // }));
-        controller.getLeftPOVButton().onTrue(swerve.autoAlign(false).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(RPL2).andThen(waitSeconds(0.1))));
+        // controller.getLeftPOVButton().onTrue(swerve.autoAlign(false).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(AUTO_HOLD).andThen(waitSeconds(0.1))));
         // controller.getLeftPOVButton().onTrue(sequence(
         //     runOnce(() -> swerve.setThrottle(0.3)),
         //     runOnce(()-> swerve.pathToReef(false)),
@@ -190,6 +204,7 @@ public class RobotContainer {
     public void initCameras() {
         Log.info("tags", APRIL_TAGS.get(0).toString());
         Camera.setResources(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), new AprilTagFieldLayout(APRIL_TAGS, FIELD_X_LENGTH, FIELD_Y_LENGTH), () -> swerve.getPose());
+        Camera.addIgnoredTags(4, 5, 14, 15);
         // Camera.setThresholds(0.3, 3, 0.3);
         if (Robot.isReal()) {
             Camera backRightCamera = new Camera("BOTTOM_RIGHT", 0.27, -0.27,  Units.degreesToRadians(-15), 0, 0);

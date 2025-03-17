@@ -1,0 +1,73 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of RIGHT_BARGE to E"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score L4 E"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of E to RIGHT_SOURCE"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align SOURCE_1"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.3
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score L4 C"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of C to RIGHT_SOURCE"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align SOURCE_1"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.3
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score L4 D"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

@@ -107,6 +107,7 @@ public class Robot extends NAR_Robot {
     @Override
     public void autonomousExit() {
         CommandScheduler.getInstance().cancelAll();
+        ElevatorMechanism.getInstance().stopCommand().schedule();
     }
 
     @Override
@@ -130,15 +131,17 @@ public class Robot extends NAR_Robot {
         CommandScheduler.getInstance().cancelAll();
         RobotManager.getInstance().stopCommand().schedule();
         // Log.info("State", RobotManager.getInstance().getState().name());
+        Swerve.autoEnabled = false;
         RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL).schedule();
         PivotMechanism.getInstance().stopCommand().schedule();
+        ElevatorMechanism.getInstance().stopCommand().schedule();
         // Log.info("State", RobotManager.getInstance().getState().name());
         Camera.enableAll();
         sequence(
             waitSeconds(115),
             print("CLIMBING B"),
             RobotManager.getInstance().setStateCommand(RobotStates.PRE_CLIMB_PRIME),
-            waitSeconds(15),
+            waitSeconds(16),
             RobotManager.getInstance().setStateCommand(RobotStates.CLIMB)
         ).schedule();
     }

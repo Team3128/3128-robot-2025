@@ -13,7 +13,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Score L4 A"
+            "name": "Score L4 F"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of F to RIGHT_SOURCE"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align SOURCE_1"
           }
         }
       ]

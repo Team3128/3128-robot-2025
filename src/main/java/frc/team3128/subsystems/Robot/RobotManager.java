@@ -2,6 +2,7 @@ package frc.team3128.subsystems.Robot;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
+import common.utility.shuffleboard.NAR_Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Climber.Climber;
@@ -47,6 +48,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         swerve = Swerve.getInstance();
 
         initShuffleboard();
+        NAR_Shuffleboard.addData(this.getName(), "Auto Enabled", () -> Swerve.autoEnabled);
     }
 
     public static synchronized RobotManager getInstance() {
@@ -59,7 +61,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     public Command updateSubsystemStates(RobotStates nextState) {
         return sequence(
-            waitUntil(()-> !Swerve.autoEnabled),
+            waitUntil(()-> (!Swerve.autoEnabled)),
             elevator.setStateCommand(nextState.getElevatorState()).unless(()-> nextState.getElevatorState() == ElevatorStates.UNDEFINED),
             manipulator.setStateCommand(nextState.getManipulatorState()).unless(()-> nextState.getManipulatorState() == ManipulatorStates.UNDEFINED),
             intake.setStateCommand(nextState.getIntakeState()).unless(()-> nextState.getIntakeState() == IntakeStates.UNDEFINED),
