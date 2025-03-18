@@ -106,6 +106,7 @@ public class Robot extends NAR_Robot {
     public void autonomousExit() {
         CommandScheduler.getInstance().cancelAll();
         ElevatorMechanism.getInstance().stopCommand().schedule();
+        Commands.runOnce(()-> Swerve.autoEnabled = false).schedule();
     }
 
     @Override

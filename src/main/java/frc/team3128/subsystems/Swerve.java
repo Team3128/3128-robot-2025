@@ -108,16 +108,16 @@ public class Swerve extends SwerveBase {
 
     // x * kP = dx/dt && (v_max)^2 = 2*a_max*x
     public static final Constraints translationConstraints = new Constraints(MAX_DRIVE_SPEED, MAX_DRIVE_ACCELERATION);
-    public static final PIDFFConfig translationConfig = new PIDFFConfig(7);// used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
+    public static final PIDFFConfig translationConfig = new PIDFFConfig(5);// used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller translationController = new Controller(translationConfig, Controller.Type.POSITION); //Displacement error to output velocity
-    public static final double translationTolerance = 0.02;
+    public static final double translationTolerance = 0.03;
 
     public static final Constraints rotationConstraints = new Constraints(MAX_DRIVE_ANGULAR_VELOCITY, MAX_DRIVE_ANGULAR_ACCELERATION);
     public static final PIDFFConfig rotationConfig = new PIDFFConfig(10); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller rotationController = new Controller(rotationConfig, Controller.Type.POSITION); //Angular displacement error to output angular velocity
     public static final double rotationTolerance = Angle.ofRelativeUnits(1, Units.Degree).in(Units.Radian);
 
-    private static double translationPlateauThreshold = 10;
+    private static double translationPlateauThreshold = 5;
     private static double translationPlateauCount = 0;
 
     private static double rotationPlateauThreshold = 10;
@@ -344,25 +344,24 @@ public class Swerve extends SwerveBase {
     public Command autoAlign(Supplier<Pose2d> pose, boolean shouldRam) {
         return Commands.sequence(
             Commands.runOnce(()-> {
-                setThrottle(DriverStation.isAutonomous() ? 0.5 : 0.6);
+                setThrottle(0.5);
                 Swerve.autoEnabled = true;
                 setPose(pose.get());
             }),
-            waitUntil(()-> atTranslationSetpoint()).finallyDo(()-> Swerve.disable()).withTimeout(1.5),
+            waitUntil(()-> atTranslationSetpoint() && atRotationSetpoint()).finallyDo(()-> Swerve.disable()).withTimeout(2),
             Commands.runOnce(()-> {
                 // Camera.disableAll();
                 setThrottle(0.5);
                 Swerve.autoEnabled = false;
-                if (shouldRam) moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(getClosestReef().getRotation()));
-                RobotManager.getInstance().autoScore();
+                if(shouldRam) moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(getClosestReef().getRotation()));
             }),
-            waitUntil(() -> !shouldRam || atTranslationSetpoint()).withTimeout(1).finallyDo(()-> Swerve.disable()),
+            waitUntil(() -> !shouldRam || atTranslationSetpoint()).withTimeout(0.5).finallyDo(()-> Swerve.disable()),
             Commands.runOnce(()-> {
                 // Camera.enableAll();
                 Swerve.autoEnabled = false;
-                setThrottle(1);
+                setThrottle(fast);
             })
-        ).withTimeout(5);
+        ).withTimeout(6);
     }
 
     public Command autoAlign(Pose2d pose) {

@@ -63,13 +63,21 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             intake.setStateCommand(nextState.getIntakeState()).unless(()-> nextState.getIntakeState() == IntakeStates.UNDEFINED),
             climber.setStateCommand(nextState.getClimberState()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED),
             waitUntil(()-> climber.winch.atSetpoint()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED),
-            runOnce(()-> swerve.setThrottle(nextState.getThrottle())).unless(()-> DriverStation.isAutonomous())
+            runOnce(()-> swerve.setThrottle(nextState.getThrottle())).unless(()-> DriverStation.isAutonomous() || Swerve.autoEnabled)
         );
     }
 
     public void autoScore() {
         if (getState() == RobotStates.NEUTRAL || getState() == RobotStates.FULL_NEUTRAL)
             return;
+
+        
+        if(getState() == AUTO_HOLD) {
+            setStateCommand(NEUTRAL).schedule();
+            return;
+        }
+
+
         coupledStates.forEach((Pair<RobotStates, RobotStates> coupledState) -> {
             if (coupledState.getFirst() == getState()) {
                 sequence(

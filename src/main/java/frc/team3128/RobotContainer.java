@@ -156,7 +156,6 @@ public class RobotContainer {
         controller.getButton(kStart).onTrue(sequence(
             swerve.autoAlign(true).andThen(() -> robot.autoScore())
             .beforeStarting(robot.setStateCommand(AUTO_HOLD))
-
         ));
 
         // controller.getButton(kBack).onTrue(swerve.autoAlign(false).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(AUTO_HOLD)).andThen(waitSeconds(0.1)));
