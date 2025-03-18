@@ -14,12 +14,10 @@ import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix.led.ColorFlowAnimation;
 import com.ctre.phoenix.led.FireAnimation;
-
 import static frc.team3128.Constants.LedConstants.*;
 import static frc.team3128.Constants.SwerveConstants.DRIVETRAIN_CANBUS_NAME;
 import static frc.team3128.subsystems.Led.LedStates.*;
-
-import java.util.List;
+import  java.util.List;
 
 public class Led extends FSMSubsystemBase<LedStates> {
 
@@ -72,6 +70,40 @@ public class Led extends FSMSubsystemBase<LedStates> {
                 candle.animate(new FireAnimation(BRIGHTNESS, r_SPEED, NUM_LED, SPARKING, COOLING, true, STARTING_ID), 0);
                 break;
             case REEF_SCORE:
+                candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
+            case CLIMB_PRIME:
+                candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
+                
+            case CLIMB:
+                candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
+
+            case RPL1:
+                candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
+
+            case RPL2:
+                candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
+
+            case RPL3:
+                candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
+
+            case RPL4:
+                candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
+            case RSL1:
+                candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
+            case RSL2:
+                candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
+            case RSL3:
+                candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
+            case RSL4:
+                candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
+
+            case INTAKE:
+                candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
+            case EJECT_OUTTAKE:
+                candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
+            case PROCESSOR_PRIME:
+                candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
+            case PROCESSOR_OUTTAKE:
                 candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
             default:
                 break;

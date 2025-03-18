@@ -1,6 +1,6 @@
 package frc.team3128.subsystems.Robot;
 
-import static frc.team3128.subsystems.Intake.IntakeStates.INTAKE;
+import frc.team3128.subsystems.Intake.IntakeStates.INTAKE;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -11,6 +11,7 @@ import frc.team3128.subsystems.Led.LedStates;
 import frc.team3128.subsystems.Manipulator.ManipulatorStates;
 import io.vavr.collection.List;
 import static frc.team3128.Constants.DriveConstants.slow;
+import frc.team3128.subsystems.Intake.IntakeStates;
 
 public enum RobotStates {
     UNDEFINED(ElevatorStates.UNDEFINED, IntakeStates.UNDEFINED, ManipulatorStates.UNDEFINED, ClimberStates.UNDEFINED, LedStates.UNDEFINED, 0),
