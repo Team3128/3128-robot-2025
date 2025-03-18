@@ -11,11 +11,13 @@ public class Intake extends VoltageSubsystemBase {
 
     private static Intake instance;
 
-    public static NAR_TalonFX rollerMotor = new NAR_TalonFX(ROLLER_ID, "rio");
+    public static NAR_TalonFX intakeMotor = new NAR_TalonFX(ROLLER_ID, "rio");
+    public static NAR_CANSpark rollerMotor = new NAR_CANSpark(INTAKE_ID, ControllerType.CAN_SPARK_FLEX);
+    public static NAR_TalonFX manipMotor = new NAR_TalonFX(MANIP_ID, "rio");
     //public static NAR_CANSpark serial = new NAR_CANSpark(SERIAL_ID, ControllerType.CAN_SPARK_FLEX);
     
     private Intake() {
-        super(CURRENT_THRESHOLD, rollerMotor);
+        super(CURRENT_THRESHOLD, intakeMotor,manipMotor);
 
         configMotors();
     }
@@ -37,7 +39,7 @@ public class Intake extends VoltageSubsystemBase {
             ROLLER_STATUS_FRAME
         );
 
-        rollerMotor.configMotor(intakeConfig);
+        manipMotor.configMotor(intakeConfig);
 
         MotorConfig serialConfig = new MotorConfig(
             SERIAL_GEAR_RATIO,

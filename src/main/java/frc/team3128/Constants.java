@@ -165,10 +165,10 @@ public class Constants {
         public static final int MOD3_CANCODER_ID = 13;
 
         /* Cancoder Offsets */
-        public static final double MOD0_CANCODER_OFFSET = -162.5976;
-        public static final double MOD1_CANCODER_OFFSET = -112.1484;
-        public static final double MOD2_CANCODER_OFFSET = 113.3789;
-        public static final double MOD3_CANCODER_OFFSET = 59.9414;
+        public static final double MOD0_CANCODER_OFFSET = -74.44335937500001;
+        public static final double MOD1_CANCODER_OFFSET = 116.3671875;
+        public static final double MOD2_CANCODER_OFFSET = 98.26171875;
+        public static final double MOD3_CANCODER_OFFSET = -8.61328125;
 
         public static final double RAMP_TIME = 3;
 
@@ -443,7 +443,8 @@ public class Constants {
     public static class IntakeConstants {
 
         public static final int ROLLER_ID = 42;
-        public static final int SERIAL_ID = 41;
+        public static final int MANIP_ID = 40;
+        public static final int INTAKE_ID = 41;
 
         public static final double ROLLER_GEAR_RATIO = 1;
         public static final double ROLLER_SAMPLE_PER_MINUTE = 60;

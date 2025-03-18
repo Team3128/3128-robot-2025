@@ -96,19 +96,60 @@ public class RobotContainer {
     private void configureButtonBindings() {
         // buttonPad.getButton(1).onTrue(runOnce(()-> swerve.setBrakeMode(false)).ignoringDisable(true)).onFalse(runOnce(()-> swerve.setBrakeMode(true)).ignoringDisable(true));
         // buttonPad.getButton(2).onTrue(swerve.identifyOffsetsCommand());
-        controller.getButton(XboxButton.kY).onTrue(runOnce(()-> swerve.resetGyro(0)));
+        controller.getButton(XboxButton.kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
         // controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.zeroLock()).andThen(runOnce(()-> swerve.resetEncoders())));
 
         controller.getButton(XboxButton.kA).onTrue(sequence(
-            runOnce(()->Intake.rollerMotor.set(0.6))
+            runOnce(()->Intake.rollerMotor.set(0.8))
         )).onFalse(sequence(
             runOnce(()->Intake.rollerMotor.set(0))
         ));
 
         controller.getButton(XboxButton.kB).onTrue(sequence(
-            runOnce(()->Intake.rollerMotor.set(-0.6))
+            runOnce(()->Intake.intakeMotor.set(-0.075))
         )).onFalse(sequence(
-            runOnce(()->Intake.rollerMotor.set(0))
+            runOnce(()->Intake.intakeMotor.set(0))
+        ));
+
+        controller.getButton(XboxButton.kY).onTrue(sequence(
+            runOnce(()->Intake.intakeMotor.set(-.6))
+        )).onFalse(sequence(
+            runOnce(()->Intake.intakeMotor.set(0))
+        ));
+
+        controller.getButton(XboxButton.kX).onTrue(sequence(
+            runOnce(()->Intake.intakeMotor.set(.6))
+        )).onFalse(sequence(
+            runOnce(()->Intake.intakeMotor.set(0))
+        ));
+
+        controller.getButton(XboxButton.kLeftTrigger).onTrue(sequence(
+            runOnce(()->Intake.manipMotor.set(0.8))
+        )).onFalse(sequence(
+            runOnce(()->Intake.manipMotor.set(0))
+        ));
+
+        controller.getButton(XboxButton.kLeftBumper).onTrue(sequence(
+            runOnce(()->Intake.manipMotor.set(-.4))
+        )).onFalse(sequence(
+            runOnce(()->Intake.manipMotor.set(0))
+        ));
+
+        controller.getButton(XboxButton.kRightTrigger).onTrue(sequence(
+            runOnce(()->Intake.rollerMotor.set(0.8)),
+            runOnce(()->Intake.intakeMotor.set(-.6))
+
+            
+        )).onFalse(sequence(
+            runOnce(()->Intake.rollerMotor.set(0)),
+            runOnce(()->Intake.intakeMotor.set(0))
+
+        ));
+
+        controller.getButton(XboxButton.kRightBumper).onTrue(sequence(
+            runOnce(()->Intake.manipMotor.set(-.05))
+        )).onFalse(sequence(
+            runOnce(()->Intake.manipMotor.set(0))
         ));
             
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
