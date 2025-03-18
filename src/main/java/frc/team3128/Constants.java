@@ -49,11 +49,11 @@ public class Constants {
         // Theoretical: v = 4.96824, omega = 11.5
         // Real: v = 4.5, omega = 10
         // For safety, use less than theoretical and real values
-        public static final double MAX_DRIVE_SPEED = 3;//4.8; //meters per second - 16.3 ft/sec
+        public static final double MAX_DRIVE_SPEED = 4.5;//4.8; //meters per second - 16.3 ft/sec
         public static final double MAX_ATTAINABLE_DRIVE_SPEED = MAX_DRIVE_SPEED; //Stole from citrus.
-        public static final double MAX_DRIVE_ACCELERATION = 6.6;//5;
-        public static final double MAX_DRIVE_ANGULAR_VELOCITY = 1364 / 360;
-        public static final double MAX_DRIVE_ANGULAR_ACCELERATION = 2 * Math.PI; //I stole from citrus.
+        public static final double MAX_DRIVE_ACCELERATION = 3.4;//5;
+        public static final double MAX_DRIVE_ANGULAR_VELOCITY = 2 * Math.PI;//10
+        public static final double MAX_DRIVE_ANGULAR_ACCELERATION = 10;//2 * Math.PI; //I stole from citrus.
 
         public static final double driveMotorGearRatio = 0;
         public static final double angleMotorGearRatio = 150 / 7; 
@@ -238,7 +238,7 @@ public class Constants {
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(317); // meters = 8.052
         public static final Translation2d FIELD = new Translation2d(FIELD_X_LENGTH, FIELD_Y_LENGTH);
         public static final Translation2d CENTER_FIELD = FIELD.div(2);
-        public static final Translation2d FUDGE_FACTOR = new Translation2d(0.2, 0);
+        public static final Translation2d FUDGE_FACTOR = new Translation2d(0.1, 0);
 
         public static final Translation2d reefShift = new Translation2d(0.35/2, 0.);
 
@@ -260,8 +260,8 @@ public class Constants {
             SOURCE_2(new Pose2d(new Translation2d(1.267, FIELD_Y_LENGTH-0.753), Rotation2d.fromDegrees(-55)));
 
             private final Pose2d pose;
-            public static io.vavr.collection.List<Pose2d> reefLeft = io.vavr.collection.List.of(A.getPose2d(), C.getPose2d(), E.getPose2d(), G.getPose2d(), I.getPose2d(), K.getPose2d());
-            public static io.vavr.collection.List<Pose2d> reefRight = io.vavr.collection.List.of(B.getPose2d(), D.getPose2d(), F.getPose2d(), H.getPose2d(), J.getPose2d(), L.getPose2d());
+            public static io.vavr.collection.List<Pose2d> reefLeft = io.vavr.collection.List.of(A.getPose2d(), C.getPose2d(), F.getPose2d(), H.getPose2d(), J.getPose2d(), K.getPose2d());
+            public static io.vavr.collection.List<Pose2d> reefRight = io.vavr.collection.List.of(B.getPose2d(), D.getPose2d(), E.getPose2d(), G.getPose2d(), I.getPose2d(), L.getPose2d());
             public static io.vavr.collection.List<Pose2d> reefPoses = io.vavr.collection.List.of(A.getPose2d(), B.getPose2d(), C.getPose2d(), D.getPose2d(), E.getPose2d(), F.getPose2d(), G.getPose2d(), H.getPose2d(), I.getPose2d(), J.getPose2d(), K.getPose2d(), L.getPose2d());
             public static io.vavr.collection.List<Pose2d> sourcePoses = io.vavr.collection.List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d());
 

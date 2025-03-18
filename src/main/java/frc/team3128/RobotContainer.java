@@ -37,7 +37,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
-import frc.team3128.subsystems.Swerve;
+
 import frc.team3128.subsystems.Climber.Climber;
 import frc.team3128.subsystems.Climber.ClimberStates;
 import frc.team3128.subsystems.Climber.WinchMechanism;
@@ -49,6 +49,7 @@ import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
 import frc.team3128.subsystems.Led.Led;
 import frc.team3128.subsystems.Led.LedStates;
+import frc.team3128.subsystems.Swerve.SwerveMechanism;
 
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 
@@ -76,7 +77,7 @@ public class RobotContainer {
     private RobotManager robot;
     private ElevatorMechanism elevator;
     // private Manipulator manipulator;
-    private Swerve swerve;
+    private SwerveMechanism swerve;
     private Led led;
 
     // private WinchMechanism winch;
@@ -94,7 +95,7 @@ public class RobotContainer {
 
 
     public RobotContainer() {
-        swerve = Swerve.getInstance();
+        swerve = SwerveMechanism.getInstance();
         // winch = WinchMechanism.getInstance();
         
         NAR_CANSpark.maximumRetries = 2;
@@ -145,21 +146,18 @@ public class RobotContainer {
 
         controller.getButton(kLeftTrigger).onTrue(robot.getToggleCommand(INTAKE));
         controller.getButton(kLeftBumper).onTrue(robot.getToggleCommand(EJECT_OUTTAKE));
-        controller.getButton(kBack).onTrue(robot.getToggleCommand(HIGH_INTAKE));
 
         controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
         controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
-        controller.getButton(kStart).onTrue(robot.setStateCommand(FULL_NEUTRAL));
 
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
-        controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.snapToElement()));
+        controller.getButton(kLeftStick).onTrue(swerve.autoAlignSource());
 
-        // controller2.getButton(kX).onTrue(
-        //     swerve.characterizeTranslation(0, 1, 10))
-        // );
-        // controller2.getButton(kY).onTrue(
-        //     swerve.characterizeRotation(0, 1, 10))
-        // );
+        controller.getButton(kBack).onTrue(sequence(
+            robot.setStateCommand(AUTO_HOLD),
+            swerve.autoAlign(false),
+            runOnce(()-> robot.autoScore())
+        ));
 
        // controller.getRightPOVButton().onTrue(runOnce(()-> swerve.zeroLock()));
         // controller.getLeftPOVButton().onTrue(swerve.autoAlign(false));
@@ -200,25 +198,33 @@ public class RobotContainer {
             Camera.enableAll();
             swerve.setThrottle(1);
         }));
+        controller.getButton(kStart).onTrue(sequence(
+            robot.setStateCommand(AUTO_HOLD),
+            swerve.autoAlign(true),
+            runOnce(()-> robot.autoScore())
+        ));
+        
+        controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
     }
 
     public void initCameras() {
         Log.info("tags", APRIL_TAGS.get(0).toString());
         Camera.setResources(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), new AprilTagFieldLayout(APRIL_TAGS, FIELD_X_LENGTH, FIELD_Y_LENGTH), () -> swerve.getPose());
-        Camera.setThresholds(0.3, 3, 0.3);
+        Camera.addIgnoredTags(4, 5, 14, 15);
+        // Camera.setThresholds(0.3, 3, 0.3);
         if (Robot.isReal()) {
             Camera backRightCamera = new Camera("BOTTOM_RIGHT", 0.27, -0.27,  Units.degreesToRadians(-15), 0, 0);
-            // backRightCamera.setThresholds(0.3, 1.5, 0.3);
+            backRightCamera.setThresholds(0.3, 3, 0.3);
             Camera backLeftCamera = new Camera("BOTTOM_LEFT", 0.09, 0.145, 0, 0, 0);
-            // backLeftCamera.setThresholds(0.3, 1.5, 0.3);
+            backLeftCamera.setThresholds(0, 3, 0.3);
             // Camera topCamera = new Camera("TOP", -Units.inchesToMeters(6), -Units.inchesToMeters(12.5), Units.degreesToRadians(180), Units.degreesToRadians(-45), 0);
         }
     }
 
     public void initDashboard() {
-        // dashboard = NarwhalDashboard.getInstance();
-        // dashboard.addUpdate("robotX", ()-> swerve.getPose().getX());
-        // dashboard.addUpdate("robotY", ()-> swerve.getPose().getY());
-        // dashboard.addUpdate("robotYaw", ()-> swerve.getPose().getRotation().getDegrees());
+        dashboard = NarwhalDashboard.getInstance();
+        dashboard.addUpdate("robotX", ()-> swerve.getPose().getX());
+        dashboard.addUpdate("robotY", ()-> swerve.getPose().getY());
+        dashboard.addUpdate("robotYaw", ()-> swerve.getPose().getRotation().getDegrees());
     }
 }

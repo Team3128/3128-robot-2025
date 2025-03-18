@@ -3,7 +3,6 @@ package frc.team3128.subsystems.Manipulator;
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
 import edu.wpi.first.wpilibj2.command.Command;
-import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static frc.team3128.subsystems.Manipulator.ManipulatorStates.*;
 
 import java.util.function.Function;

@@ -5,15 +5,17 @@ import io.vavr.collection.List;
 public enum ElevatorStates {
     UNDEFINED,
     NEUTRAL(0),
-    L1(0.25),
+    LOW_L1(0.13),
+    HIGH_L1(0.26),
     L2(0.42),
     L3(0.845),
-    L4(1.501);
+    L4(1.501),
+    AUTO_HOLD(0.65);
 
     private double setpoint;
     private Neutral neutral;
 
-    public static final List<ElevatorStates> functionalStates = List.of(NEUTRAL, L1, L2, L3, L4);
+    public static final List<ElevatorStates> functionalStates = List.of(ElevatorStates.values());
 
     private ElevatorStates(double setpoint) {
         this.setpoint = setpoint;

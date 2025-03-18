@@ -10,12 +10,12 @@ public enum ManipulatorStates {
     NEUTRAL(0),
     IN(4),
     OUT(-4.5),
-    OUT_L1(-4);
+    OUT_L1(-2.5);
 
     private double volts;
     private Neutral neutral;
 
-    public static final List<ManipulatorStates> functionalStates = List.of(NEUTRAL, IN, OUT, OUT_L1);
+    public static final List<ManipulatorStates> functionalStates = List.of(ManipulatorStates.values());
 
     private ManipulatorStates(double volts) {
         this.volts = volts;

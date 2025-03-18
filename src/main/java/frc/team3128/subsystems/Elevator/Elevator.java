@@ -19,6 +19,7 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
         super(ElevatorStates.class, transitionMap, NEUTRAL);
         elevator = ElevatorMechanism.getInstance();
         addMechanisms(elevator);
+        
     }
 
     public static synchronized Elevator getInstance() {

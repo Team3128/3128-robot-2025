@@ -28,8 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.Robot;
-// import frc.team3128.subsystems.Swerve;
-import frc.team3128.subsystems.Swerve;
+import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 
@@ -43,6 +42,7 @@ import common.utility.narwhaldashboard.NarwhalDashboard;
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 import frc.team3128.subsystems.Robot.RobotStates;
+import frc.team3128.subsystems.Swerve.SwerveMechanism;
 
 
 /**
@@ -54,7 +54,7 @@ public class AutoPrograms {
 
     private HashMap<String, Command> autoMap = new HashMap<String, Command>();
     private HashMap<String, Command> pathMap = new HashMap<String, Command>();
-    private static Swerve swerve = Swerve.getInstance();
+    private static SwerveMechanism swerve = SwerveMechanism.getInstance();
     private RobotConfig robotConfig;
     private static AutoPrograms instance;
     private RobotManager robot;
@@ -86,6 +86,7 @@ public class AutoPrograms {
                 }
             } catch(Exception e) {}
         }
+        autoMap.put("RB_3pc_EDC_auto", getPathPlannerAuto("RB_3pc_EDC_auto"));
         // NarwhalDashboard.getInstance().addAutos(autoStrings.toArray(new String[0]));
     }
 
@@ -107,7 +108,7 @@ public class AutoPrograms {
                     DRIVE_MOTOR_CURRENT_LIMIT, 
                     1
                 ),
-                Swerve.moduleOffsets
+                SwerveMechanism.moduleOffsets
             );
         }
 
@@ -118,21 +119,55 @@ public class AutoPrograms {
             swerve::getRobotVelocity, 
             (velocity, feedforwards)-> swerve.drive(ChassisSpeeds.fromRobotRelativeSpeeds(velocity, swerve.getGyroRotation2d())), 
             new PPHolonomicDriveController(
-                new PIDConstants(Swerve.translationConfig.kP, Swerve.translationConfig.kI, Swerve.translationConfig.kD),
-                new PIDConstants(Swerve.rotationConfig.kP, Swerve.rotationConfig.kI, Swerve.rotationConfig.kD)
+                new PIDConstants(SwerveMechanism.translationConfig.kP, SwerveMechanism.translationConfig.kI, SwerveMechanism.translationConfig.kD),
+                new PIDConstants(SwerveMechanism.rotationConfig.kP, SwerveMechanism.rotationConfig.kI, SwerveMechanism.rotationConfig.kD)
             ),
             robotConfig,
             ()-> Robot.getAlliance() == Alliance.Red,
             swerve
             );
 
-        NamedCommands.registerCommand("Score L4", sequence(
-            robot.setStateCommand(RPL4),
-            waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
-            waitSeconds(0.2),
-            robot.setStateCommand(RSL4),
-            waitSeconds(0.1)
-        ));
+        // NamedCommands.registerCommand("Score L4", sequence(
+        //     robot.setStateCommand(RPL4),
+        //     waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
+        //     waitSeconds(0.2),
+        //     robot.setStateCommand(RSL4),
+        //     waitSeconds(0.1)
+        // ));
+
+        for (FieldStates state : FieldStates.values()) {
+            if (state.name().length() == 1) {
+                NamedCommands.registerCommand(
+                    "Score L4 " + state.name(),
+                    parallel(
+                        run(() -> swerve.drive(0, 0, 0)),
+                        sequence(
+                            waitSeconds(0.5),
+                            robot.setStateCommand(RPL3)
+                        )
+                    ).withDeadline(swerve.autoAlign(state.getPose2d()).
+                        andThen(() -> robot.autoScore()).
+                        beforeStarting(robot.setStateCommand(AUTO_HOLD).andThen(none())))
+                );
+            } else {
+                NamedCommands.registerCommand(
+                    "Align " + state.name(),
+                    run(() -> swerve.drive(0, 0, 0))
+                        .withDeadline(swerve.autoAlignSource()) // swerve.autoAlign(state.getPose2d())
+                );
+            }
+        }
+
+        NamedCommands.registerCommand(
+            "Score L4",
+            parallel(
+                run(() -> swerve.drive(0, 0, 0)),
+                sequence(
+                    waitSeconds(0.5),
+                    robot.setStateCommand(RPL4)
+                )
+            ).withDeadline(swerve.autoAlign(true))
+        );
 
         NamedCommands.registerCommand("Score L2", sequence(
             robot.setStateCommand(RPL2),
@@ -171,7 +206,7 @@ public class AutoPrograms {
     public Command getAutonomousCommand() {
         String selectedAutoName = null;
         // String selectedAutoName = NarwhalDashboard.getInstance().getSelectedAuto(); //NarwhalDashboard.getInstance().getSelectedAuto();
-        String hardcode = "RB_3pc_FDC";
+        String hardcode = "RB_3pc_EDC_auto";
         
          
         Command autoCommand;

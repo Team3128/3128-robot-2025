@@ -9,6 +9,7 @@ import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Intake.IntakeStates;
 import frc.team3128.subsystems.Led.LedStates;
 import frc.team3128.subsystems.Manipulator.ManipulatorStates;
+import frc.team3128.subsystems.Swerve.SwerveStates;
 import io.vavr.collection.List;
 import static frc.team3128.Constants.DriveConstants.slow;
 import frc.team3128.subsystems.Intake.IntakeStates;
@@ -26,10 +27,18 @@ public enum RobotStates {
     RSL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.OUT, ClimberStates.UNDEFINED, LedStates.RSL3, slow),
     RSL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.OUT, ClimberStates.UNDEFINED, LedStates.RSL4, slow),
     
+  
+    
     INTAKE(ElevatorStates.NEUTRAL, IntakeStates.INTAKE, ManipulatorStates.NEUTRAL, ClimberStates.UNDEFINED, LedStates.INTAKE, 1),
     EJECT_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.EJECT_OUTTAKE, ManipulatorStates.NEUTRAL, ClimberStates.UNDEFINED, LedStates.EJECT_OUTTAKE, 1),
+    HIGH_INTAKE(ElevatorStates.NEUTRAL, IntakeStates.HIGH_INTAKE, ManipulatorStates.NEUTRAL),
     PROCESSOR_PRIME(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_PRIME, ManipulatorStates.NEUTRAL, ClimberStates.UNDEFINED, LedStates.PROCESSOR_PRIME, 0.5),
     PROCESSOR_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.PROCESSOR_OUTTAKE, ManipulatorStates.NEUTRAL, ClimberStates.UNDEFINED, LedStates.PROCESSOR_OUTTAKE, 0.5),
+
+    PRE_CLIMB_PRIME(ClimberStates.PRE_CLIMB_PRIME),
+    CLIMB_PRIME(ElevatorStates.NEUTRAL, IntakeStates.CLIMB_PRIME, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB_PRIME, slow),
+    CLIMB(ElevatorStates.NEUTRAL, IntakeStates.CLIMB, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB, slow);
+
     
     
     CLIMB_PRIME(ElevatorStates.NEUTRAL, IntakeStates.CLIMB_PRIME, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB_PRIME, LedStates.CLIMB_PRIME, 0.3),
@@ -42,17 +51,18 @@ public enum RobotStates {
     private ClimberStates climber;
     private double throttle;
     private LedStates led;
-
+    private SwerveStates swerve;
     private Translation2d position;
 
-    public static final List<RobotStates> defaultElevatorStates = List.of(RPL1, RPL2, RPL3, RPL4);
+
+    public static final List<RobotStates> defaultElevatorStates = List.of(RPL1, RPL2, RPL3, RPL4, AUTO_HOLD);
     public static final List<RobotStates> exclusiveElevatorStates = List.of(RSL1, RSL2, RSL3, RSL4);
     public static final List<RobotStates> defaultIntakeStates = List.of(INTAKE, EJECT_OUTTAKE, HIGH_INTAKE);
     public static final List<RobotStates> defaultClimbStates = List.of(CLIMB_PRIME, PRE_CLIMB_PRIME);
     public static final List<RobotStates> exclusiveClimbStates = List.of(CLIMB);
 
     public static final List<Pair<RobotStates, RobotStates>> coupledStates = List.of(
-        Pair.of(RPL1, RSL1),
+        // Pair.of(RPL1, RSL1),
         Pair.of(RPL2, RSL2),
         Pair.of(RPL3, RSL3),
         Pair.of(RPL4, RSL4),
@@ -70,11 +80,13 @@ public enum RobotStates {
         this.led = led;
 
         this.position = position;
+        this.swerve = swerve;
+
         this.throttle = throttle;
     }
 
-    private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator, ClimberStates climber, LedStates led) {
-        this(elevator, intake, manipulator, climber, led, new Translation2d(), 1);
+    private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator, ClimberStates climber) {
+        this(elevator, intake, manipulator, climber, 1);
     }
 
     private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator, ClimberStates climber, LedStates led, double throttle) {
@@ -116,7 +128,17 @@ public enum RobotStates {
         return this.position;
     }
 
-    public double getThrottle() {
-        return this.throttle;
+    public LedStates getLedState() {
+        return this.led;
     }
+
+    public Translation2d getPosition() {
+        return this.position;
+    }
+
+    public SwerveStates getSwerveState() {
+        return this.swerve;
+        
+    }
+
 }

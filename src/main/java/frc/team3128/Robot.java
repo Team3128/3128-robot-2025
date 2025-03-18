@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.autonomous.AutoPrograms;
-import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Intake.PivotMechanism;
 import frc.team3128.subsystems.Led.Led;
@@ -28,6 +27,8 @@ import frc.team3128.subsystems.Led.LedStates;
 // import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
+import frc.team3128.subsystems.Swerve.SwerveMechanism;
+
 import com.pathplanner.lib.commands.PathfindingCommand;
 
 /**
@@ -88,8 +89,8 @@ public class Robot extends NAR_Robot {
         CommandScheduler.getInstance().cancelAll();
         Camera.enableAll();
         runOnce(()-> {
-            Swerve.translationController.disable();
-            Swerve.rotationController.disable();
+            SwerveMechanism.translationController.disable();
+            SwerveMechanism.rotationController.disable();
         }).schedule();
         
         Command m_autonomousCommand = autoPrograms.getAutonomousCommand();
@@ -107,6 +108,8 @@ public class Robot extends NAR_Robot {
     @Override
     public void autonomousExit() {
         CommandScheduler.getInstance().cancelAll();
+        ElevatorMechanism.getInstance().stopCommand().schedule();
+        Commands.runOnce(()-> SwerveMechanism.autoMovementEnabled = false).schedule();
     }
 
     @Override
@@ -130,17 +133,19 @@ public class Robot extends NAR_Robot {
         CommandScheduler.getInstance().cancelAll();
         RobotManager.getInstance().stopCommand().schedule();
         // Log.info("State", RobotManager.getInstance().getState().name());
+        SwerveMechanism.autoMovementEnabled = false;
         RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL).schedule();
         PivotMechanism.getInstance().stopCommand().schedule();
+        ElevatorMechanism.getInstance().stopCommand().schedule();
         // Log.info("State", RobotManager.getInstance().getState().name());
         Camera.enableAll();
-        // sequence(
-        //     waitSeconds(115),
-        //     print("CLIMBING B"),
-        //     RobotManager.getInstance().setStateCommand(RobotStates.PRE_CLIMB_PRIME),
-        //     waitSeconds(17),
-        //     RobotManager.getInstance().setStateCommand(RobotStates.CLIMB)
-        // ).schedule();
+        sequence(
+            waitSeconds(115),
+            print("CLIMBING B"),
+            RobotManager.getInstance().setStateCommand(RobotStates.PRE_CLIMB_PRIME),
+            waitSeconds(16),
+            RobotManager.getInstance().setStateCommand(RobotStates.CLIMB)
+        ).schedule();
     }
 
     @Override
@@ -167,8 +172,8 @@ public class Robot extends NAR_Robot {
     @Override
     public void disabledInit() {
         CommandScheduler.getInstance().cancelAll();
-        Swerve.getInstance().setBrakeMode(false);
-        Swerve.disable();
+        SwerveMechanism.getInstance().setBrakeMode(false);
+        SwerveMechanism.getInstance().disable();
         Led.getInstance().setStateCommand(LedStates.UNDEFINED).schedule();
         RobotManager.getInstance().stopCommand().ignoringDisable(true).schedule();
         Log.info("State", RobotManager.getInstance().getState().name());
@@ -176,7 +181,7 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void disabledExit() {
-        Swerve.getInstance().setBrakeMode(true);
+        SwerveMechanism.getInstance().setBrakeMode(true);
         RobotManager.getInstance().stop();
         Log.info("State", RobotManager.getInstance().getState().name());
     }

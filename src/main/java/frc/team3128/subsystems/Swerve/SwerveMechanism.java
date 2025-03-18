@@ -1,11 +1,10 @@
-package frc.team3128.subsystems;
+package frc.team3128.subsystems.Swerve;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -18,16 +17,12 @@ import common.core.swerve.SwerveModule;
 import common.core.swerve.SwerveModuleConfig;
 import common.core.swerve.SwerveModuleConfig.SwerveEncoderConfig;
 import common.core.swerve.SwerveModuleConfig.SwerveMotorConfig;
-import common.hardware.camera.Camera;
-import common.hardware.motorcontroller.NAR_Motor;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
 import common.hardware.motorcontroller.NAR_Motor.StatusFrames;
 import common.hardware.motorcontroller.NAR_TalonFX;
 import common.utility.Log;
 import common.utility.shuffleboard.NAR_Shuffleboard;
-import common.utility.sysid.CmdSysId;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -39,6 +34,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import static frc.team3128.Constants.SwerveConstants.*;
@@ -47,11 +44,10 @@ import static frc.team3128.Constants.FieldConstants.FieldStates.*;
 import static frc.team3128.Constants.VisionConstants.*;
 import static frc.team3128.Constants.DriveConstants.*;
 import frc.team3128.Constants.DriveConstants;
-import frc.team3128.RobotContainer;
 
-public class Swerve extends SwerveBase {
+public class SwerveMechanism extends SwerveBase {
 
-    private static Swerve instance;
+    private static SwerveMechanism instance;
 
     private Pigeon2 gyro;
 
@@ -104,16 +100,16 @@ public class Swerve extends SwerveBase {
 
     // x * kP = dx/dt && (v_max)^2 = 2*a_max*x
     public static final Constraints translationConstraints = new Constraints(MAX_DRIVE_SPEED, MAX_DRIVE_ACCELERATION);
-    public static final PIDFFConfig translationConfig = new PIDFFConfig(10);// used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
+    public static final PIDFFConfig translationConfig = new PIDFFConfig(5);// used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller translationController = new Controller(translationConfig, Controller.Type.POSITION); //Displacement error to output velocity
-    public static final double translationTolerance = 0.02;
+    public static final double translationTolerance = 0.03;
 
     public static final Constraints rotationConstraints = new Constraints(MAX_DRIVE_ANGULAR_VELOCITY, MAX_DRIVE_ANGULAR_ACCELERATION);
-    public static final PIDFFConfig rotationConfig = new PIDFFConfig(7); //Conservative Kp estimate (2*a_max/v_max)
+    public static final PIDFFConfig rotationConfig = new PIDFFConfig(10); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller rotationController = new Controller(rotationConfig, Controller.Type.POSITION); //Angular displacement error to output angular velocity
     public static final double rotationTolerance = Angle.ofRelativeUnits(1, Units.Degree).in(Units.Radian);
 
-    private static double translationPlateauThreshold = 10;
+    private static double translationPlateauThreshold = 5;
     private static double translationPlateauCount = 0;
 
     private static double rotationPlateauThreshold = 10;
@@ -135,18 +131,16 @@ public class Swerve extends SwerveBase {
     private static Translation2d translationSetpoint = new Translation2d();
     private static Supplier<Rotation2d> rotationSetpointSupplier = ()-> new Rotation2d();
 
-    public static boolean autoEnabled = false;
+    public static boolean autoMovementEnabled = false;
 
-    public Pose2d snappedReef = null;
-
-    public static synchronized Swerve getInstance() {
+    public static synchronized SwerveMechanism getInstance() {
         if (instance == null) {
-            instance = new Swerve();
+            instance = new SwerveMechanism();
         }
         return instance;
     }
 
-    private Swerve() {
+    private SwerveMechanism() {
         super(swerveKinematics, SVR_STATE_STD, SVR_VISION_MEASUREMENT_STD, Mod0, Mod1, Mod2, Mod3);
         chassisVelocityCorrection = true;
         Timer.delay(1);
@@ -159,7 +153,6 @@ public class Swerve extends SwerveBase {
         gyro.optimizeBusUtilization();
 
         initShuffleboard();
-        initStateCheck();
     }
 
     @Override
@@ -182,37 +175,30 @@ public class Swerve extends SwerveBase {
      */
     @Override
     public void drive(ChassisSpeeds velocity){
-        if ((Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) >= TRANSLATIONAL_DEADBAND) ||
-            (Math.abs(velocity.omegaRadiansPerSecond) >= ROTATIONAL_DEADBAND)
-        ) {
+        // if ((Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) >= TRANSLATIONAL_DEADBAND) ||
+
+        //Only rotation will disable controllers
+        if(Math.abs(velocity.omegaRadiansPerSecond) >= ROTATIONAL_DEADBAND) {
             translationController.disable();
             rotationController.disable();
-            Camera.enableAll();
-            setThrottle(1);
         }
 
-        if(Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) < TRANSLATIONAL_DEADBAND && translationController.isEnabled()) {
-            // if (!rotationController.isEnabled()) {
+        //will not allow for translational override
+        if(translationController.isEnabled()) {
                 Translation2d error = getTranslation2dTo(translationSetpoint);
                 Translation2d output = new Translation2d(translationController.calculate(error.getNorm()), error.getAngle());
                 velocity.vxMetersPerSecond = output.getX();
                 velocity.vyMetersPerSecond = output.getY();
-            // }
         }
-        // else translationController.disable();
 
-        if(Math.abs(velocity.omegaRadiansPerSecond) < ROTATIONAL_DEADBAND && rotationController.isEnabled()) {
+        if(rotationController.isEnabled()) {
             Rotation2d error = getRotation2dTo(rotationSetpointSupplier.get());
             velocity.omegaRadiansPerSecond = rotationController.calculate(error.getRadians()); 
         }
-        // else rotationController.disable();
 
         assign(velocity);
-        if(translationController.isEnabled() && atTranslationSetpoint()){
-            translationController.disable();
-            // rotationController.enable();
-        }
-        if(rotationController.isEnabled() && atRotationSetpoint()) rotationController.disable();
+        if(translationController.isEnabled() && atTranslationSetpoint())translationController.disable();
+        if(rotationController.isEnabled() && atRotationSetpoint() && !translationController.isEnabled()) rotationController.disable();
     }
 
     public Command getDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta){
@@ -286,7 +272,7 @@ public class Swerve extends SwerveBase {
     }
 
     public void snapToAngle() {
-        final Rotation2d gyroAngle = Swerve.getInstance().getGyroRotation2d();
+        final Rotation2d gyroAngle = SwerveMechanism.getInstance().getGyroRotation2d();
         Rotation2d setpoint = Collections.min(
                             DriveConstants.snapToAngles,
                             Comparator.comparing(
@@ -295,81 +281,51 @@ public class Swerve extends SwerveBase {
         rotateTo(setpoint);
     }
 
-    public void snapToReef(boolean isRight) {
-        List<Pose2d> setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
-        Pose2d setpoint = getPose().nearest(allianceFlip(setpoints));
-        rotateTo(setpoint.getRotation());
-
-        snappedReef = setpoint;
-    }
-
-    public void snapToReef() {
-        Pose2d setpoint = getPose().nearest(allianceFlip(reefPoses.asJava()));
-        rotateTo(setpoint.getRotation());
-
-        snappedReef = setpoint;
-    }
-
     public void snapToElement() {
         final Pose2d setpoint = getPose().nearest(allianceFlip(reefPoses.appendAll(sourcePoses).asJava()));
         rotateTo(setpoint.getRotation());
     }
 
-    public void pathToReef(Pose2d setpoint) {
-        rotateTo(setpoint.getRotation());
-        moveTo(setpoint.getTranslation());
-    }
-
-    public void pathToReef(boolean isRight) {
-        final List<Pose2d> setpoints;
-        setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
-        final Pose2d setpoint = getPose().nearest(allianceFlip(setpoints));
-        pathToReef(setpoint);
-    }
-
-    public Pose2d getClosestReef() {
-        return getPose().nearest(allianceFlip(reefPoses.asJava()));
-    }
-
-    public void pathToSource() {
-        Pose2d setpoint = getPose().nearest(allianceFlip(sourcePoses.asJava()));
-        // Translation2d ram = new Translation2d(-0.05,0).rotateBy(setpoint.getRotation());
-        rotateTo(setpoint.getRotation());
-        moveTo(setpoint.getTranslation());
+    public Command autoAlign(FieldStates state) {
+        return autoAlign(state.getPose2d());
     }
 
     public Command autoAlign(boolean isRight) {
-        return sequence(
-            // runOnce(() -> {
-            //     Swerve.autoEnabled = true;
-            //     setThrottle(0.3);
-            //     Camera.enableAll();
-            //     // pathToReef(isRight);
-            //     Log.info("Auto Align", "Auto Enabled: " + autoEnabled);
-            //     Log.info("Auto Align", "Throttle: " + getThrottle());
-            // }),
-            // runOnce(()-> pathToReef(isRight)),
-            // runOnce(()-> Log.info("Auto Align", "Controller Enabled: " + translationController.isEnabled())),
-            // waitUntil(()-> atTranslationSetpoint()).andThen(()-> Log.info("Auto Align", "Controller Setpoint Reached")).withTimeout(1.5),
-            // runOnce(()-> {
-            //     disable();
-            //     Log.info("Auto Align", "Controller Enabled: " + translationController.isEnabled());
-            //     angleLock(90);
-            //     Camera.disableAll();
-            //     // moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(getClosestReef().getRotation()));
-            // }),
-            // runOnce(()-> moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(getClosestReef().getRotation()))),
-            // waitUntil(() -> atTranslationSetpoint()).withTimeout(1.5),
-            // runOnce(()-> {
-            //     disable();
-            //     Camera.enableAll();
-            //     setThrottle(1);
-            //     Swerve.autoEnabled = false;
+        final List<Pose2d> setpoints;
+        setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
+        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), true);
+    }
 
-            //     Log.info("Auto Align", "Auto Enabled: " + autoEnabled);
-            //     Log.info("Auto Align", "Throttle: " + getThrottle());
-            // })
+    public Command autoAlignSource() {
+        final List<Pose2d> setpoints = List.of(
+            FieldStates.SOURCE_1.getPose2d(),
+            FieldStates.SOURCE_2.getPose2d()
         );
+        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), false);
+    }
+
+    public Command autoAlign(Supplier<Pose2d> pose, boolean shouldRam) {
+        return Commands.sequence(
+            startEnd(
+                ()-> {setPose(pose.get()); SwerveMechanism.autoMovementEnabled = true;}, 
+                ()-> {disable(); SwerveMechanism.autoMovementEnabled = false;}
+            ).until(()-> atTranslationSetpoint() && atRotationSetpoint())
+             .withTimeout(2.5),
+            
+             startEnd(
+                ()-> {moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(pose.get().getRotation()));}, 
+                ()-> {disable();}
+            ).onlyIf(()-> shouldRam)
+             .until(()-> atTranslationSetpoint())
+             .withTimeout(0.5)
+        
+        ).withTimeout(3)
+         .finallyDo(()-> {disable(); SwerveMechanism.autoMovementEnabled = false;});
+    }
+
+    public Command autoAlign(Pose2d pose) {
+        final Pose2d flippedPose = allianceFlipRotationally(pose);
+        return autoAlign(() -> flippedPose, false);
     }
 
     public boolean isConfigured() {
@@ -393,20 +349,6 @@ public class Swerve extends SwerveBase {
         gyro.setYaw(reset);
     }
 
-    public FunctionalCommand getMoveForwardCommand(double meters, DoubleSupplier xInput, DoubleSupplier yInput){
-        NAR_Motor driveMotor = modules[0].getDriveMotor();
-        final double startPos = driveMotor.getPosition();
-        return new FunctionalCommand(
-            ()-> {
-                this.angleLock(0);
-                zeroLock();
-                driveMotor.resetRelativePosition();
-            }, 
-            () -> setDriveVoltage(3), 
-            (Boolean interrupted) -> setDriveVoltage(0), 
-            ()-> (Math.abs(driveMotor.getRelativePosition()-meters) < 0.05 || (Math.hypot(xInput.getAsDouble(), yInput.getAsDouble()) >= TRANSLATIONAL_DEADBAND)));
-    }
-
     @Override
     public void initShuffleboard() {
         super.initShuffleboard();
@@ -418,7 +360,7 @@ public class Swerve extends SwerveBase {
         NAR_Shuffleboard.addData("Auto", "Error", ()-> getDistanceTo(translationSetpoint), 1, 0);
     }
 
-    public static void disable() {
+    public void disable() {
         translationController.disable();
         rotationController.disable();
         getInstance().stop();
