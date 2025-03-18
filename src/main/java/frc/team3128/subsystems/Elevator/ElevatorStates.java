@@ -15,7 +15,7 @@ public enum ElevatorStates {
     private double setpoint;
     private Neutral neutral;
 
-    public static final List<ElevatorStates> functionalStates = List.of(NEUTRAL, LOW_L1, HIGH_L1, L2, L3, L4, AUTO_HOLD);
+    public static final List<ElevatorStates> functionalStates = List.of(ElevatorStates.values());
 
     private ElevatorStates(double setpoint) {
         this.setpoint = setpoint;
