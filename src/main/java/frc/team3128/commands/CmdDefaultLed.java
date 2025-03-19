@@ -2,6 +2,7 @@ package frc.team3128.commands;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -63,6 +64,7 @@ public class CmdDefaultLed extends Command {
         }
         else{
             if(Camera.seesTag()){
+                led.resetAnimationSlot();
                 led.candle.animate(new TwinkleAnimation(closest.getLedState().r, closest.getLedState().g, closest.getLedState().b), 0);
             }
             else{

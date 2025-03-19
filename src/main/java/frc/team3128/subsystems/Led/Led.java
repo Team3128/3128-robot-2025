@@ -61,15 +61,16 @@ public class Led extends FSMSubsystemBase<LedStates> {
     }
 
     public void setLedColor(LedStates ledState) {
+        
+        resetAnimationSlot();
 
         if (ledState == DISABLED) {
             candle.animate(new RainbowAnimation(BRIGHTNESS, r_SPEED, NUM_LED, false, STARTING_ID), 0);
         }
-        if (ledState == DEFAULT) {
+        else if (ledState == DEFAULT) {
             candle.animate(new FireAnimation(BRIGHTNESS, r_SPEED, NUM_LED, SPARKING, COOLING, true, STARTING_ID), 0);
         }
         else {
-            resetAnimationSlot();
             candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);
         }
 
