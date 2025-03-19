@@ -351,22 +351,22 @@ public class Swerve extends SwerveBase {
             waitUntil(()-> atTranslationSetpoint() && atRotationSetpoint()).finallyDo(()-> Swerve.disable()).withTimeout(2),
             Commands.runOnce(()-> {
                 // Camera.disableAll();
-                setThrottle(0.5);
+                setThrottle(1);
                 Swerve.autoEnabled = false;
                 if(shouldRam) moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(getClosestReef().getRotation()));
             }),
-            waitUntil(() -> !shouldRam || atTranslationSetpoint()).withTimeout(0.5).finallyDo(()-> Swerve.disable()),
+            waitUntil(() -> !shouldRam || atTranslationSetpoint()).withTimeout(1).finallyDo(()-> Swerve.disable()),
             Commands.runOnce(()-> {
                 // Camera.enableAll();
                 Swerve.autoEnabled = false;
                 setThrottle(fast);
             })
-        ).withTimeout(6);
+        ).withTimeout(4.5);
     }
 
     public Command autoAlign(Pose2d pose) {
         final Pose2d flippedPose = allianceFlipRotationally(pose);
-        return autoAlign(() -> flippedPose, false);
+        return autoAlign(() -> flippedPose, true);
     }
 
     public boolean isConfigured() {

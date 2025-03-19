@@ -143,12 +143,13 @@ public class AutoPrograms {
                     parallel(
                         run(() -> swerve.drive(0, 0, 0)),
                         sequence(
-                            waitSeconds(0.5),
-                            robot.setStateCommand(RPL3)
+                            waitSeconds(1.15),
+                            robot.setStateCommand(AUTO_HOLD2),
+                            robot.setStateCommand(RPL4)
                         )
                     ).withDeadline(swerve.autoAlign(state.getPose2d()).
                         andThen(() -> robot.autoScore()).
-                        beforeStarting(robot.setStateCommand(AUTO_HOLD).andThen(none())))
+                        andThen(waitUntil(() -> robot.stateEquals(NEUTRAL))))
                 );
             } else {
                 NamedCommands.registerCommand(
@@ -207,7 +208,7 @@ public class AutoPrograms {
     public Command getAutonomousCommand() {
         String selectedAutoName = null;
         // String selectedAutoName = NarwhalDashboard.getInstance().getSelectedAuto(); //NarwhalDashboard.getInstance().getSelectedAuto();
-        String hardcode = "RB_3pc_EDC_auto";
+        String hardcode = "RB_3pc_FCD_auto";
         
          
         Command autoCommand;

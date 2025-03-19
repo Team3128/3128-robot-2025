@@ -72,7 +72,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             return;
 
         
-        if(getState() == AUTO_HOLD) {
+        if(getState() == AUTO_HOLD || getState() == AUTO_HOLD2) {
             setStateCommand(NEUTRAL).schedule();
             return;
         }

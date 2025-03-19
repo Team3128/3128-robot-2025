@@ -131,6 +131,7 @@ public class Robot extends NAR_Robot {
         RobotManager.getInstance().stopCommand().schedule();
         // Log.info("State", RobotManager.getInstance().getState().name());
         Swerve.autoEnabled = false;
+        Swerve.getInstance().setThrottle(1);
         RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL).schedule();
         PivotMechanism.getInstance().stopCommand().schedule();
         ElevatorMechanism.getInstance().stopCommand().schedule();
