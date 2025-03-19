@@ -50,6 +50,7 @@ import static frc.team3128.Constants.FieldConstants.FieldStates.*;
 import static frc.team3128.Constants.VisionConstants.*;
 import static frc.team3128.Constants.DriveConstants.*;
 import frc.team3128.Constants.DriveConstants;
+import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.RobotContainer;
 
@@ -184,36 +185,26 @@ public class Swerve extends SwerveBase {
     @Override
     public void drive(ChassisSpeeds velocity){
         // if ((Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) >= TRANSLATIONAL_DEADBAND) ||
-        if(
-            (Math.abs(velocity.omegaRadiansPerSecond) >= ROTATIONAL_DEADBAND)
-        ) {
+        if(Math.abs(velocity.omegaRadiansPerSecond) >= ROTATIONAL_DEADBAND) {
             translationController.disable();
             rotationController.disable();
         }
 
         if(Math.hypot(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond) < TRANSLATIONAL_DEADBAND && translationController.isEnabled()) {
-            // if (!rotationController.isEnabled()) {
                 Translation2d error = getTranslation2dTo(translationSetpoint);
                 Translation2d output = new Translation2d(translationController.calculate(error.getNorm()), error.getAngle());
                 velocity.vxMetersPerSecond = output.getX();
                 velocity.vyMetersPerSecond = output.getY();
-                rotationController.enable();
-            // }
         }
-        // else translationController.disable();
 
         if(Math.abs(velocity.omegaRadiansPerSecond) < ROTATIONAL_DEADBAND && rotationController.isEnabled()) {
             Rotation2d error = getRotation2dTo(rotationSetpointSupplier.get());
             velocity.omegaRadiansPerSecond = rotationController.calculate(error.getRadians()); 
         }
-        // else rotationController.disable();
 
         assign(velocity);
-        if(translationController.isEnabled() && atTranslationSetpoint()){
-            translationController.disable();
-            // rotationController.enable();
-        }
-        if(rotationController.isEnabled() && atRotationSetpoint()) rotationController.disable();
+        if(translationController.isEnabled() && atTranslationSetpoint()) translationController.disable();
+        if(rotationController.isEnabled() && atRotationSetpoint() && !translationController.isEnabled()) rotationController.disable();
     }
 
     public Command getDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta){
@@ -301,27 +292,8 @@ public class Swerve extends SwerveBase {
         rotateTo(setpoint.getRotation());
     }
 
-    public void pathToReef(Pose2d setpoint) {
-        rotateTo(setpoint.getRotation());
-        moveTo(setpoint.getTranslation());
-    }
-
-    public void pathToReef(boolean isRight) {
-        final List<Pose2d> setpoints;
-        setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
-        final Pose2d setpoint = getPose().nearest(allianceFlip(setpoints));
-        pathToReef(setpoint);
-    }
-
     public Pose2d getClosestReef() {
         return getPose().nearest(allianceFlip(reefPoses.asJava()));
-    }
-
-    public void pathToSource() {
-        Pose2d setpoint = getPose().nearest(allianceFlip(sourcePoses.asJava()));
-        // Translation2d ram = new Translation2d(-0.05,0).rotateBy(setpoint.getRotation());
-        rotateTo(setpoint.getRotation());
-        moveTo(setpoint.getTranslation());
     }
 
     public Command autoAlign(FieldStates state) {
@@ -359,6 +331,7 @@ public class Swerve extends SwerveBase {
                 ()-> {
                     setThrottle(1);
                     Swerve.autoMoveEnabled = false;
+                    moveBy(FUDGE_FACTOR.rotateBy(pose.get().getRotation()));
                 },
                 ()-> disable()
             )
@@ -400,20 +373,6 @@ public class Swerve extends SwerveBase {
     @Override
     public void resetGyro(double reset) {
         gyro.setYaw(reset);
-    }
-
-    public FunctionalCommand getMoveForwardCommand(double meters, DoubleSupplier xInput, DoubleSupplier yInput){
-        NAR_Motor driveMotor = modules[0].getDriveMotor();
-        final double startPos = driveMotor.getPosition();
-        return new FunctionalCommand(
-            ()-> {
-                this.angleLock(0);
-                zeroLock();
-                driveMotor.resetRelativePosition();
-            }, 
-            () -> setDriveVoltage(3), 
-            (Boolean interrupted) -> setDriveVoltage(0), 
-            ()-> (Math.abs(driveMotor.getRelativePosition()-meters) < 0.05 || (Math.hypot(xInput.getAsDouble(), yInput.getAsDouble()) >= TRANSLATIONAL_DEADBAND)));
     }
 
     @Override
