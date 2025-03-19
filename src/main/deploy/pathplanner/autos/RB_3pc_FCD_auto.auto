@@ -27,6 +27,30 @@
           "data": {
             "name": "Align SOURCE_1"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score L4 C"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align SOURCE_1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score L4 D"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align SOURCE_1"
+          }
         }
       ]
     }

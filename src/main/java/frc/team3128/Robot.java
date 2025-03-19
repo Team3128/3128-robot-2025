@@ -108,6 +108,7 @@ public class Robot extends NAR_Robot {
     public void autonomousExit() {
         CommandScheduler.getInstance().cancelAll();
         ElevatorMechanism.getInstance().stopCommand().schedule();
+        Commands.runOnce(()-> Swerve.autoMoveEnabled = false).schedule();
     }
 
     @Override
@@ -131,7 +132,8 @@ public class Robot extends NAR_Robot {
         CommandScheduler.getInstance().cancelAll();
         RobotManager.getInstance().stopCommand().schedule();
         // Log.info("State", RobotManager.getInstance().getState().name());
-        Swerve.autoEnabled = false;
+        Swerve.autoMoveEnabled = false;
+        Swerve.getInstance().setThrottle(1);
         RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL).schedule();
         PivotMechanism.getInstance().stopCommand().schedule();
         ElevatorMechanism.getInstance().stopCommand().schedule();
