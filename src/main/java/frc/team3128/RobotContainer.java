@@ -122,11 +122,7 @@ public class RobotContainer {
     }   
 
     private void configureButtonBindings() {
-        // buttonPad.getButton(1).whileTrue(runOnce(()-> swerve.setBrakeMode(false))).onFalse(runOnce(()-> swerve.setBrakeMode(true)));
         buttonPad.getButton(2).onTrue(swerve.identifyOffsetsCommand().ignoringDisable(true));
-        // buttonPad.getButton(3).onTrue(runOnce(()-> robot.setNeutralMode(Neutral.COAST))).onFalse(runOnce(()-> robot.setNeutralMode(Neutral.BRAKE)));
-        // buttonPad.getButton(4).onTrue(Climber.getInstance().resetCommand().ignoringDisable(true));
-        // buttonPad.getButton(1).whileTrue(runOnce(()->Swerve.fieldRelative = false)).whileFalse(runOnce(()->Swerve.fieldRelative = true));
 
         controller2.getButton(kA).onTrue(Climber.getInstance().runCommand(0.8)).onFalse(Climber.getInstance().stopCommand());
         controller2.getButton(kB).onTrue(Climber.getInstance().runCommand(-0.8)).onFalse(Climber.getInstance().stopCommand());
@@ -145,59 +141,19 @@ public class RobotContainer {
         controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
 
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
-        //controller.getButton(kLeftStick).onTrue(runOnce(()-> swerve.snapToElement()));
         controller.getButton(kLeftStick).onTrue(swerve.autoAlignSource());
 
         controller.getButton(kBack).onTrue(sequence(
             swerve.autoAlign(false).andThen(() -> robot.autoScore())
-            .beforeStarting(robot.setStateCommand(AUTO_HOLD))
+            .beforeStarting(robot.setStateCommand(TELE_HOLD))
         ));
 
         controller.getButton(kStart).onTrue(sequence(
             swerve.autoAlign(true).andThen(() -> robot.autoScore())
-            .beforeStarting(robot.setStateCommand(AUTO_HOLD))
+            .beforeStarting(robot.setStateCommand(TELE_HOLD))
         ));
 
-        // controller.getButton(kBack).onTrue(swerve.autoAlign(false).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(AUTO_HOLD)).andThen(waitSeconds(0.1)));
-        // controller.getButton(kStart).onTrue(swerve.autoAlign(true).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(AUTO_HOLD)).andThen(waitSeconds(0.1)));
-
-
-        // controller2.getButton(kX).onTrue(
-        //     swerve.characterizeTranslation(0, 1, 10))
-        // );
-        // controller2.getButton(kY).onTrue(
-        //     swerve.characterizeRotation(0, 1, 10))
-        // );
-
-        // new Trigger(()-> DriverStation.isTeleop()).debounce(5).onTrue(robot.setStateCommand(RobotStates.PRE_CLIMB_PRIME).beforeStarting(print("CLIMBING A")));
-        
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
-        // controller.getRightPOVButton().onTrue(runOnce(()-> swerve.zeroLock()));
-        // controller.getLeftPOVButton().onTrue(swerve.autoAlign(false));
-        //controller.getUpPOVButton().onTrue(swerve.autoAlignSource());
-        // controller.getRightPOVButton().onTrue(swerve.autoAlign(true).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(AUTO_HOLD).andThen(waitSeconds(0.1))));
-        // ).finallyDo(() -> {
-        //     Camera.enableAll();
-        //     swerve.setThrottle(1);
-        // }));
-        // controller.getLeftPOVButton().onTrue(swerve.autoAlign(false).andThen(() -> robot.autoScore()).beforeStarting(robot.setStateCommand(AUTO_HOLD).andThen(waitSeconds(0.1))));
-        // controller.getLeftPOVButton().onTrue(sequence(
-        //     runOnce(() -> swerve.setThrottle(0.3)),
-        //     runOnce(()-> swerve.pathToReef(false)),
-        //     runOnce(()-> Swerve.autoEnabled = true),
-        //     waitUntil(()-> swerve.atTranslationSetpoint()).withTimeout(1.5),
-        //     runOnce(()->swerve.angleLock(90)),
-        //     // waitSeconds(1),
-        //     runOnce(()-> {
-        //         Camera.disableAll();
-        //         Swerve.autoEnabled = false;
-        //         swerve.moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(swerve.getClosestReef().getRotation()));
-        //     }),
-        //     waitUntil(() -> swerve.atTranslationSetpoint()).withTimeout(1.5).finallyDo(()-> Swerve.disable())
-        // ).finallyDo(() -> {
-        //     Camera.enableAll();
-        //     swerve.setThrottle(1);
-        // }));
     }
 
     public void initCameras() {

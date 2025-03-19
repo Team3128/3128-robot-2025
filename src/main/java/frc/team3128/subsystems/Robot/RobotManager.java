@@ -44,7 +44,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         swerve = Swerve.getInstance();
 
         initShuffleboard();
-        NAR_Shuffleboard.addData(this.getName(), "Auto Enabled", () -> Swerve.autoEnabled);
+        NAR_Shuffleboard.addData(this.getName(), "Auto Enabled", () -> Swerve.autoMoveEnabled);
     }
 
     public static synchronized RobotManager getInstance() {
@@ -57,13 +57,13 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     public Command updateSubsystemStates(RobotStates nextState) {
         return sequence(
-            waitUntil(()-> (!Swerve.autoEnabled)).onlyIf(()-> nextState.getWaitForAutoEnabled()),
+            waitUntil(()-> (!Swerve.autoMoveEnabled)).onlyIf(()-> nextState.getWaitForAutoEnabled()),
             elevator.setStateCommand(nextState.getElevatorState()).unless(()-> nextState.getElevatorState() == ElevatorStates.UNDEFINED),
             manipulator.setStateCommand(nextState.getManipulatorState()).unless(()-> nextState.getManipulatorState() == ManipulatorStates.UNDEFINED),
             intake.setStateCommand(nextState.getIntakeState()).unless(()-> nextState.getIntakeState() == IntakeStates.UNDEFINED),
             climber.setStateCommand(nextState.getClimberState()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED),
             waitUntil(()-> climber.winch.atSetpoint()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED),
-            runOnce(()-> swerve.setThrottle(nextState.getThrottle())).unless(()-> DriverStation.isAutonomous() || Swerve.autoEnabled)
+            runOnce(()-> swerve.setThrottle(nextState.getThrottle())).unless(()-> DriverStation.isAutonomous() || Swerve.autoMoveEnabled)
         );
     }
 
@@ -72,7 +72,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             return;
 
         
-        if(getState() == AUTO_HOLD || getState() == AUTO_HOLD2) {
+        if(getState() == TELE_HOLD || getState() == AUTO_HOLD) {
             setStateCommand(NEUTRAL).schedule();
             return;
         }
@@ -139,7 +139,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, defaultTransitioner);
 
         transitionMap.addTransition(RPL1, RSL1, sequence(
-            waitUntil(()-> !Swerve.autoEnabled),
+            waitUntil(()-> !Swerve.autoMoveEnabled),
             runOnce(()-> swerve.setThrottle(RSL1.getThrottle())).unless(()-> DriverStation.isAutonomous()),
             manipulator.setStateCommand(RSL1.getManipulatorState()),
             waitSeconds(0.25),

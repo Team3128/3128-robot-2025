@@ -128,14 +128,6 @@ public class AutoPrograms {
             swerve
             );
 
-        // NamedCommands.registerCommand("Score L4", sequence(
-        //     robot.setStateCommand(RPL4),
-        //     waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
-        //     waitSeconds(0.2),
-        //     robot.setStateCommand(RSL4),
-        //     waitSeconds(0.1)
-        // ));
-
         for (FieldStates state : FieldStates.values()) {
             if (state.name().length() == 1) {
                 NamedCommands.registerCommand(
@@ -144,7 +136,7 @@ public class AutoPrograms {
                         run(() -> swerve.drive(0, 0, 0)),
                         sequence(
                             waitSeconds(1.15),
-                            robot.setStateCommand(AUTO_HOLD2),
+                            robot.setStateCommand(AUTO_HOLD),
                             robot.setStateCommand(RPL4)
                         )
                     ).withDeadline(swerve.autoAlign(state.getPose2d()).

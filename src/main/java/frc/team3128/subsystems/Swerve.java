@@ -139,7 +139,7 @@ public class Swerve extends SwerveBase {
     private static Translation2d translationSetpoint = new Translation2d();
     private static Supplier<Rotation2d> rotationSetpointSupplier = ()-> new Rotation2d();
 
-    public static boolean autoEnabled = false;
+    public static boolean autoMoveEnabled = false;
 
     public static synchronized Swerve getInstance() {
         if (instance == null) {
@@ -343,25 +343,37 @@ public class Swerve extends SwerveBase {
 
     public Command autoAlign(Supplier<Pose2d> pose, boolean shouldRam) {
         return Commands.sequence(
-            Commands.runOnce(()-> {
-                setThrottle(0.5);
-                Swerve.autoEnabled = true;
-                setPose(pose.get());
-            }),
-            waitUntil(()-> atTranslationSetpoint() && atRotationSetpoint()).finallyDo(()-> Swerve.disable()).withTimeout(2),
-            Commands.runOnce(()-> {
-                // Camera.disableAll();
+            //Navigate
+            Commands.startEnd(
+                ()-> {
+                    setThrottle(0.5);
+                    Swerve.autoMoveEnabled = true;
+                    setPose(pose.get());
+                }, 
+                ()-> disable()
+            )
+            .until(()-> atTranslationSetpoint() && atRotationSetpoint())
+            .withTimeout(2),
+            //Ram
+            Commands.startEnd(
+                ()-> {
+                    setThrottle(1);
+                    Swerve.autoMoveEnabled = false;
+                },
+                ()-> disable()
+            )
+            .until(()-> atTranslationSetpoint())
+            .withTimeout(1)
+            .onlyIf(()-> shouldRam)
+        
+        ).withTimeout(4.5)
+        .finallyDo(
+            ()-> {
+                disable();
                 setThrottle(1);
-                Swerve.autoEnabled = false;
-                if(shouldRam) moveBy(new Translation2d(FUDGE_FACTOR.getX(), 0).rotateBy(getClosestReef().getRotation()));
-            }),
-            waitUntil(() -> !shouldRam || atTranslationSetpoint()).withTimeout(1).finallyDo(()-> Swerve.disable()),
-            Commands.runOnce(()-> {
-                // Camera.enableAll();
-                Swerve.autoEnabled = false;
-                setThrottle(fast);
-            })
-        ).withTimeout(4.5);
+                Swerve.autoMoveEnabled = false;
+            }
+        );
     }
 
     public Command autoAlign(Pose2d pose) {
