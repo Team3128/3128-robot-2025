@@ -8,7 +8,7 @@ public enum LedStates {
 
     DEFAULT(0, 0, 0, true), //FLAME -> both neutrals, all primes + reef tracking
 
-    CLIMB_PRIME(255, 136, 0, false), //ORANGE
+    CLIMB_PRIME(255, 50, 0, false), //ORANGE
     CLIMB(0, 255, 0, false), // GREEN
 
     AUTO_HOLD(255, 0, 246, false), // PINK
@@ -16,6 +16,7 @@ public enum LedStates {
     INTAKE(0, 0, 255, false), // BLUE
     EJECT_OUTTAKE(153, 0, 255, false), // PURPLE
 
+    PRIME(255, 50, 0, false), //ORANGE
     SCORE(0, 255, 0, false),
     
     REEF_1(0, 245, 255, false), // CYAN

@@ -55,7 +55,7 @@ public class Led extends FSMSubsystemBase<LedStates> {
     public void registerTransitions() {
         // transitionMap.addConvergingTransition(DEFAULT, new CmdDefaultLed());
 
-        transitionMap.addCommutativeTransition(List.of(DISABLED, DEFAULT, CLIMB_PRIME, CLIMB, AUTO_HOLD, INTAKE, EJECT_OUTTAKE, SCORE), state -> runOnce(() -> setLedColor(state)));
+        transitionMap.addCommutativeTransition(List.of(DEFAULT, UNDEFINED, DISABLED, CLIMB_PRIME, CLIMB, AUTO_HOLD, INTAKE, EJECT_OUTTAKE, PRIME, SCORE), state -> runOnce(() -> setLedColor(state)));
         
         // transitionMap.addDivergingTransition(DEFAULT, state -> runOnce(() -> setLedColor(state)).beforeStarting(() -> CommandScheduler.getInstance().requiring(Led.getInstance()).cancel()));
     }
@@ -63,7 +63,7 @@ public class Led extends FSMSubsystemBase<LedStates> {
     public void setLedColor(LedStates ledState) {
         
         resetAnimationSlot();
-        CommandScheduler.getInstance().requiring(Led.getInstance()).cancel();
+        // CommandScheduler.getInstance().requiring(Led.getInstance()).cancel();
 
         if (ledState == DISABLED) {
             candle.animate(new RainbowAnimation(BRIGHTNESS, r_SPEED, NUM_LED, false, STARTING_ID), 0);

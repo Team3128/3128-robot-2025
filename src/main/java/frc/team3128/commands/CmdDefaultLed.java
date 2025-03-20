@@ -30,6 +30,7 @@ import com.ctre.phoenix.led.FireAnimation;
 import com.ctre.phoenix.led.TwinkleAnimation;
 
 import common.hardware.camera.Camera;
+import common.utility.shuffleboard.NAR_Shuffleboard;
 
 
 public class CmdDefaultLed extends Command {
@@ -45,37 +46,38 @@ public class CmdDefaultLed extends Command {
 
     @Override
     public void initialize() {
+        // NAR_Shuffleboard.addData("LEDS", "wawawa", ()-> ledSupplier.get().name(), 0, 0);
     }
 
     @Override
     public void execute() {
+        Supplier<LedStates> ledSupplier = ()-> FieldStates.getEnum(Swerve.getInstance().getClosestReef()).getLedState();
+
+
         Translation2d robotPos = swerve.getTranslation();
-        // Translation2d snappedReef = swerve.getClosestReef().getTranslation();
-        //this wont work on other side of field
-        FieldStates closest = FieldStates.A;
-        for(FieldStates state : FieldStates.values()) {
-            if(robotPos.getDistance(state.getTranslation2d()) < robotPos.getDistance(closest.getTranslation2d())) {
-                closest = state;
-            }
-        }
+        Translation2d snappedReef = swerve.getClosestReef().getTranslation();
+
         
-        double distance = robotPos.getDistance(closest.getTranslation2d());
+        double distance = robotPos.getDistance(snappedReef);
         
         if(distance > 2.5) {
-            led.resetAnimationSlot();
             Led.getInstance().candle.animate(new FireAnimation(BRIGHTNESS, r_SPEED, NUM_LED, SPARKING, COOLING, false, STARTING_ID), 0);
         }
         else{
             if(Camera.seesTag()){
                 led.resetAnimationSlot();
-                led.candle.animate(new TwinkleAnimation(closest.getLedState().r, closest.getLedState().g, closest.getLedState().b), 0);
+                led.candle.animate(new TwinkleAnimation(ledSupplier.get().r, ledSupplier.get().g, ledSupplier.get().b), 0);
             }
             else{
                 led.resetAnimationSlot();
-                led.setLedColor(closest.getLedState());
+                led.setLedColor(ledSupplier.get());
             }
         }
     }
 
+    @Override
+    public boolean isFinished() {
+        return !(RobotManager.getInstance().stateEquals(RobotStates.NEUTRAL) || RobotManager.getInstance().stateEquals(RobotStates.FULL_NEUTRAL));
+    }
 
 }

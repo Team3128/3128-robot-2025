@@ -265,7 +265,7 @@ public class Constants {
             public static io.vavr.collection.List<Pose2d> reefPoses = io.vavr.collection.List.of(A.getPose2d(), B.getPose2d(), C.getPose2d(), D.getPose2d(), E.getPose2d(), F.getPose2d(), G.getPose2d(), H.getPose2d(), I.getPose2d(), J.getPose2d(), K.getPose2d(), L.getPose2d());
             public static io.vavr.collection.List<Pose2d> sourcePoses = io.vavr.collection.List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d());
 
-            LedStates ledState;
+            private final LedStates ledState;
 
             private FieldStates(int id, boolean isRight, LedStates ledState) {
                 this.ledState = ledState;
@@ -295,6 +295,13 @@ public class Constants {
 
             public Rotation2d getRotation2d() {
                 return pose.getRotation();
+            }
+
+            public static FieldStates getEnum(Pose2d pose) {
+                for(FieldStates state : FieldStates.values()) {
+                    if(pose.equals(allianceFlip(state.getPose2d()))) return state;
+                }
+                return A;
             }
         }
 
