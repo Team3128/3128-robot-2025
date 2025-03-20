@@ -13,7 +13,7 @@ public class Intake extends VoltageSubsystemBase {
 
     public static NAR_TalonFX intakeMotor = new NAR_TalonFX(ROLLER_ID, "rio");
     public static NAR_CANSpark rollerMotor = new NAR_CANSpark(INTAKE_ID, ControllerType.CAN_SPARK_FLEX);
-    public static NAR_TalonFX manipMotor = new NAR_TalonFX(MANIP_ID, "rio");
+    public static NAR_CANSpark manipMotor = new NAR_CANSpark(MANIP_ID, ControllerType.CAN_SPARK_FLEX);
     //public static NAR_CANSpark serial = new NAR_CANSpark(SERIAL_ID, ControllerType.CAN_SPARK_FLEX);
     
     private Intake() {

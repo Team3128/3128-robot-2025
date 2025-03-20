@@ -118,19 +118,19 @@ public class RobotContainer {
         ));
 
         controller.getButton(XboxButton.kX).onTrue(sequence(
-            runOnce(()->Intake.intakeMotor.set(.6))
+            runOnce(()->Intake.intakeMotor.set(1))
         )).onFalse(sequence(
             runOnce(()->Intake.intakeMotor.set(0))
         ));
 
         controller.getButton(XboxButton.kLeftTrigger).onTrue(sequence(
-            runOnce(()->Intake.manipMotor.set(0.8))
+            runOnce(()->Intake.manipMotor.set(0.1))
         )).onFalse(sequence(
             runOnce(()->Intake.manipMotor.set(0))
         ));
 
         controller.getButton(XboxButton.kLeftBumper).onTrue(sequence(
-            runOnce(()->Intake.manipMotor.set(-.4))
+            runOnce(()->Intake.manipMotor.set(-.1))
         )).onFalse(sequence(
             runOnce(()->Intake.manipMotor.set(0))
         ));
@@ -147,9 +147,14 @@ public class RobotContainer {
         ));
 
         controller.getButton(XboxButton.kRightBumper).onTrue(sequence(
-            runOnce(()->Intake.manipMotor.set(-.05))
+            runOnce(()->Intake.rollerMotor.set(0.8)),
+            runOnce(()->Intake.intakeMotor.set(-0.075))
+
+            
         )).onFalse(sequence(
-            runOnce(()->Intake.manipMotor.set(0))
+            runOnce(()->Intake.rollerMotor.set(0)),
+            runOnce(()->Intake.intakeMotor.set(0))
+
         ));
             
         // controller.getUpPOVButton().onTrue(runOnce(()-> swerve.snapToSource()));
