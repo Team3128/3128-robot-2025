@@ -37,7 +37,7 @@ public enum RobotStates {
     
     PRE_CLIMB_PRIME(ClimberStates.PRE_CLIMB_PRIME),
     CLIMB_PRIME(ElevatorStates.NEUTRAL, IntakeStates.CLIMB_PRIME, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB_PRIME, slow, LedStates.CLIMB_PRIME),
-    CLIMB(ElevatorStates.NEUTRAL, IntakeStates.CLIMB, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB, slow, LedStates.CLIMB_PRIME);
+    CLIMB(ElevatorStates.NEUTRAL, IntakeStates.CLIMB, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB, slow, LedStates.CLIMB);
 
     
     

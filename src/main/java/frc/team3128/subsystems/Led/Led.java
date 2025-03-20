@@ -53,22 +53,23 @@ public class Led extends FSMSubsystemBase<LedStates> {
 
     @Override
     public void registerTransitions() {
-        transitionMap.addConvergingTransition(DEFAULT, new CmdDefaultLed());
+        // transitionMap.addConvergingTransition(DEFAULT, new CmdDefaultLed());
 
-        transitionMap.addCommutativeTransition(List.of(DISABLED, CLIMB_PRIME, CLIMB, AUTO_HOLD, INTAKE, EJECT_OUTTAKE, SCORE), state -> runOnce(() -> setLedColor(state)));
+        transitionMap.addCommutativeTransition(List.of(DISABLED, DEFAULT, CLIMB_PRIME, CLIMB, AUTO_HOLD, INTAKE, EJECT_OUTTAKE, SCORE), state -> runOnce(() -> setLedColor(state)));
         
-        transitionMap.addDivergingTransition(DEFAULT, state -> runOnce(() -> setLedColor(state)).beforeStarting(() -> CommandScheduler.getInstance().requiring(Led.getInstance()).cancel()));
+        // transitionMap.addDivergingTransition(DEFAULT, state -> runOnce(() -> setLedColor(state)).beforeStarting(() -> CommandScheduler.getInstance().requiring(Led.getInstance()).cancel()));
     }
 
     public void setLedColor(LedStates ledState) {
         
         resetAnimationSlot();
+        CommandScheduler.getInstance().requiring(Led.getInstance()).cancel();
 
         if (ledState == DISABLED) {
             candle.animate(new RainbowAnimation(BRIGHTNESS, r_SPEED, NUM_LED, false, STARTING_ID), 0);
         }
-        else if (ledState == DEFAULT) {
-            candle.animate(new FireAnimation(BRIGHTNESS, r_SPEED, NUM_LED, SPARKING, COOLING, true, STARTING_ID), 0);
+        else if (ledState == DEFAULT){
+            candle.animate(new FireAnimation(BRIGHTNESS, r_SPEED, NUM_LED, SPARKING, COOLING, false, STARTING_ID), 0);
         }
         else {
             candle.setLEDs(ledState.r, ledState.g, ledState.b, WHITE_VALUE, STARTING_ID, NUM_LED);

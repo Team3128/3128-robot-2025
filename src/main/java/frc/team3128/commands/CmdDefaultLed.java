@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Led.Led;
 import frc.team3128.subsystems.Led.LedStates;
@@ -50,6 +51,7 @@ public class CmdDefaultLed extends Command {
     public void execute() {
         Translation2d robotPos = swerve.getTranslation();
         // Translation2d snappedReef = swerve.getClosestReef().getTranslation();
+        //this wont work on other side of field
         FieldStates closest = FieldStates.A;
         for(FieldStates state : FieldStates.values()) {
             if(robotPos.getDistance(state.getTranslation2d()) < robotPos.getDistance(closest.getTranslation2d())) {
@@ -60,7 +62,8 @@ public class CmdDefaultLed extends Command {
         double distance = robotPos.getDistance(closest.getTranslation2d());
         
         if(distance > 2.5) {
-            led.setLedColor(LedStates.DEFAULT);
+            led.resetAnimationSlot();
+            Led.getInstance().candle.animate(new FireAnimation(BRIGHTNESS, r_SPEED, NUM_LED, SPARKING, COOLING, false, STARTING_ID), 0);
         }
         else{
             if(Camera.seesTag()){
@@ -68,19 +71,10 @@ public class CmdDefaultLed extends Command {
                 led.candle.animate(new TwinkleAnimation(closest.getLedState().r, closest.getLedState().g, closest.getLedState().b), 0);
             }
             else{
+                led.resetAnimationSlot();
                 led.setLedColor(closest.getLedState());
             }
         }
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-
-    }
-
-    @Override
-    public boolean isFinished() {
-        return !RobotManager.getInstance().stateEquals(RobotStates.defaultElevatorStates.appendAll(RobotStates.neutralStates).asJava());
     }
 
 
