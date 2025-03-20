@@ -1,5 +1,6 @@
 package frc.team3128.subsystems;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -280,9 +281,10 @@ public class Swerve extends SwerveBase {
     public void snapToAngle() {
         final Rotation2d gyroAngle = Swerve.getInstance().getGyroRotation2d();
         Rotation2d setpoint = Collections.min(
-                            DriveConstants.snapToAngles,
-                            Comparator.comparing(
-                                (Rotation2d angle) -> Math.abs(gyroAngle.minus(angle).getDegrees()))
+                                DriveConstants.snapToAngles,
+                                Comparator.comparing(
+                                    (Rotation2d angle) -> Math.abs(gyroAngle.minus(angle).getDegrees())
+                                )
                             );
         rotateTo(setpoint);
     }
@@ -292,8 +294,15 @@ public class Swerve extends SwerveBase {
         rotateTo(setpoint.getRotation());
     }
 
-    public Pose2d getClosestReef() {
-        return getPose().nearest(allianceFlip(reefPoses.asJava()));
+    public FieldStates getClosestReef() {
+        final Pose2d robotPose = getPose();
+        FieldStates nearest = Collections.min(
+                                FieldStates.reefStates.asJava(),
+                                Comparator.comparing(
+                                    (FieldStates state) -> robotPose.getTranslation().getDistance(state.getPose2d().getTranslation())
+                                )
+                            );
+        return nearest;
     }
 
     public Command autoAlign(FieldStates state) {

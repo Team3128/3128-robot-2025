@@ -31,6 +31,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 // import frc.team3128.subsystems.Swerve;
+import frc.team3128.subsystems.Led.LedStates;
 
 
 
@@ -242,38 +243,42 @@ public class Constants {
         public static final Translation2d reefShift = new Translation2d(0.35/2, 0.);
 
         public enum FieldStates {
-            A(18, false),
-            B(18, true),
-            C(17, false),
-            D(17, true),
-            E(22, false),
-            F(22, true),
-            G(21, false),
-            H(21, true),
-            I(20, false),
-            J(20, true),
-            K(19, false),
-            L(19, true),
+            A(18, false, LedStates.ODD_REEF),
+            B(18, true, LedStates.ODD_REEF),
+            C(17, false, LedStates.EVEN_REEF),
+            D(17, true, LedStates.EVEN_REEF),
+            E(22, false, LedStates.ODD_REEF),
+            F(22, true, LedStates.ODD_REEF),
+            G(21, false, LedStates.EVEN_REEF),
+            H(21, true, LedStates.EVEN_REEF),
+            I(20, false, LedStates.ODD_REEF),
+            J(20, true, LedStates.ODD_REEF),
+            K(19, false, LedStates.EVEN_REEF),
+            L(19, true, LedStates.EVEN_REEF),
 
-            SOURCE_1(new Pose2d(new Translation2d(1.267, 0.753), Rotation2d.fromDegrees(55))),
-            SOURCE_2(new Pose2d(new Translation2d(1.267, FIELD_Y_LENGTH-0.753), Rotation2d.fromDegrees(-55)));
+            SOURCE_1(new Pose2d(new Translation2d(1.267, 0.753), Rotation2d.fromDegrees(55)), LedStates.SOURCE),
+            SOURCE_2(new Pose2d(new Translation2d(1.267, FIELD_Y_LENGTH-0.753), Rotation2d.fromDegrees(-55)), LedStates.SOURCE);
 
             private final Pose2d pose;
+            private final LedStates ledState;
             public static io.vavr.collection.List<Pose2d> reefLeft = io.vavr.collection.List.of(A.getPose2d(), C.getPose2d(), F.getPose2d(), H.getPose2d(), J.getPose2d(), K.getPose2d());
             public static io.vavr.collection.List<Pose2d> reefRight = io.vavr.collection.List.of(B.getPose2d(), D.getPose2d(), E.getPose2d(), G.getPose2d(), I.getPose2d(), L.getPose2d());
             public static io.vavr.collection.List<Pose2d> reefPoses = io.vavr.collection.List.of(A.getPose2d(), B.getPose2d(), C.getPose2d(), D.getPose2d(), E.getPose2d(), F.getPose2d(), G.getPose2d(), H.getPose2d(), I.getPose2d(), J.getPose2d(), K.getPose2d(), L.getPose2d());
+            public static io.vavr.collection.List<FieldStates> reefStates = io.vavr.collection.List.of(A, B, C, D, E, F, G, H, I, J, K, L);
             public static io.vavr.collection.List<Pose2d> sourcePoses = io.vavr.collection.List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d());
 
-            private FieldStates(int id, boolean isRight) {
+            private FieldStates(int id, boolean isRight, LedStates ledState) {
                 Pose2d apriltag = APRIL_TAGS.get(id - 1).pose.toPose2d();
                 Translation2d offset = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(-6.25)).rotateBy(apriltag.getRotation());
                 Translation2d fudgeFactor  = FUDGE_FACTOR.rotateBy(apriltag.getRotation());
                 Translation2d leftRight = new Translation2d(0, Units.inchesToMeters(isRight ? 13.0 / 2 : -13.0 / 2)).rotateBy(apriltag.getRotation());
                 this.pose = new Pose2d(apriltag.getX() + offset.getX() + fudgeFactor.getX() + leftRight.getX(), apriltag.getY() + offset.getY() + fudgeFactor.getY() + leftRight.getY(), apriltag.getRotation().plus(Rotation2d.k180deg));
+                this.ledState = ledState;
             }
 
-            private FieldStates(Pose2d pose) {
+            private FieldStates(Pose2d pose, LedStates ledState) {
                 this.pose = pose;
+                this.ledState = ledState;
             }
 
             public Pose2d getPose2d() {
@@ -286,6 +291,10 @@ public class Constants {
 
             public Rotation2d getRotation2d() {
                 return pose.getRotation();
+            }
+
+            public LedStates getLedStates() {
+                return this.ledState;
             }
         }
 
@@ -366,6 +375,8 @@ public class Constants {
     }
 
     public static class LedConstants{
+
+        public static final int CANDLE_ID = 14;
 
         public static final int WHITE_VALUE = 0; //leds used don't have a white value
         public static final double r_SPEED = 0.75;

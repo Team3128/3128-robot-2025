@@ -12,6 +12,8 @@ import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Intake.IntakeStates;
+import frc.team3128.subsystems.Led.Led;
+import frc.team3128.subsystems.Led.LedStates;
 import frc.team3128.subsystems.Manipulator.Manipulator;
 import frc.team3128.subsystems.Manipulator.ManipulatorStates;
 
@@ -30,6 +32,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static Intake intake;
     private static Climber climber;
     private static Swerve swerve;
+    private static Led led;
 
     private static TransitionMap<RobotStates> transitionMap = new TransitionMap<>(RobotStates.class);
     private Function<RobotStates, Command> defaultTransitioner = state -> {return updateSubsystemStates(state);};
@@ -42,6 +45,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         intake = Intake.getInstance();
         climber = Climber.getInstance();
         swerve = Swerve.getInstance();
+        led = Led.getInstance();
+
 
         initShuffleboard();
         NAR_Shuffleboard.addData(this.getName(), "Auto Enabled", () -> Swerve.autoMoveEnabled);
@@ -57,6 +62,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     public Command updateSubsystemStates(RobotStates nextState) {
         return sequence(
+            led.setStateCommand(nextState.getLedState()).unless(()-> nextState.getLedState() == LedStates.UNDEFINED),
             waitUntil(()-> (!Swerve.autoMoveEnabled)).onlyIf(()-> nextState.getWaitForAutoEnabled()),
             elevator.setStateCommand(nextState.getElevatorState()).unless(()-> nextState.getElevatorState() == ElevatorStates.UNDEFINED),
             manipulator.setStateCommand(nextState.getManipulatorState()).unless(()-> nextState.getManipulatorState() == ManipulatorStates.UNDEFINED),
@@ -139,6 +145,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, defaultTransitioner);
 
         transitionMap.addTransition(RPL1, RSL1, sequence(
+            led.setStateCommand(RSL1.getLedState()),
             waitUntil(()-> !Swerve.autoMoveEnabled),
             runOnce(()-> swerve.setThrottle(RSL1.getThrottle())).unless(()-> DriverStation.isAutonomous()),
             manipulator.setStateCommand(RSL1.getManipulatorState()),
