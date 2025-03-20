@@ -87,7 +87,7 @@ public class AutoPrograms {
                 }
             } catch(Exception e) {}
         }
-        autoMap.put("RB_3pc_EDC_auto", getPathPlannerAuto("RB_3pc_EDC_auto"));
+        //autoMap.put("RB_3pc_EDC_auto", getPathPlannerAuto("RB_3pc_EDC_auto"));
         // NarwhalDashboard.getInstance().addAutos(autoStrings.toArray(new String[0]));
     }
 
