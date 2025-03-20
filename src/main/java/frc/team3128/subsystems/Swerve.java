@@ -278,6 +278,10 @@ public class Swerve extends SwerveBase {
         return false;
     }
 
+    public double getTranslationError() {
+        return getDistanceTo(translationSetpoint);
+    }
+
     public void snapToAngle() {
         final Rotation2d gyroAngle = Swerve.getInstance().getGyroRotation2d();
         Rotation2d setpoint = Collections.min(

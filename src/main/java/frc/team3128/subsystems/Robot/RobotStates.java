@@ -12,6 +12,10 @@ import static frc.team3128.Constants.DriveConstants.fast;
 
 public enum RobotStates {
     
+    DISABLED(ElevatorStates.UNDEFINED, IntakeStates.UNDEFINED, ManipulatorStates.UNDEFINED, ClimberStates.UNDEFINED, LedStates.DISABLED),
+    ENABLED(ElevatorStates.UNDEFINED, IntakeStates.UNDEFINED, ManipulatorStates.UNDEFINED, ClimberStates.UNDEFINED, LedStates.DEFAULT),
+
+
     FULL_NEUTRAL(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.IN, ClimberStates.NEUTRAL, LedStates.DEFAULT),
     NEUTRAL(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.IN, ClimberStates.UNDEFINED, LedStates.DEFAULT),
 
@@ -65,7 +69,7 @@ public enum RobotStates {
         Pair.of(CLIMB_PRIME, CLIMB)
     );
 
-    public static final List<RobotStates> defaultStates = List.of(NEUTRAL, FULL_NEUTRAL).appendAll(defaultElevatorStates).appendAll(defaultIntakeStates).appendAll(defaultClimbStates);
+    public static final List<RobotStates> defaultStates = List.of(NEUTRAL, FULL_NEUTRAL, DISABLED).appendAll(defaultElevatorStates).appendAll(defaultIntakeStates).appendAll(defaultClimbStates);
     public static final List<RobotStates> exclusiveStates = exclusiveElevatorStates.appendAll(exclusiveClimbStates);
 
     private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator, ClimberStates climber, double throttle, boolean waitForAutoEnabled, LedStates led) {

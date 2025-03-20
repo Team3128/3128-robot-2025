@@ -7,6 +7,7 @@ import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.util.Color;
 
 import com.ctre.phoenix.led.CANdleConfiguration;
@@ -44,6 +45,11 @@ public class LedMechanism {
 
     public void setColor(Color color) {
         setColor(color, 0);
+    }
+
+    public void setColor(Color color, double magnitude) {
+        reset();
+        candle.setLEDs((int)color.red, (int)color.green, (int)color.blue, 0, STARTING_ID, (int)Math.ceil(MathUtil.clamp(magnitude, 0, 1) * NUM_LED));
     }
 
     public void setColor(Color color, int white) {
