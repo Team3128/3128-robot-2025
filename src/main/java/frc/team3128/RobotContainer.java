@@ -49,6 +49,7 @@ import frc.team3128.subsystems.Robot.RobotStates;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 
 import java.io.IOException;
+import java.util.function.BooleanSupplier;
 
 import javax.lang.model.element.NestingKind;
 
@@ -87,6 +88,8 @@ public class RobotContainer {
 
     public static Limelight limelight;
 
+    public static BooleanSupplier shouldRam;
+
 
     public RobotContainer() {
         swerve = Swerve.getInstance();
@@ -124,6 +127,9 @@ public class RobotContainer {
     private void configureButtonBindings() {
         buttonPad.getButton(2).onTrue(swerve.identifyOffsetsCommand().ignoringDisable(true));
 
+        shouldRam = ()-> buttonPad.getButton(1).getAsBoolean();
+
+
         controller2.getButton(kA).onTrue(Climber.getInstance().runCommand(0.8)).onFalse(Climber.getInstance().stopCommand());
         controller2.getButton(kB).onTrue(Climber.getInstance().runCommand(-0.8)).onFalse(Climber.getInstance().stopCommand());
         controller2.getButton(kX).onTrue(Climber.getInstance().resetCommand());
@@ -144,12 +150,12 @@ public class RobotContainer {
         controller.getButton(kLeftStick).onTrue(swerve.autoAlignSource());
 
         controller.getButton(kBack).onTrue(sequence(
-            swerve.autoAlign(false).andThen(() -> robot.autoScore())
+            swerve.autoAlign(false, shouldRam).andThen(() -> robot.autoScore())
             .beforeStarting(robot.setStateCommand(TELE_HOLD))
         ));
 
         controller.getButton(kStart).onTrue(sequence(
-            swerve.autoAlign(true).andThen(() -> robot.autoScore())
+            swerve.autoAlign(true, shouldRam).andThen(() -> robot.autoScore())
             .beforeStarting(robot.setStateCommand(TELE_HOLD))
         ));
 

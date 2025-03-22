@@ -30,6 +30,7 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
         roller = RollerMechanism.getInstance();
 
         addMechanisms(roller);
+        registerTransitions();
     }
 
     public static synchronized Intake getInstance() {

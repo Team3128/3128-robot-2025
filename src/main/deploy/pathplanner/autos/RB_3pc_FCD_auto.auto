@@ -5,9 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Copy of RIGHT_BARGE to F"
+            "name": "Reset RIGHT_BARGE"
           }
         },
         {
@@ -55,7 +55,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

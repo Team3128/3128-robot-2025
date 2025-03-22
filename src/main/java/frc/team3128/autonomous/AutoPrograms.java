@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.Robot;
+import frc.team3128.Constants.FieldConstants;
 import frc.team3128.Constants.FieldConstants.FieldStates;
 // import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Swerve;
@@ -39,6 +40,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import common.utility.Log;
 import common.utility.narwhaldashboard.NarwhalDashboard;
 
+import static frc.team3128.Constants.FieldConstants.flipRotationally;
 // import static frc.team3128.Constants.FieldConstants.FieldStates.REEF_5;
 // import static frc.team3128.Constants.FieldConstants.FieldStates.REEF_6;
 import static frc.team3128.Constants.SwerveConstants.*;
@@ -132,6 +134,7 @@ public class AutoPrograms {
             if (state.name().length() == 1) {
                 NamedCommands.registerCommand(
                     "Score L4 " + state.name(),
+                    // none()
                     parallel(
                         run(() -> swerve.drive(0, 0, 0)),
                         sequence(
@@ -153,6 +156,16 @@ public class AutoPrograms {
         }
 
         NamedCommands.registerCommand(
+            "Reset RIGHT_BARGE",
+            runOnce(() -> swerve.resetOdometryNoGyro(FieldConstants.allianceFlipRotationally(new Pose2d(7.17, 2.55, Rotation2d.kPi))))
+        );
+
+        NamedCommands.registerCommand(
+            "Reset LEFT_BARGE",
+            runOnce(() -> swerve.resetOdometryNoGyro(FieldConstants.allianceFlipRotationally(new Pose2d(7.17, 5.502, Rotation2d.kPi))))
+        );
+
+        NamedCommands.registerCommand(
             "Score L4",
             parallel(
                 run(() -> swerve.drive(0, 0, 0)),
@@ -160,7 +173,7 @@ public class AutoPrograms {
                     waitSeconds(0.5),
                     robot.setStateCommand(RPL4)
                 )
-            ).withDeadline(swerve.autoAlign(true))
+            ).withDeadline(swerve.autoAlign(true, ()->true))
         );
 
         NamedCommands.registerCommand("Score L2", sequence(
@@ -201,6 +214,9 @@ public class AutoPrograms {
         String selectedAutoName = null;
         // String selectedAutoName = NarwhalDashboard.getInstance().getSelectedAuto(); //NarwhalDashboard.getInstance().getSelectedAuto();
         String hardcode = "RB_3pc_FCD_auto";
+        // String hardcode = "LB_3pc_ILK_auto";
+        // String hardcode = "MID_1pc_H_auto"; 
+        // String hardcode = "Left_Leave_Backwards";
         
          
         Command autoCommand;
