@@ -131,6 +131,22 @@ public class AutoPrograms {
             );
 
         for (FieldStates state : FieldStates.values()) {
+            // if (state.name().equals("D")){
+            //     NamedCommands.registerCommand(
+            //         "Score L4 " + state.name(),
+            //         // none()
+            //         parallel(
+            //             run(() -> swerve.drive(0, 0, 0)),
+            //             sequence(
+            //                 waitSeconds(1.15),
+            //                 robot.setStateCommand(AUTO_HOLD),
+            //                 robot.setStateCommand(RPL4)
+            //             )
+            //         ).withDeadline(swerve.autoAlign(state.getPose2d(), false).
+            //             andThen(() -> robot.autoScore()).
+            //             andThen(waitUntil(() -> robot.stateEquals(NEUTRAL))))
+            //     );
+            // }
             if (state.name().length() == 1) {
                 NamedCommands.registerCommand(
                     "Score L4 " + state.name(),
