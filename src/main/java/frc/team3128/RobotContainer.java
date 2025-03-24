@@ -125,9 +125,9 @@ public class RobotContainer {
     }   
 
     private void configureButtonBindings() {
-        buttonPad.getButton(2).onTrue(swerve.identifyOffsetsCommand().ignoringDisable(true));
+        buttonPad.getButton(12).onTrue(swerve.identifyOffsetsCommand().ignoringDisable(true));
 
-        shouldRam = ()-> buttonPad.getButton(1).getAsBoolean();
+        shouldRam = ()-> !buttonPad.getButton(1).getAsBoolean();
 
 
         controller2.getButton(kA).onTrue(Climber.getInstance().runCommand(0.8)).onFalse(Climber.getInstance().stopCommand());
