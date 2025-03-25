@@ -3,6 +3,7 @@ package frc.team3128.subsystems.Climber;
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
+import common.utility.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -39,9 +40,8 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
         roller = RollerMechanism.getInstance();
 
         addMechanisms(winch, roller);
-        // addMechanisms(winch);
+        Log.profile("Climber State Machine Register Transitions", ()-> registerTransitions());
 
-        // initShuffleboard();
     }
 
     public static synchronized Climber getInstance() {

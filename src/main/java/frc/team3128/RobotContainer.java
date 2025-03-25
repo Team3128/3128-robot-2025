@@ -89,8 +89,7 @@ public class RobotContainer {
 
 
     public RobotContainer() {
-        swerve = Swerve.getInstance();
-        // winch = WinchMechanism.getInstance();
+        Log.profile("Swerve", ()-> swerve = Swerve.getInstance());
         
         NAR_CANSpark.maximumRetries = 2;
         NAR_TalonFX.maximumRetries = 2;
@@ -104,21 +103,11 @@ public class RobotContainer {
         swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
 
-        robot = RobotManager.getInstance();
-        elevator = ElevatorMechanism.getInstance();
-        // manipulator = Manipulator.getInstance();
-
-        //uncomment line below to enable driving
-        // CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
-
-        NAR_Shuffleboard.addSendable("RobotContainer", "NEUTRAL", robot, 0, 0).withWidget(BuiltInWidgets.kToggleSwitch);
-
-        AutoPrograms.getInstance();
-        
+        Log.profile("Robot State Machine", ()-> robot = RobotManager.getInstance());        
         DriverStation.silenceJoystickConnectionWarning(true);
-        initCameras();
+        Log.profile("Init Camreas", ()-> initCameras());
         configureButtonBindings();
-        initDashboard();
+        Log.profile("Narwhal Dashboard", ()-> initDashboard());
     }   
 
     private void configureButtonBindings() {

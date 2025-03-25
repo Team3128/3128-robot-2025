@@ -14,6 +14,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -46,9 +47,8 @@ public class Robot extends NAR_Robot {
 
     public static Robot instance;
 
-    public static AutoPrograms autoPrograms = AutoPrograms.getInstance();
-    public static RobotContainer m_robotContainer = new RobotContainer();
-    // public static AutoPrograms autoPrograms;
+    public static AutoPrograms autoPrograms;
+    public static RobotContainer robotContainer;
 
     public static synchronized Robot getInstance() {
         if (instance == null) {
@@ -59,14 +59,15 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void robotInit(){
+        Log.profile("Robot Container", ()-> robotContainer = new RobotContainer());
+        Log.profile("AutoPrograms", ()-> autoPrograms = AutoPrograms.getInstance());
         Camera.enableAll();
-        m_robotContainer.initDashboard();
+        
         Log.info("Dashboard", "Done");
         LiveWindow.disableAllTelemetry();
         // Log.logDebug = true;
-        autoPrograms.initAutoSelector();
         Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM, MOTOR);
-        PathfindingCommand.warmupCommand().schedule();
+        Log.profile("Pathplanner WarmUp", ()-> PathfindingCommand.warmupCommand().schedule());
     }
 
     @Override

@@ -5,6 +5,8 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
+import common.utility.Log;
+
 import static frc.team3128.subsystems.Intake.IntakeStates.*;
 import java.util.function.Function;
 
@@ -30,6 +32,7 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
         roller = RollerMechanism.getInstance();
 
         addMechanisms(roller);
+        Log.profile("Intake State Machine Register Transitions", ()-> registerTransitions());
     }
 
     public static synchronized Intake getInstance() {

@@ -2,6 +2,7 @@ package frc.team3128.subsystems.Elevator;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
+import common.utility.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import static common.hardware.motorcontroller.NAR_Motor.Neutral.*;
 import static frc.team3128.subsystems.Elevator.ElevatorStates.*;
@@ -19,7 +20,7 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
         super(ElevatorStates.class, transitionMap, NEUTRAL);
         elevator = ElevatorMechanism.getInstance();
         addMechanisms(elevator);
-        
+        Log.profile("Elevator State Machine Register Transitions", ()-> registerTransitions());
     }
 
     public static synchronized Elevator getInstance() {

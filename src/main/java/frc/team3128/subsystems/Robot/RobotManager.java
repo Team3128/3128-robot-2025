@@ -2,6 +2,7 @@ package frc.team3128.subsystems.Robot;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
+import common.utility.Log;
 import common.utility.shuffleboard.NAR_Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.subsystems.Swerve;
@@ -37,14 +38,16 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private RobotManager() {
         super(RobotStates.class, transitionMap, NEUTRAL);
 
-        elevator = Elevator.getInstance();
-        manipulator = Manipulator.getInstance();
-        intake = Intake.getInstance();
-        climber = Climber.getInstance();
+        Log.profile("Elevator State Machine", ()-> elevator = Elevator.getInstance());
+        Log.profile("Manipulator State Machine", ()-> manipulator = Manipulator.getInstance());
+        Log.profile("Intake State Machine", ()-> intake = Intake.getInstance());
+        Log.profile("Climber State Machine", ()-> climber = Climber.getInstance());
         swerve = Swerve.getInstance();
 
         initShuffleboard();
         NAR_Shuffleboard.addData(this.getName(), "Auto Enabled", () -> Swerve.autoMoveEnabled);
+
+        Log.profile("Robot State Machine Register Transitions", ()-> registerTransitions());
     }
 
     public static synchronized RobotManager getInstance() {

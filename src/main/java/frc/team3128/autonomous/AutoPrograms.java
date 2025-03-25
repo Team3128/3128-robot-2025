@@ -64,8 +64,8 @@ public class AutoPrograms {
     private AutoPrograms() {
         robot = RobotManager.getInstance();
 
-        configPathPlanner();
-        initAutoSelector();
+        Log.profile("Configure Pathplanner", ()-> configPathPlanner());
+        Log.profile("Init Auto Selector", ()-> initAutoSelector());
     }
 
     public static synchronized AutoPrograms getInstance() {
