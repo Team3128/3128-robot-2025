@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -31,6 +32,7 @@ import common.utility.sysid.CmdSysId;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -233,6 +235,10 @@ public class Swerve extends SwerveBase {
         odometry.resetPosition(getGyroRotation2d(), getPositions(), pose);
     }
 
+    public void resetOdometryNoGyro(Pose2d pose) {
+        odometry.resetPosition(getGyroRotation2d(), getPositions(), pose);
+    }
+
     public void moveTo(Translation2d translation) {
         translationSetpoint = translation;
         translationController.enable();
@@ -300,31 +306,37 @@ public class Swerve extends SwerveBase {
         return autoAlign(state.getPose2d());
     }
 
-    public Command autoAlign(boolean isRight) {
+    public Command autoAlign(boolean isRight, BooleanSupplier shouldRam) {
         final List<Pose2d> setpoints;
+        final List<Pose2d> fudgelessSetpoints;
         setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
-        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), true);
+        fudgelessSetpoints = isRight ? fudgelessReefRight.asJava() : fudgelessReefLeft.asJava();
+        Supplier<Pose2d> pose = () -> (shouldRam.getAsBoolean() ? getPose().nearest(allianceFlip(setpoints)) : getPose().nearest(allianceFlip(fudgelessSetpoints)));
+        return autoAlign(pose, shouldRam);
     }
 
     public Command autoAlignSource() {
         final List<Pose2d> setpoints = new ArrayList<>();
         setpoints.add(FieldStates.SOURCE_1.getPose2d());
         setpoints.add(FieldStates.SOURCE_2.getPose2d());
-        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), false);
+        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), ()->false);
     }
 
-    public Command autoAlign(Supplier<Pose2d> pose, boolean shouldRam) {
+    public Command autoAlign(Supplier<Pose2d> pose, BooleanSupplier shouldRam) {
         return Commands.sequence(
             //Navigate
             Commands.startEnd(
                 ()-> {
-                    setThrottle(0.5);
+                    setThrottle(0.6);
                     Swerve.autoMoveEnabled = true;
                     setPose(pose.get());
                 }, 
-                ()-> disable()
+                ()-> {
+                    disable();
+                    Swerve.autoMoveEnabled = false;
+                }
             )
-            .until(()-> atTranslationSetpoint() && atRotationSetpoint())
+            .until(()-> atTranslationSetpoint())
             .withTimeout(2),
             //Ram
             Commands.startEnd(
@@ -337,7 +349,7 @@ public class Swerve extends SwerveBase {
             )
             .until(()-> atTranslationSetpoint())
             .withTimeout(1)
-            .onlyIf(()-> shouldRam)
+            .onlyIf(shouldRam)
         
         ).withTimeout(4.5)
         .finallyDo(
@@ -351,7 +363,7 @@ public class Swerve extends SwerveBase {
 
     public Command autoAlign(Pose2d pose) {
         final Pose2d flippedPose = allianceFlipRotationally(pose);
-        return autoAlign(() -> flippedPose, true);
+        return autoAlign(() -> flippedPose, ()->true);
     }
 
     public boolean isConfigured() {

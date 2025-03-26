@@ -67,6 +67,7 @@ public class Robot extends NAR_Robot {
         autoPrograms.initAutoSelector();
         Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM, MOTOR);
         PathfindingCommand.warmupCommand().schedule();
+        Swerve.getInstance().resetGyro(0);
     }
 
     @Override
