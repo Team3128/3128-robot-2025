@@ -76,8 +76,8 @@ public class RobotContainer {
     // private Manipulator manipulator;
     private Swerve swerve;
 
-    private DigitalInput gyroReset;
-    private DigitalInput elevReset;
+    private BooleanSupplier gyroReset;
+    private BooleanSupplier elevReset;
 
     // private WinchMechanism winch;
 
@@ -93,8 +93,10 @@ public class RobotContainer {
     public static Limelight limelight;
 
     public static BooleanSupplier shouldRam;
+    public static BooleanSupplier shouldPreClimb;
 
 
+    @SuppressWarnings("resource")
     public RobotContainer() {
         swerve = Swerve.getInstance();
         // winch = WinchMechanism.getInstance();
@@ -108,22 +110,15 @@ public class RobotContainer {
         controller = new NAR_XboxController(2);
         controller2 = new NAR_XboxController(3);
 
-        gyroReset = new DigitalInput(9);
-        elevReset = new DigitalInput(8);
+        gyroReset = ()-> !new DigitalInput(9).get();
+        elevReset = ()-> !new DigitalInput(8).get();
         
         swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
 
         robot = RobotManager.getInstance();
         elevator = ElevatorMechanism.getInstance();
-        // manipulator = Manipulator.getInstance();
 
-        //uncomment line below to enable driving
-        // CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
-
-        NAR_Shuffleboard.addSendable("RobotContainer", "NEUTRAL", robot, 0, 0).withWidget(BuiltInWidgets.kToggleSwitch);
-        NAR_Shuffleboard.addData("Gyro", "Measurement", ()-> !gyroReset.get(), 0, 0, 0, 0);
-        NAR_Shuffleboard.addData("Elevator", "Reset Button", () -> !elevReset.get(), 0, 0, 0, 0);
 
         AutoPrograms.getInstance();
         
@@ -137,6 +132,7 @@ public class RobotContainer {
         buttonPad.getButton(12).onTrue(swerve.identifyOffsetsCommand().ignoringDisable(true));
 
         shouldRam = ()-> !buttonPad.getButton(1).getAsBoolean();
+        shouldPreClimb = ()-> !buttonPad.getButton(2).getAsBoolean();
 
 
         controller2.getButton(kA).onTrue(Climber.getInstance().runCommand(0.8)).onFalse(Climber.getInstance().stopCommand());
@@ -170,21 +166,20 @@ public class RobotContainer {
 
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
 
-        new Trigger(()-> !gyroReset.get()).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true));
-        new Trigger(() -> !elevReset.get()).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true));
+        new Trigger(gyroReset).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true));
+        new Trigger(elevReset).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true));
     }
 
     public void initCameras() {
         Log.info("tags", APRIL_TAGS.get(0).toString());
         Camera.setResources(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), new AprilTagFieldLayout(APRIL_TAGS, FIELD_X_LENGTH, FIELD_Y_LENGTH), () -> swerve.getPose());
         Camera.addIgnoredTags(4, 5, 14, 15);
-        // Camera.setThresholds(0.3, 3, 0.3);
         if (Robot.isReal()) {
             Camera backRightCamera = new Camera("BOTTOM_RIGHT", 0.27, -0.27,  Units.degreesToRadians(-15), 0, 0);
             backRightCamera.setThresholds(0.3, 3, 0.3);
+            
             Camera backLeftCamera = new Camera("BOTTOM_LEFT", 0.09, 0.145, 0, 0, 0);
             backLeftCamera.setThresholds(0, 3, 0.3);
-            // Camera topCamera = new Camera("TOP", -Units.inchesToMeters(6), -Units.inchesToMeters(12.5), Units.degreesToRadians(180), Units.degreesToRadians(-45), 0);
         }
     }
 

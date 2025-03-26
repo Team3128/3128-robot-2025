@@ -238,7 +238,7 @@ public class Constants {
         public static final Translation2d FIELD = new Translation2d(FIELD_X_LENGTH, FIELD_Y_LENGTH);
         public static final Translation2d CENTER_FIELD = FIELD.div(2);
         public static final Translation2d FUDGE_FACTOR = new Translation2d(0.1, 0);
-        public static final Translation2d FUDGELESS_FACTOR = new Translation2d(Units.inchesToMeters(4.5), 0);
+        public static final Translation2d FUDGELESS_FACTOR = new Translation2d(Units.inchesToMeters(4.5), 0); //one coral diameter
 
         public static final Translation2d reefShift = new Translation2d(0.35/2, 0.);
 
@@ -261,6 +261,7 @@ public class Constants {
 
             private final Pose2d pose;
             private final Pose2d fudgelessPose;
+
             public static io.vavr.collection.List<Pose2d> reefLeft = io.vavr.collection.List.of(A.getPose2d(), C.getPose2d(), F.getPose2d(), H.getPose2d(), J.getPose2d(), K.getPose2d());
             public static io.vavr.collection.List<Pose2d> reefRight = io.vavr.collection.List.of(B.getPose2d(), D.getPose2d(), E.getPose2d(), G.getPose2d(), I.getPose2d(), L.getPose2d());
             
@@ -271,13 +272,21 @@ public class Constants {
             public static io.vavr.collection.List<Pose2d> sourcePoses = io.vavr.collection.List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d());
 
             private FieldStates(int id, boolean isRight) {
+                this(id, isRight, 0);
+            }
+
+            private FieldStates(int id, boolean isRight, double yAxisFudge) {
                 Pose2d apriltag = APRIL_TAGS.get(id - 1).pose.toPose2d();
+                
                 Translation2d offset = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(-6.25)).rotateBy(apriltag.getRotation());
-                Translation2d fudgeFactor  = FUDGE_FACTOR.rotateBy(apriltag.getRotation());
-                Translation2d fudgelessFactor  = FUDGELESS_FACTOR.rotateBy(apriltag.getRotation());
+
+                Translation2d fudgeFactor  = FUDGE_FACTOR.plus(new Translation2d(0, yAxisFudge)).rotateBy(apriltag.getRotation());
+                Translation2d fudgelessFactor  = FUDGELESS_FACTOR.plus(new Translation2d(0, yAxisFudge)).rotateBy(apriltag.getRotation());
+                
                 Translation2d leftRight = new Translation2d(0, Units.inchesToMeters(isRight ? 13.0 / 2 : -13.0 / 2)).rotateBy(apriltag.getRotation());
-                this.pose = new Pose2d(apriltag.getX() + offset.getX() + fudgeFactor.getX() + leftRight.getX(), apriltag.getY() + offset.getY() + fudgeFactor.getY() + leftRight.getY(), apriltag.getRotation().plus(Rotation2d.k180deg));
-                this.fudgelessPose = new Pose2d(apriltag.getX() + offset.getX() + fudgelessFactor.getX() + leftRight.getX(), apriltag.getY() + offset.getY() + fudgelessFactor.getY() + leftRight.getY(), apriltag.getRotation().plus(Rotation2d.k180deg));
+                
+                this.pose = new Pose2d(apriltag.getTranslation().plus(offset).plus(fudgeFactor).plus(leftRight), apriltag.getRotation().plus(Rotation2d.k180deg));
+                this.fudgelessPose = new Pose2d(apriltag.getTranslation().plus(offset).plus(fudgelessFactor).plus(leftRight), apriltag.getRotation().plus(Rotation2d.k180deg));
             }
 
             private FieldStates(Pose2d pose) {
