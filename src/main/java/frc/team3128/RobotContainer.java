@@ -76,7 +76,7 @@ public class RobotContainer {
     private Swerve swerve;
 
     private DigitalInput gyroReset;
-    private Trigger gyroTrigger;
+    private DigitalInput elevReset;
 
     // private WinchMechanism winch;
 
@@ -106,6 +106,7 @@ public class RobotContainer {
         controller2 = new NAR_XboxController(3);
 
         gyroReset = new DigitalInput(9);
+        elevReset = new DigitalInput(8);
         
         swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
@@ -118,6 +119,8 @@ public class RobotContainer {
         // CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
 
         NAR_Shuffleboard.addSendable("RobotContainer", "NEUTRAL", robot, 0, 0).withWidget(BuiltInWidgets.kToggleSwitch);
+        NAR_Shuffleboard.addData("Gyro", "Measurement", ()-> !gyroReset.get(), 0, 0, 0, 0);
+        NAR_Shuffleboard.addData("Elevator", "Reset Button", () -> !elevReset.get(), 0, 0, 0, 0);
 
         AutoPrograms.getInstance();
         
@@ -161,7 +164,8 @@ public class RobotContainer {
 
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
 
-        new Trigger(gyroReset::get).and((() -> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.getGyro().reset()));
+        new Trigger(()-> !gyroReset.get()).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true));
+        new Trigger(() -> !elevReset.get()).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true));
     }
 
     public void initCameras() {
