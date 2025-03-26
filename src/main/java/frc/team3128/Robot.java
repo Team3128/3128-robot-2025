@@ -41,7 +41,7 @@ public class Robot extends NAR_Robot {
             Optional<Alliance> DSalliance = DriverStation.getAlliance();
             if (DSalliance.isPresent()) alliance = DSalliance.get();
         }
-        return Alliance.Blue;
+        return alliance;
     }
 
     public static Robot instance;

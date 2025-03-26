@@ -238,7 +238,7 @@ public class Constants {
         public static final Translation2d FIELD = new Translation2d(FIELD_X_LENGTH, FIELD_Y_LENGTH);
         public static final Translation2d CENTER_FIELD = FIELD.div(2);
         public static final Translation2d FUDGE_FACTOR = new Translation2d(0.1, 0);
-        public static final Translation2d FUDGELESS_FACTOR = new Translation2d(0.01, 0);
+        public static final Translation2d FUDGELESS_FACTOR = new Translation2d(Units.inchesToMeters(4.5), 0);
 
         public static final Translation2d reefShift = new Translation2d(0.35/2, 0.);
 
