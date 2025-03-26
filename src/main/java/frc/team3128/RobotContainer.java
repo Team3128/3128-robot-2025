@@ -106,7 +106,6 @@ public class RobotContainer {
         controller2 = new NAR_XboxController(3);
 
         gyroReset = new DigitalInput(9);
-        gyroTrigger = new Trigger(gyroReset::get);
         
         swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
@@ -162,7 +161,7 @@ public class RobotContainer {
 
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
 
-        gyroTrigger.onTrue(runOnce(() -> swerve.getGyro().reset()));
+        new Trigger(gyroReset::get).and((() -> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.getGyro().reset()));
     }
 
     public void initCameras() {
