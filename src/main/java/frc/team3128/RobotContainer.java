@@ -19,6 +19,7 @@ import common.utility.sysid.CmdSysId;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -74,6 +75,9 @@ public class RobotContainer {
     // private Manipulator manipulator;
     private Swerve swerve;
 
+    private DigitalInput gyroReset;
+    private Trigger gyroTrigger;
+
     // private WinchMechanism winch;
 
     // private NAR_ButtonBoard judgePad;
@@ -100,6 +104,9 @@ public class RobotContainer {
         buttonPad = new NAR_ButtonBoard(1);
         controller = new NAR_XboxController(2);
         controller2 = new NAR_XboxController(3);
+
+        gyroReset = new DigitalInput(9);
+        gyroTrigger = new Trigger(gyroReset::get);
         
         swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
@@ -154,6 +161,8 @@ public class RobotContainer {
         ));
 
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
+
+        gyroTrigger.onTrue(runOnce(() -> swerve.getGyro().reset()));
     }
 
     public void initCameras() {
