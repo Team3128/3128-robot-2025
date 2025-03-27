@@ -153,15 +153,5 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             elevator.setStateCommand(RSL1.getElevatorState())
         ));
 
-        transitionMap.addConvergingTransition(DISABLED, sequence(
-            stopCommand(),
-            led.setStateCommand(DISABLED.getLedState())
-        ));
-
-        transitionMap.addTransition(DISABLED, ENABLED, sequence(
-            stopCommand(),
-            led.setStateCommand(ENABLED.getLedState())
-        ));
-
     }
 }

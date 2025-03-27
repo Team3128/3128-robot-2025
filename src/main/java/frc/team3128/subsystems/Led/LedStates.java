@@ -1,9 +1,6 @@
 package frc.team3128.subsystems.Led;
 
-import static frc.team3128.Constants.LedConstants.*;
-
 import com.ctre.phoenix.led.Animation;
-import com.ctre.phoenix.led.RainbowAnimation;
 
 import edu.wpi.first.wpilibj.util.Color;
 
@@ -23,8 +20,8 @@ public enum LedStates {
     INTAKE(Color.kBlue),
     EJECT_OUTTAKE(Color.kPurple),
 
-    PRIME(Color.kBlue),
-    SCORE(new RainbowAnimation(1, 1, NUM_LED, false, OFFSET)),
+    PRIME(Color.kOrange),
+    SCORE(Color.kGreen),
 
     ODD_REEF(Color.kPurple),
     EVEN_REEF(Color.kYellow),

@@ -11,8 +11,6 @@ import common.hardware.camera.Camera;
 import common.utility.Log;
 import static common.utility.Log.Type.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
-import static frc.team3128.subsystems.Robot.RobotStates.DISABLED;
-import static frc.team3128.subsystems.Robot.RobotStates.ENABLED;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -174,14 +172,14 @@ public class Robot extends NAR_Robot {
         CommandScheduler.getInstance().cancelAll();
         Swerve.getInstance().setBrakeMode(false);
         Swerve.disable();
-        RobotManager.getInstance().setStateCommand(DISABLED).ignoringDisable(true).schedule();
+        RobotManager.getInstance().stopCommand().ignoringDisable(true).schedule();
         Log.info("State", RobotManager.getInstance().getState().name());
     }
 
     @Override
     public void disabledExit() {
         Swerve.getInstance().setBrakeMode(true);
-        RobotManager.getInstance().setStateCommand(ENABLED).ignoringDisable(true).schedule();
+        RobotManager.getInstance().stop();
         Log.info("State", RobotManager.getInstance().getState().name());
     }
     

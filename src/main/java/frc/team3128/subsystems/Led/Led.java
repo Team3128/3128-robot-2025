@@ -5,8 +5,6 @@ import common.core.fsm.TransitionMap;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3128.subsystems.Swerve;
-
-import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 import static frc.team3128.subsystems.Led.LedStates.*;
 
 import java.util.List;
@@ -35,11 +33,7 @@ public class Led extends FSMSubsystemBase<LedStates>{
     public void registerTransitions() {
         transitionMap.addCommutativeTransition(List.of(LedStates.values()), (state)-> defaultTransitioner(state));
 
-        transitionMap.addConvergingTransition(AUTO_HOLD, Commands.run(
-            ()-> led.setColor(AUTO_HOLD.getColor(), Math.pow(0.625, Swerve.getInstance().getTranslationError()))
-        ));
-
-        transitionMap.addConvergingTransition(DEFAULT, Commands.run(
+        transitionMap.addConvergingTransition(List.of(LedStates.values()), DEFAULT, Commands.run(
             ()-> led.setColor(Swerve.getInstance().getClosestReef().getLedStates().getColor())
         ));
     }
