@@ -45,6 +45,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
         initShuffleboard();
         NAR_Shuffleboard.addData(this.getName(), "Auto Enabled", () -> Swerve.autoMoveEnabled);
+
+        registerTransitions();
     }
 
     public static synchronized RobotManager getInstance() {
