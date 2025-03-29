@@ -82,7 +82,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     }
 
     public Command indiscreteUpdateStates(RobotStates nextState, Command command, List<Subsystem> updateSubsystems) {
-        return sequence(
+        return parallel(
             discreteUpdateStates(nextState, subsystemList.removeAll(updateSubsystems)),
             command
         );
@@ -159,13 +159,66 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         // From exclusive state to Neutral
         transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, defaultTransitioner);
 
-        transitionMap.addTransition(RPL1, RSL1, sequence(
-            waitUntil(()-> !Swerve.autoMoveEnabled),
-            runOnce(()-> swerve.setThrottle(RSL1.getThrottle())).unless(()-> DriverStation.isAutonomous()),
-            manipulator.setStateCommand(RSL1.getManipulatorState()),
-            waitSeconds(0.25),
-            elevator.setStateCommand(RSL1.getElevatorState())
-        ));
+        transitionMap.addConvergingTransition(
+            defaultStates.asJava(), 
+            RSL1, 
+            indiscreteUpdateStates(
+                RSL1, 
+                sequence(
+                    waitUntil(()-> Swerve.autoMoveEnabled),
+                    elevator.setStateCommand(RPL1.getElevatorState()),
+                    waitUntil(()-> elevator.elevator.atSetpoint()),
+                    manipulator.setStateCommand(RSL1.getManipulatorState()),
+                    waitSeconds(0.25),
+                    elevator.setStateCommand(RSL1.getElevatorState())
+                ), 
+                elevator, manipulator
+            )
+        );
+
+        transitionMap.addConvergingTransition(
+            defaultStates.asJava(), 
+            List.of(RSL2, RSL3, RSL4).asJava(), 
+            (RobotStates nextState)-> {
+                return indiscreteUpdateStates(
+                    nextState, 
+                    sequence(
+                        waitUntil(()-> Swerve.autoMoveEnabled),
+                        manipulator.setStateCommand(ManipulatorStates.NEUTRAL),
+                        elevator.setStateCommand(nextState.getElevatorState()),
+                        waitUntil(()-> elevator.elevator.atSetpoint()),
+                        manipulator.setStateCommand(nextState.getManipulatorState())
+                    ), 
+                    elevator, manipulator
+                );
+            } 
+        );
+
+        transitionMap.addConvergingTransition(
+            defaultStates.asJava(),
+            CLIMB_PRIME,
+            indiscreteUpdateStates(
+                CLIMB_PRIME, 
+                sequence(
+                    climber.setStateCommand(CLIMB_PRIME.getClimberState()),
+                    waitUntil(()-> climber.winch.atSetpoint()),
+                    runOnce(()-> swerve.setThrottle(CLIMB_PRIME.getThrottle()))
+                ), 
+                climber, swerve
+            )
+        );
+
+        transitionMap.addConvergingTransition(
+            defaultStates.asJava(),
+            RPL4,
+            indiscreteUpdateStates(
+                RPL4, 
+                sequence(
+                    waitUntil(()-> Swerve.autoMoveEnabled),
+                    elevator.setStateCommand(RPL4.getElevatorState())
+                ), 
+                elevator)
+        );
 
     }
 }

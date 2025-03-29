@@ -52,7 +52,7 @@ public enum RobotStates {
     private double throttle;
     private boolean waitForAutoEnabled;
 
-    public static final List<RobotStates> defaultElevatorStates = List.of(RPL1, RPL2, RPL3, RPL4, TELE_HOLD, AUTO_HOLD);
+    public static final List<RobotStates> defaultElevatorStates = List.of(RPL1, RPL2, RPL3, RPL4, RSL1, RSL2, RSL3, RSL4, TELE_HOLD, AUTO_HOLD);
     public static final List<RobotStates> exclusiveElevatorStates = List.of(RSL1, RSL2, RSL3, RSL4);
     public static final List<RobotStates> defaultIntakeStates = List.of(INTAKE, EJECT_OUTTAKE, HIGH_INTAKE);
     public static final List<RobotStates> defaultClimbStates = List.of(CLIMB_PRIME, PRE_CLIMB_PRIME);
@@ -60,9 +60,9 @@ public enum RobotStates {
 
     public static final List<Pair<RobotStates, RobotStates>> coupledStates = List.of(
         // Pair.of(RPL1, RSL1),
-        Pair.of(RPL2, RSL2),
-        Pair.of(RPL3, RSL3),
-        Pair.of(RPL4, RSL4),
+        // Pair.of(RPL2, RSL2),
+        // Pair.of(RPL3, RSL3),
+        // Pair.of(RPL4, RSL4),
         Pair.of(CLIMB_PRIME, CLIMB)
     );
 
