@@ -27,6 +27,8 @@ import frc.team3128.subsystems.Intake.PivotMechanism;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
 import com.pathplanner.lib.commands.PathfindingCommand;
+import au.grapplerobotics.CanBridge;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -59,6 +61,8 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void robotInit(){
+        CanBridge.runTCP();
+
         Camera.enableAll();
         m_robotContainer.initDashboard();
         Log.info("Dashboard", "Done");

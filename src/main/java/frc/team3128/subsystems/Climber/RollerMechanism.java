@@ -2,6 +2,7 @@ package frc.team3128.subsystems.Climber;
 
 import static frc.team3128.Constants.ClimberConstants.*;
 
+import au.grapplerobotics.LaserCan;
 import common.core.subsystems.VoltageSubsystemBase;
 import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
@@ -12,6 +13,12 @@ public class RollerMechanism extends VoltageSubsystemBase  {
     public static RollerMechanism instance;
 
     protected static NAR_CANSpark leader = new NAR_CANSpark(CLIMB_ROLLER_ID, ControllerType.CAN_SPARK_FLEX);
+
+    public LaserCan lc = new LaserCan(22);
+    private static int threshold = 100;
+    private static int count = 0;
+    private static int target = 10;
+
 
     private RollerMechanism() {
         super(leader);
@@ -41,4 +48,14 @@ public class RollerMechanism extends VoltageSubsystemBase  {
  	public void initShuffleboard() {
 
  	}
+
+    public boolean isTriggered() {
+        if(lc.getMeasurement().distance_mm < threshold && lc.getMeasurement().distance_mm > 0) count++;
+        else count = 0;
+        if(count >= target) {
+            count = 0;
+            return true;
+        }
+        return false;
+    }
 }

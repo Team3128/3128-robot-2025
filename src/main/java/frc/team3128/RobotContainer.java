@@ -160,6 +160,8 @@ public class RobotContainer {
         ));
 
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
+
+        // new Trigger(()-> robot.stateEquals(RobotStates.CLIMB_PRIME)).and(()-> Climber.getInstance().lc.getMeasurement().distance_mm < 100).debounce(2).onTrue(robot.setStateCommand(CLIMB));
     }
 
     public void initCameras() {

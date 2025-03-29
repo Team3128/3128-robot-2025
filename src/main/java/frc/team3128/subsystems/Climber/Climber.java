@@ -3,6 +3,7 @@ package frc.team3128.subsystems.Climber;
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
+import common.utility.shuffleboard.NAR_Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -20,14 +21,12 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 
     public WinchMechanism winch;
     public RollerMechanism roller;
-    private LaserCan lc;
 
     private static TransitionMap<ClimberStates> transitionMap = new TransitionMap<ClimberStates>(ClimberStates.class);
 
     private Function<Neutral, Command> setNeutralMode = mode -> runOnce(() -> getMechanisms().forEach(subsystem -> subsystem.setNeutralMode(mode)));
     private Function<ClimberStates, Command> defaultTransitioner = state -> {
         return sequence(
-            waitUntil(() -> stateEquals(CLIMB) ? lc.getMeasurement().distance_mm < 5 : true),
             none(),
             roller.stopCommand(),
             runOnce(() -> WinchMechanism.controller.getConfig().kS = () -> 12 * state.getWinchPower()),
@@ -42,13 +41,16 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 
         winch = WinchMechanism.getInstance();
         roller = RollerMechanism.getInstance();
-        lc = new LaserCan(0);
 
         addMechanisms(winch, roller);
         // addMechanisms(winch);
 
         // initShuffleboard();
         registerTransitions();
+        NAR_Shuffleboard.addData("LaserCAN", "Measurment", ()-> roller.lc.getMeasurement().distance_mm, 0, 0);
+        NAR_Shuffleboard.addData("LaserCAN", "Sees Something", ()-> roller.lc.getMeasurement().distance_mm < 100, 1, 0);
+        NAR_Shuffleboard.addData("LaserCAN", "IsTriggered", ()-> roller.lc.getMeasurement().distance_mm < 100, 2, 0);
+
     }
 
     public static synchronized Climber getInstance() {
@@ -62,5 +64,14 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 	@Override
 	public void registerTransitions() {
         transitionMap.addCommutativeTransition(List.of(NEUTRAL, PRE_CLIMB_PRIME, CLIMB_PRIME, CLIMB), defaultTransitioner);
+
+        transitionMap.addTransition(CLIMB_PRIME, CLIMB, sequence(
+            waitUntil(()-> roller.isTriggered()),
+            roller.stopCommand(),
+            runOnce(() -> WinchMechanism.controller.getConfig().kS = () -> 12 * CLIMB.getWinchPower()),
+            winch.pidTo(CLIMB.getAngle()),
+            waitUntil(()-> winch.atSetpoint()),
+            roller.runCommand(CLIMB.getRollerPower())
+        ));
 	}
 }
