@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Swerve.SwerveMechanism;
+import frc.team3128.subsystems.Swerve.Swerve;
+import frc.team3128.subsystems.Swerve.SwerveStates;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Intake.PivotMechanism;
 // import frc.team3128.autonomous.AutoPrograms;
@@ -86,8 +88,8 @@ public class Robot extends NAR_Robot {
         CommandScheduler.getInstance().cancelAll();
         Camera.enableAll();
         runOnce(()-> {
-            Swerve.translationController.disable();
-            Swerve.rotationController.disable();
+            SwerveMechanism.translationController.disable();
+            SwerveMechanism.rotationController.disable();
         }).schedule();
         
         Command m_autonomousCommand = autoPrograms.getAutonomousCommand();
@@ -106,7 +108,7 @@ public class Robot extends NAR_Robot {
     public void autonomousExit() {
         CommandScheduler.getInstance().cancelAll();
         ElevatorMechanism.getInstance().stopCommand().schedule();
-        Commands.runOnce(()-> Swerve.autoMoveEnabled = false).schedule();
+        Commands.runOnce(()-> SwerveMechanism.autoMoveEnabled = false).schedule();
     }
 
     @Override
@@ -130,8 +132,8 @@ public class Robot extends NAR_Robot {
         CommandScheduler.getInstance().cancelAll();
         RobotManager.getInstance().stopCommand().schedule();
         // Log.info("State", RobotManager.getInstance().getState().name());
-        Swerve.autoMoveEnabled = false;
-        Swerve.getInstance().setThrottle(1);
+        SwerveMechanism.autoMoveEnabled = false;
+        SwerveMechanism.getInstance().setThrottle(1);
         RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL).schedule();
         PivotMechanism.getInstance().stopCommand().schedule();
         ElevatorMechanism.getInstance().stopCommand().schedule();
@@ -170,15 +172,15 @@ public class Robot extends NAR_Robot {
     @Override
     public void disabledInit() {
         CommandScheduler.getInstance().cancelAll();
-        Swerve.getInstance().setBrakeMode(false);
-        Swerve.disable();
+        SwerveMechanism.getInstance().setBrakeMode(false);
+        SwerveMechanism.disable();
         RobotManager.getInstance().stopCommand().ignoringDisable(true).schedule();
         Log.info("State", RobotManager.getInstance().getState().name());
     }
 
     @Override
     public void disabledExit() {
-        Swerve.getInstance().setBrakeMode(true);
+        SwerveMechanism.getInstance().setBrakeMode(true);
         RobotManager.getInstance().stop();
         Log.info("State", RobotManager.getInstance().getState().name());
     }
