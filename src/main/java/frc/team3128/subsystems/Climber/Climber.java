@@ -12,17 +12,22 @@ import static frc.team3128.subsystems.Climber.ClimberStates.*;
 import java.util.List;
 import java.util.function.Function;
 
+import au.grapplerobotics.LaserCan;
+
+
 public class Climber extends FSMSubsystemBase<ClimberStates> {
     private static Climber instance;
 
     public WinchMechanism winch;
     public RollerMechanism roller;
+    private LaserCan lc;
 
     private static TransitionMap<ClimberStates> transitionMap = new TransitionMap<ClimberStates>(ClimberStates.class);
 
     private Function<Neutral, Command> setNeutralMode = mode -> runOnce(() -> getMechanisms().forEach(subsystem -> subsystem.setNeutralMode(mode)));
     private Function<ClimberStates, Command> defaultTransitioner = state -> {
         return sequence(
+            waitUntil(() -> stateEquals(CLIMB) ? lc.getMeasurement().distance_mm < 5 : true),
             none(),
             roller.stopCommand(),
             runOnce(() -> WinchMechanism.controller.getConfig().kS = () -> 12 * state.getWinchPower()),
@@ -37,6 +42,7 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 
         winch = WinchMechanism.getInstance();
         roller = RollerMechanism.getInstance();
+        lc = new LaserCan(0);
 
         addMechanisms(winch, roller);
         // addMechanisms(winch);
