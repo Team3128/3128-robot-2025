@@ -59,6 +59,9 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void robotInit(){
+        Timer timer = new Timer();
+        timer.restart();
+
         Log.profile("Robot Container", ()-> robotContainer = new RobotContainer());
         Log.profile("AutoPrograms", ()-> autoPrograms = AutoPrograms.getInstance());
         Camera.enableAll();
@@ -68,6 +71,9 @@ public class Robot extends NAR_Robot {
         // Log.logDebug = true;
         Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM, MOTOR);
         Log.profile("Pathplanner WarmUp", ()-> PathfindingCommand.warmupCommand().schedule());
+
+        timer.stop();
+        Log.info("Robot Init", timer.get());
     }
 
     @Override
