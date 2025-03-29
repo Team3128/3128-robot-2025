@@ -35,7 +35,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
-import frc.team3128.subsystems.Swerve;
+
 import frc.team3128.subsystems.Climber.Climber;
 import frc.team3128.subsystems.Climber.ClimberStates;
 import frc.team3128.subsystems.Climber.WinchMechanism;
@@ -45,6 +45,7 @@ import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Manipulator.Manipulator;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
+import frc.team3128.subsystems.Swerve.SwerveMechanism;
 
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 
@@ -72,7 +73,7 @@ public class RobotContainer {
     private RobotManager robot;
     private ElevatorMechanism elevator;
     // private Manipulator manipulator;
-    private Swerve swerve;
+    private SwerveMechanism swerve;
 
     // private WinchMechanism winch;
 
@@ -89,7 +90,7 @@ public class RobotContainer {
 
 
     public RobotContainer() {
-        swerve = Swerve.getInstance();
+        swerve = SwerveMechanism.getInstance();
         // winch = WinchMechanism.getInstance();
         
         NAR_CANSpark.maximumRetries = 2;

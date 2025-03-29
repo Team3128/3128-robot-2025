@@ -1,10 +1,11 @@
-package frc.team3128.subsystems;
+package frc.team3128.subsystems.Swerve;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.DoubleSupplier;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 
 import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
+import common.core.fsm.TransitionMap;
 import common.core.swerve.SwerveBase;
 import common.core.swerve.SwerveConversions;
 import common.core.swerve.SwerveModule;
@@ -51,13 +53,14 @@ import static frc.team3128.Constants.VisionConstants.*;
 import static frc.team3128.Constants.DriveConstants.*;
 import frc.team3128.Constants.DriveConstants;
 import frc.team3128.Constants.FieldConstants.FieldStates;
+import frc.team3128.subsystems.Elevator.ElevatorMechanism;
+import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.RobotContainer;
 
-public class Swerve extends SwerveBase {
+public class SwerveMechanism extends SwerveBase {
 
-    private static Swerve instance;
-
+    private static SwerveMechanism instance;
     private Pigeon2 gyro;
 
     public Supplier<Double> yaw;
@@ -142,14 +145,14 @@ public class Swerve extends SwerveBase {
 
     public static boolean autoMoveEnabled = false;
 
-    public static synchronized Swerve getInstance() {
+    public static synchronized SwerveMechanism getInstance() {
         if (instance == null) {
-            instance = new Swerve();
+            instance = new SwerveMechanism();
         }
         return instance;
     }
 
-    private Swerve() {
+    private SwerveMechanism() {
         super(swerveKinematics, SVR_STATE_STD, SVR_VISION_MEASUREMENT_STD, Mod0, Mod1, Mod2, Mod3);
         chassisVelocityCorrection = true;
         Timer.delay(1);
@@ -278,7 +281,7 @@ public class Swerve extends SwerveBase {
     }
 
     public void snapToAngle() {
-        final Rotation2d gyroAngle = Swerve.getInstance().getGyroRotation2d();
+        final Rotation2d gyroAngle = SwerveMechanism.getInstance().getGyroRotation2d();
         Rotation2d setpoint = Collections.min(
                             DriveConstants.snapToAngles,
                             Comparator.comparing(
@@ -319,7 +322,7 @@ public class Swerve extends SwerveBase {
             Commands.startEnd(
                 ()-> {
                     setThrottle(0.5);
-                    Swerve.autoMoveEnabled = true;
+                    SwerveMechanism.autoMoveEnabled = true;
                     setPose(pose.get());
                 }, 
                 ()-> disable()
@@ -330,7 +333,7 @@ public class Swerve extends SwerveBase {
             Commands.startEnd(
                 ()-> {
                     setThrottle(1);
-                    Swerve.autoMoveEnabled = false;
+                    SwerveMechanism.autoMoveEnabled = false;
                     moveBy(FUDGE_FACTOR.rotateBy(pose.get().getRotation()));
                 },
                 ()-> disable()
@@ -344,7 +347,7 @@ public class Swerve extends SwerveBase {
             ()-> {
                 disable();
                 setThrottle(1);
-                Swerve.autoMoveEnabled = false;
+                SwerveMechanism.autoMoveEnabled = false;
             }
         );
     }
@@ -390,5 +393,10 @@ public class Swerve extends SwerveBase {
         translationController.disable();
         rotationController.disable();
         getInstance().stop();
+    }
+
+    public Command pidTo(double setpoint) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'pidTo'");
     }
 }

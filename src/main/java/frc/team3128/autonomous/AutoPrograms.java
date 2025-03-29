@@ -29,8 +29,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.Robot;
 import frc.team3128.Constants.FieldConstants.FieldStates;
-// import frc.team3128.subsystems.Swerve;
-import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 
@@ -44,6 +42,7 @@ import common.utility.narwhaldashboard.NarwhalDashboard;
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 import frc.team3128.subsystems.Robot.RobotStates;
+import frc.team3128.subsystems.Swerve.SwerveMechanism;
 
 
 /**
@@ -55,7 +54,7 @@ public class AutoPrograms {
 
     private HashMap<String, Command> autoMap = new HashMap<String, Command>();
     private HashMap<String, Command> pathMap = new HashMap<String, Command>();
-    private static Swerve swerve = Swerve.getInstance();
+    private static SwerveMechanism swerve = SwerveMechanism.getInstance();
     private RobotConfig robotConfig;
     private static AutoPrograms instance;
     private RobotManager robot;
@@ -109,7 +108,7 @@ public class AutoPrograms {
                     DRIVE_MOTOR_CURRENT_LIMIT, 
                     1
                 ),
-                Swerve.moduleOffsets
+                SwerveMechanism.moduleOffsets
             );
         }
 
@@ -120,8 +119,8 @@ public class AutoPrograms {
             swerve::getRobotVelocity, 
             (velocity, feedforwards)-> swerve.drive(ChassisSpeeds.fromRobotRelativeSpeeds(velocity, swerve.getGyroRotation2d())), 
             new PPHolonomicDriveController(
-                new PIDConstants(Swerve.translationConfig.kP, Swerve.translationConfig.kI, Swerve.translationConfig.kD),
-                new PIDConstants(Swerve.rotationConfig.kP, Swerve.rotationConfig.kI, Swerve.rotationConfig.kD)
+                new PIDConstants(SwerveMechanism.translationConfig.kP, SwerveMechanism.translationConfig.kI, SwerveMechanism.translationConfig.kD),
+                new PIDConstants(SwerveMechanism.rotationConfig.kP, SwerveMechanism.rotationConfig.kI, SwerveMechanism.rotationConfig.kD)
             ),
             robotConfig,
             ()-> Robot.getAlliance() == Alliance.Red,
