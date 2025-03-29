@@ -114,6 +114,7 @@ public class Swerve extends SwerveBase {
     public static final PIDFFConfig translationConfig = new PIDFFConfig(5);// used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller translationController = new Controller(translationConfig, Controller.Type.POSITION); //Displacement error to output velocity
     public static final double translationTolerance = 0.03;
+    public static final double elevatorStartDist = 0.1;
 
     public static final Constraints rotationConstraints = new Constraints(MAX_DRIVE_ANGULAR_VELOCITY, MAX_DRIVE_ANGULAR_ACCELERATION);
     public static final PIDFFConfig rotationConfig = new PIDFFConfig(10); //Conservative Kp estimate (2*a_max/v_max)
@@ -143,6 +144,7 @@ public class Swerve extends SwerveBase {
     private static Supplier<Rotation2d> rotationSetpointSupplier = ()-> new Rotation2d();
 
     public static boolean autoMoveEnabled = false;
+    public static boolean elevatorSafe = false;
 
     public static synchronized Swerve getInstance() {
         if (instance == null) {
@@ -283,6 +285,15 @@ public class Swerve extends SwerveBase {
         return false;
     }
 
+    public boolean atElevatorDist() {
+        if(getDistanceTo(translationSetpoint) < elevatorStartDist) translationPlateauCount++;
+        if(translationPlateauCount >= translationPlateauThreshold) {
+            translationPlateauCount = 0;
+            return true;
+        }
+        return false;
+    }
+
     public void snapToAngle() {
         final Rotation2d gyroAngle = Swerve.getInstance().getGyroRotation2d();
         Rotation2d setpoint = Collections.min(
@@ -327,7 +338,7 @@ public class Swerve extends SwerveBase {
             //Navigate
             Commands.startEnd(
                 ()-> {
-                    setThrottle(0.6);
+                    setThrottle(1);
                     Swerve.autoMoveEnabled = true;
                     setPose(pose.get());
                 }, 
@@ -358,6 +369,31 @@ public class Swerve extends SwerveBase {
                 setThrottle(1);
                 Swerve.autoMoveEnabled = false;
             }
+        );
+    }
+
+    public Command autoAlignElevator(Supplier<Pose2d> pose){
+        return parallel(
+            startEnd(
+                ()-> {
+                    setThrottle(1);
+                    setPose(pose.get());
+                }, 
+                ()-> {
+                    disable();
+                }
+            )
+            .until(()-> atTranslationSetpoint()),
+            startEnd(
+                ()-> {
+                    autoMoveEnabled = true;
+                    elevatorSafe = false;
+                },
+                ()-> {
+                    autoMoveEnabled = false;
+                    elevatorSafe = true;
+                }
+            ).until(() -> atElevatorDist())
         );
     }
 

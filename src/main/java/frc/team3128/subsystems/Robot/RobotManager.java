@@ -21,7 +21,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.geometry.Pose2d;
 
 public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static RobotManager instance;
@@ -68,7 +71,26 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             runOnce(()-> swerve.setThrottle(nextState.getThrottle())).unless(()-> DriverStation.isAutonomous() || Swerve.autoMoveEnabled)
         );
     }
-
+    public void alignScore(Supplier<Pose2d> pose){
+        parallel(
+            swerve.autoAlignElevator(pose),
+            sequence(
+                waitUntil(()->Swerve.elevatorSafe),
+                runOnce(()->{
+                    for(Pair<RobotStates, RobotStates> coupledState : coupledStates){
+                        if (coupledState.getFirst() == getState()) {
+                            sequence(
+                                waitUntil(() -> ElevatorMechanism.getInstance().atSetpoint()),
+                                setStateCommand(coupledState.getSecond()),
+                                waitSeconds(0.5),
+                                setStateCommand(NEUTRAL)
+                            ).schedule();
+                        }
+                    }
+                })
+            )
+        );
+    }
     public void autoScore() {
         if (getState() == RobotStates.NEUTRAL || getState() == RobotStates.FULL_NEUTRAL)
             return;
