@@ -4,6 +4,7 @@ import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
 import common.utility.shuffleboard.NAR_Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Climber.Climber;
 import frc.team3128.subsystems.Climber.ClimberStates;
@@ -19,6 +20,9 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 import edu.wpi.first.wpilibj.DriverStation;
 
+import io.vavr.collection.List;
+
+import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import edu.wpi.first.math.Pair;
@@ -31,8 +35,10 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static Climber climber;
     private static Swerve swerve;
 
+    final List<Subsystem> subsystemList = List.of(elevator, manipulator, intake, climber);
+
     private static TransitionMap<RobotStates> transitionMap = new TransitionMap<>(RobotStates.class);
-    private Function<RobotStates, Command> defaultTransitioner = state -> {return updateSubsystemStates(state);};
+    private Function<RobotStates, Command> defaultTransitioner = state -> {return discreteUpdateStates(state, subsystemList);};
 
     private RobotManager() {
         super(RobotStates.class, transitionMap, NEUTRAL);
@@ -57,15 +63,28 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         return instance;
     }
 
-    public Command updateSubsystemStates(RobotStates nextState) {
+    public Command discreteUpdateStates(RobotStates nextState, Command command, Subsystem... updateSubsystems) {
+        return discreteUpdateStates(nextState, List.of(updateSubsystems));
+    }
+
+    public Command discreteUpdateStates(RobotStates nextState, List<Subsystem> updateSubsystems) {
+        return parallel(
+            elevator.setStateCommand(nextState.getElevatorState()).unless(()-> nextState.getElevatorState() == ElevatorStates.UNDEFINED).onlyIf(()-> updateSubsystems.contains(elevator)),
+            manipulator.setStateCommand(nextState.getManipulatorState()).unless(()-> nextState.getManipulatorState() == ManipulatorStates.UNDEFINED).onlyIf(() -> updateSubsystems.contains(manipulator)),
+            intake.setStateCommand(nextState.getIntakeState()).unless(()-> nextState.getIntakeState() == IntakeStates.UNDEFINED).onlyIf(() -> updateSubsystems.contains(intake)),
+            climber.setStateCommand(nextState.getClimberState()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED).onlyIf(() -> updateSubsystems.contains(climber)),
+            runOnce(()-> swerve.setThrottle(nextState.getThrottle())).unless(()-> DriverStation.isAutonomous() || Swerve.autoMoveEnabled).onlyIf(()-> updateSubsystems.contains(swerve))
+        );
+    }
+
+    public Command indiscreteUpdateStates(RobotStates nextState, Command command, Subsystem... updateSubsystems) {
+        return indiscreteUpdateStates(nextState, command, List.of(updateSubsystems));
+    }
+
+    public Command indiscreteUpdateStates(RobotStates nextState, Command command, List<Subsystem> updateSubsystems) {
         return sequence(
-            waitUntil(()-> (!Swerve.autoMoveEnabled)).onlyIf(()-> nextState.getWaitForAutoEnabled()),
-            elevator.setStateCommand(nextState.getElevatorState()).unless(()-> nextState.getElevatorState() == ElevatorStates.UNDEFINED),
-            manipulator.setStateCommand(nextState.getManipulatorState()).unless(()-> nextState.getManipulatorState() == ManipulatorStates.UNDEFINED),
-            intake.setStateCommand(nextState.getIntakeState()).unless(()-> nextState.getIntakeState() == IntakeStates.UNDEFINED),
-            climber.setStateCommand(nextState.getClimberState()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED),
-            waitUntil(()-> climber.winch.atSetpoint()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED),
-            runOnce(()-> swerve.setThrottle(nextState.getThrottle())).unless(()-> DriverStation.isAutonomous() || Swerve.autoMoveEnabled)
+            discreteUpdateStates(nextState, subsystemList.removeAll(updateSubsystems)),
+            command
         );
     }
 
