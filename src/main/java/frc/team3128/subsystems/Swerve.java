@@ -322,6 +322,17 @@ public class Swerve extends SwerveBase {
         return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), ()->false);
     }
 
+    public Command autoAlignAlgae() {
+        final List<Pose2d> setpoints;
+        setpoints = algaePoses.asJava();
+        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), ()->false);
+    }
+
+    public Command autoAlignBargeSimple() {
+        Pose2d BARGE = new Pose2d(new Translation2d(1.267, getPose().getY()), Rotation2d.fromDegrees(0));
+        return autoAlign(() -> BARGE, () -> false);
+    }
+
     public Command autoAlign(Supplier<Pose2d> pose, BooleanSupplier shouldRam) {
         return Commands.sequence(
             //Navigate
