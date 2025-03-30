@@ -39,7 +39,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     final List<Subsystem> subsystemList = List.of(elevator, manipulator, intake, climber);
 
     private static TransitionMap<RobotStates> transitionMap = new TransitionMap<>(RobotStates.class);
-    private Function<RobotStates, Command> defaultTransitioner = state -> {return discreteUpdateStates(state, subsystemList);};
+    private Function<RobotStates, Command> discreteTransitioner = state -> {return discreteUpdateStates(state, subsystemList);};
 
     private RobotManager() {
         super(RobotStates.class, transitionMap, NEUTRAL);
@@ -103,7 +103,6 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         coupledStates.forEach((Pair<RobotStates, RobotStates> coupledState) -> {
             if (coupledState.getFirst() == getState()) {
                 sequence(
-                    waitUntil(() -> ElevatorMechanism.getInstance().atSetpoint()),
                     setStateCommand(coupledState.getSecond()),
                     waitSeconds(0.5),
                     setStateCommand(NEUTRAL)
@@ -152,13 +151,13 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     public void registerTransitions() {
 
         // Between all default states
-        transitionMap.addCommutativeTransition(defaultStates.asJava(), defaultTransitioner);
+        transitionMap.addCommutativeTransition(defaultStates.asJava(), discreteTransitioner);
 
         // For each coupled states pair
-        transitionMap.addMappedTransition(coupledStates.asJava(), defaultTransitioner);
+        transitionMap.addMappedTransition(coupledStates.asJava(), discreteTransitioner);
 
         // From exclusive state to Neutral
-        transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, defaultTransitioner);
+        transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, discreteTransitioner);
 
         transitionMap.addConvergingTransition(
             defaultStates.asJava(), 
@@ -219,6 +218,12 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
                     elevator.setStateCommand(RPL4.getElevatorState())
                 ), 
                 elevator)
+        );
+
+        transitionMap.addTransition(
+            CLIMB,
+            CLIMB_PRIME,
+            discreteTransitioner
         );
 
     }

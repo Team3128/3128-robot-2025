@@ -149,6 +149,7 @@ public class RobotContainer {
         controller.getButton(kLeftBumper).onTrue(robot.getToggleCommand(EJECT_OUTTAKE));
 
         controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
+        controller.getButton(kRightTrigger).debounce(1).onTrue(robot.setStateCommand(FULL_NEUTRAL));
         controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
 
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
