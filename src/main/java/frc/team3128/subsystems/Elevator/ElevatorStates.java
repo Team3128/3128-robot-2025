@@ -4,35 +4,38 @@ import io.vavr.collection.List;
 
 public enum ElevatorStates {
     UNDEFINED,
-    NEUTRAL(0),
+    NEUTRAL(0, 0),
     LOW_L1(0.13),
     HIGH_L1(0.29),
-    L2(0.49),
-    L3(0.9),
-    L4(1.521),//1.501
-    TELE_HOLD(0.65),
+    L2(0.43, 0.49),
+    L3(0.845, 0.9),
+    L4(1.501, 1.521),
+    TELE_HOLD(0.845),
     AUTO_HOLD(1.501);
 
-    private double setpoint;
-    private Neutral neutral;
+    private double setpointRam;
+    private double setpointRamless;
 
     public static final List<ElevatorStates> functionalStates = List.of(NEUTRAL, LOW_L1, HIGH_L1, L2, L3, L4, TELE_HOLD, AUTO_HOLD);
 
+    private ElevatorStates(double setpointRam, double setpointRamless) {
+        this.setpointRam = setpointRam;
+        this.setpointRamless = setpointRamless;
+    }
+
     private ElevatorStates(double setpoint) {
-        this.setpoint = setpoint;
-        this.neutral = Neutral.BRAKE;
+        this(setpoint, setpoint);
     }
 
     private ElevatorStates() {
-        this.setpoint = 0;
-        this.neutral = Neutral.COAST;
+        this(0, 0);
     }
 
-    public double getSetpoint() {
-        return this.setpoint;
+    public double getSetpointRam() {
+        return this.setpointRam;
     }
 
-    public Neutral getNeutral() {
-        return this.neutral;
+    public double getSetpointRamless() {
+        return this.setpointRamless;
     }
 }

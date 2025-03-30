@@ -140,14 +140,12 @@ public class Robot extends NAR_Robot {
         RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL).schedule();
         PivotMechanism.getInstance().stopCommand().schedule();
         ElevatorMechanism.getInstance().stopCommand().schedule();
-        // Log.info("State", RobotManager.getInstance().getState().name());
         Camera.enableAll();
         sequence(
             waitSeconds(115),
-            print("CLIMBING B"),
-            RobotManager.getInstance().setStateCommand(RobotStates.PRE_CLIMB_PRIME),
+            RobotManager.getInstance().setStateCommand(RobotStates.PRE_CLIMB_PRIME).onlyIf(RobotContainer.shouldPreClimb),
             waitSeconds(16),
-            RobotManager.getInstance().setStateCommand(RobotStates.CLIMB)
+            RobotManager.getInstance().setStateCommand(RobotStates.CLIMB).onlyIf(RobotContainer.shouldPreClimb)
         ).schedule();
     }
 
