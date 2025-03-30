@@ -329,11 +329,13 @@ public class Swerve extends SwerveBase {
                 ()-> {
                     setThrottle(0.6);
                     Swerve.autoMoveEnabled = true;
+                    RobotManager.pauseTransitions = true;
                     setPose(pose.get());
                 }, 
                 ()-> {
                     disable();
                     Swerve.autoMoveEnabled = false;
+                    RobotManager.pauseTransitions = false;
                 }
             )
             .until(()-> atTranslationSetpoint())

@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 import io.vavr.collection.List;
 
-import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import edu.wpi.first.math.Pair;
@@ -34,6 +33,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static Intake intake;
     private static Climber climber;
     private static Swerve swerve;
+
+    public static boolean pauseTransitions = false;
 
     final List<Subsystem> subsystemList = List.of(elevator, manipulator, intake, climber);
 
@@ -183,7 +184,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
                 return indiscreteUpdateStates(
                     nextState, 
                     sequence(
-                        waitUntil(()-> Swerve.autoMoveEnabled),
+                        waitUntil(()-> !pauseTransitions),
                         manipulator.setStateCommand(ManipulatorStates.NEUTRAL),
                         elevator.setStateCommand(nextState.getElevatorState()),
                         waitUntil(()-> elevator.elevator.atSetpoint()),
@@ -214,7 +215,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             indiscreteUpdateStates(
                 RPL4, 
                 sequence(
-                    waitUntil(()-> Swerve.autoMoveEnabled),
+                    waitUntil(()-> !pauseTransitions),
                     elevator.setStateCommand(RPL4.getElevatorState())
                 ), 
                 elevator)

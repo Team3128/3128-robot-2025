@@ -17,7 +17,7 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
     private Function<ManipulatorStates, Command> defaultTransitioner = state -> {return runVoltsCommand(state.getVolts());};
 
     public Manipulator() {
-        super(ManipulatorStates.class, transitionMap, NEUTRAL);
+        super(ManipulatorStates.class, transitionMap, IN);
         roller = RollerMechanism.getInstance();
         addMechanisms(roller);
         registerTransitions();
