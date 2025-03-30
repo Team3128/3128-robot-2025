@@ -377,20 +377,20 @@ public class Swerve extends SwerveBase {
             startEnd(
                 ()-> {
                     setThrottle(1);
+                    autoMoveEnabled = true;
                     setPose(pose.get());
                 }, 
                 ()-> {
                     disable();
+                    autoMoveEnabled = false;
                 }
             )
             .until(()-> atTranslationSetpoint()),
             startEnd(
                 ()-> {
-                    autoMoveEnabled = true;
                     elevatorSafe = false;
                 },
                 ()-> {
-                    autoMoveEnabled = false;
                     elevatorSafe = true;
                 }
             ).until(() -> atElevatorDist())
