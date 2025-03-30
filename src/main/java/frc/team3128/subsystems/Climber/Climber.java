@@ -64,14 +64,5 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 	@Override
 	public void registerTransitions() {
         transitionMap.addCommutativeTransition(List.of(NEUTRAL, PRE_CLIMB_PRIME, CLIMB_PRIME, CLIMB), defaultTransitioner);
-
-        transitionMap.addTransition(CLIMB_PRIME, CLIMB, sequence(
-            waitUntil(()-> roller.isTriggered()),
-            roller.stopCommand(),
-            runOnce(() -> WinchMechanism.controller.getConfig().kS = () -> 12 * CLIMB.getWinchPower()),
-            winch.pidTo(CLIMB.getAngle()),
-            waitUntil(()-> winch.atSetpoint()),
-            roller.runCommand(CLIMB.getRollerPower())
-        ));
 	}
 }

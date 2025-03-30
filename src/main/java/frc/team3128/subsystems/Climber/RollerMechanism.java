@@ -15,9 +15,10 @@ public class RollerMechanism extends VoltageSubsystemBase  {
     protected static NAR_CANSpark leader = new NAR_CANSpark(CLIMB_ROLLER_ID, ControllerType.CAN_SPARK_FLEX);
 
     public LaserCan lc = new LaserCan(22);
-    private static int threshold = 100;
-    private static int count = 0;
-    private static int target = 10;
+    private static int maxDistanceThreshold = 100;
+    private static int minDistanceThreshold = 10;
+    private static int plateauCount = 0;
+    private static int plateauThreshold = 10;
 
 
     private RollerMechanism() {
@@ -49,11 +50,18 @@ public class RollerMechanism extends VoltageSubsystemBase  {
 
  	}
 
-    public boolean isTriggered() {
-        if(lc.getMeasurement().distance_mm < threshold && lc.getMeasurement().distance_mm > 0) count++;
-        else count = 0;
-        if(count >= target) {
-            count = 0;
+    public boolean withinRange() {
+        return lc.getMeasurement().distance_mm < maxDistanceThreshold && lc.getMeasurement().distance_mm > minDistanceThreshold;
+    }
+
+    public boolean isCaptured() {
+        if(withinRange()) plateauCount++;
+        else {
+            plateauCount = 0;
+            return false;
+        }
+
+        if(plateauCount >= plateauThreshold) {
             return true;
         }
         return false;

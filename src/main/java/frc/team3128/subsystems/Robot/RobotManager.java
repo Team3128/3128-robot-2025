@@ -112,12 +112,16 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         return getTempToggleCommand(defaultStates, exclusiveState,  ()-> stateEquals(defaultStates), 1);
     }
 
-    public Command getToggleCommand(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition) {
+    public Command getToggleCommand(Command defaultCommand, Command exclusiveCommand, BooleanSupplier condition) {
         return either(
-            setStateCommand(exclusiveState), 
-            setStateCommand(defaultState), 
+            exclusiveCommand,
+            defaultCommand,
             condition
         );
+    }
+
+    public Command getToggleCommand(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition) {
+        return getToggleCommand(setStateCommand(defaultState), setStateCommand(exclusiveState), condition);
     }
 
     public Command getToggleCommand(RobotStates defaultState, RobotStates exclusiveState) {

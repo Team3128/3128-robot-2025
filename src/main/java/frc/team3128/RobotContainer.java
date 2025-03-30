@@ -38,6 +38,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Climber.Climber;
 import frc.team3128.subsystems.Climber.ClimberStates;
+import frc.team3128.subsystems.Climber.RollerMechanism;
 import frc.team3128.subsystems.Climber.WinchMechanism;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
@@ -144,7 +145,12 @@ public class RobotContainer {
         controller.getButton(kLeftBumper).onTrue(robot.getToggleCommand(EJECT_OUTTAKE));
 
         controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
-        controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
+        
+        controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(
+            robot.setStateCommand(CLIMB_PRIME), 
+            waitUntil(()-> RollerMechanism.getInstance().isCaptured()).andThen(robot.setStateCommand(CLIMB)),
+            ()-> robot.stateEquals(CLIMB_PRIME))
+        );
 
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
         controller.getButton(kLeftStick).onTrue(swerve.autoAlignSource());
