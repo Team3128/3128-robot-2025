@@ -76,8 +76,7 @@ public class RobotContainer {
     // private Manipulator manipulator;
     private Swerve swerve;
 
-    private BooleanSupplier gyroReset;
-    private BooleanSupplier elevReset;
+    // private Bool\[\[]lier elevReset;
 
     // private WinchMechanism winch;
 
@@ -92,8 +91,8 @@ public class RobotContainer {
 
     public static Limelight limelight;
 
-    public static BooleanSupplier shouldRam;
-    public static BooleanSupplier shouldPreClimb;
+    public static BooleanSupplier shouldRam = ()-> false;
+    public static BooleanSupplier shouldPreClimb = ()-> false;
 
 
     @SuppressWarnings("resource")
@@ -110,8 +109,8 @@ public class RobotContainer {
         controller = new NAR_XboxController(2);
         controller2 = new NAR_XboxController(3);
 
-        gyroReset = ()-> !new DigitalInput(9).get();
-        elevReset = ()-> !new DigitalInput(8).get();
+        // gyroReset = ()-> !new DigitalInput(9).get();
+        // elevReset = ()-> !new DigitalInput(8).get();
         
         swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
@@ -156,18 +155,19 @@ public class RobotContainer {
 
         controller.getButton(kBack).onTrue(sequence(
             swerve.autoAlign(false, shouldRam).andThen(() -> robot.autoScore())
-            .beforeStarting(robot.setStateCommand(TELE_HOLD))
+            // .beforeStarting(robot.setStateCommand(TELE_HOLD))
         ));
 
         controller.getButton(kStart).onTrue(sequence(
             swerve.autoAlign(true, shouldRam).andThen(() -> robot.autoScore())
-            .beforeStarting(robot.setStateCommand(TELE_HOLD))
+            // .beforeStarting(robot.setStateCommand(TELE_HOLD))
         ));
 
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
+        controller.getUpPOVButton().onTrue(runOnce(()-> swerve.moveBy(new Translation2d(2, 0))));
 
-        new Trigger(gyroReset).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true));
-        new Trigger(elevReset).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true));
+        // new Trigger(gyroReset).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true));
+        // new Trigger(elevReset).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true));
     }
 
     public void initCameras() {

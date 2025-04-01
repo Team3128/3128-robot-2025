@@ -111,7 +111,7 @@ public class Swerve extends SwerveBase {
 
     // x * kP = dx/dt && (v_max)^2 = 2*a_max*x
     public static final Constraints translationConstraints = new Constraints(MAX_DRIVE_SPEED, MAX_DRIVE_ACCELERATION);
-    public static final PIDFFConfig translationConfig = new PIDFFConfig(5);// used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
+    public static final PIDFFConfig translationConfig = new PIDFFConfig(12, 0, 5);//3 // used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller translationController = new Controller(translationConfig, Controller.Type.POSITION); //Displacement error to output velocity
     public static final double translationTolerance = 0.03;
     public static final double elevatorStartDist = 0.1;
@@ -121,8 +121,9 @@ public class Swerve extends SwerveBase {
     public static final Controller rotationController = new Controller(rotationConfig, Controller.Type.POSITION); //Angular displacement error to output angular velocity
     public static final double rotationTolerance = Angle.ofRelativeUnits(1, Units.Degree).in(Units.Radian);
 
-    private static double translationPlateauThreshold = 5;
+    private static double translationPlateauThreshold = 15;
     private static double translationPlateauCount = 0;
+    private static boolean atTranslationSetpoint = false;
 
     private static double rotationPlateauThreshold = 10;
     private static double rotationPlateauCount = 0;
@@ -269,6 +270,10 @@ public class Swerve extends SwerveBase {
 
     public boolean atRotationSetpoint() {
         if(Math.abs(getAngleTo(rotationSetpointSupplier.get())) < rotationTolerance) rotationPlateauCount++;
+        else {
+            rotationPlateauCount = 0;
+            return false;
+        }
         if (rotationPlateauCount >= rotationPlateauThreshold) {
             rotationPlateauCount = 0;
             return true;
@@ -278,8 +283,11 @@ public class Swerve extends SwerveBase {
 
     public boolean atTranslationSetpoint() {
         if(getDistanceTo(translationSetpoint) < translationTolerance) translationPlateauCount++;
-        if(translationPlateauCount >= translationPlateauThreshold) {
+        else {
             translationPlateauCount = 0;
+            return false;
+        }
+        if(translationPlateauCount >= translationPlateauThreshold) {
             return true;
         }
         return false;
@@ -432,6 +440,7 @@ public class Swerve extends SwerveBase {
         NAR_Shuffleboard.addData("Auto", "Translation Enabled", ()-> translationController.isEnabled(), 0, 0);
         NAR_Shuffleboard.addData("Auto", "At Setpoint", ()-> atTranslationSetpoint(), 0, 1);
         NAR_Shuffleboard.addData("Auto", "Error", ()-> getDistanceTo(translationSetpoint), 1, 0);
+        NAR_Shuffleboard.addData("Auto", "Count", ()-> translationPlateauCount, 1, 1);
     }
 
     public static void disable() {
