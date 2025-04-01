@@ -16,9 +16,7 @@ public class Swerve extends FSMSubsystemBase<SwerveStates> {
 
     public Swerve() {
         super(SwerveStates.class, transitionMap, NEUTRAL);
-        swerve = SwerveMechanism.getInstance();
-        addMechanisms(swerve);
-        
+        swerve = SwerveMechanism.getInstance();        
     }
 
     public static synchronized Swerve getInstance() {
