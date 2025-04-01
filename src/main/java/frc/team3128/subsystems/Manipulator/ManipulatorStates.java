@@ -10,7 +10,9 @@ public enum ManipulatorStates {
     NEUTRAL(0),
     IN(4),
     OUT(-4.5),
-    OUT_L1(-2.5);
+    OUT_L1(-2.5),
+    IN_ALGAE(4),
+    OUT_ALGAE(-12);
 
     private double volts;
     private Neutral neutral;

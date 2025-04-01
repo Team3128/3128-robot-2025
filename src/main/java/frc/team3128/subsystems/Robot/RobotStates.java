@@ -14,9 +14,11 @@ import static frc.team3128.Constants.DriveConstants.fast;
 
 public enum RobotStates {
     
+    //Neutral States
     FULL_NEUTRAL(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.IN, ClimberStates.NEUTRAL),
     NEUTRAL(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.IN, ClimberStates.UNDEFINED),
 
+    //Coral States
     RPL1(ElevatorStates.LOW_L1, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false),
     RPL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false),
     RPL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false), 
@@ -27,6 +29,18 @@ public enum RobotStates {
     RSL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow, true),
     RSL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow, true),
 
+    //Algae States
+    RPA1(ElevatorStates.A1, IntakeStates.NEUTRAL,ManipulatorStates.NEUTRAL, slow, false),
+    RPA2(ElevatorStates.A2,IntakeStates.NEUTRAL,ManipulatorStates.NEUTRAL, slow, false),
+
+    RIA1(ElevatorStates.A1, IntakeStates.NEUTRAL, ManipulatorStates.IN_ALGAE, slow, true),
+    RIA2(ElevatorStates.A2, IntakeStates.NEUTRAL, ManipulatorStates.IN_ALGAE, slow, true),
+
+    BPA(ElevatorStates.AB, IntakeStates.NEUTRAL,ManipulatorStates.OUT_ALGAE, slow, false),
+
+    BSA(ElevatorStates.AB, IntakeStates.NEUTRAL,ManipulatorStates.OUT_ALGAE, slow, false),
+
+    //Other States
     TELE_HOLD(ElevatorStates.TELE_HOLD, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, fast, false),
     AUTO_HOLD(ElevatorStates.AUTO_HOLD, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, fast, false),
     
