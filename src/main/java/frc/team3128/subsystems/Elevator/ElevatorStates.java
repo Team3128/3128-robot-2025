@@ -19,7 +19,7 @@ public enum ElevatorStates {
     private double setpointRam;
     private double setpointRamless;
 
-    public static final List<ElevatorStates> functionalStates = List.of(NEUTRAL, LOW_L1, HIGH_L1, L2, L3, L4, TELE_HOLD, AUTO_HOLD);
+    public static final List<ElevatorStates> functionalStates = List.of(NEUTRAL, LOW_L1, HIGH_L1, L2, L3, L4, A1, A2, AB, TELE_HOLD, AUTO_HOLD);
 
     private ElevatorStates(double setpointRam, double setpointRamless) {
         this.setpointRam = setpointRam;
