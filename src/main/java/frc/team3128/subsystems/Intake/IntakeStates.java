@@ -6,10 +6,10 @@ import io.vavr.collection.List;
 
 public enum IntakeStates {
     UNDEFINED,
-    NEUTRAL(0, 0.1),
-    INTAKE(65, 0.8),
-    EJECT_OUTTAKE(0, -0.8),
-    HIGH_INTAKE(0, 0.8),
+    NEUTRAL(0, -.05),
+    INTAKE(120, -0.8),
+    EJECT_OUTTAKE(0, 1),
+    HIGH_INTAKE(0, -0.8),
     CLIMB_PRIME(5),
     CLIMB(5);
 

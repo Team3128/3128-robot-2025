@@ -9,7 +9,7 @@ public enum ElevatorStates {
     HIGH_L1(0.29),
     L2(0.49),
     L3(0.9),
-    L4(1.521),//1.501
+    L4(1.53),//1.501
     TELE_HOLD(0.65),
     AUTO_HOLD(1.501);
 

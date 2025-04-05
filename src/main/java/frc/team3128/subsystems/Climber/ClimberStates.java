@@ -5,7 +5,7 @@ public enum ClimberStates {
     NEUTRAL(0, 1, 0),
     PRE_CLIMB_PRIME(70, 1, 0),
     CLIMB_PRIME(94.5, 1, 0.5),
-    CLIMB(24.5, 0.5, 0);
+    CLIMB(24.5, 1, 0);
 
     private double angle;
     private double winchPower;
