@@ -155,16 +155,21 @@ public class RobotContainer {
 
         controller.getButton(kBack).onTrue(sequence(
             swerve.autoAlign(false, shouldRam).andThen(() -> robot.autoScore())
+            .beforeStarting(() -> Swerve.translationController.setPID(Swerve.kPSupplier.getAsDouble(), Swerve.kISupplier.getAsDouble(), Swerve.kDSupplier.getAsDouble()))
             // .beforeStarting(robot.setStateCommand(TELE_HOLD))
         ));
 
         controller.getButton(kStart).onTrue(sequence(
             swerve.autoAlign(true, shouldRam).andThen(() -> robot.autoScore())
+            .beforeStarting(() -> Swerve.translationController.setPID(Swerve.kPSupplier.getAsDouble(), Swerve.kISupplier.getAsDouble(), Swerve.kDSupplier.getAsDouble()))
             // .beforeStarting(robot.setStateCommand(TELE_HOLD))
         ));
 
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
-        controller.getUpPOVButton().onTrue(runOnce(()-> swerve.moveBy(new Translation2d(2, 0))));
+        controller.getUpPOVButton().onTrue(
+            runOnce(()-> swerve.moveBy(new Translation2d(2, 0)))
+            .beforeStarting(() -> Swerve.translationController.setPID(Swerve.kPSupplier.getAsDouble(), Swerve.kISupplier.getAsDouble(), Swerve.kDSupplier.getAsDouble()))
+        );
 
         // new Trigger(gyroReset).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true));
         // new Trigger(elevReset).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true));

@@ -116,6 +116,8 @@ public class Swerve extends SwerveBase {
     public static final double translationTolerance = 0.03;
     public static final double elevatorStartDist = 0.1;
 
+    public static DoubleSupplier kPSupplier, kISupplier, kDSupplier;
+
     public static final Constraints rotationConstraints = new Constraints(MAX_DRIVE_ANGULAR_VELOCITY, MAX_DRIVE_ANGULAR_ACCELERATION);
     public static final PIDFFConfig rotationConfig = new PIDFFConfig(10); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller rotationController = new Controller(rotationConfig, Controller.Type.POSITION); //Angular displacement error to output angular velocity
@@ -435,6 +437,9 @@ public class Swerve extends SwerveBase {
     public void initShuffleboard() {
         super.initShuffleboard();
         NAR_Shuffleboard.addData("Swerve", "Throttle", this::getThrottle, 4, 3);
+        kPSupplier = NAR_Shuffleboard.debug("Auto Align", "kP", translationConfig.kP, 0, 0);
+        kISupplier = NAR_Shuffleboard.debug("Auto Align", "kI", translationConfig.kI, 0, 1);
+        kDSupplier = NAR_Shuffleboard.debug("Auto Align", "kD", translationConfig.kD, 0, 2);
 
 
         NAR_Shuffleboard.addData("Auto", "Translation Enabled", ()-> translationController.isEnabled(), 0, 0);
