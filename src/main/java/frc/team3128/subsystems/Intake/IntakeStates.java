@@ -8,17 +8,10 @@ public enum IntakeStates {
     UNDEFINED,
     NEUTRAL(0, 0.1),
     INTAKE(65, 0.8),
-    EJECT_OUTTAKE(0, -0.8),
-    HIGH_INTAKE(0, 0.8),
-    CLIMB_PRIME(5),
+    OUTTAKE(0, -0.8),
     CLIMB(5);
 
-    public static final List<IntakeStates> defaultStates = List.of(NEUTRAL, INTAKE, EJECT_OUTTAKE, CLIMB_PRIME, HIGH_INTAKE);
-    public static final List<IntakeStates> exclusiveStates = List.of(CLIMB);
-
-    public static final List<Pair<IntakeStates, IntakeStates>> coupledStates = List.of(
-        Pair.of(CLIMB_PRIME, CLIMB)
-    );
+    public static final List<IntakeStates> defaultStates = List.of(NEUTRAL, INTAKE, OUTTAKE, CLIMB);
 
     private double angle;
     private double power;

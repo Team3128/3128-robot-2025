@@ -33,6 +33,6 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 	@Override
 	public void registerTransitions() {
         //NEUTRAL, IN, OUT are able to transition between each other
-        transitionMap.addCommutativeTransition(List.of(NEUTRAL, IN, OUT, OUT_L1), defaultTransitioner);
+        transitionMap.addCommutativeTransition(List.of(NEUTRAL, IN, OUT, OUT_L1, IN_ALGAE, OUT_ALGAE), defaultTransitioner);
 	}
 }
