@@ -3,13 +3,15 @@ package frc.team3128.subsystems.Swerve;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
 import io.vavr.collection.List;
 
+import static frc.team3128.Constants.DriveConstants.slow;
+import static frc.team3128.Constants.DriveConstants.fast;
 
 public enum SwerveStates {
-    TELEOP,
-    REEF_ALIGN(),
-    NEUTRAL(),
-    FEED_ALIGN(),
-    BARGE_ALIGN();
+    TELEOP(fast),
+    REEF_ALIGN(slow),
+    NEUTRAL(fast),
+    FEED_ALIGN(slow),
+    BARGE_ALIGN(slow);
 
     private double throttle;
     private Neutral neutral;
