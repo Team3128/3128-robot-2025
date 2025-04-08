@@ -29,11 +29,11 @@ public enum RobotStates {
 
     // RPA1(ElevatorStates.A1, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false),
     // RPA2(ElevatorStates.A2, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false),
-    RPB(ElevatorStates.AB, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false),
+    RPB(ElevatorStates.AB, IntakeStates.NEUTRAL, ManipulatorStates.IN_ALGAE, slow, false),
 
     RSA1(ElevatorStates.A1, IntakeStates.NEUTRAL, ManipulatorStates.IN_ALGAE, slow, false),
     RSA2(ElevatorStates.A2, IntakeStates.NEUTRAL, ManipulatorStates.IN_ALGAE, slow, false),
-    RSB(ElevatorStates.AB, IntakeStates.NEUTRAL, ManipulatorStates.OUT_ALGAE, slow, true),
+    RSB(ElevatorStates.AB, IntakeStates.NEUTRAL, ManipulatorStates.OUT_ALGAE, slow, false),
 
 
     TELE_HOLD(ElevatorStates.TELE_HOLD, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, fast, false),
@@ -71,6 +71,7 @@ public enum RobotStates {
         Pair.of(RPL2, RSL2),
         Pair.of(RPL3, RSL3),
         Pair.of(RPL4, RSL4),
+        Pair.of(RPB, RSB),
         Pair.of(CLIMB_PRIME, CLIMB)
     );
 

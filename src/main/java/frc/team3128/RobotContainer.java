@@ -92,7 +92,7 @@ public class RobotContainer {
 
     public static Limelight limelight;
 
-    public static BooleanSupplier shouldRam;
+    public static BooleanSupplier shouldRam = ()->false;
     public static BooleanSupplier shouldPreClimb;
 
 
@@ -110,8 +110,8 @@ public class RobotContainer {
         controller = new NAR_XboxController(2);
         controller2 = new NAR_XboxController(3);
 
-        gyroReset = ()-> !new DigitalInput(9).get();
-        elevReset = ()-> !new DigitalInput(8).get();
+        gyroReset = ()-> false;
+        elevReset = ()-> false;
         
         swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
