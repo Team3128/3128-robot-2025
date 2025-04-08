@@ -98,6 +98,8 @@ public class RobotContainer {
 
     @SuppressWarnings("resource")
     public RobotContainer() {
+        shouldRam = ()-> false;
+
         swerve = Swerve.getInstance();
         // winch = WinchMechanism.getInstance();
         
@@ -112,7 +114,7 @@ public class RobotContainer {
 
         gyroReset = ()-> !new DigitalInput(9).get();
         elevReset = ()-> !new DigitalInput(8).get();
-        
+
         swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
 

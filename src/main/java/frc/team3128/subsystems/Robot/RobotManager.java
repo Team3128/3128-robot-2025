@@ -4,6 +4,7 @@ import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
 import common.utility.shuffleboard.NAR_Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Climber.Climber;
@@ -36,7 +37,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     public static boolean pauseTransitions = false;
 
-    final List<Subsystem> subsystemList = List.of(elevator, manipulator, intake, climber);
+    final List<Subsystem> subsystemList = List.of(elevator, manipulator, intake, climber, swerve);
 
     private static TransitionMap<RobotStates> transitionMap = new TransitionMap<>(RobotStates.class);
     private Function<RobotStates, Command> discreteTransitioner = state -> {return discreteUpdateStates(state, subsystemList);};
@@ -70,11 +71,11 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     public Command discreteUpdateStates(RobotStates nextState, List<Subsystem> updateSubsystems) {
         return parallel(
-            elevator.setStateCommand(nextState.getElevatorState()).unless(()-> nextState.getElevatorState() == ElevatorStates.UNDEFINED).onlyIf(()-> updateSubsystems.contains(elevator)),
-            manipulator.setStateCommand(nextState.getManipulatorState()).unless(()-> nextState.getManipulatorState() == ManipulatorStates.UNDEFINED).onlyIf(() -> updateSubsystems.contains(manipulator)),
-            intake.setStateCommand(nextState.getIntakeState()).unless(()-> nextState.getIntakeState() == IntakeStates.UNDEFINED).onlyIf(() -> updateSubsystems.contains(intake)),
-            climber.setStateCommand(nextState.getClimberState()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED).onlyIf(() -> updateSubsystems.contains(climber)),
-            runOnce(()-> swerve.setThrottle(nextState.getThrottle())).unless(()-> DriverStation.isAutonomous() || Swerve.autoMoveEnabled).onlyIf(()-> updateSubsystems.contains(swerve))
+            either(elevator.setStateCommand(nextState.getElevatorState()).unless(()-> nextState.getElevatorState() == ElevatorStates.UNDEFINED), Commands.none(), () -> updateSubsystems.contains(elevator)),
+            either(manipulator.setStateCommand(nextState.getManipulatorState()).unless(()-> nextState.getManipulatorState() == ManipulatorStates.UNDEFINED), Commands.none(), () -> updateSubsystems.contains(manipulator)),
+            either(intake.setStateCommand(nextState.getIntakeState()).unless(()-> nextState.getIntakeState() == IntakeStates.UNDEFINED), Commands.none(), () -> updateSubsystems.contains(intake)),
+            either(climber.setStateCommand(nextState.getClimberState()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED), Commands.none(), () -> updateSubsystems.contains(climber)),
+            either(runOnce(()-> swerve.setThrottle(nextState.getThrottle())).unless(()-> DriverStation.isAutonomous() || Swerve.autoMoveEnabled), Commands.none(), () -> updateSubsystems.contains(swerve))
         );
     }
 
