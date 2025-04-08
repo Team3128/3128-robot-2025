@@ -27,15 +27,23 @@ public enum RobotStates {
     RSL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow, true),
     RSL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow, true),
 
+    // RPA1(ElevatorStates.A1, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false),
+    // RPA2(ElevatorStates.A2, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false),
+    RPB(ElevatorStates.AB, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false),
+
+    RSA1(ElevatorStates.A1, IntakeStates.NEUTRAL, ManipulatorStates.IN_ALGAE, slow, false),
+    RSA2(ElevatorStates.A2, IntakeStates.NEUTRAL, ManipulatorStates.IN_ALGAE, slow, false),
+    RSB(ElevatorStates.AB, IntakeStates.NEUTRAL, ManipulatorStates.OUT_ALGAE, slow, true),
+
+
     TELE_HOLD(ElevatorStates.TELE_HOLD, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, fast, false),
     AUTO_HOLD(ElevatorStates.AUTO_HOLD, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, fast, false),
     
     INTAKE(ElevatorStates.NEUTRAL, IntakeStates.INTAKE, ManipulatorStates.NEUTRAL),
-    EJECT_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.EJECT_OUTTAKE, ManipulatorStates.NEUTRAL),
-    HIGH_INTAKE(ElevatorStates.NEUTRAL, IntakeStates.HIGH_INTAKE, ManipulatorStates.NEUTRAL),
+    OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.OUTTAKE, ManipulatorStates.NEUTRAL),
     
     PRE_CLIMB_PRIME(ClimberStates.PRE_CLIMB_PRIME),
-    CLIMB_PRIME(ElevatorStates.NEUTRAL, IntakeStates.CLIMB_PRIME, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB_PRIME, slow),
+    CLIMB_PRIME(ElevatorStates.NEUTRAL, IntakeStates.CLIMB, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB_PRIME, slow),
     CLIMB(ElevatorStates.NEUTRAL, IntakeStates.CLIMB, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB, slow);
 
     
@@ -52,9 +60,9 @@ public enum RobotStates {
     private double throttle;
     private boolean waitForAutoEnabled;
 
-    public static final List<RobotStates> defaultElevatorStates = List.of(RPL1, RPL2, RPL3, RPL4, TELE_HOLD, AUTO_HOLD);
-    public static final List<RobotStates> exclusiveElevatorStates = List.of(RSL1, RSL2, RSL3, RSL4);
-    public static final List<RobotStates> defaultIntakeStates = List.of(INTAKE, EJECT_OUTTAKE, HIGH_INTAKE);
+    public static final List<RobotStates> defaultElevatorStates = List.of(RPL1, RPL2, RPL3, RPL4, RSA1, RSA2, RPB, TELE_HOLD, AUTO_HOLD);
+    public static final List<RobotStates> exclusiveElevatorStates = List.of(RSL1, RSL2, RSL3, RSL4, RSB);
+    public static final List<RobotStates> defaultIntakeStates = List.of(INTAKE, OUTTAKE);
     public static final List<RobotStates> defaultClimbStates = List.of(CLIMB_PRIME, PRE_CLIMB_PRIME);
     public static final List<RobotStates> exclusiveClimbStates = List.of(CLIMB);
 

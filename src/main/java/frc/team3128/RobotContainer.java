@@ -145,8 +145,12 @@ public class RobotContainer {
         controller.getButton(kX).onTrue(robot.getTempToggleCommand(RPL3, RSL3));
         controller.getButton(kY).onTrue(robot.getTempToggleCommand(RPL4, RSL4));
 
+        controller.getLeftPOVButton().onTrue(robot.getTempToggleCommand(RPB, RSB));
+        controller.getDownPOVButton().onTrue(robot.getToggleCommand(RSA1));
+        controller.getUpPOVButton().onTrue(robot.getToggleCommand(RSA2));
+
         controller.getButton(kLeftTrigger).onTrue(robot.getToggleCommand(INTAKE));
-        controller.getButton(kLeftBumper).onTrue(robot.getToggleCommand(EJECT_OUTTAKE));
+        controller.getButton(kLeftBumper).onTrue(robot.getToggleCommand(OUTTAKE));
 
         controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
         controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
