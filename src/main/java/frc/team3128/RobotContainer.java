@@ -43,6 +43,8 @@ import frc.team3128.subsystems.Climber.WinchMechanism;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
+import frc.team3128.subsystems.Intake.Intake;
+import frc.team3128.subsystems.Intake.PivotMechanism;
 import frc.team3128.subsystems.Manipulator.Manipulator;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
@@ -76,8 +78,8 @@ public class RobotContainer {
     // private Manipulator manipulator;
     private Swerve swerve;
 
-    private BooleanSupplier gyroReset;
-    private BooleanSupplier elevReset;
+    // private BooleanSupplier gyroReset;
+    // private BooleanSupplier elevReset;
 
     // private WinchMechanism winch;
 
@@ -92,8 +94,8 @@ public class RobotContainer {
 
     public static Limelight limelight;
 
-    public static BooleanSupplier shouldRam;
-    public static BooleanSupplier shouldPreClimb;
+    public static BooleanSupplier shouldRam = () -> false;
+    public static BooleanSupplier shouldPreClimb = () -> false;
 
 
     @SuppressWarnings("resource")
@@ -110,8 +112,8 @@ public class RobotContainer {
         controller = new NAR_XboxController(2);
         controller2 = new NAR_XboxController(3);
 
-        gyroReset = ()-> !new DigitalInput(9).get();
-        elevReset = ()-> !new DigitalInput(8).get();
+        // gyroReset = ()-> !new DigitalInput(9).get();
+        // elevReset = ()-> !new DigitalInput(8).get();
         
         swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
@@ -119,8 +121,6 @@ public class RobotContainer {
         robot = RobotManager.getInstance();
         elevator = ElevatorMechanism.getInstance();
 
-
-        AutoPrograms.getInstance();
         
         DriverStation.silenceJoystickConnectionWarning(true);
         initCameras();
@@ -135,9 +135,10 @@ public class RobotContainer {
         shouldPreClimb = ()-> !buttonPad.getButton(2).getAsBoolean();
 
 
-        controller2.getButton(kA).onTrue(Climber.getInstance().runCommand(0.8)).onFalse(Climber.getInstance().stopCommand());
-        controller2.getButton(kB).onTrue(Climber.getInstance().runCommand(-0.8)).onFalse(Climber.getInstance().stopCommand());
-        controller2.getButton(kX).onTrue(Climber.getInstance().resetCommand());
+        controller2.getButton(kA).onTrue(PivotMechanism.getInstance().runCommand(0.5)).onFalse(PivotMechanism.getInstance().stopCommand());
+        controller2.getButton(kB).onTrue(PivotMechanism.getInstance().runCommand(-0.5)).onFalse(PivotMechanism.getInstance().stopCommand());
+        controller2.getButton(kX).onTrue(PivotMechanism
+        .getInstance().resetCommand().ignoringDisable(true));
 
 
         controller.getButton(kA).onTrue(robot.getTempToggleCommand(RPL1, RSL1));
@@ -166,8 +167,8 @@ public class RobotContainer {
 
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
 
-        new Trigger(gyroReset).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true));
-        new Trigger(elevReset).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true));
+        // new Trigger(gyroReset).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true));
+        // new Trigger(elevReset).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true));
     }
 
     public void initCameras() {
