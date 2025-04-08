@@ -5,6 +5,8 @@ import common.core.fsm.TransitionMap;
 import common.utility.shuffleboard.NAR_Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Climber.Climber;
@@ -22,6 +24,7 @@ import static frc.team3128.subsystems.Robot.RobotStates.*;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import io.vavr.collection.List;
+import io.vavr.collection.Map;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
@@ -40,7 +43,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     final List<Subsystem> subsystemList = List.of(elevator, manipulator, intake, climber, swerve);
 
     private static TransitionMap<RobotStates> transitionMap = new TransitionMap<>(RobotStates.class);
-    private Function<RobotStates, Command> discreteTransitioner = state -> {return discreteUpdateStates(state, subsystemList);};
+    private Function<RobotStates, Command> discreteTransitioner = state -> {return runOnce(()-> discreteUpdateStates(state, subsystemList));};
 
     private RobotManager() {
         super(RobotStates.class, transitionMap, NEUTRAL);
@@ -65,29 +68,40 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         return instance;
     }
 
-    public Command discreteUpdateStates(RobotStates nextState, Command command, Subsystem... updateSubsystems) {
-        return discreteUpdateStates(nextState, List.of(updateSubsystems));
+    public Command discreteUpdateStates(RobotStates nextState, Subsystem... updateSubsystems) {
+        return runOnce(()-> discreteUpdateStates(nextState, List.of(updateSubsystems)));
     }
 
-    public Command discreteUpdateStates(RobotStates nextState, List<Subsystem> updateSubsystems) {
-        return parallel(
-            either(elevator.setStateCommand(nextState.getElevatorState()).unless(()-> nextState.getElevatorState() == ElevatorStates.UNDEFINED), Commands.none(), () -> updateSubsystems.contains(elevator)),
-            either(manipulator.setStateCommand(nextState.getManipulatorState()).unless(()-> nextState.getManipulatorState() == ManipulatorStates.UNDEFINED), Commands.none(), () -> updateSubsystems.contains(manipulator)),
-            either(intake.setStateCommand(nextState.getIntakeState()).unless(()-> nextState.getIntakeState() == IntakeStates.UNDEFINED), Commands.none(), () -> updateSubsystems.contains(intake)),
-            either(climber.setStateCommand(nextState.getClimberState()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED), Commands.none(), () -> updateSubsystems.contains(climber)),
-            either(runOnce(()-> swerve.setThrottle(nextState.getThrottle())).unless(()-> DriverStation.isAutonomous() || Swerve.autoMoveEnabled), Commands.none(), () -> updateSubsystems.contains(swerve))
+    public void discreteUpdateStates(RobotStates nextState, List<Subsystem> updateSubsystems) {
+
+        List<Pair<Subsystem, Command>> commandMap = List.of(
+            Pair.of(elevator, elevator.setStateCommand(nextState.getElevatorState()).unless(()-> nextState.getElevatorState() == ElevatorStates.UNDEFINED)),
+            Pair.of(manipulator, manipulator.setStateCommand(nextState.getManipulatorState()).unless(()-> nextState.getManipulatorState() == ManipulatorStates.UNDEFINED)),
+            Pair.of(intake, intake.setStateCommand(nextState.getIntakeState()).unless(()-> nextState.getIntakeState() == IntakeStates.UNDEFINED)),
+            Pair.of(climber, climber.setStateCommand(nextState.getClimberState()).unless(()-> nextState.getClimberState() == ClimberStates.UNDEFINED)),
+            Pair.of(swerve, runOnce(()-> swerve.setThrottle(nextState.getThrottle())).unless(()-> DriverStation.isAutonomous() || Swerve.autoMoveEnabled))
         );
+
+        ParallelCommandGroup command = new ParallelCommandGroup();
+        for(Pair<Subsystem, Command> pair : commandMap) {
+            if(updateSubsystems.contains(pair.getFirst())) {
+                command.addCommands(pair.getSecond());
+            }
+        }
+
+        command.schedule();
     }
 
     public Command indiscreteUpdateStates(RobotStates nextState, Command command, Subsystem... updateSubsystems) {
-        return indiscreteUpdateStates(nextState, command, List.of(updateSubsystems));
+        return runOnce(()-> indiscreteUpdateStates(nextState, command, List.of(updateSubsystems)));
     }
 
-    public Command indiscreteUpdateStates(RobotStates nextState, Command command, List<Subsystem> updateSubsystems) {
-        return parallel(
-            discreteUpdateStates(nextState, subsystemList.removeAll(updateSubsystems)),
+    public void indiscreteUpdateStates(RobotStates nextState, Command command, List<Subsystem> updateSubsystems) {
+        List<Subsystem> subsystemList = List.of(elevator, manipulator, intake, climber, swerve);
+        parallel(
+            runOnce(()-> discreteUpdateStates(nextState, subsystemList.removeAll(updateSubsystems))),
             command
-        );
+        ).schedule();
     }
 
     public void autoScore() {
