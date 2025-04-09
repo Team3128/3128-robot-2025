@@ -54,6 +54,7 @@ import static frc.team3128.Constants.DriveConstants.*;
 import frc.team3128.Constants.DriveConstants;
 import frc.team3128.Constants.FieldConstants.FieldStates;
 import frc.team3128.subsystems.Robot.RobotManager;
+import frc.team3128.Robot;
 import frc.team3128.RobotContainer;
 
 public class Swerve extends SwerveBase {
@@ -111,18 +112,24 @@ public class Swerve extends SwerveBase {
 
     // x * kP = dx/dt && (v_max)^2 = 2*a_max*x
     public static final Constraints translationConstraints = new Constraints(MAX_DRIVE_SPEED, MAX_DRIVE_ACCELERATION);
-    public static final PIDFFConfig translationConfig = new PIDFFConfig(5);// used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
+    public static final PIDFFConfig translationConfig = new PIDFFConfig(5, 0, 0);//3 // used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller translationController = new Controller(translationConfig, Controller.Type.POSITION); //Displacement error to output velocity
     public static final double translationTolerance = 0.03;
-    public static final double elevatorStartDist = 0.1;
+    public static final double elevatorStartDist = 1;
+
+    public static DoubleSupplier kPSupplier, kISupplier, kDSupplier;
 
     public static final Constraints rotationConstraints = new Constraints(MAX_DRIVE_ANGULAR_VELOCITY, MAX_DRIVE_ANGULAR_ACCELERATION);
     public static final PIDFFConfig rotationConfig = new PIDFFConfig(10); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller rotationController = new Controller(rotationConfig, Controller.Type.POSITION); //Angular displacement error to output angular velocity
     public static final double rotationTolerance = Angle.ofRelativeUnits(1, Units.Degree).in(Units.Radian);
 
-    private static double translationPlateauThreshold = 5;
+    private static double translationPlateauThreshold = 40;
     private static double translationPlateauCount = 0;
+    private static boolean atTranslationSetpoint = false;
+
+    private static double elevatorPlateauThreshold = 20;
+    private static double elevatorPlateauCount = 0;
 
     private static double rotationPlateauThreshold = 10;
     private static double rotationPlateauCount = 0;
@@ -269,6 +276,10 @@ public class Swerve extends SwerveBase {
 
     public boolean atRotationSetpoint() {
         if(Math.abs(getAngleTo(rotationSetpointSupplier.get())) < rotationTolerance) rotationPlateauCount++;
+        else {
+            rotationPlateauCount = 0;
+            return false;
+        }
         if (rotationPlateauCount >= rotationPlateauThreshold) {
             rotationPlateauCount = 0;
             return true;
@@ -278,17 +289,24 @@ public class Swerve extends SwerveBase {
 
     public boolean atTranslationSetpoint() {
         if(getDistanceTo(translationSetpoint) < translationTolerance) translationPlateauCount++;
-        if(translationPlateauCount >= translationPlateauThreshold) {
+        else {
             translationPlateauCount = 0;
+            return false;
+        }
+        if(translationPlateauCount >= translationPlateauThreshold) {
             return true;
         }
         return false;
     }
 
     public boolean atElevatorDist() {
-        if(getDistanceTo(translationSetpoint) < elevatorStartDist) translationPlateauCount++;
-        if(translationPlateauCount >= translationPlateauThreshold) {
-            translationPlateauCount = 0;
+        if(getDistanceTo(translationSetpoint) < elevatorStartDist) elevatorPlateauCount++;
+        else {
+            elevatorPlateauCount = 0;
+            return false;
+        }
+        if(elevatorPlateauCount >= elevatorPlateauThreshold) {
+            elevatorPlateauCount = 0;
             return true;
         }
         return false;
@@ -324,6 +342,8 @@ public class Swerve extends SwerveBase {
         fudgelessSetpoints = isRight ? fudgelessReefRight.asJava() : fudgelessReefLeft.asJava();
         Supplier<Pose2d> pose = () -> (shouldRam.getAsBoolean() ? getPose().nearest(allianceFlip(setpoints)) : getPose().nearest(allianceFlip(fudgelessSetpoints)));
         return autoAlign(pose, shouldRam);
+        // return runOnce(()-> RobotManager.getInstance().alignScore(pose));
+
     }
 
     public Command autoAlignSource() {
@@ -331,9 +351,33 @@ public class Swerve extends SwerveBase {
         setpoints.add(FieldStates.SOURCE_1.getPose2d());
         setpoints.add(FieldStates.SOURCE_2.getPose2d());
         return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), ()->false);
+        // return runOnce(()-> RobotManager.getInstance().autoScore());
     }
 
     public Command autoAlign(Supplier<Pose2d> pose, BooleanSupplier shouldRam) {
+
+        // return parallel(
+        //     startEnd(
+        //         ()-> {
+        //             setThrottle(1);
+        //             setPose(pose.get());
+        //         }, 
+        //         ()-> {
+        //             disable();
+        //         }
+        //     )
+        //     .until(()-> atTranslationSetpoint()),
+        //     Commands.startEnd(
+        //         ()-> {
+        //             autoMoveEnabled = true;
+        //             elevatorSafe = false;
+        //         },
+        //         ()-> {
+        //             autoMoveEnabled = false;
+        //             elevatorSafe = true;
+        //         }
+        //     ).until(() -> atElevatorDist())
+
         return Commands.sequence(
             //Navigate
             Commands.startEnd(
@@ -386,7 +430,7 @@ public class Swerve extends SwerveBase {
                 }
             )
             .until(()-> atTranslationSetpoint()),
-            startEnd(
+            Commands.startEnd(
                 ()-> {
                     elevatorSafe = false;
                 },
@@ -427,11 +471,15 @@ public class Swerve extends SwerveBase {
     public void initShuffleboard() {
         super.initShuffleboard();
         NAR_Shuffleboard.addData("Swerve", "Throttle", this::getThrottle, 4, 3);
+        kPSupplier = NAR_Shuffleboard.debug("Auto", "kP", translationConfig.kP, 2, 0);
+        kISupplier = NAR_Shuffleboard.debug("Auto", "kI", translationConfig.kI, 2, 1);
+        kDSupplier = NAR_Shuffleboard.debug("Auto", "kD", translationConfig.kD, 2, 2);
 
 
         NAR_Shuffleboard.addData("Auto", "Translation Enabled", ()-> translationController.isEnabled(), 0, 0);
         NAR_Shuffleboard.addData("Auto", "At Setpoint", ()-> atTranslationSetpoint(), 0, 1);
         NAR_Shuffleboard.addData("Auto", "Error", ()-> getDistanceTo(translationSetpoint), 1, 0);
+        NAR_Shuffleboard.addData("Auto", "Count", ()-> translationPlateauCount, 1, 1);
     }
 
     public static void disable() {
