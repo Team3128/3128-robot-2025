@@ -37,6 +37,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static TransitionMap<RobotStates> transitionMap = new TransitionMap<>(RobotStates.class);
     private Function<RobotStates, Command> defaultTransitioner = state -> {return updateSubsystemStates(state);};
 
+    private static boolean delayTransition = false;
+
     private RobotManager() {
         super(RobotStates.class, transitionMap, NEUTRAL);
 
@@ -62,7 +64,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     public Command updateSubsystemStates(RobotStates nextState) {
         return sequence(
-            waitUntil(()-> (!Swerve.autoMoveEnabled)).onlyIf(()-> nextState.getWaitForAutoEnabled()),
+            waitUntil(()-> (!delayTransition)).onlyIf(()-> nextState.getDelayTransition()), //Pauses transition until transitions are unpaused
             elevator.setStateCommand(nextState.getElevatorState()).unless(()-> nextState.getElevatorState() == ElevatorStates.UNDEFINED),
             manipulator.setStateCommand(nextState.getManipulatorState()).unless(()-> nextState.getManipulatorState() == ManipulatorStates.UNDEFINED),
             intake.setStateCommand(nextState.getIntakeState()).unless(()-> nextState.getIntakeState() == IntakeStates.UNDEFINED),
@@ -71,16 +73,18 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             runOnce(()-> swerve.setThrottle(nextState.getThrottle())).unless(()-> DriverStation.isAutonomous() || Swerve.autoMoveEnabled)
         );
     }
-    public void alignScore(Supplier<Pose2d> pose){
+    public void alignScoreCoral(boolean isRight, BooleanSupplier shouldRam){
         parallel(
-            swerve.autoAlignElevator(pose),
+            swerve.autoAlign(isRight, shouldRam).beforeStarting(()-> delayTransition = true), // do normal ram
             sequence(
-                waitUntil(()->Swerve.elevatorSafe),
-                runOnce(()->{
+                waitUntil(()-> swerve.atElevatorDist()), // wait until safe for elevator to move
+                runOnce(()-> delayTransition = false),
+                runOnce(()-> {
                     for(Pair<RobotStates, RobotStates> coupledState : coupledStates){
                         if (coupledState.getFirst() == getState()) {
                             sequence(
                                 waitUntil(() -> ElevatorMechanism.getInstance().atSetpoint()),
+                                waitUntil(()-> !Swerve.autoMoveEnabled),
                                 setStateCommand(coupledState.getSecond()),
                                 waitSeconds(0.5),
                                 setStateCommand(NEUTRAL)

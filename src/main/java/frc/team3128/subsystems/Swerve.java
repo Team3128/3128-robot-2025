@@ -115,7 +115,9 @@ public class Swerve extends SwerveBase {
     public static final PIDFFConfig translationConfig = new PIDFFConfig(5, 0, 0);//3 // used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller translationController = new Controller(translationConfig, Controller.Type.POSITION); //Displacement error to output velocity
     public static final double translationTolerance = 0.03;
-    public static final double elevatorStartDist = 1;
+
+
+    public static final double elevatorStartDist = 0.3;
 
     public static DoubleSupplier kPSupplier, kISupplier, kDSupplier;
 
@@ -126,9 +128,9 @@ public class Swerve extends SwerveBase {
 
     private static double translationPlateauThreshold = 40;
     private static double translationPlateauCount = 0;
-    private static boolean atTranslationSetpoint = false;
 
-    private static double elevatorPlateauThreshold = 20;
+
+    private static double elevatorPlateauThreshold = 25; //~half second
     private static double elevatorPlateauCount = 0;
 
     private static double rotationPlateauThreshold = 10;
@@ -151,7 +153,6 @@ public class Swerve extends SwerveBase {
     private static Supplier<Rotation2d> rotationSetpointSupplier = ()-> new Rotation2d();
 
     public static boolean autoMoveEnabled = false;
-    public static boolean elevatorSafe = false;
 
     public static synchronized Swerve getInstance() {
         if (instance == null) {
@@ -323,12 +324,12 @@ public class Swerve extends SwerveBase {
     }
 
     public void snapToElement() {
-        final Pose2d setpoint = getPose().nearest(allianceFlip(reefPoses.appendAll(sourcePoses).asJava()));
+        final Pose2d setpoint = nearestPose2d(allianceFlip(reefPoses.appendAll(sourcePoses).asJava()));
         rotateTo(setpoint.getRotation());
     }
 
     public Pose2d getClosestReef() {
-        return getPose().nearest(allianceFlip(reefPoses.asJava()));
+        return nearestPose2d(allianceFlip(reefPoses.asJava()));
     }
 
     public Command autoAlign(FieldStates state) {
@@ -336,114 +337,62 @@ public class Swerve extends SwerveBase {
     }
 
     public Command autoAlign(boolean isRight, BooleanSupplier shouldRam) {
-        final List<Pose2d> setpoints;
-        final List<Pose2d> fudgelessSetpoints;
-        setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
-        fudgelessSetpoints = isRight ? fudgelessReefRight.asJava() : fudgelessReefLeft.asJava();
-        Supplier<Pose2d> pose = () -> (shouldRam.getAsBoolean() ? getPose().nearest(allianceFlip(setpoints)) : getPose().nearest(allianceFlip(fudgelessSetpoints)));
+        final List<Pose2d> setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
+        final List<Pose2d> fudgelessSetpoints = isRight ? fudgelessReefRight.asJava() : fudgelessReefLeft.asJava();
+        Supplier<Pose2d> pose = () -> (shouldRam.getAsBoolean() ? nearestPose2d(allianceFlip(setpoints)) : nearestPose2d(allianceFlip(fudgelessSetpoints)));
         return autoAlign(pose, shouldRam);
-        // return runOnce(()-> RobotManager.getInstance().alignScore(pose));
-
     }
 
     public Command autoAlignSource() {
-        final List<Pose2d> setpoints = new ArrayList<>();
-        setpoints.add(FieldStates.SOURCE_1.getPose2d());
-        setpoints.add(FieldStates.SOURCE_2.getPose2d());
-        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), ()->false);
-        // return runOnce(()-> RobotManager.getInstance().autoScore());
-    }
-
-    public Command autoAlign(Supplier<Pose2d> pose, BooleanSupplier shouldRam) {
-
-        // return parallel(
-        //     startEnd(
-        //         ()-> {
-        //             setThrottle(1);
-        //             setPose(pose.get());
-        //         }, 
-        //         ()-> {
-        //             disable();
-        //         }
-        //     )
-        //     .until(()-> atTranslationSetpoint()),
-        //     Commands.startEnd(
-        //         ()-> {
-        //             autoMoveEnabled = true;
-        //             elevatorSafe = false;
-        //         },
-        //         ()-> {
-        //             autoMoveEnabled = false;
-        //             elevatorSafe = true;
-        //         }
-        //     ).until(() -> atElevatorDist())
-
-        return Commands.sequence(
-            //Navigate
-            Commands.startEnd(
-                ()-> {
-                    setThrottle(1);
-                    Swerve.autoMoveEnabled = true;
-                    setPose(pose.get());
-                }, 
-                ()-> {
-                    disable();
-                    Swerve.autoMoveEnabled = false;
-                }
-            )
-            .until(()-> atTranslationSetpoint())
-            .withTimeout(2),
-            //Ram
-            Commands.startEnd(
-                ()-> {
-                    setThrottle(1);
-                    Swerve.autoMoveEnabled = false;
-                    moveBy(FUDGE_FACTOR.rotateBy(pose.get().getRotation()));
-                },
-                ()-> disable()
-            )
-            .until(()-> atTranslationSetpoint())
-            .withTimeout(1)
-            .onlyIf(shouldRam)
-        
-        ).withTimeout(4.5)
-        .finallyDo(
-            ()-> {
-                disable();
-                setThrottle(1);
-                Swerve.autoMoveEnabled = false;
-            }
-        );
-    }
-
-    public Command autoAlignElevator(Supplier<Pose2d> pose){
-        return parallel(
-            startEnd(
-                ()-> {
-                    setThrottle(1);
-                    autoMoveEnabled = true;
-                    setPose(pose.get());
-                }, 
-                ()-> {
-                    disable();
-                    autoMoveEnabled = false;
-                }
-            )
-            .until(()-> atTranslationSetpoint()),
-            Commands.startEnd(
-                ()-> {
-                    elevatorSafe = false;
-                },
-                ()-> {
-                    elevatorSafe = true;
-                }
-            ).until(() -> atElevatorDist())
-        );
+        return navigateTo(()-> nearestPose2d(List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d())));
     }
 
     public Command autoAlign(Pose2d pose) {
         final Pose2d flippedPose = allianceFlipRotationally(pose);
         return autoAlign(() -> flippedPose, ()->true);
+    }
+
+    public Command autoAlign(Supplier<Pose2d> pose, BooleanSupplier shouldRam) {
+        return Commands.sequence(
+            navigateTo(pose),
+            ram(pose).onlyIf(shouldRam)
+        );
+    }
+
+    public Command navigateTo(Supplier<Pose2d> pose) {
+        return navigateTo(pose, 2);
+    }
+
+    public Command navigateTo(Supplier<Pose2d> pose, double timeout) {
+        return startEnd(
+            ()-> {
+                setThrottle(1); //force throttle to max speed
+                Swerve.autoMoveEnabled = true;
+                setPose(pose.get()); //set setpoints and enable controllers
+            },
+            ()-> {
+                disable();
+                Swerve.autoMoveEnabled = false;
+            }
+        ).until(()-> atTranslationSetpoint())
+         .withTimeout(2);
+    }
+
+    public Command ram(Supplier<Pose2d> pose) {
+        return ram(pose, 1);
+    }
+
+    public Command ram(Supplier<Pose2d> pose, double timeout) {
+        return startEnd(
+            ()-> {
+                setThrottle(1);
+                moveBy(RAM_FACTOR.rotateBy(pose.get().getRotation()));
+            },
+            ()-> {
+                disable();
+            }
+        ).until(()-> atTranslationSetpoint())
+         .withTimeout(timeout);
     }
 
     public boolean isConfigured() {
