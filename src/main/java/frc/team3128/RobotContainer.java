@@ -153,17 +153,23 @@ public class RobotContainer {
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
         controller.getButton(kLeftStick).onTrue(swerve.autoAlignSource());
 
-        controller.getButton(kBack).onTrue(sequence(
-            swerve.autoAlign(false, shouldRam).andThen(() -> robot.autoScore())
-            .beforeStarting(() -> Swerve.translationController.setPID(Swerve.kPSupplier.getAsDouble(), Swerve.kISupplier.getAsDouble(), Swerve.kDSupplier.getAsDouble()))
-            // .beforeStarting(robot.setStateCommand(TELE_HOLD))
-        ));
+        // controller.getButton(kBack).onTrue(sequence(
+        //     swerve.autoAlign(false, shouldRam).andThen(() -> robot.autoScore())
+        //     .beforeStarting(() -> Swerve.translationController.setPID(Swerve.kPSupplier.getAsDouble(), Swerve.kISupplier.getAsDouble(), Swerve.kDSupplier.getAsDouble()))
+        //     // .beforeStarting(robot.setStateCommand(TELE_HOLD))
+        // ));
 
-        controller.getButton(kStart).onTrue(sequence(
-            swerve.autoAlign(true, shouldRam).andThen(() -> robot.autoScore())
-            .beforeStarting(() -> Swerve.translationController.setPID(Swerve.kPSupplier.getAsDouble(), Swerve.kISupplier.getAsDouble(), Swerve.kDSupplier.getAsDouble()))
-            // .beforeStarting(robot.setStateCommand(TELE_HOLD))
-        ));
+        controller.getButton(kBack).onTrue(robot.alignScoreCoral(false, shouldRam));
+
+        // controller.getButton(kStart).onTrue(sequence(
+        //     swerve.autoAlign(true, shouldRam).andThen(() -> robot.autoScore())
+        //     .beforeStarting(() -> Swerve.translationController.setPID(Swerve.kPSupplier.getAsDouble(), Swerve.kISupplier.getAsDouble(), Swerve.kDSupplier.getAsDouble()))
+        //     // .beforeStarting(robot.setStateCommand(TELE_HOLD))
+        // ));
+
+        controller.getButton(kStart).onTrue(robot.alignScoreCoral(true, shouldRam));
+
+        
 
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
         controller.getUpPOVButton().onTrue(

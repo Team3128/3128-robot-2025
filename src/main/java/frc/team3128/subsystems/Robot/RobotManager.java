@@ -73,8 +73,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             runOnce(()-> swerve.setThrottle(nextState.getThrottle())).unless(()-> DriverStation.isAutonomous() || Swerve.autoMoveEnabled)
         );
     }
-    public void alignScoreCoral(boolean isRight, BooleanSupplier shouldRam){
-        parallel(
+    public Command alignScoreCoral(boolean isRight, BooleanSupplier shouldRam){
+        return parallel(
             swerve.autoAlign(isRight, shouldRam).beforeStarting(()-> delayTransition = true), // do normal ram
             sequence(
                 waitUntil(()-> swerve.atElevatorDist()), // wait until safe for elevator to move
