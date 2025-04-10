@@ -46,6 +46,8 @@ import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Manipulator.Manipulator;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
+import edu.wpi.first.math.Pair;
+
 
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 
@@ -131,8 +133,10 @@ public class RobotContainer {
     private void configureButtonBindings() {
         buttonPad.getButton(12).onTrue(swerve.identifyOffsetsCommand().ignoringDisable(true));
 
-        shouldRam = ()-> !buttonPad.getButton(1).getAsBoolean();
-        shouldPreClimb = ()-> !buttonPad.getButton(2).getAsBoolean();
+        // shouldRam = ()-> !buttonPad.getButton(1).getAsBoolean();
+        // shouldPreClimb = ()-> !buttonPad.getButton(2).getAsBoolean();
+        shouldRam = ()-> false;
+        shouldPreClimb = ()-> false;
 
 
         controller2.getButton(kA).onTrue(Climber.getInstance().runCommand(0.8)).onFalse(Climber.getInstance().stopCommand());
@@ -158,14 +162,20 @@ public class RobotContainer {
         controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
         controller.getButton(kLeftStick).onTrue(swerve.autoAlignSource());
 
-        controller.getButton(kBack).onTrue(sequence(
-            swerve.autoAlign(false, shouldRam).andThen(() -> robot.autoScore())
-            .beforeStarting(robot.setStateCommand(TELE_HOLD))
-        ));
+        // controller.getButton(kBack).onTrue(sequence(
+        //     swerve.autoAlign(false, shouldRam).andThen(() -> robot.autoScore())
+        //     .beforeStarting(robot.setStateCommand(TELE_HOLD))
+        // ));
+
+        // controller.getButton(kStart).onTrue(sequence(
+        //     swerve.autoAlign(true, shouldRam).andThen(() -> robot.autoScore())
+        //     .beforeStarting(robot.setStateCommand(TELE_HOLD))
+        // ));
+
+        controller.getButton(kBack).onTrue(swerve.autoAlignAlgae());
 
         controller.getButton(kStart).onTrue(sequence(
-            swerve.autoAlign(true, shouldRam).andThen(() -> robot.autoScore())
-            .beforeStarting(robot.setStateCommand(TELE_HOLD))
+            swerve.autoAlignBargeSimple()
         ));
 
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));

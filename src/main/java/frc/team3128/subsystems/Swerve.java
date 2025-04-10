@@ -30,6 +30,7 @@ import common.utility.Log;
 import common.utility.shuffleboard.NAR_Shuffleboard;
 import common.utility.sysid.CmdSysId;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -53,7 +54,9 @@ import static frc.team3128.Constants.VisionConstants.*;
 import static frc.team3128.Constants.DriveConstants.*;
 import frc.team3128.Constants.DriveConstants;
 import frc.team3128.Constants.FieldConstants.FieldStates;
+import frc.team3128.Robot;
 import frc.team3128.subsystems.Robot.RobotManager;
+import frc.team3128.subsystems.Robot.RobotStates;
 import frc.team3128.RobotContainer;
 
 public class Swerve extends SwerveBase {
@@ -322,14 +325,34 @@ public class Swerve extends SwerveBase {
         return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), ()->false);
     }
 
+    public boolean kys(Supplier<Pose2d> pose){
+        boolean height = false;
+
+        for (FieldStates state: algae.asJava()){
+            if(allianceFlip(state.getAlgaePose2d()).equals(pose.get())){
+                height = state.getIsRight();
+                Log.info("herhsaerhserhserh", "HIGHHHHHHHHHHH");
+                break;
+            }else{
+                Log.info("FAFAFIAFIAFLLLL", "FAILLLL");
+            }
+        }
+
+        return height;
+
+    }
+
     public Command autoAlignAlgae() {
         final List<Pose2d> setpoints;
+        
         setpoints = algaePoses.asJava();
-        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), ()->false);
+
+
+        return autoAlign(() -> getPose().nearest(allianceFlip(setpoints)), ()->true).beforeStarting(()->RobotManager.getInstance().setState(kys(() -> getPose().nearest(allianceFlip(setpoints)))? RobotStates.RSA2: RobotStates.RSA1));
     }
 
     public Command autoAlignBargeSimple() {
-        Pose2d BARGE = new Pose2d(new Translation2d(1.267, getPose().getY()), Rotation2d.fromDegrees(0));
+        Pose2d BARGE = allianceFlip(new Pose2d(new Translation2d(1.267, getPose().getY()), Rotation2d.fromDegrees(0)));
         return autoAlign(() -> BARGE, () -> false);
     }
 

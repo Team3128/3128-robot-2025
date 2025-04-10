@@ -128,6 +128,12 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         return getToggleCommand(state, NEUTRAL);
     }
 
+    // public Command runAlignAlgae(){
+    //     Pair<Command, Boolean> bruh = swerve.autoAlignAlgae();
+
+    //     return sequence(bruh.getFirst()).beforeStarting(setStateCommand(bruh.getSecond()? RSA2: RSA1));
+    // }
+
     @Override
     public void registerTransitions() {
 

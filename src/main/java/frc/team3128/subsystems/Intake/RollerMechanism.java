@@ -5,7 +5,8 @@ import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
 import edu.wpi.first.wpilibj2.command.Command;
  import common.hardware.motorcontroller.NAR_CANSpark;
  import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
- import common.utility.shuffleboard.NAR_Shuffleboard;
+import common.hardware.motorcontroller.NAR_TalonFX;
+import common.utility.shuffleboard.NAR_Shuffleboard;
 
  import static frc.team3128.Constants.IntakeConstants.*;
 
@@ -13,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
     public static RollerMechanism instance;
 
-     protected static NAR_CANSpark leader = new NAR_CANSpark(ROLLER_LEADER_ID, ControllerType.CAN_SPARK_FLEX);
+     protected static NAR_TalonFX leader = new NAR_TalonFX(ROLLER_LEADER_ID);
 
      private RollerMechanism() {
         super(leader);

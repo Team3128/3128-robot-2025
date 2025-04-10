@@ -255,6 +255,7 @@ public class Constants {
             J(20, true),
             K(19, false),
             L(19, true),
+
             ALGAE_1(17, false),
             ALGAE_2(18, true),
             ALGAE_3(19, false),
@@ -269,6 +270,7 @@ public class Constants {
             private final Pose2d pose;
             private final Pose2d fudgelessPose;
             private final Pose2d algaePose;
+            private final boolean isRight;
 
             public static io.vavr.collection.List<Pose2d> reefLeft = io.vavr.collection.List.of(A.getPose2d(), C.getPose2d(), F.getPose2d(), H.getPose2d(), J.getPose2d(), K.getPose2d());
             public static io.vavr.collection.List<Pose2d> reefRight = io.vavr.collection.List.of(B.getPose2d(), D.getPose2d(), E.getPose2d(), G.getPose2d(), I.getPose2d(), L.getPose2d());
@@ -277,6 +279,7 @@ public class Constants {
             public static io.vavr.collection.List<Pose2d> fudgelessReefRight = io.vavr.collection.List.of(B.getFudgelessPose2d(), D.getFudgelessPose2d(), E.getFudgelessPose2d(), G.getFudgelessPose2d(), I.getFudgelessPose2d(), L.getFudgelessPose2d());
 
             public static io.vavr.collection.List<Pose2d> algaePoses = io.vavr.collection.List.of(ALGAE_1.getAlgaePose2d(), ALGAE_2.getAlgaePose2d(), ALGAE_3.getAlgaePose2d(), ALGAE_4.getAlgaePose2d(), ALGAE_5.getAlgaePose2d(), ALGAE_6.getAlgaePose2d());
+            public static io.vavr.collection.List<FieldStates> algae = io.vavr.collection.List.of(ALGAE_1, ALGAE_2, ALGAE_3, ALGAE_4, ALGAE_5, ALGAE_6);
 
             public static io.vavr.collection.List<Pose2d> reefPoses = io.vavr.collection.List.of(A.getPose2d(), B.getPose2d(), C.getPose2d(), D.getPose2d(), E.getPose2d(), F.getPose2d(), G.getPose2d(), H.getPose2d(), I.getPose2d(), J.getPose2d(), K.getPose2d(), L.getPose2d());
             public static io.vavr.collection.List<Pose2d> sourcePoses = io.vavr.collection.List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d());
@@ -298,12 +301,14 @@ public class Constants {
                 this.pose = new Pose2d(apriltag.getTranslation().plus(offset).plus(fudgeFactor).plus(leftRight), apriltag.getRotation().plus(Rotation2d.k180deg));
                 this.fudgelessPose = new Pose2d(apriltag.getTranslation().plus(offset).plus(fudgelessFactor).plus(leftRight), apriltag.getRotation().plus(Rotation2d.k180deg));
                 this.algaePose = new Pose2d(apriltag.getTranslation().plus(offset).plus(fudgelessFactor), apriltag.getRotation().plus(Rotation2d.k180deg));
+                this.isRight = isRight;
             }
 
             private FieldStates(Pose2d pose) {
                 this.pose = pose;
                 this.fudgelessPose = pose;
                 this.algaePose = pose;
+                this.isRight = false;
             }
 
             public Pose2d getPose2d() {
@@ -324,6 +329,10 @@ public class Constants {
 
             public Rotation2d getRotation2d() {
                 return pose.getRotation();
+            }
+
+            public boolean getIsRight(){
+                return this.isRight;
             }
         }
 

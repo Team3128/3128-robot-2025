@@ -6,12 +6,11 @@ import io.vavr.collection.List;
 
 public enum IntakeStates {
     UNDEFINED,
-    NEUTRAL(0, 0.1),
-    INTAKE(65, 0.8),
-    OUTTAKE(0, -0.8),
-    CLIMB(5);
-
-    public static final List<IntakeStates> defaultStates = List.of(NEUTRAL, INTAKE, OUTTAKE, CLIMB);
+    NEUTRAL(-10, -.05),
+    INTAKE(120, -0.8),
+    EJECT_OUTTAKE(19, 0.7);
+    
+    public static final List<IntakeStates> defaultStates = List.of(NEUTRAL, INTAKE, EJECT_OUTTAKE);
 
     private double angle;
     private double power;
