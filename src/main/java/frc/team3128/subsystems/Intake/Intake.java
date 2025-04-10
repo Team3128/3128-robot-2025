@@ -12,8 +12,8 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
     
     private static Intake instance;
 
-    protected PivotMechanism pivot;
-    protected RollerMechanism roller;
+    public PivotMechanism pivot;
+    public RollerMechanism roller;
 
     private static TransitionMap<IntakeStates> transitionMap = new TransitionMap<IntakeStates>(IntakeStates.class);
     private Function<IntakeStates, Command> defaultTransitioner = state -> {
@@ -43,10 +43,10 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
 
         //DEFAULT STATES -> DEFAULT STATES
         transitionMap.addCommutativeTransition(defaultStates.asJava(), defaultTransitioner);
-        transitionMap.addConvergingTransition(EJECT_OUTTAKE, sequence(
-            pivot.pidTo(EJECT_OUTTAKE.getAngle()),
+        transitionMap.addConvergingTransition(OUTTAKE, sequence(
+            pivot.pidTo(OUTTAKE.getAngle()),
             waitUntil(() -> pivot.atSetpoint()),
-            roller.runCommand(EJECT_OUTTAKE.getPower())
+            roller.runCommand(OUTTAKE.getPower())
         ));
 	}
 }

@@ -1,7 +1,5 @@
 package frc.team3128.subsystems.Robot;
 
-import static frc.team3128.subsystems.Intake.IntakeStates.INTAKE;
-
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.team3128.subsystems.Climber.ClimberStates;
@@ -17,27 +15,25 @@ public enum RobotStates {
     FULL_NEUTRAL(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.IN, ClimberStates.NEUTRAL),
     NEUTRAL(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.IN, ClimberStates.UNDEFINED),
 
-    RPL1(ElevatorStates.LOW_L1, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false),
-    RPL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false),
-    RPL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false), 
-    RPL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, true),
+    CORAL_PRIME_L2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false),
+    CORAL_PRIME_L3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false), 
+    CORAL_PRIME_L4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, true),
     
-    RSL1(ElevatorStates.HIGH_L1, IntakeStates.NEUTRAL, ManipulatorStates.OUT_L1, slow, true),
-    RSL2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow, true),
-    RSL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow, true),
-    RSL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow, true),
+    CORAL_SCORE_L2(ElevatorStates.L2, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow, true),
+    CORAL_SCORE_L3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow, true),
+    CORAL_SCORE_L4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow, true),
 
-    RA1(ElevatorStates.A1, IntakeStates.NEUTRAL, ManipulatorStates.IN_ALGAE, slow, false),
-    RA2(ElevatorStates.A2, IntakeStates.NEUTRAL, ManipulatorStates.IN_ALGAE, slow, false),
+    ALGAE_INTAKE_1(ElevatorStates.A1, IntakeStates.NEUTRAL, ManipulatorStates.IN_ALGAE, slow, false),
+    ALGAE_INTAKE_2(ElevatorStates.A2, IntakeStates.NEUTRAL, ManipulatorStates.IN_ALGAE, slow, false),
     
-    RPB(ElevatorStates.AB, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false),
-    RSB(ElevatorStates.AB, IntakeStates.NEUTRAL, ManipulatorStates.OUT_ALGAE, slow, true),
+    ALGAE_PRIME_2(ElevatorStates.AB, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false),
+    ALGAE_SCORE_2(ElevatorStates.AB, IntakeStates.NEUTRAL, ManipulatorStates.OUT_ALGAE, slow, true),
 
     TELE_HOLD(ElevatorStates.TELE_HOLD, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, fast, false),
     AUTO_HOLD(ElevatorStates.AUTO_HOLD, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, fast, false),
     
     INTAKE(ElevatorStates.NEUTRAL, IntakeStates.INTAKE, ManipulatorStates.NEUTRAL),
-    EJECT_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.EJECT_OUTTAKE, ManipulatorStates.NEUTRAL),
+    OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.OUTTAKE, ManipulatorStates.NEUTRAL),
     
     PRE_CLIMB_PRIME(ClimberStates.PRE_CLIMB_PRIME),
     CLIMB_PRIME(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB_PRIME, slow),
@@ -57,17 +53,17 @@ public enum RobotStates {
     private double throttle;
     private boolean waitForAutoEnabled;
 
-    public static final List<RobotStates> defaultElevatorStates = List.of(RPL1, RPL2, RPL3, RPL4, RA1, RA2, RPB, TELE_HOLD, AUTO_HOLD);
-    public static final List<RobotStates> exclusiveElevatorStates = List.of(RSL1, RSL2, RSL3, RSL4, RSB);
-    public static final List<RobotStates> defaultIntakeStates = List.of(INTAKE, EJECT_OUTTAKE);
+    public static final List<RobotStates> defaultElevatorStates = List.of(CORAL_PRIME_L2, CORAL_PRIME_L3, CORAL_PRIME_L4, ALGAE_INTAKE_1, ALGAE_INTAKE_2, ALGAE_PRIME_2, TELE_HOLD, AUTO_HOLD);
+    public static final List<RobotStates> exclusiveElevatorStates = List.of(CORAL_SCORE_L2, CORAL_SCORE_L3, CORAL_SCORE_L4, ALGAE_SCORE_2);
+    public static final List<RobotStates> defaultIntakeStates = List.of(INTAKE, OUTTAKE);
     public static final List<RobotStates> defaultClimbStates = List.of(CLIMB_PRIME, PRE_CLIMB_PRIME);
     public static final List<RobotStates> exclusiveClimbStates = List.of(CLIMB);
 
     public static final List<Pair<RobotStates, RobotStates>> coupledStates = List.of(
-        // Pair.of(RPL1, RSL1),
-        Pair.of(RPL2, RSL2),
-        Pair.of(RPL3, RSL3),
-        Pair.of(RPL4, RSL4),
+        // Pair.of(CORAL_PRIME_L1, CORAL_SCORE_L1),
+        Pair.of(CORAL_PRIME_L2, CORAL_SCORE_L2),
+        Pair.of(CORAL_PRIME_L3, CORAL_SCORE_L3),
+        Pair.of(CORAL_PRIME_L4, CORAL_SCORE_L4),
         Pair.of(CLIMB_PRIME, CLIMB)
     );
 

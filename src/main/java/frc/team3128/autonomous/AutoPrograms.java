@@ -140,7 +140,7 @@ public class AutoPrograms {
             //             sequence(
             //                 waitSeconds(1.15),
             //                 robot.setStateCommand(AUTO_HOLD),
-            //                 robot.setStateCommand(RPL4)
+            //                 robot.setStateCommand(CORAL_PRIME_L4)
             //             )
             //         ).withDeadline(swerve.autoAlign(state.getPose2d(), false).
             //             andThen(() -> robot.autoScore()).
@@ -156,7 +156,7 @@ public class AutoPrograms {
                         sequence(
                             waitSeconds(1.15),
                             robot.setStateCommand(AUTO_HOLD),
-                            robot.setStateCommand(RPL4)
+                            robot.setStateCommand(CORAL_PRIME_L4)
                         )
                     ).withDeadline(swerve.autoAlign(state.getPose2d()).
                         andThen(() -> robot.autoScore()).
@@ -187,15 +187,15 @@ public class AutoPrograms {
                 run(() -> swerve.drive(0, 0, 0)),
                 sequence(
                     waitSeconds(0.5),
-                    robot.setStateCommand(RPL4)
+                    robot.setStateCommand(CORAL_PRIME_L4)
                 )
             ).withDeadline(swerve.autoAlign(true, ()->true))
         );
 
         NamedCommands.registerCommand("Score L2", sequence(
-            robot.setStateCommand(RPL2),
+            robot.setStateCommand(CORAL_PRIME_L2),
             waitUntil(()-> ElevatorMechanism.getInstance().atSetpoint()),
-            robot.setStateCommand(RSL2),
+            robot.setStateCommand(CORAL_SCORE_L2),
             waitSeconds(.25)
         ));
 
@@ -206,7 +206,7 @@ public class AutoPrograms {
 
         NamedCommands.registerCommand("L4", sequence(
             waitSeconds(0.25),
-            robot.setStateCommand(RPL4)
+            robot.setStateCommand(CORAL_PRIME_L4)
         ));
     }
 

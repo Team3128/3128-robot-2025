@@ -18,6 +18,7 @@ import frc.team3128.subsystems.Manipulator.ManipulatorStates;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotState;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
@@ -92,7 +93,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         });
     }
 
-    public Command getTempToggleCommand(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition, double delay) {
+    public Command tempToggleCommand(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition, double delay) {
         return either(
             sequence(
                 setStateCommand(exclusiveState),
@@ -104,15 +105,15 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         );
     }
 
-    public Command getTempToggleCommand(RobotStates defaultStates, RobotStates exclusiveState, BooleanSupplier condition) {
-        return getTempToggleCommand(defaultStates, exclusiveState, condition, 1);
+    public Command tempToggleCommand(RobotStates defaultStates, RobotStates exclusiveState, BooleanSupplier condition) {
+        return tempToggleCommand(defaultStates, exclusiveState, condition, 1);
     }
 
-    public Command getTempToggleCommand(RobotStates defaultStates, RobotStates exclusiveState) {
-        return getTempToggleCommand(defaultStates, exclusiveState,  ()-> stateEquals(defaultStates), 1);
+    public Command tempToggleCommand(RobotStates defaultStates, RobotStates exclusiveState) {
+        return tempToggleCommand(defaultStates, exclusiveState,  ()-> stateEquals(defaultStates), 1);
     }
 
-    public Command getToggleCommand(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition) {
+    public Command toggleCommand(RobotStates defaultState, RobotStates exclusiveState, BooleanSupplier condition) {
         return either(
             setStateCommand(exclusiveState), 
             setStateCommand(defaultState), 
@@ -120,12 +121,24 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         );
     }
 
-    public Command getToggleCommand(RobotStates defaultState, RobotStates exclusiveState) {
-        return getToggleCommand(defaultState, exclusiveState, ()-> stateEquals(defaultState));
+    public Command toggleCommand(RobotStates defaultState, RobotStates exclusiveState) {
+        return toggleCommand(defaultState, exclusiveState, ()-> stateEquals(defaultState));
     }
 
-    public Command getToggleCommand(RobotStates state) {
-        return getToggleCommand(state, NEUTRAL);
+    public Command toggleCommand(RobotStates state) {
+        return toggleCommand(state, NEUTRAL);
+    }
+
+    public Command terminatingCommand(RobotStates initiState, RobotStates terminatingState, BooleanSupplier terminatingCondition) {
+        return sequence(
+            setStateCommand(initiState),
+            waitUntil(terminatingCondition),
+            setStateCommand(terminatingState)
+        );
+    }
+
+    public Command terminatingCommand(RobotStates initialState, BooleanSupplier terminatingCondition) {
+        return terminatingCommand(initialState, NEUTRAL, terminatingCondition);
     }
 
     @Override
@@ -139,14 +152,6 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
         // From exclusive state to Neutral
         transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, defaultTransitioner);
-
-        transitionMap.addTransition(RPL1, RSL1, sequence(
-            waitUntil(()-> !Swerve.autoMoveEnabled),
-            runOnce(()-> swerve.setThrottle(RSL1.getThrottle())).unless(()-> DriverStation.isAutonomous()),
-            manipulator.setStateCommand(RSL1.getManipulatorState()),
-            waitSeconds(0.25),
-            elevator.setStateCommand(RSL1.getElevatorState())
-        ));
 
     }
 }

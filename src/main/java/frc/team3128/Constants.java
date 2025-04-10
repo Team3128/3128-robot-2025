@@ -6,6 +6,7 @@ import static frc.team3128.Constants.VisionConstants.APRIL_TAGS;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 // import frc.team3128.subsystems.Swerve;
 
@@ -230,7 +232,6 @@ public class Constants {
             new AprilTag(22, new Pose3d(Units.inchesToMeters(193.10), Units.inchesToMeters(130.17), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(300))))
         );
     }
-    
     public static class FieldConstants{
 
         public static final double FIELD_X_LENGTH = Units.inchesToMeters(690.875); // meters = 17.548
@@ -239,6 +240,10 @@ public class Constants {
         public static final Translation2d CENTER_FIELD = FIELD.div(2);
         public static final Translation2d FUDGE_FACTOR = new Translation2d(0.1, 0);
         public static final Translation2d FUDGELESS_FACTOR = new Translation2d(Units.inchesToMeters(4.5), 0); //one coral diameter
+
+        public static final Translation2d MANIPULATOR_OFFSET = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(-6.25));
+
+        public static final Translation2d ALGAE_REEF_OFFSET = new Translation2d(0.1, 0);
 
         public static final Translation2d reefShift = new Translation2d(0.35/2, 0.);
 
@@ -257,10 +262,17 @@ public class Constants {
             L(19, true),
 
             SOURCE_1(new Pose2d(new Translation2d(1.267, 0.753), Rotation2d.fromDegrees(55))),
-            SOURCE_2(new Pose2d(new Translation2d(1.267, FIELD_Y_LENGTH-0.753), Rotation2d.fromDegrees(-55)));
+            SOURCE_2(new Pose2d(new Translation2d(1.267, FIELD_Y_LENGTH-0.753), Rotation2d.fromDegrees(-55))),
+
+            ALGAE_AB(18),
+            ALGAE_CD(17),
+            ALGAE_EF(22),
+            ALGAE_GH(21),
+            ALGAE_IJ(20),
+            ALGAE_KM(19);
 
             private final Pose2d pose;
-            private final Pose2d fudgelessPose;
+            private Pose2d fudgelessPose;
 
             public static io.vavr.collection.List<Pose2d> reefLeft = io.vavr.collection.List.of(A.getPose2d(), C.getPose2d(), F.getPose2d(), H.getPose2d(), J.getPose2d(), K.getPose2d());
             public static io.vavr.collection.List<Pose2d> reefRight = io.vavr.collection.List.of(B.getPose2d(), D.getPose2d(), E.getPose2d(), G.getPose2d(), I.getPose2d(), L.getPose2d());
@@ -271,6 +283,11 @@ public class Constants {
             public static io.vavr.collection.List<Pose2d> reefPoses = io.vavr.collection.List.of(A.getPose2d(), B.getPose2d(), C.getPose2d(), D.getPose2d(), E.getPose2d(), F.getPose2d(), G.getPose2d(), H.getPose2d(), I.getPose2d(), J.getPose2d(), K.getPose2d(), L.getPose2d());
             public static io.vavr.collection.List<Pose2d> sourcePoses = io.vavr.collection.List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d());
 
+            private FieldStates(int id) {
+                Pose2d apriltag = APRIL_TAGS.get(id - 1).pose.toPose2d();
+                this.pose = new Pose2d(apriltag.getTranslation().plus(MANIPULATOR_OFFSET.rotateBy(apriltag.getRotation())).plus(ALGAE_REEF_OFFSET), apriltag.getRotation().plus(Rotation2d.k180deg));
+            }
+
             private FieldStates(int id, boolean isRight) {
                 this(id, isRight, 0);
             }
@@ -278,15 +295,13 @@ public class Constants {
             private FieldStates(int id, boolean isRight, double yAxisFudge) {
                 Pose2d apriltag = APRIL_TAGS.get(id - 1).pose.toPose2d();
                 
-                Translation2d offset = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(-6.25)).rotateBy(apriltag.getRotation());
-
                 Translation2d fudgeFactor  = FUDGE_FACTOR.plus(new Translation2d(0, yAxisFudge)).rotateBy(apriltag.getRotation());
                 Translation2d fudgelessFactor  = FUDGELESS_FACTOR.plus(new Translation2d(0, yAxisFudge)).rotateBy(apriltag.getRotation());
                 
                 Translation2d leftRight = new Translation2d(0, Units.inchesToMeters(isRight ? 13.0 / 2 : -13.0 / 2)).rotateBy(apriltag.getRotation());
                 
-                this.pose = new Pose2d(apriltag.getTranslation().plus(offset).plus(fudgeFactor).plus(leftRight), apriltag.getRotation().plus(Rotation2d.k180deg));
-                this.fudgelessPose = new Pose2d(apriltag.getTranslation().plus(offset).plus(fudgelessFactor).plus(leftRight), apriltag.getRotation().plus(Rotation2d.k180deg));
+                this.pose = new Pose2d(apriltag.getTranslation().plus(MANIPULATOR_OFFSET.rotateBy(apriltag.getRotation())).plus(fudgeFactor).plus(leftRight), apriltag.getRotation().plus(Rotation2d.k180deg));
+                this.fudgelessPose = new Pose2d(apriltag.getTranslation().plus(MANIPULATOR_OFFSET.rotateBy(apriltag.getRotation())).plus(fudgelessFactor).plus(leftRight), apriltag.getRotation().plus(Rotation2d.k180deg));
             }
 
             private FieldStates(Pose2d pose) {

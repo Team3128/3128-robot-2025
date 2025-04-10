@@ -14,12 +14,13 @@ import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 
     public static RollerMechanism instance;
 
-     protected static NAR_TalonFX leader = new NAR_TalonFX(ROLLER_LEADER_ID);
+    protected static NAR_TalonFX leader = new NAR_TalonFX(ROLLER_LEADER_ID);
+    protected static double currentThreshold = 40;
 
-     private RollerMechanism() {
-        super(leader);
-        // initShuffleboard();
-     }
+    private RollerMechanism() {
+        super(currentThreshold, leader);
+        initShuffleboard();
+    }
 
     public static RollerMechanism getInstance() {
         if (instance == null) {
@@ -42,11 +43,6 @@ import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
         leader.configMotor(motorConfig);
     }
 
-    @Override
-    public boolean hasObjectPresent() {
-        return true;
-    }
-
  	@Override
  	public Command resetCommand() {
         return null;
@@ -54,6 +50,6 @@ import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 
  	@Override
  	public void initShuffleboard() {
-        NAR_Shuffleboard.addData("Intake Current", "Current", ()-> getCurrent(), 0, 0);
+        NAR_Shuffleboard.addData("Roller Mechanism", "Current", ()-> getCurrent(), 0, 0);
  	}
- }
+}

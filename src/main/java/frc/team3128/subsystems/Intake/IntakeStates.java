@@ -8,9 +8,9 @@ public enum IntakeStates {
     UNDEFINED,
     NEUTRAL(-10, -.05),
     INTAKE(120, -0.8),
-    EJECT_OUTTAKE(19, 0.8);
+    OUTTAKE(19, 0.8);
     
-    public static final List<IntakeStates> defaultStates = List.of(NEUTRAL, INTAKE, EJECT_OUTTAKE);
+    public static final List<IntakeStates> defaultStates = List.of(NEUTRAL, INTAKE, OUTTAKE);
 
     private double angle;
     private double power;
