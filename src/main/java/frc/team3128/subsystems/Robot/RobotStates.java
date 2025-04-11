@@ -43,8 +43,8 @@ public enum RobotStates {
     OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.EJECT_OUTTAKE, ManipulatorStates.NEUTRAL),
     
     PRE_CLIMB_PRIME(ClimberStates.PRE_CLIMB_PRIME),
-    CLIMB_PRIME(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB_PRIME, slow),
-    CLIMB(ElevatorStates.NEUTRAL, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB, slow);
+    CLIMB_PRIME(ElevatorStates.NEUTRAL, IntakeStates.CLIMB_PRIME, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB_PRIME, slow),
+    CLIMB(ElevatorStates.NEUTRAL, IntakeStates.CLIMB_PRIME, ManipulatorStates.NEUTRAL, ClimberStates.CLIMB, slow);
 
     
     
