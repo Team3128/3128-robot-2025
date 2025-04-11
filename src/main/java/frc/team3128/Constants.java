@@ -477,7 +477,7 @@ public class Constants {
         public static final StatusFrames PIVOT_STATUS_FRAME = StatusFrames.POSITION;
 
         public static final double PIVOT_POSITION_MIN = 0;
-        public static final double PIVOT_POSITION_MAX = 180;
+        public static final double PIVOT_POSITION_MAX = 120;
         public static final double PIVOT_TOLERANCE = 1;
 
         public static final int ROLLER_LEADER_ID = 41;

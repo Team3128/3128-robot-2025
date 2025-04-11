@@ -4,6 +4,7 @@ import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.core.subsystems.PositionSubsystemBase;
 import common.hardware.motorcontroller.NAR_CANSpark;
+import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import static frc.team3128.Constants.IntakeConstants.*;
 
@@ -16,11 +17,11 @@ public class PivotMechanism extends PositionSubsystemBase {
 
     protected static Controller controller = new Controller(config, Controller.Type.POSITION);
 
-    protected static NAR_CANSpark leader = new NAR_CANSpark(PIVOT_LEADER_ID);
+    protected static NAR_CANSpark leader = new NAR_CANSpark(PIVOT_LEADER_ID, ControllerType.CAN_SPARK_FLEX);
 
     private PivotMechanism() {
         super(controller, leader);
-        // initShuffleboard();
+        initShuffleboard();
     }
 
     public static PivotMechanism getInstance() {

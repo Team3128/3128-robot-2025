@@ -44,12 +44,10 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
 
         //DEFAULT STATES -> DEFAULT STATES
         transitionMap.addCommutativeTransition(defaultStates.asJava(), defaultTransitioner);
-
         transitionMap.addConvergingTransition(EJECT_OUTTAKE, sequence(
             pivot.pidTo(EJECT_OUTTAKE.getAngle()),
             waitUntil(() -> pivot.atSetpoint()),
             roller.runCommand(EJECT_OUTTAKE.getPower())
         ));
-
 	}
 }
