@@ -149,35 +149,42 @@ public class RobotContainer {
         controller.getButton(kX).onTrue(robot.getTempToggleCommand(RPL3, RSL3));
         controller.getButton(kY).onTrue(robot.getTempToggleCommand(RPL4, RSL4));
 
-        controller.getLeftPOVButton().onTrue(robot.getTempToggleCommand(RPB, RSB));
-        controller.getDownPOVButton().onTrue(robot.getToggleCommand(RSA1));
-        controller.getUpPOVButton().onTrue(robot.getToggleCommand(RSA2));
+        // controller.getLeftPOVButton().onTrue(robot.getTempToggleCommand(RPB, RSB));
+        // controller.getDownPOVButton().onTrue(robot.getToggleCommand(RSA1));
+        // controller.getUpPOVButton().onTrue(robot.getToggleCommand(RSA2));
 
         controller.getButton(kLeftTrigger).onTrue(robot.getToggleCommand(INTAKE));
         controller.getButton(kLeftBumper).onTrue(robot.getToggleCommand(OUTTAKE));
 
-        controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
-        controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
+        // controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
+        // controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
+        controller.getButton(kRightBumper).onTrue(swerve.autoAlignAlgae());
+        controller.getButton(kRightTrigger).onTrue(swerve.runBargeScore());
 
-        controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
+
+        controller.getButton(kRightStick).onTrue(robot.setStateCommand(NEUTRAL));
+        // controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
         controller.getButton(kLeftStick).onTrue(swerve.autoAlignSource());
 
-        // controller.getButton(kBack).onTrue(sequence(
-        //     swerve.autoAlign(false, shouldRam).andThen(() -> robot.autoScore())
-        //     .beforeStarting(robot.setStateCommand(TELE_HOLD))
-        // ));
-
-        // controller.getButton(kStart).onTrue(sequence(
-        //     swerve.autoAlign(true, shouldRam).andThen(() -> robot.autoScore())
-        //     .beforeStarting(robot.setStateCommand(TELE_HOLD))
-        // ));
-
-        controller.getButton(kBack).onTrue(swerve.autoAlignAlgae());
-
-        controller.getButton(kStart).onTrue(sequence(
-            swerve.autoAlignBargeSimple()
+        controller.getButton(kBack).onTrue(sequence(
+            swerve.autoAlign(false, shouldRam).andThen(() -> robot.autoScore())
+            .beforeStarting(robot.setStateCommand(TELE_HOLD))
         ));
 
+        controller.getButton(kStart).onTrue(sequence(
+            swerve.autoAlign(true, shouldRam).andThen(() -> robot.autoScore())
+            .beforeStarting(robot.setStateCommand(TELE_HOLD))
+        ));
+
+        // controller.getButton(kBack).onTrue(swerve.autoAlignAlgae());
+
+        // controller.getButton(kStart).onTrue(sequence(
+        //     swerve.autoAlignBargeSimple()
+        // ).beforeStarting(robot.setStateCommand(RPB))
+        // );
+
+        controller.getUpPOVButton().onTrue(runOnce(()-> swerve.resetGyro(0)));
+        controller.getRightPOVButton().onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
 
         new Trigger(gyroReset).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true));

@@ -329,12 +329,9 @@ public class Swerve extends SwerveBase {
         boolean height = false;
 
         for (FieldStates state: algae.asJava()){
-            if(allianceFlip(state.getAlgaePose2d()).equals(pose.get())){
+            if(allianceFlipRotationally(state.getAlgaePose2d()).equals(pose.get())){
                 height = state.getIsRight();
-                Log.info("herhsaerhserhserh", "HIGHHHHHHHHHHH");
                 break;
-            }else{
-                Log.info("FAFAFIAFIAFLLLL", "FAILLLL");
             }
         }
 
@@ -352,8 +349,19 @@ public class Swerve extends SwerveBase {
     }
 
     public Command autoAlignBargeSimple() {
-        Pose2d BARGE = allianceFlip(new Pose2d(new Translation2d(1.267, getPose().getY()), Rotation2d.fromDegrees(0)));
-        return autoAlign(() -> BARGE, () -> false);
+        return autoAlign(() -> allianceFlip(new Pose2d(new Translation2d(7.7, getPose().getY()), Rotation2d.fromDegrees(0))), () -> false);
+    }
+
+    public static boolean stupid = true;
+    public Command runBargeScore() {
+        if(stupid){
+            return sequence(
+                autoAlignBargeSimple()
+            ).beforeStarting(RobotManager.getInstance().setStateCommand(RobotStates.RPB));
+        }
+        stupid = !stupid;
+
+        return sequence(RobotManager.getInstance().setStateCommand(RobotStates.RSB),waitSeconds(0.5),RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL));
     }
 
     public Command autoAlign(Supplier<Pose2d> pose, BooleanSupplier shouldRam) {
