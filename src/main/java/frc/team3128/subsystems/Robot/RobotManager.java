@@ -109,7 +109,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
                         if (coupledState.getFirst() == getState()) {
                             sequence(
                                 waitUntil(() -> ElevatorMechanism.getInstance().atSetpoint()),
-                                waitUntil(()-> !Swerve.autoMoveEnabled),
+                                // waitUntil(()-> !Swerve.autoMoveEnabled),
                                 setStateCommand(coupledState.getSecond()),
                                 waitSeconds(0.5),
                                 setStateCommand(NEUTRAL)

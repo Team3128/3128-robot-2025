@@ -180,7 +180,7 @@ public class AutoPrograms {
                 NamedCommands.registerCommand(
                     "Align " + state.name(),
                     run(() -> swerve.drive(0, 0, 0))
-                        .withDeadline(swerve.autoAlignSource()) // swerve.autoAlign(state.getPose2d())
+                        .withDeadline(swerve.autoAlignSource().withTimeout(1.8)) // swerve.autoAlign(state.getPose2d())
                 );
             }
         }
