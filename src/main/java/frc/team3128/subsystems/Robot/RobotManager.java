@@ -2,6 +2,7 @@ package frc.team3128.subsystems.Robot;
 
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
+import common.utility.Log;
 import common.utility.shuffleboard.NAR_Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -95,7 +96,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
                                 waitUntil(() -> ElevatorMechanism.getInstance().atSetpoint()),
                                 waitUntil(()-> !Swerve.autoMoveEnabled),
                                 setStateCommand(coupledState.getSecond()),
-                                waitSeconds(1),
+                                waitSeconds(0.5),
                                 setStateCommand(NEUTRAL)
                             ).schedule();
                             return;
@@ -136,7 +137,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             swerve.navigateTo(pose),
             Commands.runOnce(
                 ()-> {
-                    if(FieldStates.idOf(pose.get()) % 2 == 0) setStateCommand(RSA2).schedule();
+                    Log.info("ID", FieldStates.idOf(allianceFlipRotationally(pose.get())));
+                    if(FieldStates.idOf(allianceFlipRotationally(pose.get())) % 2 == 0) setStateCommand(RSA2).schedule();
                     else setStateCommand(RSA1).schedule();
                 }
             )
@@ -159,11 +161,12 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             swerve.navigateTo(pose),
             sequence(
                 waitUntil(()-> swerve.atElevatorDist()), // wait until safe for elevator to move
+                setStateCommand(RPB),
                 Commands.runOnce(()-> delayTransition = false),
                 waitUntil(() -> ElevatorMechanism.getInstance().atSetpoint()),
                 waitUntil(()-> !Swerve.autoMoveEnabled),
                 setStateCommand(RSB),
-                waitSeconds(1),
+                waitSeconds(0.5),
                 setStateCommand(NEUTRAL)
             )
         );

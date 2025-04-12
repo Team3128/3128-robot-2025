@@ -239,8 +239,8 @@ public class Constants {
         public static final Translation2d CENTER_FIELD = FIELD.div(2);
         public static final Translation2d ROBOT_RELATIVE_MANIPULATOR_OFFSET = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(-6.25));
         public static final Translation2d CORAL_STOP_DIST = new Translation2d(Units.inchesToMeters(4.5), 0);
-        public static final Translation2d ALGAE_STOP_DIST = new Translation2d(0.1, 0);
-        public static final Translation2d SOURCE_STOP_DIST = new Translation2d(0.2, 0);
+        public static final Translation2d ALGAE_STOP_DIST = new Translation2d(0.01, 0);
+        public static final Translation2d SOURCE_STOP_DIST = new Translation2d(0.05, 0);
         public static final Translation2d RAM_FACTOR = new Translation2d(0.1, 0);
 
         public static final Translation2d CORAL_LEFT_POLE_SHIFT = new Translation2d(0, Units.inchesToMeters(-13 / 2));
@@ -267,8 +267,8 @@ public class Constants {
             ALGAE_KL(19, ALGAE_STOP_DIST),
             
 
-            SOURCE_LEFT(12, SOURCE_STOP_DIST),
-            SOURCE_RIGHT(13, SOURCE_STOP_DIST);
+            SOURCE_LEFT(12, SOURCE_STOP_DIST, false),
+            SOURCE_RIGHT(13, SOURCE_STOP_DIST, false);
 
             private final int id;
             private final Pose2d pose;
@@ -284,15 +284,20 @@ public class Constants {
             public static io.vavr.collection.List<Pose2d> sourcePoses = io.vavr.collection.List.of(SOURCE_LEFT.getPose2d(), SOURCE_RIGHT.getPose2d());
 
             private FieldStates(int id, Translation2d offset) {
-                this(id, offset, new Translation2d(0,0));
+                this(id, offset, true, new Translation2d(0,0));
             }
 
-            private FieldStates(int id, Translation2d offset, Translation2d fudgeFactor) {
+            private FieldStates(int id, Translation2d offset, boolean facingTag) {
+                this(id, offset, facingTag, new Translation2d(0,0));
+            }
+
+            private FieldStates(int id, Translation2d offset, boolean facingTag, Translation2d fudgeFactor) {
                 this.id = id;
                 final Pose2d aprilTagPose = APRIL_TAGS.get(id - 1).pose.toPose2d();
                 Translation2d FIELD_RELATIVE_MANIPULATOR_OFFSET = ROBOT_RELATIVE_MANIPULATOR_OFFSET.rotateBy(aprilTagPose.getRotation());
                 Translation2d FIELD_RELATIVE_OFFSET = offset.rotateBy(aprilTagPose.getRotation());
-                this.pose = new Pose2d(aprilTagPose.getTranslation().plus(FIELD_RELATIVE_MANIPULATOR_OFFSET).plus(FIELD_RELATIVE_OFFSET), aprilTagPose.getRotation().plus(Rotation2d.k180deg));
+                Rotation2d rotation = facingTag ? aprilTagPose.getRotation().plus(Rotation2d.k180deg) : aprilTagPose.getRotation();
+                this.pose = new Pose2d(aprilTagPose.getTranslation().plus(FIELD_RELATIVE_MANIPULATOR_OFFSET).plus(FIELD_RELATIVE_OFFSET), rotation);
             }
           
             private FieldStates(int id) {

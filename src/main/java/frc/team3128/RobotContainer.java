@@ -197,9 +197,9 @@ public class RobotContainer {
         controller.getUpPOVButton().onTrue(runOnce(()-> swerve.resetGyro(0)));
         controller.getRightPOVButton().onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
-        controller.getUpPOVButton().onTrue(
-            runOnce(()-> swerve.moveBy(new Translation2d(2, 0)))
-        );
+        // controller.getUpPOVButton().onTrue(
+        //     runOnce(()-> swerve.moveBy(new Translation2d(2, 0)))
+        // );
 
         // new Trigger(gyroReset).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true));
         // new Trigger(elevReset).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true));
