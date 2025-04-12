@@ -21,7 +21,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.geometry.Pose2d;
 
 public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static RobotManager instance;
@@ -33,6 +36,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     private static TransitionMap<RobotStates> transitionMap = new TransitionMap<>(RobotStates.class);
     private Function<RobotStates, Command> defaultTransitioner = state -> {return updateSubsystemStates(state);};
+
+    private static boolean delayTransition = false;
 
     private RobotManager() {
         super(RobotStates.class, transitionMap, NEUTRAL);
@@ -59,7 +64,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     public Command updateSubsystemStates(RobotStates nextState) {
         return sequence(
-            waitUntil(()-> (!Swerve.autoMoveEnabled)).onlyIf(()-> nextState.getWaitForAutoEnabled()),
+            waitUntil(()-> (!delayTransition)).onlyIf(()-> nextState.getDelayTransition()), //Pauses transition until transitions are unpaused
             elevator.setStateCommand(nextState.getElevatorState()).unless(()-> nextState.getElevatorState() == ElevatorStates.UNDEFINED),
             manipulator.setStateCommand(nextState.getManipulatorState()).unless(()-> nextState.getManipulatorState() == ManipulatorStates.UNDEFINED),
             intake.setStateCommand(nextState.getIntakeState()).unless(()-> nextState.getIntakeState() == IntakeStates.UNDEFINED),
@@ -68,7 +73,28 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             runOnce(()-> swerve.setThrottle(nextState.getThrottle())).unless(()-> DriverStation.isAutonomous() || Swerve.autoMoveEnabled)
         );
     }
-
+    public Command alignScoreCoral(boolean isRight, BooleanSupplier shouldRam){
+        return parallel(
+            swerve.autoAlign(isRight, shouldRam).beforeStarting(()-> delayTransition = true), // do normal ram
+            sequence(
+                waitUntil(()-> swerve.atElevatorDist()), // wait until safe for elevator to move
+                runOnce(()-> delayTransition = false),
+                runOnce(()-> {
+                    for(Pair<RobotStates, RobotStates> coupledState : coupledStates){
+                        if (coupledState.getFirst() == getState()) {
+                            sequence(
+                                waitUntil(() -> ElevatorMechanism.getInstance().atSetpoint()),
+                                waitUntil(()-> !Swerve.autoMoveEnabled),
+                                setStateCommand(coupledState.getSecond()),
+                                waitSeconds(0.5),
+                                setStateCommand(NEUTRAL)
+                            ).schedule();
+                        }
+                    }
+                })
+            )
+        );
+    }
     public void autoScore() {
         if (getState() == RobotStates.NEUTRAL || getState() == RobotStates.FULL_NEUTRAL)
             return;

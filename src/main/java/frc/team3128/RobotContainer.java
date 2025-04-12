@@ -83,6 +83,7 @@ public class RobotContainer {
     // private BooleanSupplier gyroReset;
     // private BooleanSupplier elevReset;
 
+
     // private WinchMechanism winch;
 
     // private NAR_ButtonBoard judgePad;
@@ -96,8 +97,8 @@ public class RobotContainer {
 
     public static Limelight limelight;
 
-    public static BooleanSupplier shouldRam = () -> false;
-    public static BooleanSupplier shouldPreClimb = () -> false;
+    public static BooleanSupplier shouldRam = ()-> false;
+    public static BooleanSupplier shouldPreClimb = ()-> false;
 
 
     @SuppressWarnings("resource")
@@ -159,23 +160,31 @@ public class RobotContainer {
 
         // controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
         // controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
-        controller.getButton(kRightBumper).onTrue(swerve.autoAlignAlgae());
-        controller.getButton(kRightTrigger).onTrue(swerve.runBargeScore());
+        controller.getButton(kRightBumper).onTrue(robot.alignAlgaeIntake());
+        controller.getButton(kRightTrigger).onTrue(robot.alignAlgaeScore());
 
 
         controller.getButton(kRightStick).onTrue(robot.setStateCommand(NEUTRAL));
         // controller.getButton(kRightStick).onTrue(runOnce(()-> swerve.resetGyro(0)));
-        controller.getButton(kLeftStick).onTrue(swerve.autoAlignSource());
+        controller.getButton(kLeftStick).onTrue(robot.alignCoralIntake());
 
-        controller.getButton(kBack).onTrue(sequence(
-            swerve.autoAlign(false, shouldRam).andThen(() -> robot.autoScore())
-            .beforeStarting(robot.setStateCommand(TELE_HOLD))
-        ));
+        // controller.getButton(kBack).onTrue(sequence(
+        //     swerve.autoAlign(false, shouldRam).andThen(() -> robot.autoScore())
+        //     .beforeStarting(() -> Swerve.translationController.setPID(Swerve.kPSupplier.getAsDouble(), Swerve.kISupplier.getAsDouble(), Swerve.kDSupplier.getAsDouble()))
+        //     // .beforeStarting(robot.setStateCommand(TELE_HOLD))
+        // ));
 
-        controller.getButton(kStart).onTrue(sequence(
-            swerve.autoAlign(true, shouldRam).andThen(() -> robot.autoScore())
-            .beforeStarting(robot.setStateCommand(TELE_HOLD))
-        ));
+        controller.getButton(kBack).onTrue(robot.alignScoreCoral(false));
+
+        // controller.getButton(kStart).onTrue(sequence(
+        //     swerve.autoAlign(true, shouldRam).andThen(() -> robot.autoScore())
+        //     .beforeStarting(() -> Swerve.translationController.setPID(Swerve.kPSupplier.getAsDouble(), Swerve.kISupplier.getAsDouble(), Swerve.kDSupplier.getAsDouble()))
+        //     // .beforeStarting(robot.setStateCommand(TELE_HOLD))
+        // ));
+
+        controller.getButton(kStart).onTrue(robot.alignScoreCoral(true));
+
+        
 
         // controller.getButton(kBack).onTrue(swerve.autoAlignAlgae());
 
@@ -187,6 +196,10 @@ public class RobotContainer {
         controller.getUpPOVButton().onTrue(runOnce(()-> swerve.resetGyro(0)));
         controller.getRightPOVButton().onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
+        controller.getUpPOVButton().onTrue(
+            runOnce(()-> swerve.moveBy(new Translation2d(2, 0)))
+            .beforeStarting(() -> Swerve.translationController.setPID(Swerve.kPSupplier.getAsDouble(), Swerve.kISupplier.getAsDouble(), Swerve.kDSupplier.getAsDouble()))
+        );
 
         // new Trigger(gyroReset).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true));
         // new Trigger(elevReset).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true));

@@ -58,7 +58,7 @@ public enum RobotStates {
     private ManipulatorStates manipulator;
     private ClimberStates climber;
     private double throttle;
-    private boolean waitForAutoEnabled;
+    private boolean delayTransition;
 
     public static final List<RobotStates> defaultElevatorStates = List.of(RPL1, RPL2, RPL3, RPL4, RSA1, RSA2, RPB, TELE_HOLD, AUTO_HOLD);
     public static final List<RobotStates> exclusiveElevatorStates = List.of(RSL1, RSL2, RSL3, RSL4, RSB);
@@ -78,13 +78,13 @@ public enum RobotStates {
     public static final List<RobotStates> defaultStates = List.of(NEUTRAL, FULL_NEUTRAL).appendAll(defaultElevatorStates).appendAll(defaultIntakeStates).appendAll(defaultClimbStates);
     public static final List<RobotStates> exclusiveStates = exclusiveElevatorStates.appendAll(exclusiveClimbStates);
 
-    private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator, ClimberStates climber, double throttle, boolean waitForAutoEnabled) {
+    private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator, ClimberStates climber, double throttle, boolean delayTransition) {
         this.elevator = elevator;
         this.intake = intake;
         this.manipulator = manipulator;
         this.climber = climber;
         this.throttle = throttle;
-        this.waitForAutoEnabled = waitForAutoEnabled;
+        this.delayTransition = delayTransition;
     }
 
     private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator, ClimberStates climber, double throttle) {
@@ -104,8 +104,8 @@ public enum RobotStates {
         this(elevator, intake, manipulator, ClimberStates.UNDEFINED, 1, false);
     }
 
-    private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator, double throttle, boolean waitForAutoEnabled) {
-        this(elevator, intake, manipulator, ClimberStates.UNDEFINED, throttle, waitForAutoEnabled);
+    private RobotStates(ElevatorStates elevator, IntakeStates intake, ManipulatorStates manipulator, double throttle, boolean delayTransition) {
+        this(elevator, intake, manipulator, ClimberStates.UNDEFINED, throttle, delayTransition);
     }
 
     private RobotStates(ClimberStates climber, ElevatorStates elevator, double throttle) {
@@ -140,7 +140,7 @@ public enum RobotStates {
         return this.throttle;
     }
 
-    public boolean getWaitForAutoEnabled() {
-        return this.waitForAutoEnabled;
+    public boolean getDelayTransition() {
+        return this.delayTransition;
     }
 }

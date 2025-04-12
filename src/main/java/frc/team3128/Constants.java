@@ -237,7 +237,7 @@ public class Constants {
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(317); // meters = 8.052
         public static final Translation2d FIELD = new Translation2d(FIELD_X_LENGTH, FIELD_Y_LENGTH);
         public static final Translation2d CENTER_FIELD = FIELD.div(2);
-        public static final Translation2d FUDGE_FACTOR = new Translation2d(0.1, 0);
+        public static final Translation2d RAM_FACTOR = new Translation2d(0.1, 0);
         public static final Translation2d FUDGELESS_FACTOR = new Translation2d(Units.inchesToMeters(4.5), 0); //one coral diameter
 
         public static final Translation2d reefShift = new Translation2d(0.35/2, 0.);
@@ -293,7 +293,7 @@ public class Constants {
                 
                 Translation2d offset = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(-6.25)).rotateBy(apriltag.getRotation());
 
-                Translation2d fudgeFactor  = FUDGE_FACTOR.plus(new Translation2d(0, yAxisFudge)).rotateBy(apriltag.getRotation());
+                Translation2d fudgeFactor  = RAM_FACTOR.plus(new Translation2d(0, yAxisFudge)).rotateBy(apriltag.getRotation());
                 Translation2d fudgelessFactor  = FUDGELESS_FACTOR.plus(new Translation2d(0, yAxisFudge)).rotateBy(apriltag.getRotation());
                 
                 Translation2d leftRight = new Translation2d(0, Units.inchesToMeters(isRight ? 13.0 / 2 : -13.0 / 2)).rotateBy(apriltag.getRotation());
