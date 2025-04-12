@@ -27,8 +27,8 @@ public enum RobotStates {
     RSL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow, true),
     RSL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow, true),
 
-    TELE_HOLD(ElevatorStates.TELE_HOLD, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, fast, false),
-    AUTO_HOLD(ElevatorStates.AUTO_HOLD, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, fast, false),
+    TELE_HOLD(ElevatorStates.TELE_HOLD, IntakeStates.NEUTRAL, ManipulatorStates.IN, fast, false),
+    AUTO_HOLD(ElevatorStates.AUTO_HOLD, IntakeStates.NEUTRAL, ManipulatorStates.IN, fast, false),
     
     INTAKE(ElevatorStates.NEUTRAL, IntakeStates.INTAKE, ManipulatorStates.NEUTRAL),
     EJECT_OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.EJECT_OUTTAKE, ManipulatorStates.NEUTRAL),

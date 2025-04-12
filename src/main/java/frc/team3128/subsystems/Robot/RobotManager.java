@@ -4,6 +4,7 @@ import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
 import common.utility.shuffleboard.NAR_Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Climber.Climber;
 import frc.team3128.subsystems.Climber.ClimberStates;
@@ -50,6 +51,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
         initShuffleboard();
         NAR_Shuffleboard.addData(this.getName(), "Auto Enabled", () -> Swerve.autoMoveEnabled);
+        NAR_Shuffleboard.addData("Auto", "DelayTransition", () -> delayTransition, 3, 3);
 
         registerTransitions();
     }
@@ -78,8 +80,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             swerve.autoAlign(isRight, shouldRam).beforeStarting(()-> delayTransition = true), // do normal ram
             sequence(
                 waitUntil(()-> swerve.atElevatorDist()), // wait until safe for elevator to move
-                runOnce(()-> delayTransition = false),
-                runOnce(()-> {
+                Commands.runOnce(()-> delayTransition = false),
+                Commands.runOnce(()-> {
                     for(Pair<RobotStates, RobotStates> coupledState : coupledStates){
                         if (coupledState.getFirst() == getState()) {
                             sequence(
@@ -89,10 +91,11 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
                                 waitSeconds(0.5),
                                 setStateCommand(NEUTRAL)
                             ).schedule();
+                            return;
                         }
                     }
                 })
-            )
+            ).beforeStarting(setStateCommand(TELE_HOLD))
         );
     }
     public void autoScore() {

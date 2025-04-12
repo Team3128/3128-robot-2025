@@ -112,14 +112,12 @@ public class Swerve extends SwerveBase {
 
     // x * kP = dx/dt && (v_max)^2 = 2*a_max*x
     public static final Constraints translationConstraints = new Constraints(MAX_DRIVE_SPEED, MAX_DRIVE_ACCELERATION);
-    public static final PIDFFConfig translationConfig = new PIDFFConfig(5, 0, 0);//3 // used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
+    public static final PIDFFConfig translationConfig = new PIDFFConfig(4, 0, 0);//3 // used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller translationController = new Controller(translationConfig, Controller.Type.POSITION); //Displacement error to output velocity
     public static final double translationTolerance = 0.03;
 
 
-    public static final double elevatorStartDist = 0.3;
-
-    public static DoubleSupplier kPSupplier, kISupplier, kDSupplier;
+    public static final double elevatorStartDist = 0.1;
 
     public static final Constraints rotationConstraints = new Constraints(MAX_DRIVE_ANGULAR_VELOCITY, MAX_DRIVE_ANGULAR_ACCELERATION);
     public static final PIDFFConfig rotationConfig = new PIDFFConfig(10); //Conservative Kp estimate (2*a_max/v_max)
@@ -130,7 +128,7 @@ public class Swerve extends SwerveBase {
     private static double translationPlateauCount = 0;
 
 
-    private static double elevatorPlateauThreshold = 25; //~half second
+    private static double elevatorPlateauThreshold = 10; //~half second
     private static double elevatorPlateauCount = 0;
 
     private static double rotationPlateauThreshold = 10;
@@ -340,7 +338,7 @@ public class Swerve extends SwerveBase {
         final List<Pose2d> setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
         final List<Pose2d> fudgelessSetpoints = isRight ? fudgelessReefRight.asJava() : fudgelessReefLeft.asJava();
         Supplier<Pose2d> pose = () -> (shouldRam.getAsBoolean() ? nearestPose2d(allianceFlip(setpoints)) : nearestPose2d(allianceFlip(fudgelessSetpoints)));
-        return autoAlign(pose, shouldRam);
+        return navigateTo(pose);
     }
 
     public Command autoAlignSource() {
@@ -364,7 +362,7 @@ public class Swerve extends SwerveBase {
     }
 
     public Command navigateTo(Supplier<Pose2d> pose, double timeout) {
-        return startEnd(
+        return Commands.startEnd(
             ()-> {
                 setThrottle(1); //force throttle to max speed
                 Swerve.autoMoveEnabled = true;
@@ -375,7 +373,7 @@ public class Swerve extends SwerveBase {
                 Swerve.autoMoveEnabled = false;
             }
         ).until(()-> atTranslationSetpoint())
-         .withTimeout(2);
+         .withTimeout(timeout);
     }
 
     public Command ram(Supplier<Pose2d> pose) {
@@ -420,9 +418,6 @@ public class Swerve extends SwerveBase {
     public void initShuffleboard() {
         super.initShuffleboard();
         NAR_Shuffleboard.addData("Swerve", "Throttle", this::getThrottle, 4, 3);
-        kPSupplier = NAR_Shuffleboard.debug("Auto", "kP", translationConfig.kP, 2, 0);
-        kISupplier = NAR_Shuffleboard.debug("Auto", "kI", translationConfig.kI, 2, 1);
-        kDSupplier = NAR_Shuffleboard.debug("Auto", "kD", translationConfig.kD, 2, 2);
 
 
         NAR_Shuffleboard.addData("Auto", "Translation Enabled", ()-> translationController.isEnabled(), 0, 0);

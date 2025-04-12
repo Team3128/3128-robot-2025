@@ -163,7 +163,6 @@ public class RobotContainer {
 
         // controller.getButton(kStart).onTrue(sequence(
         //     swerve.autoAlign(true, shouldRam).andThen(() -> robot.autoScore())
-        //     .beforeStarting(() -> Swerve.translationController.setPID(Swerve.kPSupplier.getAsDouble(), Swerve.kISupplier.getAsDouble(), Swerve.kDSupplier.getAsDouble()))
         //     // .beforeStarting(robot.setStateCommand(TELE_HOLD))
         // ));
 
@@ -174,7 +173,6 @@ public class RobotContainer {
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
         controller.getUpPOVButton().onTrue(
             runOnce(()-> swerve.moveBy(new Translation2d(2, 0)))
-            .beforeStarting(() -> Swerve.translationController.setPID(Swerve.kPSupplier.getAsDouble(), Swerve.kISupplier.getAsDouble(), Swerve.kDSupplier.getAsDouble()))
         );
 
         // new Trigger(gyroReset).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true));
