@@ -135,7 +135,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             swerve.navigateTo(() -> pose),
             Commands.runOnce(
                 ()-> {
-                    if(FieldStates.idOf(pose) % 2 == 0) setStateCommand(RSA2).schedule();
+                    if(FieldStates.idOf(allianceFlipRotationally(pose)) % 2 == 0) setStateCommand(RSA2).schedule();
                     else setStateCommand(RSA1).schedule();
                 }
             )

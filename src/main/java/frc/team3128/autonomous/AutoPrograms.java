@@ -200,7 +200,7 @@ public class AutoPrograms {
             parallel(
                 run(() -> swerve.drive(0, 0, 0))
             ).withDeadline(
-                robot.alignAlgaeScore(allianceFlipRotationally(new Pose2d(7.7, 4.9, Rotation2d.kZero)))
+                robot.alignAlgaeScore(allianceFlipRotationally(new Pose2d(7.7, 5.4, Rotation2d.kZero)))
                     .andThen(waitUntil(() -> robot.stateEquals(NEUTRAL)))
             )
         );
@@ -257,8 +257,8 @@ public class AutoPrograms {
     public Command getAutonomousCommand() {
         String selectedAutoName = null;
         // String selectedAutoName = NarwhalDashboard.getInstance().getSelectedAuto(); //NarwhalDashboard.getInstance().getSelectedAuto();
-        String hardcode = "RB_3pc_FCD_auto";
-        // String hardcode = "LB_3pc_ILK_auto";
+        // String hardcode = "MID_3pc_H_auto";
+        String hardcode = "LB_3pc_ILK_auto";
         // String hardcode = "MID_1pc_H_auto"; 
         // String hardcode = "Left_Leave_Backwards";
         

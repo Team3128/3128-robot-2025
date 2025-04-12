@@ -17,15 +17,33 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "H_SCORE to ALGAE_GH"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Intake ALGAE_GH"
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "ALGAE_GH to BARGE_SCORE"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Score ALGAE"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BARGE_SCORE to ALGAE_IJ"
           }
         },
         {
@@ -38,6 +56,12 @@
           "type": "named",
           "data": {
             "name": "Score ALGAE"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BARGE_SCORE leave"
           }
         }
       ]
