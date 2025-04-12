@@ -40,6 +40,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import common.utility.Log;
 import common.utility.narwhaldashboard.NarwhalDashboard;
 
+import static frc.team3128.Constants.FieldConstants.allianceFlipRotationally;
 import static frc.team3128.Constants.FieldConstants.flipRotationally;
 // import static frc.team3128.Constants.FieldConstants.FieldStates.REEF_5;
 // import static frc.team3128.Constants.FieldConstants.FieldStates.REEF_6;
@@ -176,6 +177,15 @@ public class AutoPrograms {
                         andThen(() -> robot.autoScore()).
                         andThen(waitUntil(() -> robot.stateEquals(NEUTRAL))))
                 );
+            } else if (state.name().length() == 8) {
+                NamedCommands.registerCommand(
+                    "Intake " + state.name(),
+                    parallel(
+                        run(() -> swerve.drive(0, 0, 0))
+                    ).withDeadline(
+                        robot.alignAlgaeIntake(FieldConstants.allianceFlipRotationally(state.getPose2d()))
+                    )
+                );
             } else {
                 NamedCommands.registerCommand(
                     "Align " + state.name(),
@@ -186,6 +196,16 @@ public class AutoPrograms {
         }
 
         NamedCommands.registerCommand(
+            "Score ALGAE",
+            parallel(
+                run(() -> swerve.drive(0, 0, 0))
+            ).withDeadline(
+                robot.alignAlgaeScore(allianceFlipRotationally(new Pose2d(7.7, 4.9, Rotation2d.kZero)))
+                    .andThen(waitUntil(() -> robot.stateEquals(NEUTRAL)))
+            )
+        );
+
+        NamedCommands.registerCommand(
             "Reset RIGHT_BARGE",
             runOnce(() -> swerve.resetOdometryNoGyro(FieldConstants.allianceFlipRotationally(new Pose2d(7.17, 2.55, Rotation2d.kPi))))
         );
@@ -193,6 +213,11 @@ public class AutoPrograms {
         NamedCommands.registerCommand(
             "Reset LEFT_BARGE",
             runOnce(() -> swerve.resetOdometryNoGyro(FieldConstants.allianceFlipRotationally(new Pose2d(7.17, 5.502, Rotation2d.kPi))))
+        );
+
+        NamedCommands.registerCommand(
+            "Reset MID",
+            runOnce(() -> swerve.resetOdometryNoGyro(FieldConstants.allianceFlipRotationally(new Pose2d(7.17, 3.995, Rotation2d.kPi))))
         );
 
         NamedCommands.registerCommand("Score L2", sequence(

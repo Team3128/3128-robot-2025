@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Reset MID"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score L4 H"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake ALGAE_GH"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score ALGAE"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake ALGAE_IJ"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score ALGAE"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": null,
+  "choreoAuto": false
+}

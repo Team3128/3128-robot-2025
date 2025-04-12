@@ -130,6 +130,18 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         );
     }
 
+    public Command alignAlgaeIntake(Pose2d pose) {
+        return parallel(
+            swerve.navigateTo(() -> pose),
+            Commands.runOnce(
+                ()-> {
+                    if(FieldStates.idOf(pose) % 2 == 0) setStateCommand(RSA2).schedule();
+                    else setStateCommand(RSA1).schedule();
+                }
+            )
+        );
+    }
+
     public Command alignAlgaeIntake() {
         final List<Pose2d> setpoints = FieldStates.algaePoses.asJava();
         Supplier<Pose2d> pose = ()-> swerve.nearestPose2d(allianceFlip(setpoints));
@@ -158,7 +170,6 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         Supplier<Pose2d> pose = ()-> allianceFlip(new Pose2d(new Translation2d(7.7, swerve.getPose().getY()), Rotation2d.fromDegrees(0)));
         return parallel(
             swerve.navigateTo(pose),
-            swerve.navigateTo(pose),
             sequence(
                 waitUntil(()-> swerve.atElevatorDist()), // wait until safe for elevator to move
                 setStateCommand(RPB),
@@ -172,6 +183,21 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         );
     }
  
+    public Command alignAlgaeScore(Pose2d pose) {
+        return parallel(
+            swerve.navigateTo(() -> pose),
+            sequence(
+                waitUntil(()-> swerve.atElevatorDist()), // wait until safe for elevator to move
+                setStateCommand(RPB),
+                Commands.runOnce(()-> delayTransition = false),
+                waitUntil(() -> ElevatorMechanism.getInstance().atSetpoint()),
+                waitUntil(()-> !Swerve.autoMoveEnabled),
+                setStateCommand(RSB),
+                waitSeconds(0.5),
+                setStateCommand(NEUTRAL)
+            )
+        );
+    }
 
     public void autoScore() {
         if (getState() == RobotStates.NEUTRAL || getState() == RobotStates.FULL_NEUTRAL)
