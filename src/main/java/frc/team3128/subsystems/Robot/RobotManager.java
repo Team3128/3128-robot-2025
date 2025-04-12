@@ -95,7 +95,30 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
                         }
                     }
                 })
-            ).beforeStarting(setStateCommand(TELE_HOLD))
+            )
+        );
+    }
+    public Command alignScoreCoral(Pose2d pose, BooleanSupplier shouldRam){
+        return parallel(
+            swerve.autoAlign(() -> pose, shouldRam).beforeStarting(()-> delayTransition = true), // do normal ram
+            sequence(
+                waitUntil(()-> swerve.atElevatorDist()), // wait until safe for elevator to move
+                Commands.runOnce(()-> delayTransition = false),
+                Commands.runOnce(()-> {
+                    for(Pair<RobotStates, RobotStates> coupledState : coupledStates){
+                        if (coupledState.getFirst() == getState()) {
+                            sequence(
+                                waitUntil(() -> ElevatorMechanism.getInstance().atSetpoint()),
+                                waitUntil(()-> !Swerve.autoMoveEnabled),
+                                setStateCommand(coupledState.getSecond()),
+                                waitSeconds(0.5),
+                                setStateCommand(NEUTRAL)
+                            ).schedule();
+                            return;
+                        }
+                    }
+                })
+            )
         );
     }
     public void autoScore() {

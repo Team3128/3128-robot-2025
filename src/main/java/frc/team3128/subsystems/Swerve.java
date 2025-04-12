@@ -112,12 +112,14 @@ public class Swerve extends SwerveBase {
 
     // x * kP = dx/dt && (v_max)^2 = 2*a_max*x
     public static final Constraints translationConstraints = new Constraints(MAX_DRIVE_SPEED, MAX_DRIVE_ACCELERATION);
-    public static final PIDFFConfig translationConfig = new PIDFFConfig(4, 0, 0);//3 // used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
+    public static final PIDFFConfig translationConfig = new PIDFFConfig(3.5, 0, 0);//3 // used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller translationController = new Controller(translationConfig, Controller.Type.POSITION); //Displacement error to output velocity
     public static final double translationTolerance = 0.03;
 
+    public static DoubleSupplier kPSupplier, kISupplier, kDSupplier;
 
-    public static final double elevatorStartDist = 0.1;
+
+    public static final double elevatorStartDist = 0.4;
 
     public static final Constraints rotationConstraints = new Constraints(MAX_DRIVE_ANGULAR_VELOCITY, MAX_DRIVE_ANGULAR_ACCELERATION);
     public static final PIDFFConfig rotationConfig = new PIDFFConfig(10); //Conservative Kp estimate (2*a_max/v_max)
@@ -342,7 +344,7 @@ public class Swerve extends SwerveBase {
     }
 
     public Command autoAlignSource() {
-        return navigateTo(()-> nearestPose2d(List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d())));
+        return navigateTo(()-> nearestPose2d(allianceFlip(List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d()))));
     }
 
     public Command autoAlign(Pose2d pose) {
@@ -424,6 +426,9 @@ public class Swerve extends SwerveBase {
         NAR_Shuffleboard.addData("Auto", "At Setpoint", ()-> atTranslationSetpoint(), 0, 1);
         NAR_Shuffleboard.addData("Auto", "Error", ()-> getDistanceTo(translationSetpoint), 1, 0);
         NAR_Shuffleboard.addData("Auto", "Count", ()-> translationPlateauCount, 1, 1);
+        kPSupplier = NAR_Shuffleboard.debug("Auto", "kP", translationConfig.kP, 2, 0);
+        kISupplier = NAR_Shuffleboard.debug("Auto", "kI", translationConfig.kI, 2, 1);
+        kDSupplier = NAR_Shuffleboard.debug("Auto", "kD", translationConfig.kD, 2, 2);
     }
 
     public static void disable() {

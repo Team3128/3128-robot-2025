@@ -238,7 +238,7 @@ public class Constants {
         public static final Translation2d FIELD = new Translation2d(FIELD_X_LENGTH, FIELD_Y_LENGTH);
         public static final Translation2d CENTER_FIELD = FIELD.div(2);
         public static final Translation2d RAM_FACTOR = new Translation2d(0.1, 0);
-        public static final Translation2d FUDGELESS_FACTOR = new Translation2d(Units.inchesToMeters(5.5), 0); //one coral diameter
+        public static final Translation2d FUDGELESS_FACTOR = new Translation2d(Units.inchesToMeters(4.5), 0); //one coral diameter
 
         public static final Translation2d reefShift = new Translation2d(0.35/2, 0.);
 
@@ -278,7 +278,7 @@ public class Constants {
             private FieldStates(int id, boolean isRight, double yAxisFudge) {
                 Pose2d apriltag = APRIL_TAGS.get(id - 1).pose.toPose2d();
                 
-                Translation2d offset = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(-6.25)).rotateBy(apriltag.getRotation());
+                Translation2d offset = new Translation2d(Units.inchesToMeters(32.0/2.0), Units.inchesToMeters(-6.25)).rotateBy(apriltag.getRotation());
 
                 Translation2d fudgeFactor  = RAM_FACTOR.plus(new Translation2d(0, yAxisFudge)).rotateBy(apriltag.getRotation());
                 Translation2d fudgelessFactor  = FUDGELESS_FACTOR.plus(new Translation2d(0, yAxisFudge)).rotateBy(apriltag.getRotation());
