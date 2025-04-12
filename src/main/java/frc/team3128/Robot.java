@@ -41,6 +41,12 @@ public class Robot extends NAR_Robot {
             Optional<Alliance> DSalliance = DriverStation.getAlliance();
             if (DSalliance.isPresent()) alliance = DSalliance.get();
         }
+
+        if (RobotContainer.allianceRead.getAsBoolean()){
+            alliance = RobotContainer.allianceWrite.getAsBoolean() ? Alliance.Red : Alliance.Blue;
+        }
+
+
         return alliance;
     }
 
