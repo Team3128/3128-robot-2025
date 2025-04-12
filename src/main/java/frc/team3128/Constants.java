@@ -295,6 +295,20 @@ public class Constants {
                 this.pose = new Pose2d(aprilTagPose.getTranslation().plus(FIELD_RELATIVE_MANIPULATOR_OFFSET).plus(FIELD_RELATIVE_OFFSET), aprilTagPose.getRotation().plus(Rotation2d.k180deg));
             }
 
+            private FieldStates(int id, boolean isRight, double yAxisFudge) {
+                Pose2d apriltag = APRIL_TAGS.get(id - 1).pose.toPose2d();
+                
+                Translation2d offset = new Translation2d(Units.inchesToMeters(32.0/2.0), Units.inchesToMeters(-6.25)).rotateBy(apriltag.getRotation());
+
+                Translation2d fudgeFactor  = RAM_FACTOR.plus(new Translation2d(0, yAxisFudge)).rotateBy(apriltag.getRotation());
+                Translation2d fudgelessFactor  = FUDGELESS_FACTOR.plus(new Translation2d(0, yAxisFudge)).rotateBy(apriltag.getRotation());
+                
+                Translation2d leftRight = new Translation2d(0, Units.inchesToMeters(isRight ? 13.0 / 2 : -13.0 / 2)).rotateBy(apriltag.getRotation());
+                
+                this.pose = new Pose2d(apriltag.getTranslation().plus(offset).plus(fudgeFactor).plus(leftRight), apriltag.getRotation().plus(Rotation2d.k180deg));
+                this.fudgelessPose = new Pose2d(apriltag.getTranslation().plus(offset).plus(fudgelessFactor).plus(leftRight), apriltag.getRotation().plus(Rotation2d.k180deg));
+            }
+          
             private FieldStates(int id) {
                 this(id, new Translation2d());
             }
