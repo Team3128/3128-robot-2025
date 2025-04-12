@@ -137,10 +137,10 @@ public class RobotContainer {
     private void configureButtonBindings() {
         buttonPad.getButton(10).onTrue(swerve.identifyOffsetsCommand().ignoringDisable(true));
 
-        // shouldRam = ()-> !buttonPad.getButton(1).getAsBoolean();
-        // shouldPreClimb = ()-> !buttonPad.getButton(2).getAsBoolean();
-        shouldRam = ()-> false;
-        shouldPreClimb = ()-> false;
+        shouldRam = ()-> buttonPad.getButton(1).getAsBoolean();
+        shouldPreClimb = ()-> !buttonPad.getButton(2).getAsBoolean();
+        // shouldRam = ()-> false;
+        // shouldPreClimb = ()-> false;
 
         allianceWrite = ()-> buttonPad.getButton(12).getAsBoolean();
         allianceRead = ()-> buttonPad.getButton(11).getAsBoolean();
