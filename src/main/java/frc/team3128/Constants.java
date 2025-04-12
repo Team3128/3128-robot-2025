@@ -237,42 +237,62 @@ public class Constants {
         public static final double FIELD_Y_LENGTH = Units.inchesToMeters(317); // meters = 8.052
         public static final Translation2d FIELD = new Translation2d(FIELD_X_LENGTH, FIELD_Y_LENGTH);
         public static final Translation2d CENTER_FIELD = FIELD.div(2);
+        public static final Translation2d ROBOT_RELATIVE_MANIPULATOR_OFFSET = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(-6.25));
+        public static final Translation2d CORAL_STOP_DIST = new Translation2d(Units.inchesToMeters(4.5), 0);
+        public static final Translation2d ALGAE_STOP_DIST = new Translation2d(0.1, 0);
+        public static final Translation2d SOURCE_STOP_DIST = new Translation2d(0.2, 0);
         public static final Translation2d RAM_FACTOR = new Translation2d(0.1, 0);
-        public static final Translation2d FUDGELESS_FACTOR = new Translation2d(Units.inchesToMeters(4.5), 0); //one coral diameter
 
-        public static final Translation2d reefShift = new Translation2d(0.35/2, 0.);
+        public static final Translation2d CORAL_LEFT_POLE_SHIFT = new Translation2d(0, Units.inchesToMeters(-13 / 2));
 
         public enum FieldStates {
-            A(18, false),
-            B(18, true),
-            C(17, false),
-            D(17, true),
-            E(22, false),
-            F(22, true),
-            G(21, false),
-            H(21, true),
-            I(20, false),
-            J(20, true),
-            K(19, false),
-            L(19, true),
+            A(18, CORAL_STOP_DIST.plus(CORAL_LEFT_POLE_SHIFT)),
+            B(18, CORAL_STOP_DIST.minus(CORAL_LEFT_POLE_SHIFT)),
+            C(17, CORAL_STOP_DIST.plus(CORAL_LEFT_POLE_SHIFT)),
+            D(17, CORAL_STOP_DIST.minus(CORAL_LEFT_POLE_SHIFT)),
+            E(22, CORAL_STOP_DIST.plus(CORAL_LEFT_POLE_SHIFT)),
+            F(22, CORAL_STOP_DIST.minus(CORAL_LEFT_POLE_SHIFT)),
+            G(21, CORAL_STOP_DIST.plus(CORAL_LEFT_POLE_SHIFT)),
+            H(21, CORAL_STOP_DIST.minus(CORAL_LEFT_POLE_SHIFT)),
+            I(20, CORAL_STOP_DIST.plus(CORAL_LEFT_POLE_SHIFT)),
+            J(20, CORAL_STOP_DIST.minus(CORAL_LEFT_POLE_SHIFT)),
+            K(19, CORAL_STOP_DIST.plus(CORAL_LEFT_POLE_SHIFT)),
+            L(19, CORAL_STOP_DIST.minus(CORAL_LEFT_POLE_SHIFT)),
 
-            SOURCE_1(new Pose2d(new Translation2d(1.267, 0.753), Rotation2d.fromDegrees(55))),
-            SOURCE_2(new Pose2d(new Translation2d(1.267, FIELD_Y_LENGTH-0.753), Rotation2d.fromDegrees(-55)));
+            ALGAE_AB(18, ALGAE_STOP_DIST),
+            ALGAE_CD(17, ALGAE_STOP_DIST),
+            ALGAE_EF(22, ALGAE_STOP_DIST),
+            ALGAE_GH(21, ALGAE_STOP_DIST),
+            ALGAE_IJ(20, ALGAE_STOP_DIST),
+            ALGAE_KL(19, ALGAE_STOP_DIST),
+            
 
+            SOURCE_LEFT(12, SOURCE_STOP_DIST),
+            SOURCE_RIGHT(13, SOURCE_STOP_DIST);
+
+            private final int id;
             private final Pose2d pose;
-            private final Pose2d fudgelessPose;
+            private boolean isRight;
 
             public static io.vavr.collection.List<Pose2d> reefLeft = io.vavr.collection.List.of(A.getPose2d(), C.getPose2d(), F.getPose2d(), H.getPose2d(), J.getPose2d(), K.getPose2d());
             public static io.vavr.collection.List<Pose2d> reefRight = io.vavr.collection.List.of(B.getPose2d(), D.getPose2d(), E.getPose2d(), G.getPose2d(), I.getPose2d(), L.getPose2d());
             
-            public static io.vavr.collection.List<Pose2d> fudgelessReefLeft = io.vavr.collection.List.of(A.getFudgelessPose2d(), C.getFudgelessPose2d(), F.getFudgelessPose2d(), H.getFudgelessPose2d(), J.getFudgelessPose2d(), K.getFudgelessPose2d());
-            public static io.vavr.collection.List<Pose2d> fudgelessReefRight = io.vavr.collection.List.of(B.getFudgelessPose2d(), D.getFudgelessPose2d(), E.getFudgelessPose2d(), G.getFudgelessPose2d(), I.getFudgelessPose2d(), L.getFudgelessPose2d());
+            public static io.vavr.collection.List<Pose2d> algaePoses = io.vavr.collection.List.of(ALGAE_AB.getPose2d(), ALGAE_CD.getPose2d(), ALGAE_EF.getPose2d(), ALGAE_GH.getPose2d(), ALGAE_IJ.getPose2d(), ALGAE_KL.getPose2d());
+            public static io.vavr.collection.List<FieldStates> algae = io.vavr.collection.List.of(ALGAE_AB, ALGAE_CD, ALGAE_EF, ALGAE_GH, ALGAE_IJ, ALGAE_KL);
 
             public static io.vavr.collection.List<Pose2d> reefPoses = io.vavr.collection.List.of(A.getPose2d(), B.getPose2d(), C.getPose2d(), D.getPose2d(), E.getPose2d(), F.getPose2d(), G.getPose2d(), H.getPose2d(), I.getPose2d(), J.getPose2d(), K.getPose2d(), L.getPose2d());
-            public static io.vavr.collection.List<Pose2d> sourcePoses = io.vavr.collection.List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d());
+            public static io.vavr.collection.List<Pose2d> sourcePoses = io.vavr.collection.List.of(SOURCE_LEFT.getPose2d(), SOURCE_RIGHT.getPose2d());
 
-            private FieldStates(int id, boolean isRight) {
-                this(id, isRight, 0);
+            private FieldStates(int id, Translation2d offset) {
+                this(id, offset, new Translation2d(0,0));
+            }
+
+            private FieldStates(int id, Translation2d offset, Translation2d fudgeFactor) {
+                this.id = id;
+                final Pose2d aprilTagPose = APRIL_TAGS.get(id - 1).pose.toPose2d();
+                Translation2d FIELD_RELATIVE_MANIPULATOR_OFFSET = ROBOT_RELATIVE_MANIPULATOR_OFFSET.rotateBy(aprilTagPose.getRotation());
+                Translation2d FIELD_RELATIVE_OFFSET = offset.rotateBy(aprilTagPose.getRotation());
+                this.pose = new Pose2d(aprilTagPose.getTranslation().plus(FIELD_RELATIVE_MANIPULATOR_OFFSET).plus(FIELD_RELATIVE_OFFSET), aprilTagPose.getRotation().plus(Rotation2d.k180deg));
             }
 
             private FieldStates(int id, boolean isRight, double yAxisFudge) {
@@ -288,18 +308,18 @@ public class Constants {
                 this.pose = new Pose2d(apriltag.getTranslation().plus(offset).plus(fudgeFactor).plus(leftRight), apriltag.getRotation().plus(Rotation2d.k180deg));
                 this.fudgelessPose = new Pose2d(apriltag.getTranslation().plus(offset).plus(fudgelessFactor).plus(leftRight), apriltag.getRotation().plus(Rotation2d.k180deg));
             }
+          
+            private FieldStates(int id) {
+                this(id, new Translation2d());
+            }
 
             private FieldStates(Pose2d pose) {
+                this.id = -1;
                 this.pose = pose;
-                this.fudgelessPose = pose;
             }
 
             public Pose2d getPose2d() {
                 return this.pose;
-            }
-
-            public Pose2d getFudgelessPose2d() {
-                return this.fudgelessPose;
             }
 
             public Translation2d getTranslation2d() {
@@ -308,6 +328,21 @@ public class Constants {
 
             public Rotation2d getRotation2d() {
                 return pose.getRotation();
+            }
+
+            public boolean getIsRight(){
+                return this.isRight;
+            }
+
+            public int getId() {
+                return this.id;
+            }
+
+            public static int idOf(Pose2d pose) {
+                for(FieldStates state : FieldStates.values()) {
+                    if(pose.equals(state.getPose2d())) return state.getId();
+                }
+                return -1;
             }
         }
 
@@ -452,7 +487,7 @@ public class Constants {
         public static final StatusFrames PIVOT_STATUS_FRAME = StatusFrames.POSITION;
 
         public static final double PIVOT_POSITION_MIN = 0;
-        public static final double PIVOT_POSITION_MAX = 180;
+        public static final double PIVOT_POSITION_MAX = 120;
         public static final double PIVOT_TOLERANCE = 1;
 
         public static final int ROLLER_LEADER_ID = 41;

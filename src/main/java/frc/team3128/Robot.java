@@ -46,8 +46,8 @@ public class Robot extends NAR_Robot {
 
     public static Robot instance;
 
-    public static AutoPrograms autoPrograms = AutoPrograms.getInstance();
     public static RobotContainer m_robotContainer = new RobotContainer();
+    public static AutoPrograms autoPrograms = AutoPrograms.getInstance();
     // public static AutoPrograms autoPrograms;
 
     public static synchronized Robot getInstance() {
@@ -67,7 +67,7 @@ public class Robot extends NAR_Robot {
         autoPrograms.initAutoSelector();
         Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM, MOTOR);
         PathfindingCommand.warmupCommand().schedule();
-        Swerve.getInstance().resetGyro(0);
+        // Swerve.getInstance().resetGyro(0);
     }
 
     @Override

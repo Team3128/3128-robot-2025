@@ -30,6 +30,7 @@ import common.utility.Log;
 import common.utility.shuffleboard.NAR_Shuffleboard;
 import common.utility.sysid.CmdSysId;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -53,7 +54,9 @@ import static frc.team3128.Constants.VisionConstants.*;
 import static frc.team3128.Constants.DriveConstants.*;
 import frc.team3128.Constants.DriveConstants;
 import frc.team3128.Constants.FieldConstants.FieldStates;
+import frc.team3128.Robot;
 import frc.team3128.subsystems.Robot.RobotManager;
+import frc.team3128.subsystems.Robot.RobotStates;
 import frc.team3128.Robot;
 import frc.team3128.RobotContainer;
 
@@ -352,6 +355,36 @@ public class Swerve extends SwerveBase {
         return autoAlign(() -> flippedPose, ()->true);
     }
 
+    public Command autoAlignBargeSimple() {
+        return autoAlign(() -> allianceFlip(new Pose2d(new Translation2d(7.7, getPose().getY()), Rotation2d.fromDegrees(0))), () -> false);
+    }
+
+    public static boolean toggleBargeScore = true;
+    public Command runBargeScore() {
+        return either(
+            sequence(
+                Commands.runOnce(() -> toggleBargeScore = !toggleBargeScore),
+                RobotManager.getInstance().setStateCommand(RobotStates.RPB),
+                autoAlignBargeSimple()
+            ), 
+            sequence(
+                Commands.runOnce(() -> toggleBargeScore = !toggleBargeScore),
+                RobotManager.getInstance().setStateCommand(RobotStates.RSB),
+                waitSeconds(0.5),
+                RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL)
+            ), 
+            () -> toggleBargeScore
+        );
+        // if(toggleBargeScore){
+        //     return sequence(
+        //         autoAlignBargeSimple()
+        //     ).beforeStarting(RobotManager.getInstance().setStateCommand(RobotStates.RPB));
+        // }
+        // toggleBargeScore = !toggleBargeScore;
+
+        // return sequence(RobotManager.getInstance().setStateCommand(RobotStates.RSB),waitSeconds(0.5),RobotManager.getInstance().setStateCommand(RobotStates.NEUTRAL));
+    }
+
     public Command autoAlign(Supplier<Pose2d> pose, BooleanSupplier shouldRam) {
         return Commands.sequence(
             navigateTo(pose),
@@ -383,7 +416,7 @@ public class Swerve extends SwerveBase {
     }
 
     public Command ram(Supplier<Pose2d> pose, double timeout) {
-        return startEnd(
+        return Commands.startEnd(
             ()-> {
                 setThrottle(1);
                 moveBy(RAM_FACTOR.rotateBy(pose.get().getRotation()));
