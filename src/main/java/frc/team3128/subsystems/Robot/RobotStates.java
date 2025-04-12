@@ -27,8 +27,6 @@ public enum RobotStates {
     RSL3(ElevatorStates.L3, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow, true),
     RSL4(ElevatorStates.L4, IntakeStates.NEUTRAL, ManipulatorStates.OUT, slow, true),
 
-    TELE_HOLD(ElevatorStates.TELE_HOLD, IntakeStates.NEUTRAL, ManipulatorStates.IN, fast, false),
-    AUTO_HOLD(ElevatorStates.AUTO_HOLD, IntakeStates.NEUTRAL, ManipulatorStates.IN, fast, false),
     // RPA1(ElevatorStates.A1, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false),
     // RPA2(ElevatorStates.A2, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, slow, false),
     RPB(ElevatorStates.AB, IntakeStates.NEUTRAL, ManipulatorStates.IN_ALGAE, slow, false),
@@ -36,6 +34,10 @@ public enum RobotStates {
     RSA1(ElevatorStates.A1, IntakeStates.NEUTRAL, ManipulatorStates.IN_ALGAE, fast, false),
     RSA2(ElevatorStates.A2, IntakeStates.NEUTRAL, ManipulatorStates.IN_ALGAE, fast, false),
     RSB(ElevatorStates.AB, IntakeStates.NEUTRAL, ManipulatorStates.OUT_ALGAE, slow, false),
+
+
+    TELE_HOLD(ElevatorStates.TELE_HOLD, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, fast, false),
+    AUTO_HOLD(ElevatorStates.AUTO_HOLD, IntakeStates.NEUTRAL, ManipulatorStates.NEUTRAL, fast, false),
     
     INTAKE(ElevatorStates.NEUTRAL, IntakeStates.INTAKE, ManipulatorStates.NEUTRAL),
     OUTTAKE(ElevatorStates.NEUTRAL, IntakeStates.EJECT_OUTTAKE, ManipulatorStates.NEUTRAL),

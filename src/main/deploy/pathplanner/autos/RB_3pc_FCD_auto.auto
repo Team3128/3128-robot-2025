@@ -51,12 +51,6 @@
           "data": {
             "name": "Align SOURCE_1"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score L3 C"
-          }
         }
       ]
     }

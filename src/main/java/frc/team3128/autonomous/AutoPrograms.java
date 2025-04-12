@@ -154,25 +154,11 @@ public class AutoPrograms {
                     parallel(
                         run(() -> swerve.drive(0, 0, 0)),
                         sequence(
-                            waitSeconds(0.8),
+                            waitSeconds(1.15),
                             robot.setStateCommand(AUTO_HOLD),
                             robot.setStateCommand(RPL4)
                         )
-                    ).withDeadline(robot.alignScoreCoral(FieldConstants.allianceFlipRotationally(state.getFudgelessPose2d()), () -> false).
-                        andThen(() -> robot.autoScore()).
-                        andThen(waitUntil(() -> robot.stateEquals(NEUTRAL))))
-                );
-                NamedCommands.registerCommand(
-                    "Score L3 " + state.name(),
-                    // none()
-                    parallel(
-                        run(() -> swerve.drive(0, 0, 0)),
-                        sequence(
-                            waitSeconds(0.8),
-                            robot.setStateCommand(AUTO_HOLD),
-                            robot.setStateCommand(RPL3)
-                        )
-                    ).withDeadline(robot.alignScoreCoral(FieldConstants.allianceFlipRotationally(state.getFudgelessPose2d()), () -> false).
+                    ).withDeadline(swerve.autoAlign(state.getPose2d()).
                         andThen(() -> robot.autoScore()).
                         andThen(waitUntil(() -> robot.stateEquals(NEUTRAL))))
                 );
@@ -180,7 +166,7 @@ public class AutoPrograms {
                 NamedCommands.registerCommand(
                     "Align " + state.name(),
                     run(() -> swerve.drive(0, 0, 0))
-                        .withDeadline(swerve.autoAlignSource().withTimeout(1.8)) // swerve.autoAlign(state.getPose2d())
+                        .withDeadline(swerve.autoAlignSource()) // swerve.autoAlign(state.getPose2d())
                 );
             }
         }
