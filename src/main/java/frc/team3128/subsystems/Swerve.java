@@ -339,16 +339,16 @@ public class Swerve extends SwerveBase {
         return autoAlign(state.getPose2d());
     }
 
-    public Command autoAlign(boolean isRight, BooleanSupplier shouldRam) {
-        final List<Pose2d> setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
-        final List<Pose2d> fudgelessSetpoints = isRight ? fudgelessReefRight.asJava() : fudgelessReefLeft.asJava();
-        Supplier<Pose2d> pose = () -> (shouldRam.getAsBoolean() ? nearestPose2d(allianceFlip(setpoints)) : nearestPose2d(allianceFlip(fudgelessSetpoints)));
-        return navigateTo(pose);
-    }
+    // public Command autoAlign(boolean isRight, BooleanSupplier shouldRam) {
+    //     final List<Pose2d> setpoints = isRight ? reefRight.asJava() : reefLeft.asJava();
+    //     final List<Pose2d> fudgelessSetpoints = isRight ? fudgelessReefRight.asJava() : fudgelessReefLeft.asJava();
+    //     Supplier<Pose2d> pose = () -> (shouldRam.getAsBoolean() ? nearestPose2d(allianceFlip(setpoints)) : nearestPose2d(allianceFlip(fudgelessSetpoints)));
+    //     return navigateTo(pose);
+    // }
 
-    public Command autoAlignSource() {
-        return navigateTo(()-> nearestPose2d(allianceFlip(List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d()))));
-    }
+    // public Command autoAlignSource() {
+    //     return navigateTo(()-> nearestPose2d(allianceFlip(List.of(SOURCE_1.getPose2d(), SOURCE_2.getPose2d()))));
+    // }
 
     public Command autoAlign(Pose2d pose) {
         final Pose2d flippedPose = allianceFlipRotationally(pose);

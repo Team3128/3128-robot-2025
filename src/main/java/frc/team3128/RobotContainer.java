@@ -174,7 +174,7 @@ public class RobotContainer {
         //     // .beforeStarting(robot.setStateCommand(TELE_HOLD))
         // ));
 
-        controller.getButton(kBack).onTrue(robot.alignScoreCoral(false, shouldRam)
+        controller.getButton(kBack).onTrue(robot.alignScoreCoral(false)
             .beforeStarting(robot.setStateCommand(TELE_HOLD)));
 
         // controller.getButton(kStart).onTrue(sequence(
@@ -182,7 +182,7 @@ public class RobotContainer {
         //     // .beforeStarting(robot.setStateCommand(TELE_HOLD))
         // ));
 
-        controller.getButton(kStart).onTrue(robot.alignScoreCoral(true, shouldRam)
+        controller.getButton(kStart).onTrue(robot.alignScoreCoral(true)
             .beforeStarting(robot.setStateCommand(TELE_HOLD)));
 
         

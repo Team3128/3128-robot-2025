@@ -158,7 +158,7 @@ public class AutoPrograms {
                             robot.setStateCommand(AUTO_HOLD),
                             robot.setStateCommand(RPL4)
                         )
-                    ).withDeadline(robot.alignScoreCoral(FieldConstants.allianceFlipRotationally(state.getFudgelessPose2d()), () -> false).
+                    ).withDeadline(robot.alignScoreCoral(FieldConstants.allianceFlipRotationally(state.getPose2d()), () -> false).
                         andThen(() -> robot.autoScore()).
                         andThen(waitUntil(() -> robot.stateEquals(NEUTRAL))))
                 );
@@ -172,7 +172,7 @@ public class AutoPrograms {
                             robot.setStateCommand(AUTO_HOLD),
                             robot.setStateCommand(RPL3)
                         )
-                    ).withDeadline(robot.alignScoreCoral(FieldConstants.allianceFlipRotationally(state.getFudgelessPose2d()), () -> false).
+                    ).withDeadline(robot.alignScoreCoral(FieldConstants.allianceFlipRotationally(state.getPose2d()), () -> false).
                         andThen(() -> robot.autoScore()).
                         andThen(waitUntil(() -> robot.stateEquals(NEUTRAL))))
                 );
@@ -180,7 +180,7 @@ public class AutoPrograms {
                 NamedCommands.registerCommand(
                     "Align " + state.name(),
                     run(() -> swerve.drive(0, 0, 0))
-                        .withDeadline(swerve.autoAlignSource().withTimeout(1.8)) // swerve.autoAlign(state.getPose2d())
+                        .withDeadline(robot.alignCoralIntake().withTimeout(1.8)) // swerve.autoAlign(state.getPose2d())
                 );
             }
         }
@@ -193,17 +193,6 @@ public class AutoPrograms {
         NamedCommands.registerCommand(
             "Reset LEFT_BARGE",
             runOnce(() -> swerve.resetOdometryNoGyro(FieldConstants.allianceFlipRotationally(new Pose2d(7.17, 5.502, Rotation2d.kPi))))
-        );
-
-        NamedCommands.registerCommand(
-            "Score L4",
-            parallel(
-                run(() -> swerve.drive(0, 0, 0)),
-                sequence(
-                    waitSeconds(0.5),
-                    robot.setStateCommand(RPL4)
-                )
-            ).withDeadline(swerve.autoAlign(true, ()->true))
         );
 
         NamedCommands.registerCommand("Score L2", sequence(
