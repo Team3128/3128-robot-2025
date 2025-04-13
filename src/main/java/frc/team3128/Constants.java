@@ -1,17 +1,13 @@
 package frc.team3128;
 
-import static edu.wpi.first.units.Units.Rotation;
 import static frc.team3128.Constants.VisionConstants.APRIL_TAGS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collector;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import com.pathplanner.lib.util.FlippingUtil;
-
-import common.core.controllers.Controller;
 import common.core.controllers.PIDFFConfig;
 import common.hardware.motorcontroller.NAR_Motor.MotorConfig;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
@@ -27,10 +23,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-// import frc.team3128.subsystems.Swerve;
 
 
 
@@ -352,6 +346,20 @@ public class Constants {
             return pose;
         }
 
+        /**
+         * Flips a pose supplier rotationally
+         * @param pose
+         * @return
+         */
+        public static Supplier<Pose2d> allianceFlip(Supplier<Pose2d> pose) {
+            return ()-> allianceFlipRotationally(pose.get());
+        }
+
+        /**
+         * Flips a list of poses rotationally
+         * @param poses
+         * @return
+         */
         public static List<Pose2d> allianceFlip(List<Pose2d> poses) {
             return poses.stream().map(pose -> allianceFlipRotationally(pose)).collect(Collectors.toList());
         }

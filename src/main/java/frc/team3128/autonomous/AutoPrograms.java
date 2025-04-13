@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team3128.Robot;
 import frc.team3128.Constants.FieldConstants;
+import static frc.team3128.Constants.FieldConstants.*;
 import frc.team3128.Constants.FieldConstants.FieldStates;
 // import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Swerve;
@@ -159,7 +160,7 @@ public class AutoPrograms {
                             robot.setStateCommand(AUTO_HOLD),
                             robot.setStateCommand(RPL4)
                         )
-                    ).withDeadline(robot.alignScoreCoral(FieldConstants.allianceFlipRotationally(state.getPose2d()), () -> false).
+                    ).withDeadline(robot.alignScoreCoral(allianceFlip(()-> state.getPose2d()), () -> false).
                         andThen(() -> robot.autoScore()).
                         andThen(waitUntil(() -> robot.stateEquals(NEUTRAL))))
                 );
@@ -173,7 +174,7 @@ public class AutoPrograms {
                             robot.setStateCommand(AUTO_HOLD),
                             robot.setStateCommand(RPL3)
                         )
-                    ).withDeadline(robot.alignScoreCoral(FieldConstants.allianceFlipRotationally(state.getPose2d()), () -> false).
+                    ).withDeadline(robot.alignScoreCoral(allianceFlip(()-> state.getPose2d()), () -> false).
                         andThen(() -> robot.autoScore()).
                         andThen(waitUntil(() -> robot.stateEquals(NEUTRAL))))
                 );
@@ -183,7 +184,7 @@ public class AutoPrograms {
                     parallel(
                         run(() -> swerve.drive(0, 0, 0))
                     ).withDeadline(
-                        robot.alignAlgaeIntake(FieldConstants.allianceFlipRotationally(state.getPose2d()))
+                        robot.alignAlgaeIntake(allianceFlip(()-> state.getPose2d()))
                     )
                 );
             } else {
@@ -200,7 +201,7 @@ public class AutoPrograms {
             parallel(
                 run(() -> swerve.drive(0, 0, 0))
             ).withDeadline(
-                robot.alignAlgaeScore(allianceFlipRotationally(new Pose2d(7.7, 5.4, Rotation2d.kZero)))
+                robot.alignAlgaeScore(()-> allianceFlipRotationally(new Pose2d(7.7, 5.4, Rotation2d.kZero)))
                     .andThen(waitUntil(() -> robot.stateEquals(NEUTRAL)))
             )
         );

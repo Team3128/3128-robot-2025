@@ -84,31 +84,15 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     public Command alignScoreCoral(boolean isRight){
         final List<Pose2d> setpoints = isRight ? FieldStates.reefRight.asJava() : FieldStates.reefLeft.asJava();
         Supplier<Pose2d> pose = () -> swerve.nearestPose2d(allianceFlip(setpoints));
-        return parallel(
-            swerve.navigateTo(pose),
-            sequence(
-                waitUntil(()-> swerve.atElevatorDist()), // wait until safe for elevator to move
-                Commands.runOnce(()-> delayTransition = false),
-                Commands.runOnce(()-> {
-                    for(Pair<RobotStates, RobotStates> coupledState : coupledStates){
-                        if (coupledState.getFirst() == getState()) {
-                            sequence(
-                                waitUntil(() -> ElevatorMechanism.getInstance().atSetpoint()),
-                                waitUntil(()-> !Swerve.autoMoveEnabled),
-                                setStateCommand(coupledState.getSecond()),
-                                waitSeconds(0.5),
-                                setStateCommand(NEUTRAL)
-                            ).schedule();
-                            return;
-                        }
-                    }
-                })
-            )
-        );
+        return alignScoreCoral(pose, ()-> false);
     }
-    public Command alignScoreCoral(Pose2d pose, BooleanSupplier shouldRam){
+    public Command alignScoreCoral(Supplier<Pose2d> pose, BooleanSupplier shouldRam){
         return parallel(
-            swerve.autoAlign(() -> pose, shouldRam).beforeStarting(()-> delayTransition = true), // do normal ram
+            sequence(
+                Commands.runOnce(()-> delayTransition = true),
+                swerve.navigateTo(pose),
+                swerve.ram(pose).onlyIf(shouldRam)
+            ),
             sequence(
                 waitUntil(()-> swerve.atElevatorDist()), // wait until safe for elevator to move
                 Commands.runOnce(()-> delayTransition = false),
@@ -130,27 +114,18 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
         );
     }
 
-    public Command alignAlgaeIntake(Pose2d pose) {
-        return parallel(
-            swerve.navigateTo(() -> pose),
-            Commands.runOnce(
-                ()-> {
-                    if(FieldStates.idOf(allianceFlipRotationally(pose)) % 2 == 0) setStateCommand(RSA2).schedule();
-                    else setStateCommand(RSA1).schedule();
-                }
-            )
-        );
-    }
-
     public Command alignAlgaeIntake() {
         final List<Pose2d> setpoints = FieldStates.algaePoses.asJava();
         Supplier<Pose2d> pose = ()-> swerve.nearestPose2d(allianceFlip(setpoints));
+        return alignAlgaeIntake(pose);
+    }
+
+    public Command alignAlgaeIntake(Supplier<Pose2d> pose) {
         return parallel(
             swerve.navigateTo(pose),
             Commands.runOnce(
                 ()-> {
-                    Log.info("ID", FieldStates.idOf(allianceFlipRotationally(pose.get())));
-                    if(FieldStates.idOf(allianceFlipRotationally(pose.get())) % 2 == 0) setStateCommand(RSA2).schedule();
+                    if(FieldStates.idOf(allianceFlip(pose).get()) % 2 == 0) setStateCommand(RSA2).schedule();
                     else setStateCommand(RSA1).schedule();
                 }
             )
@@ -168,6 +143,10 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
     public Command alignAlgaeScore() {
         Supplier<Pose2d> pose = ()-> allianceFlip(new Pose2d(new Translation2d(7.7, swerve.getPose().getY()), Rotation2d.fromDegrees(0)));
+        return alignAlgaeIntake(pose);
+    }
+ 
+    public Command alignAlgaeScore(Supplier<Pose2d> pose) {
         return parallel(
             swerve.navigateTo(pose),
             sequence(
@@ -182,33 +161,17 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             )
         );
     }
- 
-    public Command alignAlgaeScore(Pose2d pose) {
-        return parallel(
-            swerve.navigateTo(() -> pose),
-            sequence(
-                waitUntil(()-> swerve.atElevatorDist()), // wait until safe for elevator to move
-                setStateCommand(RPB),
-                Commands.runOnce(()-> delayTransition = false),
-                waitUntil(() -> ElevatorMechanism.getInstance().atSetpoint()),
-                waitUntil(()-> !Swerve.autoMoveEnabled),
-                setStateCommand(RSB),
-                waitSeconds(0.5),
-                setStateCommand(NEUTRAL)
-            )
-        );
-    }
 
     public void autoScore() {
-        if (getState() == RobotStates.NEUTRAL || getState() == RobotStates.FULL_NEUTRAL)
+
+
+        if (getState() == RobotStates.NEUTRAL || getState() == RobotStates.FULL_NEUTRAL) 
             return;
 
-        
         if(getState() == TELE_HOLD || getState() == AUTO_HOLD) {
             setStateCommand(NEUTRAL).schedule();
             return;
         }
-
 
         coupledStates.forEach((Pair<RobotStates, RobotStates> coupledState) -> {
             if (coupledState.getFirst() == getState()) {
@@ -257,12 +220,6 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     public Command getToggleCommand(RobotStates state) {
         return getToggleCommand(state, NEUTRAL);
     }
-
-    // public Command runAlignAlgae(){
-    //     Pair<Command, Boolean> bruh = swerve.autoAlignAlgae();
-
-    //     return sequence(bruh.getFirst()).beforeStarting(setStateCommand(bruh.getSecond()? RSA2: RSA1));
-    // }
 
     @Override
     public void registerTransitions() {
