@@ -371,8 +371,6 @@ public class Swerve extends SwerveBase {
         for (final SwerveModule module : modules) {
             final double CANCoderAngle = module.getAbsoluteAngle().getDegrees();
             final double AngleMotorAngle = module.getAngleMotor().getPosition();
-            NAR_Shuffleboard.addData("Modules Status", "Module " + module.moduleNumber + " Drive", ()-> module.getDriveMotor().getTemperature() != 0 , 0, module.moduleNumber);
-            NAR_Shuffleboard.addData("Modules Status", "Module " + module.moduleNumber + " Angle", ()-> module.getAngleMotor().getTemperature() != 0 , 0, module.moduleNumber);
             NAR_Shuffleboard.addData("Modules Status", "Module " + module.moduleNumber + " CANCoder", ()-> module.getAngleEncoder().getVersion().getValue() != 0, 0, module.moduleNumber);
             if (CANCoderAngle == 0 || AngleMotorAngle == 0) return false;
         }

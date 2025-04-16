@@ -3,6 +3,7 @@ package frc.team3128.subsystems.Climber;
 import common.core.fsm.FSMSubsystemBase;
 import common.core.fsm.TransitionMap;
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
+import common.utility.shuffleboard.NAR_Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -11,6 +12,9 @@ import static frc.team3128.subsystems.Climber.ClimberStates.*;
 
 import java.util.List;
 import java.util.function.Function;
+
+import au.grapplerobotics.LaserCan;
+
 
 public class Climber extends FSMSubsystemBase<ClimberStates> {
     private static Climber instance;
@@ -43,6 +47,10 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 
         // initShuffleboard();
         registerTransitions();
+        NAR_Shuffleboard.addData("LaserCAN", "Measurment", ()-> roller.lc.getMeasurement().distance_mm, 0, 0);
+        NAR_Shuffleboard.addData("LaserCAN", "Sees Something", ()-> roller.lc.getMeasurement().distance_mm < 100, 1, 0);
+        NAR_Shuffleboard.addData("LaserCAN", "IsTriggered", ()-> roller.lc.getMeasurement().distance_mm < 100, 2, 0);
+
     }
 
     public static synchronized Climber getInstance() {
