@@ -39,6 +39,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Climber.Climber;
 import frc.team3128.subsystems.Climber.ClimberStates;
+import frc.team3128.subsystems.Climber.RollerMechanism;
 import frc.team3128.subsystems.Climber.WinchMechanism;
 import frc.team3128.subsystems.Elevator.Elevator;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
@@ -177,7 +178,11 @@ public class RobotContainer {
 
 
         controller.getUpPOVButton().onTrue(runOnce(()-> swerve.resetGyro(0)));
-        controller.getRightPOVButton().onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
+        controller.getRightPOVButton().onTrue(robot.getToggleCommand(
+            robot.setStateCommand(CLIMB_PRIME), 
+            waitUntil(()-> RollerMechanism.getInstance().isCaptured()).andThen(robot.setStateCommand(CLIMB)),
+            ()-> robot.stateEquals(CLIMB_PRIME))
+        );
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
         // controller.getUpPOVButton().onTrue(
         //     runOnce(()-> swerve.moveBy(new Translation2d(2, 0)))
