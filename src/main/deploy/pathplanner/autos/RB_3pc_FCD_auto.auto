@@ -57,6 +57,12 @@
           "data": {
             "name": "Score L3 C"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake ALGAE_CD"
+          }
         }
       ]
     }

@@ -84,9 +84,14 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     public Command alignScoreCoral(boolean isRight){
         final List<Pose2d> setpoints = isRight ? FieldStates.reefRight.asJava() : FieldStates.reefLeft.asJava();
         Supplier<Pose2d> pose = () -> swerve.nearestPose2d(allianceFlip(setpoints));
-        return alignScoreCoral(pose, ()-> false);
+        return alignScoreCoral(pose, ()-> false, true);
     }
-    public Command alignScoreCoral(Supplier<Pose2d> pose, BooleanSupplier shouldRam){
+
+    public Command alignScoreCoral(Supplier<Pose2d> pose, BooleanSupplier shouldRam) {
+        return alignScoreCoral(pose, shouldRam, false);
+    }
+
+    public Command alignScoreCoral(Supplier<Pose2d> pose, BooleanSupplier shouldRam, boolean shouldWait){
         return parallel(
             sequence(
                 Commands.runOnce(()-> delayTransition = true),
@@ -101,7 +106,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
                         if (coupledState.getFirst() == getState()) {
                             sequence(
                                 waitUntil(() -> ElevatorMechanism.getInstance().atSetpoint()),
-                                // waitUntil(()-> !Swerve.autoMoveEnabled),
+                                waitUntil(()-> !Swerve.autoMoveEnabled).onlyIf(()-> shouldWait),
                                 setStateCommand(coupledState.getSecond()),
                                 waitSeconds(0.5),
                                 setStateCommand(NEUTRAL)

@@ -80,8 +80,8 @@ public class RobotContainer {
     // private Manipulator manipulator;
     private Swerve swerve;
 
-    // private BooleanSupplier gyroReset;
-    // private BooleanSupplier elevReset;
+    private DigitalInput gyroReset;
+    private DigitalInput elevReset;
 
 
     // private WinchMechanism winch;
@@ -118,8 +118,8 @@ public class RobotContainer {
         controller = new NAR_XboxController(2);
         controller2 = new NAR_XboxController(3);
 
-        // gyroReset = ()-> !new DigitalInput(9).get();
-        // elevReset = ()-> !new DigitalInput(8).get();
+        gyroReset = new DigitalInput(9);
+        elevReset = new DigitalInput(8);
         
         swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
@@ -147,9 +147,9 @@ public class RobotContainer {
 
 
 
-        controller2.getButton(kA).onTrue(PivotMechanism.getInstance().runCommand(0.5)).onFalse(PivotMechanism.getInstance().stopCommand());
-        controller2.getButton(kB).onTrue(PivotMechanism.getInstance().runCommand(-0.5)).onFalse(PivotMechanism.getInstance().stopCommand());
-        controller2.getButton(kX).onTrue(PivotMechanism.getInstance().resetCommand().ignoringDisable(true));
+        controller2.getButton(kA).onTrue(WinchMechanism.getInstance().runCommand(0.5)).onFalse(WinchMechanism.getInstance().stopCommand());
+        controller2.getButton(kB).onTrue(WinchMechanism.getInstance().runCommand(-0.5)).onFalse(WinchMechanism.getInstance().stopCommand());
+        controller2.getButton(kX).onTrue(WinchMechanism.getInstance().resetCommand().ignoringDisable(true));
 
 
         controller.getButton(kA).onTrue(robot.getTempToggleCommand(RPL1, RSL1));
@@ -158,7 +158,7 @@ public class RobotContainer {
         controller.getButton(kY).onTrue(robot.getTempToggleCommand(RPL4, RSL4));
 
         controller.getButton(kLeftTrigger).onTrue(robot.getToggleCommand(INTAKE));
-        controller.getButton(kLeftBumper).onTrue(robot.getToggleCommand(OUTTAKE));
+        controller.getButton(kLeftBumper).onTrue(robot.setStateCommand(OUTTAKE)).onFalse(robot.setStateCommand(NEUTRAL));
 
         // controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
         // controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
@@ -183,8 +183,8 @@ public class RobotContainer {
         //     runOnce(()-> swerve.moveBy(new Translation2d(2, 0)))
         // );
 
-        // new Trigger(gyroReset).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true));
-        // new Trigger(elevReset).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true));
+        new Trigger(()-> !gyroReset.get()).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true));
+        new Trigger(()-> !elevReset.get()).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true).andThen(PivotMechanism.getInstance().resetCommand().ignoringDisable(true)));
     }
 
     public void initCameras() {
