@@ -7,6 +7,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Neutral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Reset LEFT_BARGE"
           }
         },

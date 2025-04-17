@@ -7,8 +7,8 @@ import io.vavr.collection.List;
 public enum IntakeStates {
     UNDEFINED,
     NEUTRAL(-10, -.05),
-    INTAKE(120, -0.8),
-    EJECT_OUTTAKE(19, 0.7),
+    INTAKE(125, -1),
+    EJECT_OUTTAKE(16, 1),
     CLIMB_PRIME(-10, -.05);
     
     public static final List<IntakeStates> defaultStates = List.of(NEUTRAL, INTAKE, EJECT_OUTTAKE, CLIMB_PRIME);

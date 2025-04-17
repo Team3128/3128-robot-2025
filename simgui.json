@@ -27,6 +27,11 @@
       "/Shuffleboard/ElevatorMechanism/Run": "Command",
       "/Shuffleboard/ElevatorMechanism/Run Volts": "Command",
       "/Shuffleboard/IntakePivot/PID_Controller": "ProfiledPIDController",
+      "/Shuffleboard/PivotMechanism/Characterize": "Command",
+      "/Shuffleboard/PivotMechanism/Enable": "Command",
+      "/Shuffleboard/PivotMechanism/PID_Controller": "PIDController",
+      "/Shuffleboard/PivotMechanism/Reset": "Command",
+      "/Shuffleboard/PivotMechanism/Run Volts": "Command",
       "/Shuffleboard/RobotContainer/NEUTRAL": "Subsystem",
       "/Shuffleboard/Shooter/PID_Controller": "PIDController",
       "/Shuffleboard/Shooter/rightController": "PIDController",
@@ -35,9 +40,11 @@
       "/Shuffleboard/WinchMechanism/Characterize": "Command",
       "/Shuffleboard/WinchMechanism/Enable": "Command",
       "/Shuffleboard/WinchMechanism/PID_Controller": "PIDController",
+      "/Shuffleboard/WinchMechanism/Reset": "Command",
       "/Shuffleboard/WinchMechanism/Run Volts": "Command",
       "/SmartDashboard/Alerts": "Alerts",
-      "/SmartDashboard/Auto Chooser": "String Chooser"
+      "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/PathPlanner": "Alerts"
     }
   },
   "NetworkTables": {

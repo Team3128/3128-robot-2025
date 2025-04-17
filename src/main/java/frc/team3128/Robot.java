@@ -124,10 +124,12 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void simulationInit() {
-        Log.info("A", FieldStates.A.getPose2d().toString());
-        Log.info("A ram", FieldStates.A.getPose2d().toString());
+        Log.info("SOURCE_LEFT", FieldStates.SOURCE_LEFT.getPose2d().toString());
+        Log.info("SOURCE_RIGHT", FieldStates.SOURCE_RIGHT.getPose2d().toString());
+        // Log.info("A", FieldStates.A.getPose2d().toString());
+        // Log.info("A ram", FieldStates.A.getPose2d().toString());
         // Log.info("B", FieldStates.B.getPose2d().toString());
-        Log.info("C", FieldStates.C.getPose2d().toString());
+        // Log.info("C", FieldStates.C.getPose2d().toString());
         // Log.info("D", FieldStates.D.getPose2d().toString());
         // Log.info("E", FieldStates.E.getPose2d().toString());
         // Log.info("F", FieldStates.F.getPose2d().toString());
