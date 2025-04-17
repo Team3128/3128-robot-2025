@@ -47,9 +47,9 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
 
         // initShuffleboard();
         registerTransitions();
-        NAR_Shuffleboard.addData("LaserCAN", "Measurment", ()-> roller.lc.getMeasurement().distance_mm, 0, 0);
-        NAR_Shuffleboard.addData("LaserCAN", "Sees Something", ()-> roller.lc.getMeasurement().distance_mm < 100, 1, 0);
-        NAR_Shuffleboard.addData("LaserCAN", "IsTriggered", ()-> roller.lc.getMeasurement().distance_mm < 100, 2, 0);
+        // NAR_Shuffleboard.addData("LaserCAN", "Measurment", ()-> roller.lc.getMeasurement().distance_mm, 0, 0);
+        // NAR_Shuffleboard.addData("LaserCAN", "Sees Something", ()-> roller.lc.getMeasurement().distance_mm < 100, 1, 0);
+        // NAR_Shuffleboard.addData("LaserCAN", "IsTriggered", ()-> roller.lc.getMeasurement().distance_mm < 100, 2, 0);
 
     }
 

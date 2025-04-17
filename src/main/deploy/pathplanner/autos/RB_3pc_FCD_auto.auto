@@ -7,13 +7,19 @@
         {
           "type": "named",
           "data": {
+            "name": "Neutral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Reset RIGHT_BARGE"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Score L4 F"
+            "name": "Slow L4 F"
           }
         },
         {

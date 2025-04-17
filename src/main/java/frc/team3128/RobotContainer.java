@@ -104,6 +104,8 @@ public class RobotContainer {
 
     public static BooleanSupplier shouldRam = ()-> false;
     public static BooleanSupplier shouldPreClimb = ()-> false;
+    // public static BooleanSupplier bargeAutoMovement = () -> true;
+    public static BooleanSupplier shouldWait;
 
     public static BooleanSupplier allianceWrite = () -> false;
     public static BooleanSupplier allianceRead = () -> false;
@@ -144,6 +146,8 @@ public class RobotContainer {
 
         shouldRam = ()-> buttonPad.getButton(1).getAsBoolean();
         shouldPreClimb = ()-> !buttonPad.getButton(2).getAsBoolean();
+        shouldWait = () -> !buttonPad.getButton(5).getAsBoolean();
+        // bargeAutoMovement = () -> !buttonPad.getButton(3).getAsBoolean();
         // shouldRam = ()-> false;
         // shouldPreClimb = ()-> false;
 
@@ -176,36 +180,45 @@ public class RobotContainer {
 
         // controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
         // controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
-        controller.getButton(kRightBumper).onTrue(robot.alignAlgaeIntake());
-        controller.getButton(kRightTrigger).onTrue(robot.alignAlgaeScore());
+        controller.getButton(kRightBumper).onTrue(either(
+            robot.getToggleCommand(RSA1, RSA2),
+            robot.alignAlgaeIntake(),
+            ()-> buttonPad.getButton(4).getAsBoolean()
+        ));
+        controller.getButton(kRightTrigger).onTrue(either(
+            sequence(
+                robot.setStateCommand(RPB),
+                waitSeconds(2),
+                robot.setStateCommand(RSB),
+                waitSeconds(0.5),
+                robot.setStateCommand(NEUTRAL)
+            ),
+            robot.alignAlgaeScore(),
+            ()-> !buttonPad.getButton(3).getAsBoolean()
+        ));
 
 
         controller.getButton(kRightStick).onTrue(robot.setStateCommand(NEUTRAL));
         controller.getButton(kLeftStick).onTrue(robot.alignCoralIntake());
 
-        controller.getButton(kBack).onTrue(robot.alignScoreCoral(false)
+        controller.getButton(kBack).onTrue(robot.alignScoreCoral(false, shouldWait)
             .beforeStarting(robot.setStateCommand(TELE_HOLD)));
 
-        controller.getButton(kStart).onTrue(robot.alignScoreCoral(true)
+        controller.getButton(kStart).onTrue(robot.alignScoreCoral(true, shouldWait)
             .beforeStarting(robot.setStateCommand(TELE_HOLD)));
 
 
         controller.getUpPOVButton().onTrue(runOnce(()-> swerve.resetGyro(0)));
-        controller.getRightPOVButton().onTrue(sequence(
-            robot.setStateCommand(CLIMB_PRIME), 
-            waitUntil(()-> WinchMechanism.getInstance().atSetpoint()),
-            waitUntil(()-> RollerMechanism.getInstance().isCaptured()),
-            robot.setStateCommand(CLIMB)
-            )
-        );
+        controller.getRightPOVButton().onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
         // controller.getUpPOVButton().onTrue(
         //     runOnce(()-> swerve.moveBy(new Translation2d(2, 0)))
         // );
 
-        new Trigger(()-> !gyroReset.get()).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true));
-        new Trigger(()-> !elevReset.get()).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true).andThen(PivotMechanism.getInstance().resetCommand().ignoringDisable(true)));
+        new Trigger(()-> !gyroReset.get()).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true).andThen(Commands.print("Gyro Zeroed").ignoringDisable(true)).ignoringDisable(true));
+        new Trigger(()-> !elevReset.get()).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true).andThen(PivotMechanism.getInstance().resetCommand().ignoringDisable(true).andThen(WinchMechanism.getInstance().resetCommand().ignoringDisable(true))).andThen(Commands.print("Subsystems Zeroed").ignoringDisable(true)).ignoringDisable(true));
         new Trigger(allianceWrite).onTrue(runOnce(()-> Robot.getAlliance()).ignoringDisable(true));
+        new Trigger(()-> RollerMechanism.getInstance().isCaptured()).and(()-> robot.stateEquals(CLIMB_PRIME)).debounce(0.25).whileTrue(Commands.repeatingSequence(Commands.print("Captured"))).onFalse(Commands.print("Not Captured --------------------------------------------------------------------------------------------"));
     }
 
     public void initCameras() {

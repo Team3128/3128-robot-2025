@@ -165,6 +165,20 @@ public class AutoPrograms {
                         andThen(waitUntil(() -> robot.stateEquals(NEUTRAL))))
                 );
                 NamedCommands.registerCommand(
+                    "Slow L4 " + state.name(),
+                    // none()
+                    parallel(
+                        run(() -> swerve.drive(0, 0, 0)),
+                        sequence(
+                            waitSeconds(0.8),
+                            robot.setStateCommand(AUTO_HOLD),
+                            robot.setStateCommand(RPL4)
+                        )
+                    ).withDeadline(robot.alignScoreCoralSlow(allianceFlip(()-> state.getPose2d()), () -> false).
+                        andThen(() -> robot.autoScore()).
+                        andThen(waitUntil(() -> robot.stateEquals(NEUTRAL))))
+                );
+                NamedCommands.registerCommand(
                     "Score L3 " + state.name(),
                     // none()
                     parallel(
@@ -201,7 +215,7 @@ public class AutoPrograms {
             parallel(
                 run(() -> swerve.drive(0, 0, 0))
             ).withDeadline(
-                robot.alignAlgaeScore(()-> allianceFlipRotationally(new Pose2d(7.7, 5.4, Rotation2d.kZero)))
+                robot.alignAlgaeScore(()-> allianceFlipRotationally(new Pose2d(7.6, 5.4, Rotation2d.kZero)))
                     .andThen(waitUntil(() -> robot.stateEquals(NEUTRAL)))
             )
         );
@@ -229,7 +243,6 @@ public class AutoPrograms {
         ));
 
         NamedCommands.registerCommand("Neutral", sequence(
-            waitSeconds(0.25),
             robot.setStateCommand(NEUTRAL)
         ));
 

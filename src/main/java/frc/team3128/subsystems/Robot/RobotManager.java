@@ -17,6 +17,7 @@ import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Intake.IntakeStates;
 import frc.team3128.subsystems.Manipulator.Manipulator;
 import frc.team3128.subsystems.Manipulator.ManipulatorStates;
+import frc.team3128.RobotContainer;
 import frc.team3128.Constants.FieldConstants.FieldStates;
 import static frc.team3128.Constants.FieldConstants.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
@@ -47,7 +48,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static boolean delayTransition = false;
 
     private RobotManager() {
-        super(RobotStates.class, transitionMap, NEUTRAL);
+        super(RobotStates.class, transitionMap, FULL_NEUTRAL);
 
         elevator = Elevator.getInstance();
         manipulator = Manipulator.getInstance();
@@ -84,14 +85,24 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     public Command alignScoreCoral(boolean isRight){
         final List<Pose2d> setpoints = isRight ? FieldStates.reefRight.asJava() : FieldStates.reefLeft.asJava();
         Supplier<Pose2d> pose = () -> swerve.nearestPose2d(allianceFlip(setpoints));
-        return alignScoreCoral(pose, ()-> false, true);
+        return alignScoreCoral(pose, ()-> false, ()->true);
+    }
+
+    public Command alignScoreCoral(boolean isRight, BooleanSupplier shouldWait){
+        final List<Pose2d> setpoints = isRight ? FieldStates.reefRight.asJava() : FieldStates.reefLeft.asJava();
+        Supplier<Pose2d> pose = () -> swerve.nearestPose2d(allianceFlip(setpoints));
+        return alignScoreCoral(pose, ()-> false, shouldWait);
     }
 
     public Command alignScoreCoral(Supplier<Pose2d> pose, BooleanSupplier shouldRam) {
-        return alignScoreCoral(pose, shouldRam, false);
+        return alignScoreCoral(pose, shouldRam, ()->false);
     }
 
-    public Command alignScoreCoral(Supplier<Pose2d> pose, BooleanSupplier shouldRam, boolean shouldWait){
+    public Command alignScoreCoralSlow(Supplier<Pose2d> pose, BooleanSupplier shouldRam) {
+        return alignScoreCoral(pose, shouldRam, ()->true);
+    }
+
+    public Command alignScoreCoral(Supplier<Pose2d> pose, BooleanSupplier shouldRam, BooleanSupplier shouldWait){
         return parallel(
             sequence(
                 Commands.runOnce(()-> delayTransition = true),
@@ -106,7 +117,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
                         if (coupledState.getFirst() == getState()) {
                             sequence(
                                 waitUntil(() -> ElevatorMechanism.getInstance().atSetpoint()),
-                                waitUntil(()-> !Swerve.autoMoveEnabled).onlyIf(()-> shouldWait),
+                                waitUntil(()-> !Swerve.autoMoveEnabled).onlyIf(shouldWait),
                                 setStateCommand(coupledState.getSecond()),
                                 waitSeconds(0.5),
                                 setStateCommand(NEUTRAL)
@@ -147,8 +158,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     }
 
     public Command alignAlgaeScore() {
-        Supplier<Pose2d> pose = ()-> allianceFlip(new Pose2d(new Translation2d(7.7, swerve.getPose().getY()), Rotation2d.fromDegrees(0)));
-        return alignAlgaeIntake(pose);
+        Supplier<Pose2d> pose = ()-> allianceFlip(new Pose2d(new Translation2d(7.6, swerve.getPose().getY()), Rotation2d.fromDegrees(0)));
+        return alignAlgaeScore(pose);
     }
  
     public Command alignAlgaeScore(Supplier<Pose2d> pose) {
@@ -251,6 +262,5 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
             waitSeconds(0.25),
             elevator.setStateCommand(RSL1.getElevatorState())
         ));
-
     }
 }
