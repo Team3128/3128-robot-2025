@@ -65,6 +65,10 @@ import static frc.team3128.Constants.FieldConstants.*;
 import static frc.team3128.Constants.FieldConstants.*;
 import static frc.team3128.Constants.VisionConstants.*;
 import static frc.team3128.subsystems.Robot.RobotStates.*;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.DriverStation;
+
+
 
 /**
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -136,7 +140,7 @@ public class RobotContainer {
     }   
 
     private void configureButtonBindings() {
-        buttonPad.getButton(10).onTrue(swerve.identifyOffsetsCommand().ignoringDisable(true));
+        buttonPad.getButton(9).onTrue(swerve.identifyOffsetsCommand().ignoringDisable(true));
 
         shouldRam = ()-> buttonPad.getButton(1).getAsBoolean();
         shouldPreClimb = ()-> !buttonPad.getButton(2).getAsBoolean();
@@ -146,11 +150,20 @@ public class RobotContainer {
         allianceWrite = ()-> buttonPad.getButton(12).getAsBoolean();
         allianceRead = ()-> buttonPad.getButton(11).getAsBoolean();
 
+        buttonPad.getButton(11).onTrue(runOnce(()-> {
+            if(buttonPad.getButton(12).getAsBoolean()) Robot.alliance = DriverStation.Alliance.Red;
+            else Robot.alliance = DriverStation.Alliance.Blue;
+            Log.info("Alliance", Robot.getAlliance().name());
+        }).ignoringDisable(true));
+
+        buttonPad.getButton(10).onTrue(runOnce(()-> Log.info("Alliance", Robot.getAlliance().toString())).ignoringDisable(true));
+
 
 
         controller2.getButton(kA).onTrue(WinchMechanism.getInstance().runCommand(0.5)).onFalse(WinchMechanism.getInstance().stopCommand());
         controller2.getButton(kB).onTrue(WinchMechanism.getInstance().runCommand(-0.5)).onFalse(WinchMechanism.getInstance().stopCommand());
         controller2.getButton(kX).onTrue(WinchMechanism.getInstance().resetCommand().ignoringDisable(true));
+        controller2.getButton(kY).onTrue(robot.setStateCommand(FULL_NEUTRAL));
 
 
         controller.getButton(kA).onTrue(robot.getTempToggleCommand(RPL1, RSL1));
@@ -178,10 +191,12 @@ public class RobotContainer {
 
 
         controller.getUpPOVButton().onTrue(runOnce(()-> swerve.resetGyro(0)));
-        controller.getRightPOVButton().onTrue(robot.getToggleCommand(
+        controller.getRightPOVButton().onTrue(sequence(
             robot.setStateCommand(CLIMB_PRIME), 
-            waitUntil(()-> RollerMechanism.getInstance().isCaptured()).andThen(robot.setStateCommand(CLIMB)),
-            ()-> robot.stateEquals(CLIMB_PRIME))
+            waitUntil(()-> WinchMechanism.getInstance().atSetpoint()),
+            waitUntil(()-> RollerMechanism.getInstance().isCaptured()),
+            robot.setStateCommand(CLIMB)
+            )
         );
         controller.getDownPOVButton().onTrue(runOnce(()-> swerve.snapToElement()));
         // controller.getUpPOVButton().onTrue(
@@ -190,6 +205,7 @@ public class RobotContainer {
 
         new Trigger(()-> !gyroReset.get()).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true));
         new Trigger(()-> !elevReset.get()).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true).andThen(PivotMechanism.getInstance().resetCommand().ignoringDisable(true)));
+        new Trigger(allianceWrite).onTrue(runOnce(()-> Robot.getAlliance()).ignoringDisable(true));
     }
 
     public void initCameras() {

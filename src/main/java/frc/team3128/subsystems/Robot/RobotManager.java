@@ -241,6 +241,8 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
 
         // From exclusive state to Neutral
         transitionMap.addConvergingTransition(exclusiveStates.asJava(), NEUTRAL, defaultTransitioner);
+        transitionMap.addConvergingTransition(FULL_NEUTRAL, defaultTransitioner);
+        transitionMap.addDivergingTransition(FULL_NEUTRAL, defaultTransitioner);
 
         transitionMap.addTransition(RPL1, RSL1, sequence(
             waitUntil(()-> !Swerve.autoMoveEnabled),

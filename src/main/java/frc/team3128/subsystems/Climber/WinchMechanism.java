@@ -19,6 +19,8 @@ public class WinchMechanism extends PositionSubsystemBase {
 
     private WinchMechanism() {
         super(controller, leader);
+
+        initShuffleboard();
     }
 
     public static WinchMechanism getInstance() {

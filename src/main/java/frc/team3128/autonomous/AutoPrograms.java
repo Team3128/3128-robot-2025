@@ -259,9 +259,10 @@ public class AutoPrograms {
         String selectedAutoName = null;
         // String selectedAutoName = NarwhalDashboard.getInstance().getSelectedAuto(); //NarwhalDashboard.getInstance().getSelectedAuto();
         // String hardcode = "MID_3pc_H_auto";
-        String hardcode = "LB_3pc_ILK_auto";
+        // String hardcode = "LB_3pc_ILK_auto";
         // String hardcode = "MID_1pc_H_auto"; 
         // String hardcode = "Left_Leave_Backwards";
+        String hardcode = "RB_3pc_FCD_auto";
         
          
         Command autoCommand;

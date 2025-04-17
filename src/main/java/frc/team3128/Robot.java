@@ -42,14 +42,16 @@ public class Robot extends NAR_Robot {
         if (alliance == null) {
             Optional<Alliance> DSalliance = DriverStation.getAlliance();
             if (DSalliance.isPresent()) alliance = DSalliance.get();
+            Log.info("Alliance", alliance.toString());
         }
 
-        if (RobotContainer.allianceRead.getAsBoolean()){
-            alliance = RobotContainer.allianceWrite.getAsBoolean() ? Alliance.Red : Alliance.Blue;
-        }
+        // if (RobotContainer.allianceRead.getAsBoolean()){
+        //     alliance = RobotContainer.allianceWrite.getAsBoolean() ? Alliance.Red : Alliance.Blue;
+        //     Log.info("Alliance", alliance.toString());
+        // }
 
-
-        return alliance;
+        //NOTE: CHANGE EVERY MATCH
+        return DriverStation.Alliance.Blue;
     }
 
     public static Robot instance;
