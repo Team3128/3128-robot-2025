@@ -234,7 +234,7 @@ public class Constants {
         public static final Translation2d ROBOT_RELATIVE_MANIPULATOR_OFFSET = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(-6.25));
         public static final Translation2d ROBOT_RELATIVE_MANIPULATOR_OFFSET_BACKWARDS = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(6.25));
         public static final Translation2d CORAL_STOP_DIST = new Translation2d(Units.inchesToMeters(4.5), 0);
-        public static final Translation2d ALGAE_STOP_DIST = new Translation2d(0.01, 0);
+        public static final Translation2d ALGAE_STOP_DIST = new Translation2d(0.01, Units.inchesToMeters(2));
         public static final Translation2d SOURCE_STOP_DIST = new Translation2d(0.05, 0);
         public static final Translation2d RAM_FACTOR = new Translation2d(0.1, 0);
 

@@ -46,7 +46,6 @@ public class Intake extends FSMSubsystemBase<IntakeStates> {
         transitionMap.addConvergingTransition(EJECT_OUTTAKE, sequence(
             pivot.pidTo(EJECT_OUTTAKE.getAngle()),
             waitUntil(() -> pivot.atSetpoint()),
-            waitSeconds(0.25),
             roller.runCommand(EJECT_OUTTAKE.getPower())
         ));
 	}

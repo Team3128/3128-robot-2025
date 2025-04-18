@@ -1,14 +1,13 @@
 package frc.team3128.subsystems.Intake;
 
 import common.hardware.motorcontroller.NAR_Motor.Neutral;
-import edu.wpi.first.math.Pair;
 import io.vavr.collection.List;
 
 public enum IntakeStates {
     UNDEFINED,
     NEUTRAL(-10, -.05),
     INTAKE(125, -1),
-    EJECT_OUTTAKE(16, 1),
+    EJECT_OUTTAKE(19, 0.7),
     CLIMB_PRIME(-10, -.05);
     
     public static final List<IntakeStates> defaultStates = List.of(NEUTRAL, INTAKE, EJECT_OUTTAKE, CLIMB_PRIME);

@@ -192,6 +192,20 @@ public class AutoPrograms {
                         andThen(() -> robot.autoScore()).
                         andThen(waitUntil(() -> robot.stateEquals(NEUTRAL))))
                 );
+                NamedCommands.registerCommand(
+                    "Slow L3 " + state.name(),
+                    // none()
+                    parallel(
+                        run(() -> swerve.drive(0, 0, 0)),
+                        sequence(
+                            waitSeconds(0.8),
+                            robot.setStateCommand(AUTO_HOLD),
+                            robot.setStateCommand(RPL3)
+                        )
+                    ).withDeadline(robot.alignScoreCoralSlow(allianceFlip(()-> state.getPose2d()), () -> false).
+                        andThen(() -> robot.autoScore()).
+                        andThen(waitUntil(() -> robot.stateEquals(NEUTRAL))))
+                );
             } else if (state.name().length() == 8) {
                 NamedCommands.registerCommand(
                     "Intake " + state.name(),
@@ -205,7 +219,7 @@ public class AutoPrograms {
                 NamedCommands.registerCommand(
                     "Align " + state.name(),
                     run(() -> swerve.drive(0, 0, 0))
-                        .withDeadline(robot.alignCoralIntake().withTimeout(1.8)) // swerve.autoAlign(state.getPose2d())
+                        .withDeadline(robot.alignCoralIntake().withTimeout(2)) // swerve.autoAlign(state.getPose2d())
                 );
             }
         }
@@ -271,11 +285,11 @@ public class AutoPrograms {
     public Command getAutonomousCommand() {
         String selectedAutoName = null;
         // String selectedAutoName = NarwhalDashboard.getInstance().getSelectedAuto(); //NarwhalDashboard.getInstance().getSelectedAuto();
-        // String hardcode = "MID_3pc_H_auto";
+        String hardcode = "MID_3pc_H_auto";
         // String hardcode = "LB_3pc_ILK_auto";
         // String hardcode = "MID_1pc_H_auto"; 
         // String hardcode = "Left_Leave_Backwards";
-        String hardcode = "RB_3pc_FCD_auto";
+        // String hardcode = "RB_3pc_FCD_auto";
         
          
         Command autoCommand;
