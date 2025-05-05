@@ -565,4 +565,9 @@ public class Constants {
         public static final int FIRST_SENSOR_ID = 0;
         public static final int SECOND_SENSOR_ID = 1;
     }
+
+    public static class LedsConstants {
+        public static final int CANDLE_ID = 1;
+        public static final int MAX_HEIGHT = 20;
+    }
 }
