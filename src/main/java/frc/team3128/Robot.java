@@ -23,6 +23,8 @@ import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Intake.PivotMechanism;
+import frc.team3128.subsystems.Leds.Leds;
+import frc.team3128.subsystems.Leds.LedsStates;
 // import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
@@ -183,6 +185,7 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void disabledInit() {
+        Leds.getInstance().setStateCommand(LedsStates.DISABLED).ignoringDisable(true).schedule();
         CommandScheduler.getInstance().cancelAll();
         Swerve.getInstance().setBrakeMode(false);
         Swerve.disable();
@@ -195,6 +198,7 @@ public class Robot extends NAR_Robot {
         Swerve.getInstance().setBrakeMode(true);
         RobotManager.getInstance().stop();
         Log.info("State", RobotManager.getInstance().getState().name());
+        Leds.getInstance().setStateCommand(LedsStates.NEUTRAL).schedule();
     }
     
     // @Override

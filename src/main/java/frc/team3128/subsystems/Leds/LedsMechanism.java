@@ -34,12 +34,20 @@ public class LedsMechanism {
         candle.configAllSettings(config);
     }
 
+    public void reset() {
+        candle.setLEDs(0,0,0, 0, 0, MAX_HEIGHT);
+    }
+
+    public void setColor(Color color) {
+        setColor(color);
+    }
+
+
     public void set(Color color, int height) {
+        reset();
         candle.setLEDs((int) color.red, (int) color.green, (int) color.blue, 0, 0, height);
     }
 
-    public void set(Color color) {
-        candle.setLEDs((int) color.red, (int) color.green, (int) color.blue, 0, 0, MAX_HEIGHT);
-    }
 
+  
 }
