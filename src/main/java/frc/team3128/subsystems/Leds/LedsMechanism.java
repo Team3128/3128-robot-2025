@@ -1,5 +1,6 @@
 package frc.team3128.subsystems.Leds;
 
+import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 
@@ -36,18 +37,20 @@ public class LedsMechanism {
 
     public void reset() {
         candle.setLEDs(0,0,0, 0, 0, MAX_HEIGHT);
+        candle.animate(null, 0);
     }
 
     public void setColor(Color color) {
-        setColor(color);
+        setColor(color, MAX_HEIGHT);
     }
 
-
-    public void set(Color color, int height) {
+    public void setColor(Color color, int height) {
         reset();
-        candle.setLEDs((int) color.red, (int) color.green, (int) color.blue, 0, 0, height);
+        candle.setLEDs((int) (color.red * 256), (int) (color.green * 256), (int) (color.blue * 256), 0, 0, height);
     }
 
-
-  
+    public void setAnimation(Animation animation) {
+        reset();
+        candle.animate(animation, 0);
+    }
 }

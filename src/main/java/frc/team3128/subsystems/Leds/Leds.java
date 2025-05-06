@@ -10,11 +10,17 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team3128.subsystems.Manipulator.ManipulatorStates;
 
 public class Leds extends FSMSubsystemBase<LedsStates> {
-    
+
     private static Leds instance;
     private static TransitionMap<LedsStates> transitionMap = new TransitionMap<LedsStates>(LedsStates.class);
 
- private Function<LedsStates, Command> defaultTransitioner = state -> {return Commands.runOnce(()->LedsMechanism.getInstance().setColor(state.getColor()));};
+    private Function<LedsStates, Command> defaultTransitioner = state -> {
+        if (state.getIsAnimation()) {
+            return Commands.runOnce(() -> LedsMechanism.getInstance().setAnimation(state.getAnimation()));
+        } else {
+            return Commands.runOnce(() -> LedsMechanism.getInstance().setColor(state.getColor()));
+        }
+    };
 
     public static synchronized Leds getInstance() {
         if (instance == null)
@@ -26,10 +32,9 @@ public class Leds extends FSMSubsystemBase<LedsStates> {
         super(LedsStates.class, transitionMap, LedsStates.DISABLED);
     }
 
-    
     @Override
     public void registerTransitions() {
-         //NEUTRAL, IN, OUT are able to transition between each other
+        // NEUTRAL, IN, OUT are able to transition between each other
         transitionMap.addCommutativeTransition(List.of(LedsStates.values()), defaultTransitioner);
     }
 }
