@@ -22,6 +22,7 @@ import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -47,6 +48,7 @@ import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Intake.PivotMechanism;
 import frc.team3128.subsystems.Leds.Leds;
+import frc.team3128.subsystems.Leds.LedsMechanism;
 import frc.team3128.subsystems.Leds.LedsStates;
 import frc.team3128.subsystems.Manipulator.Manipulator;
 import frc.team3128.subsystems.Robot.RobotManager;
@@ -164,6 +166,7 @@ public class RobotContainer {
 
         buttonPad.getButton(10).onTrue(runOnce(()-> Log.info("Alliance", Robot.getAlliance().toString())).ignoringDisable(true));
 
+        // buttonPad.getButton(8).onTrue(runOnce(()-> LedsMechanism.getInstance().setColor(Color.kBlue)));
 
 
         controller2.getButton(kA).onTrue(WinchMechanism.getInstance().runCommand(0.5)).onFalse(WinchMechanism.getInstance().stopCommand());

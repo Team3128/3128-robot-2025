@@ -15,7 +15,7 @@ public class LedsMechanism {
     
     private static LedsMechanism instance;
 
-    private final CANdle candle = new CANdle(CANDLE_ID/*, DRIVETRAIN_CANBUS_NAME*/);
+    private final CANdle candle = new CANdle(CANDLE_ID, "drivetrain");
 
     public static synchronized LedsMechanism getInstance() {
         if (instance == null)

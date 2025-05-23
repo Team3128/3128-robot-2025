@@ -567,7 +567,7 @@ public class Constants {
     }
 
     public static class LedsConstants {
-        public static final int CANDLE_ID = 1;
-        public static final int MAX_HEIGHT = 20;
+        public static final int CANDLE_ID = 14;
+        public static final int MAX_HEIGHT = 36;
     }
 }
