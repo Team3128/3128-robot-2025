@@ -176,6 +176,8 @@ public class RobotContainer {
         controller.getButton(kY).onTrue(robot.getTempToggleCommand(RPL4, RSL4));
 
         controller.getButton(kLeftTrigger).onTrue(robot.getToggleCommand(INTAKE));
+        
+        controller.getButton(kLeftTrigger).onTrue(swerve.driveDebug().beforeStarting(()->swerve.zeroLock()));
         controller.getButton(kLeftBumper).onTrue(robot.setStateCommand(OUTTAKE)).onFalse(robot.setStateCommand(NEUTRAL));
 
         // controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));

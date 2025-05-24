@@ -139,6 +139,8 @@ public class Swerve extends SwerveBase {
     private static double rotationPlateauThreshold = 10;
     private static double rotationPlateauCount = 0;
 
+    private static DoubleSupplier velocitySupplier;
+
     static {
         translationController.setTolerance(translationTolerance);
         translationController.setConstraints(translationConstraints);
@@ -220,6 +222,10 @@ public class Swerve extends SwerveBase {
         assign(velocity);
         if(translationController.isEnabled() && atTranslationSetpoint()) translationController.disable();
         if(rotationController.isEnabled() && atRotationSetpoint() && !translationController.isEnabled()) rotationController.disable();
+    }
+
+    public Command driveDebug(){
+        return runOnce(() -> drive(new ChassisSpeeds(velocitySupplier.getAsDouble(), 0, 0)));
     }
 
     public Command getDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta){
@@ -391,11 +397,12 @@ public class Swerve extends SwerveBase {
         super.initShuffleboard();
         NAR_Shuffleboard.addData("Swerve", "Throttle", this::getThrottle, 4, 3);
 
-
         NAR_Shuffleboard.addData("Auto", "Translation Enabled", ()-> translationController.isEnabled(), 0, 0);
         NAR_Shuffleboard.addData("Auto", "At Setpoint", ()-> atTranslationSetpoint(), 0, 1);
         NAR_Shuffleboard.addData("Auto", "Error", ()-> getDistanceTo(translationSetpoint), 1, 0);
         NAR_Shuffleboard.addData("Auto", "Count", ()-> translationPlateauCount, 1, 1);
+        
+        velocitySupplier = NAR_Shuffleboard.debug("Swerve", "Velocity", 0, 5, 5);
         kPSupplier = NAR_Shuffleboard.debug("Auto", "kP", translationConfig.kP, 2, 0);
         kISupplier = NAR_Shuffleboard.debug("Auto", "kI", translationConfig.kI, 2, 1);
         kDSupplier = NAR_Shuffleboard.debug("Auto", "kD", translationConfig.kD, 2, 2);
