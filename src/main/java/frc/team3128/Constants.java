@@ -536,7 +536,7 @@ public class Constants {
         public static final double CLIMBER_GEAR_RATIO = (90.0 / 450.0) * (5.0 / 3.0);
         public static final double CLIMBER_SAMPLE_PER_MINUTE = 60;
         public static final int CLIMBER_STATOR_CURRENT_LIMIT = 40;
-        public static final boolean CLIMBER_INVERT = false;
+        public static final boolean CLIMBER_INVERT = true;
         public static final Neutral CLIMBER_NEUTRAL_MODE = Neutral.BRAKE;
         public static final StatusFrames CLIMBER_STATUS_FRAME = StatusFrames.POSITION;
 

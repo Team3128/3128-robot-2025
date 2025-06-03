@@ -53,13 +53,13 @@ public class Robot extends NAR_Robot {
         // }
 
         //NOTE: CHANGE EVERY MATCH
-        return DriverStation.Alliance.Blue;
+        return DriverStation.Alliance.Red;
     }
 
     public static Robot instance;
 
-    public static RobotContainer m_robotContainer = new RobotContainer();
-    public static AutoPrograms autoPrograms = AutoPrograms.getInstance();
+    public static RobotContainer m_robotContainer;
+    public static AutoPrograms autoPrograms;
     // public static AutoPrograms autoPrograms;
 
     public static synchronized Robot getInstance() {
@@ -67,6 +67,11 @@ public class Robot extends NAR_Robot {
             instance = new Robot();
         }
         return instance;
+    }
+
+    private Robot() {
+        Log.profile("init RobotContainer", () -> m_robotContainer = new RobotContainer());
+        autoPrograms = AutoPrograms.getInstance();
     }
 
     @Override
@@ -156,7 +161,7 @@ public class Robot extends NAR_Robot {
         Camera.enableAll();
         sequence(
             waitSeconds(115),
-            RobotManager.getInstance().setStateCommand(RobotStates.PRE_CLIMB_PRIME).onlyIf(RobotContainer.shouldPreClimb),
+            RobotManager.getInstance().setStateCommand(RobotStates.PRE_CLIMB_PRIME).andThen(Leds.getInstance().setStateCommand(LedsStates.CLIMB)).onlyIf(RobotContainer.shouldPreClimb),
             waitSeconds(16),
             RobotManager.getInstance().setStateCommand(RobotStates.CLIMB).onlyIf(RobotContainer.shouldPreClimb)
         ).schedule();
