@@ -22,6 +22,7 @@ import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -46,6 +47,9 @@ import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Intake.PivotMechanism;
+import frc.team3128.subsystems.Leds.Leds;
+import frc.team3128.subsystems.Leds.LedsMechanism;
+import frc.team3128.subsystems.Leds.LedsStates;
 import frc.team3128.subsystems.Manipulator.Manipulator;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
@@ -113,7 +117,7 @@ public class RobotContainer {
 
     @SuppressWarnings("resource")
     public RobotContainer() {
-        swerve = Swerve.getInstance();
+        Log.profile("init Swerve", () -> swerve = Swerve.getInstance());
         // winch = WinchMechanism.getInstance();
         
         NAR_CANSpark.maximumRetries = 2;
@@ -162,6 +166,7 @@ public class RobotContainer {
 
         buttonPad.getButton(10).onTrue(runOnce(()-> Log.info("Alliance", Robot.getAlliance().toString())).ignoringDisable(true));
 
+        // buttonPad.getButton(8).onTrue(runOnce(()-> LedsMechanism.getInstance().setColor(Color.kBlue)));
 
 
         controller2.getButton(kA).onTrue(WinchMechanism.getInstance().runCommand(0.5)).onFalse(WinchMechanism.getInstance().stopCommand());
@@ -217,10 +222,10 @@ public class RobotContainer {
         //     runOnce(()-> swerve.moveBy(new Translation2d(2, 0)))
         // );
 
-        new Trigger(()-> !gyroReset.get()).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true).andThen(Commands.print("Gyro Zeroed").ignoringDisable(true)).ignoringDisable(true));
+        new Trigger(()-> !gyroReset.get()).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true).andThen(Leds.getInstance().setStateCommand(LedsStates.ZEROED).ignoringDisable(true)).ignoringDisable(true));
         new Trigger(()-> !elevReset.get()).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true).andThen(PivotMechanism.getInstance().resetCommand().ignoringDisable(true).andThen(WinchMechanism.getInstance().resetCommand().ignoringDisable(true))).andThen(Commands.print("Subsystems Zeroed").ignoringDisable(true)).ignoringDisable(true));
         new Trigger(allianceWrite).onTrue(runOnce(()-> Robot.getAlliance()).ignoringDisable(true));
-        new Trigger(()-> RollerMechanism.getInstance().isCaptured()).and(()-> robot.stateEquals(CLIMB_PRIME)).debounce(0.25).whileTrue(Commands.repeatingSequence(Commands.print("Captured"))).onFalse(Commands.print("Not Captured --------------------------------------------------------------------------------------------"));
+        new Trigger(()-> RollerMechanism.getInstance().isCaptured()).and(()-> robot.stateEquals(CLIMB_PRIME)).debounce(0.5).onTrue(Leds.getInstance().setStateCommand(LedsStates.CLIMB).andThen(robot.setStateCommand(RobotStates.CLIMB))).onFalse(Leds.getInstance().setStateCommand(LedsStates.CLIMB_PRIME));
     }
 
     public void initCameras() {
