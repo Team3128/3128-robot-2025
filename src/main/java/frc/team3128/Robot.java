@@ -50,8 +50,8 @@ public class Robot extends NAR_Robot {
         //     Log.info("Alliance", alliance.toString());
         // }
 
-        //NOTE: CHANGE EVERY MATCH
-        return DriverStation.Alliance.Blue;
+        //NOTE: CHutoNGE EVERY MATCH
+        return alliance;
     }
 
     public static Robot instance;

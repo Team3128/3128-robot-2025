@@ -115,7 +115,7 @@ public class Swerve extends SwerveBase {
 
     // x * kP = dx/dt && (v_max)^2 = 2*a_max*x
     public static final Constraints translationConstraints = new Constraints(MAX_DRIVE_SPEED, MAX_DRIVE_ACCELERATION);
-    public static final PIDFFConfig translationConfig = new PIDFFConfig(3.5, 0, 0);//3 // used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
+    public static final PIDFFConfig translationConfig = new PIDFFConfig(3.5, 0, 1.5);//used to be 4,2//3 // used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller translationController = new Controller(translationConfig, Controller.Type.POSITION); //Displacement error to output velocity
     public static final double translationTolerance = 0.03;
 
@@ -129,7 +129,7 @@ public class Swerve extends SwerveBase {
     public static final Controller rotationController = new Controller(rotationConfig, Controller.Type.POSITION); //Angular displacement error to output angular velocity
     public static final double rotationTolerance = Angle.ofRelativeUnits(1, Units.Degree).in(Units.Radian);
 
-    private static double translationPlateauThreshold = 40;
+    private static double translationPlateauThreshold = 50;
     private static double translationPlateauCount = 0;
 
 
@@ -139,7 +139,8 @@ public class Swerve extends SwerveBase {
     private static double rotationPlateauThreshold = 10;
     private static double rotationPlateauCount = 0;
 
-    private static DoubleSupplier velocitySupplier;
+    private static DoubleSupplier velocityTranslationalSupplier;
+    private static DoubleSupplier velocityRotationalSupplier;
 
     static {
         translationController.setTolerance(translationTolerance);
@@ -224,8 +225,12 @@ public class Swerve extends SwerveBase {
         if(rotationController.isEnabled() && atRotationSetpoint() && !translationController.isEnabled()) rotationController.disable();
     }
 
-    public Command driveDebug(){
-        return runOnce(() -> drive(new ChassisSpeeds(velocitySupplier.getAsDouble(), 0, 0)));
+    public Command driveTranslationalDebug(){
+        return run(() -> drive(new ChassisSpeeds(velocityTranslationalSupplier.getAsDouble(), 0, 0)));
+    }
+
+    public Command driveRotationalDebug(){
+        return run(() -> drive(new ChassisSpeeds(0, 0, velocityRotationalSupplier.getAsDouble())));
     }
 
     public Command getDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta){
@@ -402,10 +407,14 @@ public class Swerve extends SwerveBase {
         NAR_Shuffleboard.addData("Auto", "Error", ()-> getDistanceTo(translationSetpoint), 1, 0);
         NAR_Shuffleboard.addData("Auto", "Count", ()-> translationPlateauCount, 1, 1);
         
-        velocitySupplier = NAR_Shuffleboard.debug("Swerve", "Velocity", 0, 5, 5);
-        kPSupplier = NAR_Shuffleboard.debug("Auto", "kP", translationConfig.kP, 2, 0);
-        kISupplier = NAR_Shuffleboard.debug("Auto", "kI", translationConfig.kI, 2, 1);
-        kDSupplier = NAR_Shuffleboard.debug("Auto", "kD", translationConfig.kD, 2, 2);
+        velocityTranslationalSupplier = NAR_Shuffleboard.debug("Auto Align", "Translational Velocity", 0, 0, 0);
+        velocityRotationalSupplier = NAR_Shuffleboard.debug("Auto Align", "Rotatoinal Velocity", 0, 0, 1);
+        kPSupplier = NAR_Shuffleboard.debug("Auto Align", "kP", translationConfig.kP, 2, 0);
+        kISupplier = NAR_Shuffleboard.debug("Auto Align", "kI", translationConfig.kI, 2, 1);
+        kDSupplier = NAR_Shuffleboard.debug("Auto Align", "kD", translationConfig.kD, 2, 2);
+        NAR_Shuffleboard.addData("Auto Align", "Translational Velo error", () -> {return velocityTranslationalSupplier.getAsDouble() - Math.abs(getRobotVelocity().vxMetersPerSecond);}, 3, 0);
+        NAR_Shuffleboard.addData("Auto Align", "Translational Rotational error", () -> {return velocityRotationalSupplier.getAsDouble() - Math.abs(getRobotVelocity().omegaRadiansPerSecond);}, 3, 1);
+
     }
 
     public static void disable() {

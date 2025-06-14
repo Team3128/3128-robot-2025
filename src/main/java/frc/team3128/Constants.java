@@ -116,10 +116,15 @@ public class Constants {
         public static final int MOD3_CANCODER_ID = 13;
 
         /* Cancoder Offsets */
-        public static final double MOD0_CANCODER_OFFSET = -119.267578125;//-116.015625
-        public static final double MOD1_CANCODER_OFFSET = -68.115234375;//-67.58789
-        public static final double MOD2_CANCODER_OFFSET = 66.884765625;//65.0390625
-        public static final double MOD3_CANCODER_OFFSET = 19.072265625;//19.24805
+        // public static final double MOD0_CANCODER_OFFSET = 0;//-119.267578125;//-116.015625
+        // public static final double MOD1_CANCODER_OFFSET = 0;//-68.115234375;//-67.58789
+        // public static final double MOD2_CANCODER_OFFSET = 0;//66.884765625;//65.0390625
+        // public static final double MOD3_CANCODER_OFFSET = 0;//19.072265625;//19.24805
+        public static final double MOD0_CANCODER_OFFSET = -117.94921874999999;
+        public static final double MOD1_CANCODER_OFFSET = -68.90625;
+        public static final double MOD2_CANCODER_OFFSET = 66.796875;
+        public static final double MOD3_CANCODER_OFFSET = 24.609375;
+
 
 
         public static final double RAMP_TIME = 3;
@@ -158,9 +163,9 @@ public class Constants {
         public static final double DRIVE_MOTOR_KF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double DRIVE_MOTOR_KS = 0.16746;//0.13023; //0.19057;//0.60094; // 0.19225;
-        public static final double DRIVE_MOTOR_KV = 1.95619;//1.92348; //2.01208;//1.1559;  // 2.4366
-        public static final double DRIVE_MOTOR_KA = 0.4443;//0.10274; //0.09043; //0.12348; // 0.34415
+        public static final double DRIVE_MOTOR_KS = 0.16621;//0.16746;//0.13023; //0.19057;//0.60094; // 0.19225;
+        public static final double DRIVE_MOTOR_KV = 2.62229; //1.95619;//1.92348; //2.01208;//1.1559;  // 2.4366
+        public static final double DRIVE_MOTOR_KA = -0.42513; // 0.4443;//0.10274; //0.09043; //0.12348; // 0.34415
 
         /* Motor and Sensor IDs */
         public static final int PIDGEON_ID = 9; 
@@ -177,9 +182,9 @@ public class Constants {
         public static final double DRIVE_TURN_KP = 5;
         public static final double DRIVE_TURN_KI = 0;
         public static final double DRIVE_TURN_KD = 0;
-        public static final double DRIVE_TURN_KS = 0.1; //0.05748
-        public static final double DRIVE_TURN_KV = 0.01723; //0.01723
-        public static final double DRIVE_TURN_KA = 0.0064; //0.0064
+        public static final double DRIVE_TURN_KS = 0.09545; //, 0.1 , 0.05748
+        public static final double DRIVE_TURN_KV = 2.64897; //0.01723
+        public static final double DRIVE_TURN_KA = -0.11944; //0.0064
         public static final double DRIVE_TURN_KG = 0;
 
         public static final List<Rotation2d> snapToAngles = List.of(
@@ -536,7 +541,7 @@ public class Constants {
         public static final double CLIMBER_GEAR_RATIO = (90.0 / 450.0) * (5.0 / 3.0);
         public static final double CLIMBER_SAMPLE_PER_MINUTE = 60;
         public static final int CLIMBER_STATOR_CURRENT_LIMIT = 40;
-        public static final boolean CLIMBER_INVERT = false;
+        public static final boolean CLIMBER_INVERT = true;
         public static final Neutral CLIMBER_NEUTRAL_MODE = Neutral.BRAKE;
         public static final StatusFrames CLIMBER_STATUS_FRAME = StatusFrames.POSITION;
 

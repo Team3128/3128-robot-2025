@@ -171,7 +171,7 @@ public class AutoPrograms {
                         run(() -> swerve.drive(0, 0, 0)),
                         sequence(
                             waitSeconds(0.8),
-                            robot.setStateCommand(AUTO_HOLD),
+                            robot.setStateCommand(TELE_HOLD),
                             robot.setStateCommand(RPL4)
                         )
                     ).withDeadline(robot.alignScoreCoralSlow(allianceFlip(()-> state.getPose2d()), () -> false).
@@ -285,11 +285,11 @@ public class AutoPrograms {
     public Command getAutonomousCommand() {
         String selectedAutoName = null;
         // String selectedAutoName = NarwhalDashboard.getInstance().getSelectedAuto(); //NarwhalDashboard.getInstance().getSelectedAuto();
-        String hardcode = "MID_3pc_H_auto";
+        // String hardcode = "MID_3pc_H_auto";
         // String hardcode = "LB_3pc_ILK_auto";
         // String hardcode = "MID_1pc_H_auto"; 
         // String hardcode = "Left_Leave_Backwards";
-        // String hardcode = "RB_3pc_FCD_auto";
+        String hardcode = "RB_3pc_FCD_auto";
         
          
         Command autoCommand;
