@@ -182,7 +182,7 @@ public class RobotContainer {
 
         controller.getButton(kLeftTrigger).onTrue(robot.getToggleCommand(INTAKE));
         
-        controller.getButton(kLeftTrigger).onTrue(swerve.driveDebug().beforeStarting(()->swerve.zeroLock()));
+        // controller.getButton(kLeftTrigger).onTrue(swerve.driveDebug().beforeStarting(()->swerve.zeroLock()));
         controller.getButton(kLeftBumper).onTrue(robot.setStateCommand(OUTTAKE)).onFalse(robot.setStateCommand(NEUTRAL));
 
         // controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
@@ -225,7 +225,7 @@ public class RobotContainer {
         new Trigger(()-> !gyroReset.get()).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true).andThen(Leds.getInstance().setStateCommand(LedsStates.ZEROED).ignoringDisable(true)).ignoringDisable(true));
         new Trigger(()-> !elevReset.get()).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true).andThen(PivotMechanism.getInstance().resetCommand().ignoringDisable(true).andThen(WinchMechanism.getInstance().resetCommand().ignoringDisable(true))).andThen(Commands.print("Subsystems Zeroed").ignoringDisable(true)).ignoringDisable(true));
         new Trigger(allianceWrite).onTrue(runOnce(()-> Robot.getAlliance()).ignoringDisable(true));
-        new Trigger(()-> RollerMechanism.getInstance().isCaptured()).and(()-> robot.stateEquals(CLIMB_PRIME)).debounce(0.5).onTrue(Leds.getInstance().setStateCommand(LedsStates.CLIMB).andThen(robot.setStateCommand(RobotStates.CLIMB))).onFalse(Leds.getInstance().setStateCommand(LedsStates.CLIMB_PRIME));
+        new Trigger(()-> RollerMechanism.getInstance().isCaptured()).and(()-> robot.stateEquals(CLIMB_PRIME)).debounce(0.5).onTrue(Leds.getInstance().setStateCommand(LedsStates.CLIMB)).onFalse(Leds.getInstance().setStateCommand(LedsStates.CLIMB_PRIME));
     }
 
     public void initCameras() {
