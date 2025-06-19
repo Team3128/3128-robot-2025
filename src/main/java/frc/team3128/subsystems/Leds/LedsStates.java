@@ -6,11 +6,11 @@ import com.ctre.phoenix.led.Animation;
 import edu.wpi.first.wpilibj.util.Color;
 
 public enum LedsStates {
-    DISABLED(Color.kGreenYellow),
+    DISABLED(Color.kRed),
     ZEROED(Color.kGreen),
     NEUTRAL(Color.kWhite),
-    CLIMB_PRIME(Color.kBlue),
-    CLIMB(Color.kViolet);
+    CLIMB_PRIME(Color.kViolet),
+    CLIMB(Color.kGreen);
 
     private Color color;
     private Animation animation;
