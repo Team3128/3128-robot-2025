@@ -161,7 +161,7 @@ public class Robot extends NAR_Robot {
         sequence(
             waitSeconds(115),
             RobotManager.getInstance().setStateCommand(RobotStates.PRE_CLIMB_PRIME).andThen(Leds.getInstance().setStateCommand(LedsStates.CLIMB)).onlyIf(RobotContainer.shouldPreClimb),
-            waitSeconds(16),
+            waitSeconds(17),
             RobotManager.getInstance().setStateCommand(RobotStates.CLIMB).onlyIf(RobotContainer.shouldPreClimb)
         ).schedule();
     }

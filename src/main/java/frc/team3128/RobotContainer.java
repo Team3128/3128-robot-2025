@@ -107,7 +107,7 @@ public class RobotContainer {
     public static Limelight limelight;
 
     public static BooleanSupplier shouldRam = ()-> false;
-    public static BooleanSupplier shouldPreClimb = ()-> false;
+    public static BooleanSupplier shouldPreClimb = ()-> true;
     // public static BooleanSupplier bargeAutoMovement = () -> true;
     public static BooleanSupplier shouldWait;
 
