@@ -22,8 +22,11 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
+    # Checkout repo and submodules
+    - name: Checkout repository (with submodules)
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
     # Grant execute permission for gradlew
     - name: Grant execute permission for gradlew
