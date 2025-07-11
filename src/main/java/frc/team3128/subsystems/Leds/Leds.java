@@ -24,12 +24,17 @@ public class Leds extends FSMSubsystemBase<LedsStates> {
     private static TransitionMap<LedsStates> transitionMap = new TransitionMap<LedsStates>(LedsStates.class);
     private int h = 0;
 
+    private static final Command defaultTransitions[] = new Command[LedsStates.values().length];
+
     private Function<LedsStates, Command> defaultTransitioner = state -> {
-        if (state.getIsAnimation()) {
-            return runOnce(() -> LedsMechanism.getInstance().setAnimation(state.getAnimation())).ignoringDisable(true);
-        } else {
-            return runOnce(() -> LedsMechanism.getInstance().setColor(state.getColor())).ignoringDisable(true);
+        if (defaultTransitions[state.ordinal()] == null) {
+            if (state.getIsAnimation()) {
+                return runOnce(() -> LedsMechanism.getInstance().setAnimation(state.getAnimation())).ignoringDisable(true);
+            } else {
+                return runOnce(() -> LedsMechanism.getInstance().setColor(state.getColor())).ignoringDisable(true);
+            }
         }
+        return defaultTransitions[state.ordinal()];
     };
 
     public static synchronized Leds getInstance() {

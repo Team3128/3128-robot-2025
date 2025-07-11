@@ -102,7 +102,7 @@ public class RobotContainer {
     public static NAR_XboxController controller2;
 
     private NarwhalDashboard dashboard;
-    private final Command swerveDriveCommand;
+    private Command swerveDriveCommand;
 
     public static Limelight limelight;
 
@@ -120,6 +120,7 @@ public class RobotContainer {
         Log.profile("init Swerve", () -> swerve = Swerve.getInstance());
         // winch = WinchMechanism.getInstance();
         
+        Log.profile("Inputs", () -> {
         NAR_CANSpark.maximumRetries = 2;
         NAR_TalonFX.maximumRetries = 2;
 
@@ -131,18 +132,21 @@ public class RobotContainer {
 
         gyroReset = new DigitalInput(9);
         elevReset = new DigitalInput(8);
+        });
         
+        Log.profile("Swerve default", () -> {
         swerveDriveCommand = swerve.getDriveCommand(controller::getLeftX, controller::getLeftY, controller::getRightX);
         CommandScheduler.getInstance().setDefaultCommand(swerve, swerveDriveCommand);
+        });
 
-        robot = RobotManager.getInstance();
-        elevator = ElevatorMechanism.getInstance();
+        Log.profile("robot", () -> robot = RobotManager.getInstance());
+        Log.profile("elev", () -> elevator = ElevatorMechanism.getInstance());
 
         
         DriverStation.silenceJoystickConnectionWarning(true);
-        initCameras();
-        configureButtonBindings();
-        initDashboard();
+        Log.profile("initCams", () -> initCameras());
+        Log.profile("button bindings", () -> configureButtonBindings());
+        Log.profile("init dashboard", () -> initDashboard());
     }   
 
     private void configureButtonBindings() {

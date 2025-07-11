@@ -69,24 +69,19 @@ public class Robot extends NAR_Robot {
     }
 
     private Robot() {
-        Log.profile("init RobotContainer", () -> m_robotContainer = new RobotContainer());
+        Log.profile("Init RobotContainer", () -> m_robotContainer = new RobotContainer());
         autoPrograms = AutoPrograms.getInstance();
+        CanBridge.runTCP();
+        Camera.enableAll();
+        LiveWindow.disableAllTelemetry();
+        autoPrograms.initAutoSelector();
+        
+        Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM, MOTOR);
+        PathfindingCommand.warmupCommand().schedule();
     }
 
     @Override
-    public void robotInit(){
-        CanBridge.runTCP();
-
-        Camera.enableAll();
-        m_robotContainer.initDashboard();
-        Log.info("Dashboard", "Done");
-        LiveWindow.disableAllTelemetry();
-        // Log.logDebug = true;
-        autoPrograms.initAutoSelector();
-        Log.Type.enable(STATE_MACHINE_PRIMARY, STATE_MACHINE_SECONDARY, MECHANISM, MOTOR);
-        PathfindingCommand.warmupCommand().schedule();
-        // Swerve.getInstance().resetGyro(0);
-    }
+    public void robotInit() {}
 
     @Override
     public void driverStationConnected() {

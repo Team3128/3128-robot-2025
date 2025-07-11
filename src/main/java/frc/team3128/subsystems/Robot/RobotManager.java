@@ -43,24 +43,35 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
     private static Swerve swerve;
 
     private static TransitionMap<RobotStates> transitionMap = new TransitionMap<>(RobotStates.class);
-    private Function<RobotStates, Command> defaultTransitioner = state -> {return updateSubsystemStates(state);};
+    private static final Command defaultTransitions[] = new Command[RobotStates.values().length];
+
+    private Function<RobotStates, Command> defaultTransitioner = state -> {
+        if (defaultTransitions[state.ordinal()] == null) {
+            defaultTransitions[state.ordinal()] = updateSubsystemStates(state);
+        }
+        return defaultTransitions[state.ordinal()];
+    };
 
     private static boolean delayTransition = false;
 
     private RobotManager() {
         super(RobotStates.class, transitionMap, FULL_NEUTRAL);
 
+        Log.profile("subsystem inits", () -> {
         elevator = Elevator.getInstance();
         manipulator = Manipulator.getInstance();
         intake = Intake.getInstance();
         climber = Climber.getInstance();
         swerve = Swerve.getInstance();
+        });
 
+        Log.profile("shuffleboard", () -> {
         initShuffleboard();
         NAR_Shuffleboard.addData(this.getName(), "Auto Enabled", () -> Swerve.autoMoveEnabled);
         NAR_Shuffleboard.addData("Auto", "DelayTransition", () -> delayTransition, 3, 3);
+        });
 
-        registerTransitions();
+        Log.profile("transitions", () -> registerTransitions());
     }
 
     public static synchronized RobotManager getInstance() {

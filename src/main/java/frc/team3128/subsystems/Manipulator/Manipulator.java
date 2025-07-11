@@ -14,7 +14,14 @@ public class Manipulator extends FSMSubsystemBase<ManipulatorStates> {
 
     public RollerMechanism roller;
     private static TransitionMap<ManipulatorStates> transitionMap = new TransitionMap<ManipulatorStates>(ManipulatorStates.class);
-    private Function<ManipulatorStates, Command> defaultTransitioner = state -> {return runVoltsCommand(state.getVolts());};
+    private static final Command defaultTransitions[] = new Command[ManipulatorStates.values().length];
+
+    private Function<ManipulatorStates, Command> defaultTransitioner = state -> {
+        if (defaultTransitions[state.ordinal()] == null) {
+            defaultTransitions[state.ordinal()] = runVoltsCommand(state.getVolts());
+        }
+        return defaultTransitions[state.ordinal()];
+    };
 
     public Manipulator() {
         super(ManipulatorStates.class, transitionMap, NEUTRAL);

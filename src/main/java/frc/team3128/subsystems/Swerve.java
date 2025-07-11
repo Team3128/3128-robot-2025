@@ -170,9 +170,9 @@ public class Swerve extends SwerveBase {
     private Swerve() {
         super(swerveKinematics, SVR_STATE_STD, SVR_VISION_MEASUREMENT_STD, Mod0, Mod1, Mod2, Mod3);
         chassisVelocityCorrection = true;
-        Timer.delay(1);
+        // Timer.delay(1);
         gyro = new Pigeon2(PIDGEON_ID, DRIVETRAIN_CANBUS_NAME);
-        Timer.delay(1);
+        // Timer.delay(1);
         var x = gyro.getYaw();
         x.setUpdateFrequency(100);
         yaw = () -> gyro.getYaw().asSupplier().get().in(Units.Degree);
