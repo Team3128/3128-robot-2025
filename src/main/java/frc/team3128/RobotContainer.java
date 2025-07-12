@@ -152,15 +152,15 @@ public class RobotContainer {
     private void configureButtonBindings() {
         buttonPad.getButton(9).onTrue(swerve.identifyOffsetsCommand().ignoringDisable(true));
 
-        shouldRam = ()-> buttonPad.getButton(1).getAsBoolean();
-        shouldPreClimb = ()-> !buttonPad.getButton(2).getAsBoolean();
-        shouldWait = () -> !buttonPad.getButton(5).getAsBoolean();
+        shouldRam = buttonPad.getButton(1);
+        shouldPreClimb = buttonPad.getButton(2).negate();
+        shouldWait = buttonPad.getButton(5).negate();
         // bargeAutoMovement = () -> !buttonPad.getButton(3).getAsBoolean();
         // shouldRam = ()-> false;
         // shouldPreClimb = ()-> false;
 
-        allianceWrite = ()-> buttonPad.getButton(12).getAsBoolean();
-        allianceRead = ()-> buttonPad.getButton(11).getAsBoolean();
+        allianceWrite = buttonPad.getButton(12);
+        allianceRead = buttonPad.getButton(11);
 
         buttonPad.getButton(11).onTrue(runOnce(()-> {
             if(buttonPad.getButton(12).getAsBoolean()) Robot.alliance = DriverStation.Alliance.Red;
@@ -194,7 +194,7 @@ public class RobotContainer {
         controller.getButton(kRightBumper).onTrue(either(
             robot.getToggleCommand(RSA1, RSA2),
             robot.alignAlgaeIntake(),
-            ()-> buttonPad.getButton(4).getAsBoolean()
+            buttonPad.getButton(4)
         ));
         controller.getButton(kRightTrigger).onTrue(either(
             sequence(
@@ -205,7 +205,7 @@ public class RobotContainer {
                 robot.setStateCommand(NEUTRAL)
             ),
             robot.alignAlgaeScore(),
-            ()-> !buttonPad.getButton(3).getAsBoolean()
+            buttonPad.getButton(3).negate()
         ));
 
 
@@ -226,8 +226,8 @@ public class RobotContainer {
         //     runOnce(()-> swerve.moveBy(new Translation2d(2, 0)))
         // );
 
-        new Trigger(()-> !gyroReset.get()).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true).andThen(Leds.getInstance().setStateCommand(LedsStates.ZEROED).ignoringDisable(true)).ignoringDisable(true));
-        new Trigger(()-> !elevReset.get()).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true).andThen(PivotMechanism.getInstance().resetCommand().ignoringDisable(true).andThen(WinchMechanism.getInstance().resetCommand().ignoringDisable(true))).andThen(Commands.print("Subsystems Zeroed").ignoringDisable(true)).ignoringDisable(true));
+        // new Trigger(()-> !gyroReset.get()).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true).andThen(Leds.getInstance().setStateCommand(LedsStates.ZEROED).ignoringDisable(true)).ignoringDisable(true));
+        // new Trigger(()-> !elevReset.get()).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true).andThen(PivotMechanism.getInstance().resetCommand().ignoringDisable(true).andThen(WinchMechanism.getInstance().resetCommand().ignoringDisable(true))).andThen(Commands.print("Subsystems Zeroed").ignoringDisable(true)).ignoringDisable(true));
         new Trigger(allianceWrite).onTrue(runOnce(()-> Robot.getAlliance()).ignoringDisable(true));
         new Trigger(()-> RollerMechanism.getInstance().isCaptured()).and(()-> robot.stateEquals(CLIMB_PRIME)).debounce(0.5).onTrue(Leds.getInstance().setStateCommand(LedsStates.CLIMB)).onFalse(Leds.getInstance().setStateCommand(LedsStates.CLIMB_PRIME));
     }

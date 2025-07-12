@@ -16,7 +16,15 @@ public class Elevator extends FSMSubsystemBase<ElevatorStates> {
 
     protected ElevatorMechanism elevator;
     private static TransitionMap<ElevatorStates> transitionMap = new TransitionMap<ElevatorStates>(ElevatorStates.class);
-    private Function<ElevatorStates, Command> defaultTransitioner = state -> {return elevator.pidTo(RobotContainer.shouldRam.getAsBoolean() ? state.getSetpointRam() : state.getSetpointRamless());};
+
+    private static final Command defaultTransitions[] = new Command[ElevatorStates.values().length];
+
+    private Function<ElevatorStates, Command> defaultTransitioner = state -> {
+        if (defaultTransitions[state.ordinal()] == null) {
+            defaultTransitions[state.ordinal()] = elevator.pidTo(RobotContainer.shouldRam.getAsBoolean() ? state.getSetpointRam() : state.getSetpointRamless());
+        }
+        return defaultTransitions[state.ordinal()];
+    };
 
     public Elevator() {
         super(ElevatorStates.class, transitionMap, NEUTRAL);

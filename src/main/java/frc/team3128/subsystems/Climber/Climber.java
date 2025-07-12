@@ -25,15 +25,21 @@ public class Climber extends FSMSubsystemBase<ClimberStates> {
     private static TransitionMap<ClimberStates> transitionMap = new TransitionMap<ClimberStates>(ClimberStates.class);
 
     private Function<Neutral, Command> setNeutralMode = mode -> runOnce(() -> getMechanisms().forEach(subsystem -> subsystem.setNeutralMode(mode)));
+    
+    private static final Command defaultTransitions[] = new Command[ClimberStates.values().length];
+
     private Function<ClimberStates, Command> defaultTransitioner = state -> {
-        return sequence(
-            none(),
-            roller.stopCommand(),
-            runOnce(() -> WinchMechanism.controller.getConfig().kS = () -> 12 * state.getWinchPower()),
-            winch.pidTo(state.getAngle()),
-            waitUntil(()-> winch.atSetpoint()),
-            roller.runCommand(state.getRollerPower())
-        );
+        if (defaultTransitions[state.ordinal()] == null) {
+            defaultTransitions[state.ordinal()] = sequence(
+                none(),
+                roller.stopCommand(),
+                runOnce(() -> WinchMechanism.controller.getConfig().kS = () -> 12 * state.getWinchPower()),
+                winch.pidTo(state.getAngle()),
+                waitUntil(()-> winch.atSetpoint()),
+                roller.runCommand(state.getRollerPower())
+            );
+        }
+        return defaultTransitions[state.ordinal()];
     };
 
     public Climber() {
