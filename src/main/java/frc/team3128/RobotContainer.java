@@ -56,6 +56,8 @@ import frc.team3128.subsystems.Robot.RobotStates;
 import edu.wpi.first.math.Pair;
 
 
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 
 import java.io.IOException;
@@ -180,29 +182,41 @@ public class RobotContainer {
         controller.getButton(kX).onTrue(robot.getTempToggleCommand(RPL3, RSL3));
         controller.getButton(kY).onTrue(robot.getTempToggleCommand(RPL4, RSL4));
 
-        controller.getButton(kLeftTrigger).onTrue(robot.getToggleCommand(INTAKE));
-        
-        // controller.getButton(kLeftTrigger).onTrue(swerve.driveDebug().beforeStarting(()->swerve.zeroLock()));
-        controller.getButton(kLeftBumper).onTrue(robot.setStateCommand(OUTTAKE)).onFalse(robot.setStateCommand(NEUTRAL));
+        controller.getButton(kLeftBumper).whileTrue(Swerve.getInstance().sysIdDynamic(Direction.kForward).beforeStarting(Commands.runOnce(()->Swerve.getInstance().zeroLock())));
+        controller.getButton(kLeftTrigger).whileTrue(Swerve.getInstance().sysIdDynamic(Direction.kReverse).beforeStarting(Commands.runOnce(()->Swerve.getInstance().zeroLock())));
+        controller.getButton(kRightBumper).whileTrue(Swerve.getInstance().sysIdQuasistatic(Direction.kForward).beforeStarting(Commands.runOnce(()->Swerve.getInstance().zeroLock())));
+        controller.getButton(kRightTrigger).whileTrue(Swerve.getInstance().sysIdQuasistatic(Direction.kReverse).beforeStarting(Commands.runOnce(()->Swerve.getInstance().zeroLock())));
 
-        // controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
-        // controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
-        controller.getButton(kRightBumper).onTrue(either(
-            robot.getToggleCommand(RSA1, RSA2),
-            robot.alignAlgaeIntake(),
-            ()-> buttonPad.getButton(4).getAsBoolean()
-        ));
-        controller.getButton(kRightTrigger).onTrue(either(
-            sequence(
-                robot.setStateCommand(RPB),
-                waitSeconds(2),
-                robot.setStateCommand(RSB),
-                waitSeconds(0.5),
-                robot.setStateCommand(NEUTRAL)
-            ),
-            robot.alignAlgaeScore(),
-            ()-> !buttonPad.getButton(3).getAsBoolean()
-        ));
+        // ANGLE SYSID
+
+        // controller.getButton(kLeftBumper).whileTrue(Swerve.getInstance().sysIdDynamic(Direction.kForward).beforeStarting(Commands.runOnce(()->Swerve.getInstance().oLock())));
+        // controller.getButton(kLeftTrigger).whileTrue(Swerve.getInstance().sysIdDynamic(Direction.kReverse).beforeStarting(Commands.runOnce(()->Swerve.getInstance().oLock())));
+        // controller.getButton(kRightBumper).whileTrue(Swerve.getInstance().sysIdQuasistatic(Direction.kForward).beforeStarting(Commands.runOnce(()->Swerve.getInstance().oLock())));
+        // controller.getButton(kRightTrigger).whileTrue(Swerve.getInstance().sysIdQuasistatic(Direction.kReverse).beforeStarting(Commands.runOnce(()->Swerve.getInstance().oLock())));
+
+        // controller.getButton(kLeftTrigger).onTrue(robot.getToggleCommand(INTAKE));
+        
+        // // controller.getButton(kLeftTrigger).onTrue(swerve.driveDebug().beforeStarting(()->swerve.zeroLock()));
+        // controller.getButton(kLeftBumper).onTrue(robot.setStateCommand(OUTTAKE)).onFalse(robot.setStateCommand(NEUTRAL));
+
+        // // controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
+        // // controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
+        // controller.getButton(kRightBumper).onTrue(either(
+        //     robot.getToggleCommand(RSA1, RSA2),
+        //     robot.alignAlgaeIntake(),
+        //     ()-> buttonPad.getButton(4).getAsBoolean()
+        // ));
+        // controller.getButton(kRightTrigger).onTrue(either(
+        //     sequence(
+        //         robot.setStateCommand(RPB),
+        //         waitSeconds(2),
+        //         robot.setStateCommand(RSB),
+        //         waitSeconds(0.5),
+        //         robot.setStateCommand(NEUTRAL)
+        //     ),
+        //     robot.alignAlgaeScore(),
+        //     ()-> !buttonPad.getButton(3).getAsBoolean()
+        // ));
 
 
         controller.getButton(kRightStick).onTrue(robot.setStateCommand(NEUTRAL));

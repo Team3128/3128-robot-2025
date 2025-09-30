@@ -40,13 +40,21 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.MutDistance;
+import edu.wpi.first.units.measure.MutLinearVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.measure.Voltage;
+import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.Constants.FieldConstants.*;
 import static frc.team3128.Constants.FieldConstants.FieldStates.*;
@@ -422,4 +430,63 @@ public class Swerve extends SwerveBase {
         rotationController.disable();
         getInstance().stop();
     }
+
+    public SysIdRoutine driveRoutine = new SysIdRoutine (
+        new SysIdRoutine.Config(null, null, null),
+        new SysIdRoutine.Mechanism(this::setDriveVoltage, this::logMotors, this)
+    );
+
+    // public SysIdRoutine angleRoutine = new SysIdRoutine (
+    //     new SysIdRoutine.Config(Volts.of(0.2).per(Second), Volts.of(0.1), null),
+    //     new SysIdRoutine.Mechanism(this::setAngleVoltage, null, this)
+    // );
+
+    public void setDriveVoltage(Voltage volts) {
+        for (final SwerveModule module : modules) {
+            module.getDriveMotor().setVolts(volts.in(Volts));
+        }
+    }
+
+    // public void setAngleVoltage(Voltage volts) {
+    //     for (final SwerveModule module : modules) {
+    //         module.getAngleMotor().setVolts(volts.in(Volts));
+    //     }
+    // }
+
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return driveRoutine.quasistatic(direction);
+      }
+      
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return driveRoutine.dynamic(direction);
+    }
+
+    // public Command sysIdQuasistaticAngle(SysIdRoutine.Direction direction) {
+    //     return angleRoutine.quasistatic(direction);
+    //   }
+      
+    // public Command sysIdDynamicAngle(SysIdRoutine.Direction direction) {
+    //     return angleRoutine.dynamic(direction);
+    // }
+
+    private final MutVoltage appliedVoltage = Volts.mutable(0);
+    private final MutDistance position = Meters.mutable(0);
+    private final MutLinearVelocity velocity = MetersPerSecond.mutable(0);
+    NAR_TalonFX m = (NAR_TalonFX) modules[0].getDriveMotor();
+    public void logMotors(SysIdRoutineLog log){
+        log.motor("mod0-motor")
+        .linearPosition(position.mut_replace(m.getPosition(), Meters))
+        .linearVelocity(velocity.mut_replace(m.getVelocity(), MetersPerSecond))
+        .voltage(appliedVoltage.mut_replace(m.getMotor().getMotorVoltage().getValueAsDouble(), Volts));
+        // for (final SwerveModule module : modules) {
+        //     log.motor("linear position").linearPosition(Meters.of(DRIVE_WHEEL_CIRCUMFERENCE*module.getDriveMotor().getPosition()/DRIVE_MOTOR_GEAR_RATIO));
+        //     log.motor("linear velocity").linearVelocity(MetersPerSecond.of(DRIVE_WHEEL_CIRCUMFERENCE*module.getDriveMotor().getVelocity()/(60*DRIVE_MOTOR_GEAR_RATIO)));
+        //     log.motor("drive voltage").voltage(Volts.of(12 * module.getDriveMotor().getAppliedOutput()));
+
+        //     // log.motor("angular position").angularPosition(Rotations.of(module.getAngleMotor().getPosition()));
+        //     // log.motor("angular velocity").angularVelocity(RotationsPerSecond.of(module.getAngleMotor().getVelocity() / 60.0));
+        //     // log.motor("angle voltage").voltage(Volts.of(12 * module.getDriveMotor().getAppliedOutput()));
+        // }
+    }
+
 }
