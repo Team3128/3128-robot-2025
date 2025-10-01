@@ -182,10 +182,10 @@ public class RobotContainer {
         controller.getButton(kX).onTrue(robot.getTempToggleCommand(RPL3, RSL3));
         controller.getButton(kY).onTrue(robot.getTempToggleCommand(RPL4, RSL4));
 
-        controller.getButton(kLeftBumper).whileTrue(Swerve.getInstance().sysIdDynamic(Direction.kForward).beforeStarting(Commands.runOnce(()->Swerve.getInstance().zeroLock())));
-        controller.getButton(kLeftTrigger).whileTrue(Swerve.getInstance().sysIdDynamic(Direction.kReverse).beforeStarting(Commands.runOnce(()->Swerve.getInstance().zeroLock())));
-        controller.getButton(kRightBumper).whileTrue(Swerve.getInstance().sysIdQuasistatic(Direction.kForward).beforeStarting(Commands.runOnce(()->Swerve.getInstance().zeroLock())));
-        controller.getButton(kRightTrigger).whileTrue(Swerve.getInstance().sysIdQuasistatic(Direction.kReverse).beforeStarting(Commands.runOnce(()->Swerve.getInstance().zeroLock())));
+        // controller.getButton(kLeftBumper).whileTrue(Swerve.getInstance().sysIdDynamic(Direction.kForward).beforeStarting(Commands.runOnce(()->Swerve.getInstance().zeroLock())));
+        // controller.getButton(kLeftTrigger).whileTrue(Swerve.getInstance().sysIdDynamic(Direction.kReverse).beforeStarting(Commands.runOnce(()->Swerve.getInstance().zeroLock())));
+        // controller.getButton(kRightBumper).whileTrue(Swerve.getInstance().sysIdQuasistatic(Direction.kForward).beforeStarting(Commands.runOnce(()->Swerve.getInstance().zeroLock())));
+        // controller.getButton(kRightTrigger).whileTrue(Swerve.getInstance().sysIdQuasistatic(Direction.kReverse).beforeStarting(Commands.runOnce(()->Swerve.getInstance().zeroLock())));
 
         // ANGLE SYSID
 
@@ -194,13 +194,13 @@ public class RobotContainer {
         // controller.getButton(kRightBumper).whileTrue(Swerve.getInstance().sysIdQuasistatic(Direction.kForward).beforeStarting(Commands.runOnce(()->Swerve.getInstance().oLock())));
         // controller.getButton(kRightTrigger).whileTrue(Swerve.getInstance().sysIdQuasistatic(Direction.kReverse).beforeStarting(Commands.runOnce(()->Swerve.getInstance().oLock())));
 
-        // controller.getButton(kLeftTrigger).onTrue(robot.getToggleCommand(INTAKE));
+        controller.getButton(kLeftTrigger).onTrue(robot.getToggleCommand(INTAKE));
         
-        // // controller.getButton(kLeftTrigger).onTrue(swerve.driveDebug().beforeStarting(()->swerve.zeroLock()));
-        // controller.getButton(kLeftBumper).onTrue(robot.setStateCommand(OUTTAKE)).onFalse(robot.setStateCommand(NEUTRAL));
+        // controller.getButton(kLeftTrigger).onTrue(swerve.driveDebug().beforeStarting(()->swerve.zeroLock()));
+        controller.getButton(kLeftBumper).onTrue(robot.setStateCommand(OUTTAKE)).onFalse(robot.setStateCommand(NEUTRAL));
 
-        // // controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
-        // // controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
+        controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
+        controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
         // controller.getButton(kRightBumper).onTrue(either(
         //     robot.getToggleCommand(RSA1, RSA2),
         //     robot.alignAlgaeIntake(),
