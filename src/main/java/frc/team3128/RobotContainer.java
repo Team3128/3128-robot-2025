@@ -247,8 +247,8 @@ public class RobotContainer {
         Camera.setResources(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), new AprilTagFieldLayout(APRIL_TAGS, FIELD_X_LENGTH, FIELD_Y_LENGTH), () -> swerve.getPose());
         Camera.addIgnoredTags(4, 5, 14, 15);
         if (Robot.isReal()) {
-            Camera backRightCamera = new Camera("BOTTOM_RIGHT", 0.27, -0.27,  Units.degreesToRadians(-15), 0, 0);
-            backRightCamera.setThresholds(0.3, 3, 0.3);
+            // Camera backRightCamera = new Camera("BOTTOM_RIGHT", 0.27, -0.27,  Units.degreesToRadians(-15), 0, 0);
+            // backRightCamera.setThresholds(0.3, 3, 0.3);
             
             Camera backLeftCamera = new Camera("BOTTOM_LEFT", 0.09, 0.145, 0, 0, 0);
             backLeftCamera.setThresholds(0, 3, 0.3);

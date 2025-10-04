@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Neutral"
@@ -25,7 +19,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Slow L4 F"
+            "name": "Score L4 F"
           }
         },
         {
@@ -49,7 +43,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Slow L4 C"
+            "name": "Score L4 C"
           }
         },
         {
@@ -67,7 +61,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Slow L4 D"
+            "name": "Score L4 D"
           }
         },
         {

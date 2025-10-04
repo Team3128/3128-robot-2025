@@ -191,7 +191,6 @@ public class Robot extends NAR_Robot {
     public void disabledInit() {
         Leds.getInstance().setStateCommand(LedsStates.DISABLED).ignoringDisable(true).schedule();
         CommandScheduler.getInstance().cancelAll();
-        Swerve.getInstance().setBrakeMode(false);
         Swerve.disable();
         RobotManager.getInstance().stopCommand().ignoringDisable(true).schedule();
         Log.info("State", RobotManager.getInstance().getState().name());
@@ -199,7 +198,6 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void disabledExit() {
-        Swerve.getInstance().setBrakeMode(true);
         RobotManager.getInstance().stop();
         Log.info("State", RobotManager.getInstance().getState().name());
         Leds.getInstance().setStateCommand(LedsStates.NEUTRAL).schedule();

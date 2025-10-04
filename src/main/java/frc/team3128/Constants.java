@@ -49,7 +49,7 @@ public class Constants {
         public static final double MAX_DRIVE_ANGULAR_ACCELERATION = 10;//2 * Math.PI; //I stole from citrus.
 
         public static final double driveMotorGearRatio = 0;
-        public static final double angleMotorGearRatio = 150 / 7; 
+        public static final double angleMotorGearRatio = 150.0 / 7; 
 
         // public static final var kinematics = null; 
 
@@ -116,15 +116,10 @@ public class Constants {
         public static final int MOD3_CANCODER_ID = 13;
 
         /* Cancoder Offsets */
-        // public static final double MOD0_CANCODER_OFFSET = 0;//-119.267578125;//-116.015625
-        // public static final double MOD1_CANCODER_OFFSET = 0;//-68.115234375;//-67.58789
-        // public static final double MOD2_CANCODER_OFFSET = 0;//66.884765625;//65.0390625
-        // public static final double MOD3_CANCODER_OFFSET = 0;//19.072265625;//19.24805
-        public static final double MOD0_CANCODER_OFFSET = -117.94921874999999;
-        public static final double MOD1_CANCODER_OFFSET = -68.90625;
-        public static final double MOD2_CANCODER_OFFSET = 66.796875;
-        public static final double MOD3_CANCODER_OFFSET = 24.609375;
-
+        public static final double MOD0_CANCODER_OFFSET = 61.5234-180;//-119.267578125;//-116.015625
+        public static final double MOD1_CANCODER_OFFSET = 108.8965-180;//-68.115234375;//-67.58789
+        public static final double MOD2_CANCODER_OFFSET = -112.1484+180;//66.884765625;//65.0390625
+        public static final double MOD3_CANCODER_OFFSET = -151.5234+180;//19.072265625;//19.24805
 
 
         public static final double RAMP_TIME = 3;
@@ -163,9 +158,9 @@ public class Constants {
         public static final double DRIVE_MOTOR_KF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double DRIVE_MOTOR_KS = 0.16621;//0.16746;//0.13023; //0.19057;//0.60094; // 0.19225;
-        public static final double DRIVE_MOTOR_KV = 2.62229; //1.95619;//1.92348; //2.01208;//1.1559;  // 2.4366
-        public static final double DRIVE_MOTOR_KA = -0.42513; // 0.4443;//0.10274; //0.09043; //0.12348; // 0.34415
+        public static final double DRIVE_MOTOR_KS = 0.0011596;//0.13023; //0.19057;//0.60094; // 0.19225;
+        public static final double DRIVE_MOTOR_KV = 2.5951;//1.92348; //2.01208;//1.1559;  // 2.4366
+        public static final double DRIVE_MOTOR_KA = 0.26926;//0.10274; //0.09043; //0.12348; // 0.34415
 
         /* Motor and Sensor IDs */
         public static final int PIDGEON_ID = 9; 
@@ -524,7 +519,7 @@ public class Constants {
         public static final double ELEVATOR_SAMPLE_PER_MINUTE = 60;
         public static final int ELEVATOR_STATOR_CURRENT_LIMIT = 60;
         public static final boolean ELEVATOR_INVERT = false;
-        public static final Neutral ELEVATOR_NEUTRAL_MODE = Neutral.COAST;
+        public static final Neutral ELEVATOR_NEUTRAL_MODE = Neutral.BRAKE;
         public static final StatusFrames ELEVATOR_STATUS_FRAME = StatusFrames.POSITION;
 
         public static final double ELEVATOR_POSITION_MIN = 0;

@@ -123,7 +123,7 @@ public class Swerve extends SwerveBase {
 
     // x * kP = dx/dt && (v_max)^2 = 2*a_max*x
     public static final Constraints translationConstraints = new Constraints(MAX_DRIVE_SPEED, MAX_DRIVE_ACCELERATION);
-    public static final PIDFFConfig translationConfig = new PIDFFConfig(3.5, 0, 1.5);//used to be 4,2//3 // used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
+    public static final PIDFFConfig translationConfig = new PIDFFConfig(2.5, 0, 0);//used to be 4,2//3 // used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller translationController = new Controller(translationConfig, Controller.Type.POSITION); //Displacement error to output velocity
     public static final double translationTolerance = 0.03;
 
@@ -351,7 +351,7 @@ public class Swerve extends SwerveBase {
     }
 
     public Command navigateTo(Supplier<Pose2d> pose) {
-        return navigateTo(pose, 2);
+        return navigateTo(pose, 3);
     }
 
     public Command navigateTo(Supplier<Pose2d> pose, double timeout) {
