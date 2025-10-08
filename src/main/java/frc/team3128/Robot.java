@@ -119,6 +119,7 @@ public class Robot extends NAR_Robot {
     @Override
     public void autonomousPeriodic() {
         CommandScheduler.getInstance().run();
+        Camera.updateAll();
     }
 
     @Override
