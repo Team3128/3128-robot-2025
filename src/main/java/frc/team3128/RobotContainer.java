@@ -119,7 +119,7 @@ public class RobotContainer {
 
     @SuppressWarnings("resource")
     public RobotContainer() {
-        Log.profile("init Swerve", () -> swerve = Swerve.getInstance());
+        swerve = Swerve.getInstance();
         // winch = WinchMechanism.getInstance();
         
         NAR_CANSpark.maximumRetries = 2;
@@ -175,6 +175,8 @@ public class RobotContainer {
         controller2.getButton(kB).onTrue(WinchMechanism.getInstance().runCommand(-0.5)).onFalse(WinchMechanism.getInstance().stopCommand());
         controller2.getButton(kX).onTrue(WinchMechanism.getInstance().resetCommand().ignoringDisable(true));
         controller2.getButton(kY).onTrue(robot.setStateCommand(FULL_NEUTRAL));
+        
+        controller2.getButton(kStart).onTrue(Commands.runOnce(()->LedsMechanism.getInstance().setColor(Color.kBlue)));
 
 
         controller.getButton(kA).onTrue(robot.getTempToggleCommand(RPL1, RSL1));

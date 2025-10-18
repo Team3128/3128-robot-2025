@@ -69,7 +69,7 @@ public class Robot extends NAR_Robot {
     }
 
     private Robot() {
-        Log.profile("init RobotContainer", () -> m_robotContainer = new RobotContainer());
+        m_robotContainer = new RobotContainer();
         autoPrograms = AutoPrograms.getInstance();
     }
 
