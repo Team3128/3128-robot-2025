@@ -160,7 +160,7 @@ public class AutoPrograms {
                             robot.setStateCommand(AUTO_HOLD),
                             robot.setStateCommand(RPL4)
                         )
-                    ).withDeadline(robot.alignScoreCoral(allianceFlip(()-> state.getPose2d()), () -> false).
+                    ).withDeadline(robot.alignScoreCoral(allianceFlip(()-> state.getPose2d()), () -> false, () -> true).
                         andThen(() -> robot.autoScore()).
                         andThen(waitUntil(() -> robot.stateEquals(NEUTRAL))))
                 );
