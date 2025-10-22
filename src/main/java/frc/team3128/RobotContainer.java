@@ -201,7 +201,7 @@ public class RobotContainer {
         // controller.getButton(kLeftTrigger).onTrue(swerve.driveDebug().beforeStarting(()->swerve.zeroLock()));
         controller.getButton(kLeftBumper).onTrue(robot.setStateCommand(OUTTAKE)).onFalse(robot.setStateCommand(NEUTRAL));
 
-        controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
+        // controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
 
         // controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
         
