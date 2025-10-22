@@ -54,6 +54,7 @@ import frc.team3128.subsystems.Manipulator.Manipulator;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -171,13 +172,19 @@ public class RobotContainer {
         // buttonPad.getButton(8).onTrue(runOnce(()-> LedsMechanism.getInstance().setColor(Color.kBlue)));
 
 
-        controller2.getButton(kA).onTrue(WinchMechanism.getInstance().runCommand(0.5)).onFalse(WinchMechanism.getInstance().stopCommand());
-        controller2.getButton(kB).onTrue(WinchMechanism.getInstance().runCommand(-0.5)).onFalse(WinchMechanism.getInstance().stopCommand());
+        // controller2.getButton(kA).onTrue(WinchMechanism.getInstance().runCommand(0.5)).onFalse(WinchMechanism.getInstance().stopCommand());
+        // controller2.getButton(kB).onTrue(WinchMechanism.getInstance().runCommand(-0.5)).onFalse(WinchMechanism.getInstance().stopCommand());
         controller2.getButton(kX).onTrue(WinchMechanism.getInstance().resetCommand().ignoringDisable(true));
         controller2.getButton(kY).onTrue(robot.setStateCommand(FULL_NEUTRAL));
         
         controller2.getButton(kStart).onTrue(Commands.runOnce(()->LedsMechanism.getInstance().setColor(Color.kBlue)));
 
+        controller2.getButton(kA).onTrue(ElevatorMechanism.getInstance().runCommand(-0.5)).onFalse(ElevatorMechanism.getInstance().stopCommand());
+        controller2.getButton(kB).onTrue(ElevatorMechanism.getInstance().runCommand(0.5)).onFalse(ElevatorMechanism.getInstance().stopCommand());
+        controller2.getButton(kLeftTrigger).whileTrue(ElevatorMechanism.getInstance().sysIdDynamic(Direction.kReverse));
+        controller2.getButton(kLeftBumper).whileTrue(ElevatorMechanism.getInstance().sysIdDynamic(Direction.kForward));
+        controller2.getButton(kRightTrigger).whileTrue(ElevatorMechanism.getInstance().sysIdQuasistatic(Direction.kReverse));
+        controller2.getButton(kRightBumper).whileTrue(ElevatorMechanism.getInstance().sysIdQuasistatic(Direction.kForward));
 
         controller.getButton(kA).onTrue(robot.getTempToggleCommand(RPL1, RSL1));
         controller.getButton(kB).onTrue(robot.getTempToggleCommand(RPL2, RSL2));
