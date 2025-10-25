@@ -23,8 +23,8 @@ import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Swerve;
 import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Intake.PivotMechanism;
-import frc.team3128.subsystems.Leds.Leds;
-import frc.team3128.subsystems.Leds.LedsStates;
+// import frc.team3128.subsystems.Leds.Leds;
+// import frc.team3128.subsystems.Leds.LedsStates;
 // import frc.team3128.autonomous.AutoPrograms;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
@@ -161,7 +161,7 @@ public class Robot extends NAR_Robot {
         Camera.enableAll();
         sequence(
             waitSeconds(115),
-            RobotManager.getInstance().setStateCommand(RobotStates.PRE_CLIMB_PRIME).andThen(Leds.getInstance().setStateCommand(LedsStates.CLIMB)).onlyIf(RobotContainer.shouldPreClimb),
+            RobotManager.getInstance().setStateCommand(RobotStates.PRE_CLIMB_PRIME).onlyIf(RobotContainer.shouldPreClimb),
             waitSeconds(17),
             RobotManager.getInstance().setStateCommand(RobotStates.CLIMB).onlyIf(RobotContainer.shouldPreClimb)
         ).schedule();
@@ -190,7 +190,6 @@ public class Robot extends NAR_Robot {
 
     @Override
     public void disabledInit() {
-        Leds.getInstance().setStateCommand(LedsStates.DISABLED).ignoringDisable(true).schedule();
         CommandScheduler.getInstance().cancelAll();
         Swerve.disable();
         RobotManager.getInstance().stopCommand().ignoringDisable(true).schedule();
@@ -201,7 +200,6 @@ public class Robot extends NAR_Robot {
     public void disabledExit() {
         RobotManager.getInstance().stop();
         Log.info("State", RobotManager.getInstance().getState().name());
-        Leds.getInstance().setStateCommand(LedsStates.NEUTRAL).schedule();
     }
     
     // @Override
