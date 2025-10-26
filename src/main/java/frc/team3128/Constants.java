@@ -523,7 +523,7 @@ public class Constants {
         public static final StatusFrames ELEVATOR_STATUS_FRAME = StatusFrames.POSITION;
 
         public static final double ELEVATOR_POSITION_MIN = 0;
-        public static final double ELEVATOR_POSITION_MAX = 15.31 + 0.25;
+        public static final double ELEVATOR_POSITION_MAX = 1.531;
         public static final double ELEVATOR_TOLERANCE = 0.01;
     }
 

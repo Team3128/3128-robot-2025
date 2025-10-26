@@ -52,7 +52,7 @@ public class Robot extends NAR_Robot {
         //     Log.info("Alliance", alliance.toString());
         // }
 
-        return alliance;
+        return Alliance.Red;
     }
 
     public static Robot instance;
