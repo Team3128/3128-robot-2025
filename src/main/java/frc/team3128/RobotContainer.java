@@ -181,6 +181,10 @@ public class RobotContainer {
         
         controller2.getButton(kStart).onTrue(Commands.runOnce(()->LedsMechanism.getInstance().setColor(Color.kBlue)));
 
+        controller2.getUpPOVButton().onTrue(ElevatorMechanism.getInstance().pidTo(() -> ElevatorMechanism.getInstance().getSetpoint() + 0.02));
+
+        controller2.getButton(kRightBumper).onTrue(Manipulator.getInstance().roller.runCommand(-0.5)).onFalse(Manipulator.getInstance().roller.runCommand(0.33));
+
         // controller2.getButton(kA).onTrue(ElevatorMechanism.getInstance().runCommand(-0.5)).onFalse(ElevatorMechanism.getInstance().stopCommand());
         // controller2.getButton(kB).onTrue(ElevatorMechanism.getInstance().runCommand(0.5)).onFalse(ElevatorMechanism.getInstance().stopCommand());
         // controller2.getButton(kLeftTrigger).whileTrue(ElevatorMechanism.getInstance().sysIdDynamic(Direction.kReverse));
