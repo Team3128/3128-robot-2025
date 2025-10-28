@@ -110,7 +110,7 @@ public class RobotManager extends FSMSubsystemBase<RobotStates> {
                 swerve.ram(pose).onlyIf(shouldRam)
             ),
             sequence(
-                waitUntil(()-> swerve.atElevatorDist()), // wait until safe for elevator to move
+                waitUntil(()-> swerve.atElevatorDist()).withTimeout(3), // wait until safe for elevator to move
                 Commands.runOnce(()-> delayTransition = false),
                 Commands.runOnce(()-> {
                     for(Pair<RobotStates, RobotStates> coupledState : coupledStates){
