@@ -60,7 +60,7 @@ public class ElevatorMechanism extends PositionSubsystemBase {
     }   
 
     public SysIdRoutine driveRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(Volts.of(0.2).per(Second), Volts.of(4), null),
+        new SysIdRoutine.Config(Volts.of(0.5).per(Second), Volts.of(4), null),
         new SysIdRoutine.Mechanism((v) -> runVolts(v.in(Volts)), this::logMotors, this)
     );
 

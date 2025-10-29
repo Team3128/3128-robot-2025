@@ -78,6 +78,7 @@ public class Robot extends NAR_Robot {
         CanBridge.runTCP();
 
         Camera.enableAll();
+        Camera.updateAll();
         m_robotContainer.initDashboard();
         Log.info("Dashboard", "Done");
         LiveWindow.disableAllTelemetry();
