@@ -223,17 +223,20 @@ public class RobotContainer {
             robot.alignAlgaeIntake(),
             ()-> buttonPad.getButton(4).getAsBoolean()
         ));
-        controller.getButton(kRightTrigger).onTrue(either(
-            sequence(
-                robot.setStateCommand(RPB),
-                waitSeconds(2),
-                robot.setStateCommand(RSB),
-                waitSeconds(0.5),
-                robot.setStateCommand(NEUTRAL)
-            ),
-            robot.alignAlgaeScore(),
-            ()-> !buttonPad.getButton(3).getAsBoolean()
-        ));
+        controller.getButton(kRightTrigger).onTrue(
+            robot.getTempToggleCommand(RPB, RSB)
+        );
+        // controller.getButton(kRightTrigger).onTrue(either(
+        //     sequence(
+        //         robot.setStateCommand(RPB),
+        //         waitSeconds(2),
+        //         robot.setStateCommand(RSB),
+        //         waitSeconds(0.5),
+        //         robot.setStateCommand(NEUTRAL)
+        //     ),
+        //     robot.alignAlgaeScore(),
+        //     ()-> !buttonPad.getButton(3).getAsBoolean()
+        // ));
 
 
         controller.getButton(kRightStick).onTrue(robot.setStateCommand(NEUTRAL));
