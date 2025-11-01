@@ -183,6 +183,8 @@ public class RobotContainer {
 
         controller2.getUpPOVButton().onTrue(ElevatorMechanism.getInstance().pidTo(() -> ElevatorMechanism.getInstance().getSetpoint() + 0.02));
 
+        controller2.getDownPOVButton().onTrue(ElevatorMechanism.getInstance().pidTo(() -> ElevatorMechanism.getInstance().getSetpoint() - 0.02));
+
         controller2.getButton(kRightBumper).onTrue(Manipulator.getInstance().roller.runCommand(-0.5)).onFalse(Manipulator.getInstance().roller.runCommand(0.33));
 
         // controller2.getButton(kA).onTrue(ElevatorMechanism.getInstance().runCommand(-0.5)).onFalse(ElevatorMechanism.getInstance().stopCommand());
