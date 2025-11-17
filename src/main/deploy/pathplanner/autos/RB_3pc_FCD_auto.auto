@@ -11,15 +11,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Reset RIGHT_BARGE"
+            "pathName": "Copy of RIGHT_BARGE to F"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Slow L4 F"
+            "name": "Score L4 F"
           }
         },
         {
@@ -35,9 +35,15 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "Slow L4 C"
+            "name": "Score L4 C"
           }
         },
         {
@@ -47,9 +53,15 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "Slow L4 D"
+            "name": "Score L4 D"
           }
         },
         {
@@ -61,7 +73,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

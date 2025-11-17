@@ -40,13 +40,21 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.MutDistance;
+import edu.wpi.first.units.measure.MutLinearVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.measure.Voltage;
+import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 import static frc.team3128.Constants.SwerveConstants.*;
 import static frc.team3128.Constants.FieldConstants.*;
 import static frc.team3128.Constants.FieldConstants.FieldStates.*;
@@ -115,7 +123,7 @@ public class Swerve extends SwerveBase {
 
     // x * kP = dx/dt && (v_max)^2 = 2*a_max*x
     public static final Constraints translationConstraints = new Constraints(MAX_DRIVE_SPEED, MAX_DRIVE_ACCELERATION);
-    public static final PIDFFConfig translationConfig = new PIDFFConfig(3.5, 0, 0);//3 // used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
+    public static final PIDFFConfig translationConfig = new PIDFFConfig(2.2, 0, 0);//used to be 4,2//3 // used to be 5//2 * MAX_DRIVE_ACCELERATION / MAX_DRIVE_SPEED); //Conservative Kp estimate (2*a_max/v_max)
     public static final Controller translationController = new Controller(translationConfig, Controller.Type.POSITION); //Displacement error to output velocity
     public static final double translationTolerance = 0.03;
 
@@ -129,7 +137,7 @@ public class Swerve extends SwerveBase {
     public static final Controller rotationController = new Controller(rotationConfig, Controller.Type.POSITION); //Angular displacement error to output angular velocity
     public static final double rotationTolerance = Angle.ofRelativeUnits(1, Units.Degree).in(Units.Radian);
 
-    private static double translationPlateauThreshold = 40;
+    private static double translationPlateauThreshold = 50;
     private static double translationPlateauCount = 0;
 
 
@@ -138,6 +146,9 @@ public class Swerve extends SwerveBase {
 
     private static double rotationPlateauThreshold = 10;
     private static double rotationPlateauCount = 0;
+
+    private static DoubleSupplier velocityTranslationalSupplier;
+    private static DoubleSupplier velocityRotationalSupplier;
 
     static {
         translationController.setTolerance(translationTolerance);
@@ -220,6 +231,14 @@ public class Swerve extends SwerveBase {
         assign(velocity);
         if(translationController.isEnabled() && atTranslationSetpoint()) translationController.disable();
         if(rotationController.isEnabled() && atRotationSetpoint() && !translationController.isEnabled()) rotationController.disable();
+    }
+
+    public Command driveTranslationalDebug(){
+        return run(() -> drive(new ChassisSpeeds(velocityTranslationalSupplier.getAsDouble(), 0, 0)));
+    }
+
+    public Command driveRotationalDebug(){
+        return run(() -> drive(new ChassisSpeeds(0, 0, velocityRotationalSupplier.getAsDouble())));
     }
 
     public Command getDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta){
@@ -332,7 +351,7 @@ public class Swerve extends SwerveBase {
     }
 
     public Command navigateTo(Supplier<Pose2d> pose) {
-        return navigateTo(pose, 2);
+        return navigateTo(pose, 3);
     }
 
     public Command navigateTo(Supplier<Pose2d> pose, double timeout) {
@@ -391,14 +410,19 @@ public class Swerve extends SwerveBase {
         super.initShuffleboard();
         NAR_Shuffleboard.addData("Swerve", "Throttle", this::getThrottle, 4, 3);
 
-
         NAR_Shuffleboard.addData("Auto", "Translation Enabled", ()-> translationController.isEnabled(), 0, 0);
         NAR_Shuffleboard.addData("Auto", "At Setpoint", ()-> atTranslationSetpoint(), 0, 1);
         NAR_Shuffleboard.addData("Auto", "Error", ()-> getDistanceTo(translationSetpoint), 1, 0);
         NAR_Shuffleboard.addData("Auto", "Count", ()-> translationPlateauCount, 1, 1);
-        kPSupplier = NAR_Shuffleboard.debug("Auto", "kP", translationConfig.kP, 2, 0);
-        kISupplier = NAR_Shuffleboard.debug("Auto", "kI", translationConfig.kI, 2, 1);
-        kDSupplier = NAR_Shuffleboard.debug("Auto", "kD", translationConfig.kD, 2, 2);
+        
+        velocityTranslationalSupplier = NAR_Shuffleboard.debug("Auto Align", "Translational Velocity", 0, 0, 0);
+        velocityRotationalSupplier = NAR_Shuffleboard.debug("Auto Align", "Rotatoinal Velocity", 0, 0, 1);
+        kPSupplier = NAR_Shuffleboard.debug("Auto Align", "kP", translationConfig.kP, 2, 0);
+        kISupplier = NAR_Shuffleboard.debug("Auto Align", "kI", translationConfig.kI, 2, 1);
+        kDSupplier = NAR_Shuffleboard.debug("Auto Align", "kD", translationConfig.kD, 2, 2);
+        NAR_Shuffleboard.addData("Auto Align", "Translational Velo error", () -> {return velocityTranslationalSupplier.getAsDouble() - Math.abs(getRobotVelocity().vxMetersPerSecond);}, 3, 0);
+        NAR_Shuffleboard.addData("Auto Align", "Translational Rotational error", () -> {return velocityRotationalSupplier.getAsDouble() - Math.abs(getRobotVelocity().omegaRadiansPerSecond);}, 3, 1);
+
     }
 
     public static void disable() {
@@ -406,4 +430,63 @@ public class Swerve extends SwerveBase {
         rotationController.disable();
         getInstance().stop();
     }
+
+    public SysIdRoutine driveRoutine = new SysIdRoutine (
+        new SysIdRoutine.Config(null, null, null),
+        new SysIdRoutine.Mechanism(this::setDriveVoltage, this::logMotors, this)
+    );
+
+    // public SysIdRoutine angleRoutine = new SysIdRoutine (
+    //     new SysIdRoutine.Config(Volts.of(0.2).per(Second), Volts.of(0.1), null),
+    //     new SysIdRoutine.Mechanism(this::setAngleVoltage, null, this)
+    // );
+
+    public void setDriveVoltage(Voltage volts) {
+        for (final SwerveModule module : modules) {
+            module.getDriveMotor().setVolts(volts.in(Volts));
+        }
+    }
+
+    // public void setAngleVoltage(Voltage volts) {
+    //     for (final SwerveModule module : modules) {
+    //         module.getAngleMotor().setVolts(volts.in(Volts));
+    //     }
+    // }
+
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return driveRoutine.quasistatic(direction);
+      }
+      
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return driveRoutine.dynamic(direction);
+    }
+
+    // public Command sysIdQuasistaticAngle(SysIdRoutine.Direction direction) {
+    //     return angleRoutine.quasistatic(direction);
+    //   }
+      
+    // public Command sysIdDynamicAngle(SysIdRoutine.Direction direction) {
+    //     return angleRoutine.dynamic(direction);
+    // }
+
+    private final MutVoltage appliedVoltage = Volts.mutable(0);
+    private final MutDistance position = Meters.mutable(0);
+    private final MutLinearVelocity velocity = MetersPerSecond.mutable(0);
+    NAR_TalonFX m = (NAR_TalonFX) modules[0].getDriveMotor();
+    public void logMotors(SysIdRoutineLog log){
+        log.motor("mod0-motor")
+        .linearPosition(position.mut_replace(m.getPosition(), Meters))
+        .linearVelocity(velocity.mut_replace(m.getVelocity(), MetersPerSecond))
+        .voltage(appliedVoltage.mut_replace(m.getMotor().getMotorVoltage().getValueAsDouble(), Volts));
+        // for (final SwerveModule module : modules) {
+        //     log.motor("linear position").linearPosition(Meters.of(DRIVE_WHEEL_CIRCUMFERENCE*module.getDriveMotor().getPosition()/DRIVE_MOTOR_GEAR_RATIO));
+        //     log.motor("linear velocity").linearVelocity(MetersPerSecond.of(DRIVE_WHEEL_CIRCUMFERENCE*module.getDriveMotor().getVelocity()/(60*DRIVE_MOTOR_GEAR_RATIO)));
+        //     log.motor("drive voltage").voltage(Volts.of(12 * module.getDriveMotor().getAppliedOutput()));
+
+        //     // log.motor("angular position").angularPosition(Rotations.of(module.getAngleMotor().getPosition()));
+        //     // log.motor("angular velocity").angularVelocity(RotationsPerSecond.of(module.getAngleMotor().getVelocity() / 60.0));
+        //     // log.motor("angle voltage").voltage(Volts.of(12 * module.getDriveMotor().getAppliedOutput()));
+        // }
+    }
+
 }

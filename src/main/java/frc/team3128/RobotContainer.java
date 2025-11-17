@@ -22,6 +22,7 @@ import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -46,11 +47,17 @@ import frc.team3128.subsystems.Elevator.ElevatorMechanism;
 import frc.team3128.subsystems.Elevator.ElevatorStates;
 import frc.team3128.subsystems.Intake.Intake;
 import frc.team3128.subsystems.Intake.PivotMechanism;
+import frc.team3128.subsystems.Leds.Leds;
+import frc.team3128.subsystems.Leds.LedsMechanism;
+import frc.team3128.subsystems.Leds.LedsStates;
 import frc.team3128.subsystems.Manipulator.Manipulator;
 import frc.team3128.subsystems.Robot.RobotManager;
 import frc.team3128.subsystems.Robot.RobotStates;
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
+
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import static frc.team3128.subsystems.Robot.RobotStates.*;
 
@@ -103,7 +110,7 @@ public class RobotContainer {
     public static Limelight limelight;
 
     public static BooleanSupplier shouldRam = ()-> false;
-    public static BooleanSupplier shouldPreClimb = ()-> false;
+    public static BooleanSupplier shouldPreClimb = ()-> true;
     // public static BooleanSupplier bargeAutoMovement = () -> true;
     public static BooleanSupplier shouldWait;
 
@@ -162,6 +169,7 @@ public class RobotContainer {
 
         buttonPad.getButton(10).onTrue(runOnce(()-> Log.info("Alliance", Robot.getAlliance().toString())).ignoringDisable(true));
 
+        // buttonPad.getButton(8).onTrue(runOnce(()-> LedsMechanism.getInstance().setColor(Color.kBlue)));
 
 
         controller2.getButton(kA).onTrue(WinchMechanism.getInstance().runCommand(0.5)).onFalse(WinchMechanism.getInstance().stopCommand());
@@ -169,17 +177,43 @@ public class RobotContainer {
         controller2.getButton(kX).onTrue(WinchMechanism.getInstance().resetCommand().ignoringDisable(true));
         controller2.getButton(kY).onTrue(robot.setStateCommand(FULL_NEUTRAL));
 
+        controller2.getButton(kLeftBumper).onTrue(ElevatorMechanism.getInstance().resetCommand().ignoringDisable(true));
+        
+        controller2.getButton(kStart).onTrue(Commands.runOnce(()->LedsMechanism.getInstance().setColor(Color.kBlue)));
+
+        // controller2.getButton(kA).onTrue(ElevatorMechanism.getInstance().runCommand(-0.5)).onFalse(ElevatorMechanism.getInstance().stopCommand());
+        // controller2.getButton(kB).onTrue(ElevatorMechanism.getInstance().runCommand(0.5)).onFalse(ElevatorMechanism.getInstance().stopCommand());
+        // controller2.getButton(kLeftTrigger).whileTrue(ElevatorMechanism.getInstance().sysIdDynamic(Direction.kReverse));
+        // controller2.getButton(kLeftBumper).whileTrue(ElevatorMechanism.getInstance().sysIdDynamic(Direction.kForward));
+        // controller2.getButton(kRightTrigger).whileTrue(ElevatorMechanism.getInstance().sysIdQuasistatic(Direction.kReverse));
+        // controller2.getButton(kRightBumper).whileTrue(ElevatorMechanism.getInstance().sysIdQuasistatic(Direction.kForward));
 
         controller.getButton(kA).onTrue(robot.getTempToggleCommand(RPL1, RSL1));
         controller.getButton(kB).onTrue(robot.getTempToggleCommand(RPL2, RSL2));
         controller.getButton(kX).onTrue(robot.getTempToggleCommand(RPL3, RSL3));
         controller.getButton(kY).onTrue(robot.getTempToggleCommand(RPL4, RSL4));
 
+        // controller.getButton(kLeftBumper).whileTrue(Swerve.getInstance().sysIdDynamic(Direction.kForward).beforeStarting(Commands.runOnce(()->Swerve.getInstance().zeroLock())));
+        // controller.getButton(kLeftTrigger).whileTrue(Swerve.getInstance().sysIdDynamic(Direction.kReverse).beforeStarting(Commands.runOnce(()->Swerve.getInstance().zeroLock())));
+        // controller.getButton(kRightBumper).whileTrue(Swerve.getInstance().sysIdQuasistatic(Direction.kForward).beforeStarting(Commands.runOnce(()->Swerve.getInstance().zeroLock())));
+        // controller.getButton(kRightTrigger).whileTrue(Swerve.getInstance().sysIdQuasistatic(Direction.kReverse).beforeStarting(Commands.runOnce(()->Swerve.getInstance().zeroLock())));
+
+        // ANGLE SYSID
+
+        // controller.getButton(kLeftBumper).whileTrue(Swerve.getInstance().sysIdDynamic(Direction.kForward).beforeStarting(Commands.runOnce(()->Swerve.getInstance().oLock())));
+        // controller.getButton(kLeftTrigger).whileTrue(Swerve.getInstance().sysIdDynamic(Direction.kReverse).beforeStarting(Commands.runOnce(()->Swerve.getInstance().oLock())));
+        // controller.getButton(kRightBumper).whileTrue(Swerve.getInstance().sysIdQuasistatic(Direction.kForward).beforeStarting(Commands.runOnce(()->Swerve.getInstance().oLock())));
+        // controller.getButton(kRightTrigger).whileTrue(Swerve.getInstance().sysIdQuasistatic(Direction.kReverse).beforeStarting(Commands.runOnce(()->Swerve.getInstance().oLock())));
+
         controller.getButton(kLeftTrigger).onTrue(robot.getToggleCommand(INTAKE));
+        
+        // controller.getButton(kLeftTrigger).onTrue(swerve.driveDebug().beforeStarting(()->swerve.zeroLock()));
         controller.getButton(kLeftBumper).onTrue(robot.setStateCommand(OUTTAKE)).onFalse(robot.setStateCommand(NEUTRAL));
 
         // controller.getButton(kRightTrigger).onTrue(robot.setStateCommand(NEUTRAL));
+
         // controller.getButton(kRightBumper).onTrue(robot.getToggleCommand(CLIMB_PRIME, CLIMB));
+        
         controller.getButton(kRightBumper).onTrue(either(
             robot.getToggleCommand(RSA1, RSA2),
             robot.alignAlgaeIntake(),
@@ -204,6 +238,8 @@ public class RobotContainer {
         controller.getButton(kBack).onTrue(robot.alignScoreCoral(false, shouldWait)
             .beforeStarting(robot.setStateCommand(TELE_HOLD)));
 
+
+
         controller.getButton(kStart).onTrue(robot.alignScoreCoral(true, shouldWait)
             .beforeStarting(robot.setStateCommand(TELE_HOLD)));
 
@@ -215,10 +251,10 @@ public class RobotContainer {
         //     runOnce(()-> swerve.moveBy(new Translation2d(2, 0)))
         // );
 
-        new Trigger(()-> !gyroReset.get()).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true).andThen(Commands.print("Gyro Zeroed").ignoringDisable(true)).ignoringDisable(true));
+        new Trigger(()-> !gyroReset.get()).and((()-> DriverStation.isDisabled())).onTrue(runOnce(() -> swerve.resetGyro(0)).ignoringDisable(true).andThen(Leds.getInstance().setStateCommand(LedsStates.ZEROED).ignoringDisable(true)).ignoringDisable(true));
         new Trigger(()-> !elevReset.get()).and((() -> DriverStation.isDisabled())).onTrue(elevator.resetCommand().ignoringDisable(true).andThen(PivotMechanism.getInstance().resetCommand().ignoringDisable(true).andThen(WinchMechanism.getInstance().resetCommand().ignoringDisable(true))).andThen(Commands.print("Subsystems Zeroed").ignoringDisable(true)).ignoringDisable(true));
         new Trigger(allianceWrite).onTrue(runOnce(()-> Robot.getAlliance()).ignoringDisable(true));
-        new Trigger(()-> RollerMechanism.getInstance().isCaptured()).and(()-> robot.stateEquals(CLIMB_PRIME)).debounce(0.25).whileTrue(Commands.repeatingSequence(Commands.print("Captured"))).onFalse(Commands.print("Not Captured --------------------------------------------------------------------------------------------"));
+        new Trigger(()-> RollerMechanism.getInstance().isCaptured()).and(()-> robot.stateEquals(CLIMB_PRIME)).debounce(0.5).onTrue(Leds.getInstance().setStateCommand(LedsStates.CLIMB)).onFalse(Leds.getInstance().setStateCommand(LedsStates.CLIMB_PRIME));
     }
 
     public void initCameras() {

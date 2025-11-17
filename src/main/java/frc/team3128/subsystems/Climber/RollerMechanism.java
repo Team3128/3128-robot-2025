@@ -2,7 +2,6 @@ package frc.team3128.subsystems.Climber;
 
 import static frc.team3128.Constants.ClimberConstants.*;
 
-import au.grapplerobotics.LaserCan;
 import common.core.subsystems.VoltageSubsystemBase;
 import common.hardware.motorcontroller.NAR_CANSpark;
 import common.hardware.motorcontroller.NAR_CANSpark.ControllerType;
@@ -14,7 +13,7 @@ public class RollerMechanism extends VoltageSubsystemBase  {
 
     protected static NAR_CANSpark leader = new NAR_CANSpark(CLIMB_ROLLER_ID, ControllerType.CAN_SPARK_FLEX);
 
-    public LaserCan lc = new LaserCan(22);
+    // public LaserCan lc = new LaserCan(22);
     private static int maxDistanceThreshold = 100;
     private static int minDistanceThreshold = 10;
     private static int plateauCount = 0;
@@ -50,20 +49,22 @@ public class RollerMechanism extends VoltageSubsystemBase  {
 
  	}
 
-    public boolean withinRange() {
-        return lc.getMeasurement().distance_mm < maxDistanceThreshold && lc.getMeasurement().distance_mm > minDistanceThreshold;
-    }
+    // public boolean withinRange() {
+    //     return lc.getMeasurement().distance_mm < maxDistanceThreshold && lc.getMeasurement().distance_mm > minDistanceThreshold;
+    // }
 
     public boolean isCaptured() {
-        if(withinRange()) plateauCount++;
-        else {
-            plateauCount = 0;
-            return false;
-        }
-
-        if(plateauCount >= plateauThreshold) {
-            return true;
-        }
         return false;
-    }
+    //     if(withinRange()) plateauCount++;
+    //     else {
+    //         plateauCount = 0;
+    //         return false;
+    //     }
+
+    //     if(plateauCount >= plateauThreshold) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
+}
 }

@@ -49,7 +49,7 @@ public class Constants {
         public static final double MAX_DRIVE_ANGULAR_ACCELERATION = 10;//2 * Math.PI; //I stole from citrus.
 
         public static final double driveMotorGearRatio = 0;
-        public static final double angleMotorGearRatio = 150 / 7; 
+        public static final double angleMotorGearRatio = 150.0 / 7; 
 
         // public static final var kinematics = null; 
 
@@ -116,10 +116,10 @@ public class Constants {
         public static final int MOD3_CANCODER_ID = 13;
 
         /* Cancoder Offsets */
-        public static final double MOD0_CANCODER_OFFSET = -119.267578125;//-116.015625
-        public static final double MOD1_CANCODER_OFFSET = -68.115234375;//-67.58789
-        public static final double MOD2_CANCODER_OFFSET = 66.884765625;//65.0390625
-        public static final double MOD3_CANCODER_OFFSET = 19.072265625;//19.24805
+        public static final double MOD0_CANCODER_OFFSET = 61.5234-180;//-119.267578125;//-116.015625
+        public static final double MOD1_CANCODER_OFFSET = 108.8965-180;//-68.115234375;//-67.58789
+        public static final double MOD2_CANCODER_OFFSET = -112.1484+180;//66.884765625;//65.0390625
+        public static final double MOD3_CANCODER_OFFSET = -151.5234+180;//19.072265625;//19.24805
 
 
         public static final double RAMP_TIME = 3;
@@ -158,9 +158,9 @@ public class Constants {
         public static final double DRIVE_MOTOR_KF = 0.0;
 
         /* Drive Motor Characterization Values */
-        public static final double DRIVE_MOTOR_KS = 0.16746;//0.13023; //0.19057;//0.60094; // 0.19225;
-        public static final double DRIVE_MOTOR_KV = 1.95619;//1.92348; //2.01208;//1.1559;  // 2.4366
-        public static final double DRIVE_MOTOR_KA = 0.4443;//0.10274; //0.09043; //0.12348; // 0.34415
+        public static final double DRIVE_MOTOR_KS = 0.0011596;//0.13023; //0.19057;//0.60094; // 0.19225;
+        public static final double DRIVE_MOTOR_KV = 2.5951;//1.92348; //2.01208;//1.1559;  // 2.4366
+        public static final double DRIVE_MOTOR_KA = 0.26926;//0.10274; //0.09043; //0.12348; // 0.34415
 
         /* Motor and Sensor IDs */
         public static final int PIDGEON_ID = 9; 
@@ -177,9 +177,9 @@ public class Constants {
         public static final double DRIVE_TURN_KP = 5;
         public static final double DRIVE_TURN_KI = 0;
         public static final double DRIVE_TURN_KD = 0;
-        public static final double DRIVE_TURN_KS = 0.1; //0.05748
-        public static final double DRIVE_TURN_KV = 0.01723; //0.01723
-        public static final double DRIVE_TURN_KA = 0.0064; //0.0064
+        public static final double DRIVE_TURN_KS = 0.09545; //, 0.1 , 0.05748
+        public static final double DRIVE_TURN_KV = 2.64897; //0.01723
+        public static final double DRIVE_TURN_KA = -0.11944; //0.0064
         public static final double DRIVE_TURN_KG = 0;
 
         public static final List<Rotation2d> snapToAngles = List.of(
@@ -233,9 +233,9 @@ public class Constants {
         public static final Translation2d CENTER_FIELD = FIELD.div(2);
         public static final Translation2d ROBOT_RELATIVE_MANIPULATOR_OFFSET = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(-6.25));
         public static final Translation2d ROBOT_RELATIVE_MANIPULATOR_OFFSET_BACKWARDS = new Translation2d(Units.inchesToMeters(29.0/2.0), Units.inchesToMeters(6.25));
-        public static final Translation2d CORAL_STOP_DIST = new Translation2d(Units.inchesToMeters(4.5), 0);
+        public static final Translation2d CORAL_STOP_DIST = new Translation2d(Units.inchesToMeters(0.5), 0);
         public static final Translation2d ALGAE_STOP_DIST = new Translation2d(0.01, Units.inchesToMeters(2));
-        public static final Translation2d SOURCE_STOP_DIST = new Translation2d(0.05, 0);
+        public static final Translation2d SOURCE_STOP_DIST = new Translation2d(0.02, 0);
         public static final Translation2d RAM_FACTOR = new Translation2d(0.1, 0);
 
         public static final Translation2d CORAL_LEFT_POLE_SHIFT = new Translation2d(0, Units.inchesToMeters(-13.0 / 2));
@@ -519,11 +519,11 @@ public class Constants {
         public static final double ELEVATOR_SAMPLE_PER_MINUTE = 60;
         public static final int ELEVATOR_STATOR_CURRENT_LIMIT = 60;
         public static final boolean ELEVATOR_INVERT = false;
-        public static final Neutral ELEVATOR_NEUTRAL_MODE = Neutral.COAST;
+        public static final Neutral ELEVATOR_NEUTRAL_MODE = Neutral.BRAKE;
         public static final StatusFrames ELEVATOR_STATUS_FRAME = StatusFrames.POSITION;
 
         public static final double ELEVATOR_POSITION_MIN = 0;
-        public static final double ELEVATOR_POSITION_MAX = Units.inchesToMeters(60.4375);
+        public static final double ELEVATOR_POSITION_MAX = 15.31 + 0.25;
         public static final double ELEVATOR_TOLERANCE = 0.01;
     }
 
@@ -536,7 +536,7 @@ public class Constants {
         public static final double CLIMBER_GEAR_RATIO = (90.0 / 450.0) * (5.0 / 3.0);
         public static final double CLIMBER_SAMPLE_PER_MINUTE = 60;
         public static final int CLIMBER_STATOR_CURRENT_LIMIT = 40;
-        public static final boolean CLIMBER_INVERT = false;
+        public static final boolean CLIMBER_INVERT = true;
         public static final Neutral CLIMBER_NEUTRAL_MODE = Neutral.BRAKE;
         public static final StatusFrames CLIMBER_STATUS_FRAME = StatusFrames.POSITION;
 
@@ -564,5 +564,10 @@ public class Constants {
 
         public static final int FIRST_SENSOR_ID = 0;
         public static final int SECOND_SENSOR_ID = 1;
+    }
+
+    public static class LedsConstants {
+        public static final int CANDLE_ID = 14;
+        public static final int MAX_HEIGHT = 36;
     }
 }
