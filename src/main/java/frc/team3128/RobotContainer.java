@@ -265,8 +265,9 @@ public class RobotContainer {
     }
 
     public void initCameras() {
-        Log.info("tags", APRIL_TAGS.get(0).toString());
-        Camera.setResources(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), new AprilTagFieldLayout(APRIL_TAGS, FIELD_X_LENGTH, FIELD_Y_LENGTH), () -> swerve.getPose());
+        //new AprilTagFieldLayout(APRIL_TAGS, FIELD_X_LENGTH, FIELD_Y_LENGTH)
+        Log.info("tags", APRIL_TAGS.getTags().get(0).toString());
+        Camera.setResources(() -> swerve.getYaw(), (pose, time) -> swerve.addVisionMeasurement(pose, time), () -> swerve.getPose(), APRIL_TAGS);
         Camera.addIgnoredTags(4, 5, 14, 15);
         if (Robot.isReal()) {
             Camera backRightCamera = new Camera("BOTTOM_RIGHT", 0.27, -0.27,  Units.degreesToRadians(-15), 0, 0);
