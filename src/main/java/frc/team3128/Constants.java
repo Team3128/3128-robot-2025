@@ -200,31 +200,31 @@ public class Constants {
         public static final Matrix<N3,N1> SVR_STATE_STD = VecBuilder.fill(0.1, 0.1,Units.degreesToRadians(3));
  
         public static final Matrix<N3,N1> SVR_VISION_MEASUREMENT_STD = VecBuilder.fill(0.5,0.5,Units.degreesToRadians(5));
-        public static final AprilTagFieldLayout APRIL_TAGS = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
-        // public static final List<AprilTag> APRIL_TAGS = Arrays.asList(
-        //     new AprilTag(1, new Pose3d(Units.inchesToMeters(657.37), Units.inchesToMeters(25.80), Units.inchesToMeters(58.50), new Rotation3d(0, Math.toRadians(0), Math.toRadians(126)))),
-        //     new AprilTag(2, new Pose3d(Units.inchesToMeters(657.37), Units.inchesToMeters(291.20), Units.inchesToMeters(58.50), new Rotation3d(0, Math.toRadians(0), Math.toRadians(234)))),
-        //     new AprilTag(3, new Pose3d(Units.inchesToMeters(455.15), Units.inchesToMeters(317.15), Units.inchesToMeters(51.25), new Rotation3d(0, Math.toRadians(0), Math.toRadians(270)))),
-        //     new AprilTag(4, new Pose3d(Units.inchesToMeters(365.20), Units.inchesToMeters(241.64), Units.inchesToMeters(73.54), new Rotation3d(0, Math.toRadians(30), Math.toRadians(0)))),
-        //     new AprilTag(5, new Pose3d(Units.inchesToMeters(265.20), Units.inchesToMeters(75.39), Units.inchesToMeters(73.54), new Rotation3d(0, Math.toRadians(30), Math.toRadians(0)))),
-        //     new AprilTag(6, new Pose3d(Units.inchesToMeters(530.49), Units.inchesToMeters(130.17), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(300)))),
-        //     new AprilTag(7, new Pose3d(Units.inchesToMeters(546.87), Units.inchesToMeters(158.50), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(0)))),
-        //     new AprilTag(8, new Pose3d(Units.inchesToMeters(530.49), Units.inchesToMeters(186.83), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(60)))),
-        //     new AprilTag(9, new Pose3d(Units.inchesToMeters(497.77), Units.inchesToMeters(186.83), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(120)))),
-        //     new AprilTag(10, new Pose3d(Units.inchesToMeters(481.39), Units.inchesToMeters(158.50), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(180)))),
-        //     new AprilTag(11, new Pose3d(Units.inchesToMeters(497.77), Units.inchesToMeters(130.17), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(240)))),
-        //     new AprilTag(12, new Pose3d(Units.inchesToMeters(33.51), Units.inchesToMeters(25.80), Units.inchesToMeters(58.50), new Rotation3d(0, Math.toRadians(0), Math.toRadians(54)))),
-        //     new AprilTag(13, new Pose3d(Units.inchesToMeters(33.51), Units.inchesToMeters(291.20), Units.inchesToMeters(58.50), new Rotation3d(0, Math.toRadians(0), Math.toRadians(306)))),
-        //     new AprilTag(14, new Pose3d(Units.inchesToMeters(325.68), Units.inchesToMeters(241.64), Units.inchesToMeters(73.54), new Rotation3d(0, Math.toRadians(30), Math.toRadians(180)))),
-        //     new AprilTag(15, new Pose3d(Units.inchesToMeters(325.68), Units.inchesToMeters(75.39), Units.inchesToMeters(73.54), new Rotation3d(0, Math.toRadians(30), Math.toRadians(180)))),
-        //     new AprilTag(16, new Pose3d(Units.inchesToMeters(235.73), Units.inchesToMeters(-0.15), Units.inchesToMeters(51.25), new Rotation3d(0, Math.toRadians(0), Math.toRadians(90)))),
-        //     new AprilTag(17, new Pose3d(Units.inchesToMeters(160.39), Units.inchesToMeters(130.17), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(240)))),
-        //     new AprilTag(18, new Pose3d(Units.inchesToMeters(144.00), Units.inchesToMeters(158.50), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(180)))),
-        //     new AprilTag(19, new Pose3d(Units.inchesToMeters(160.39), Units.inchesToMeters(186.83), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(120)))),
-        //     new AprilTag(20, new Pose3d(Units.inchesToMeters(193.10), Units.inchesToMeters(186.83), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(60)))),
-        //     new AprilTag(21, new Pose3d(Units.inchesToMeters(209.49), Units.inchesToMeters(158.58), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(0)))),
-        //     new AprilTag(22, new Pose3d(Units.inchesToMeters(193.10), Units.inchesToMeters(130.17), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(300))))
-        // );
+        //public static final AprilTagFieldLayout APRIL_TAGS = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+        public static final List<AprilTag> APRIL_TAGS = Arrays.asList(
+            new AprilTag(1, new Pose3d(Units.inchesToMeters(657.37), Units.inchesToMeters(25.80), Units.inchesToMeters(58.50), new Rotation3d(0, Math.toRadians(0), Math.toRadians(126)))),
+            new AprilTag(2, new Pose3d(Units.inchesToMeters(657.37), Units.inchesToMeters(291.20), Units.inchesToMeters(58.50), new Rotation3d(0, Math.toRadians(0), Math.toRadians(234)))),
+            new AprilTag(3, new Pose3d(Units.inchesToMeters(455.15), Units.inchesToMeters(317.15), Units.inchesToMeters(51.25), new Rotation3d(0, Math.toRadians(0), Math.toRadians(270)))),
+            new AprilTag(4, new Pose3d(Units.inchesToMeters(365.20), Units.inchesToMeters(241.64), Units.inchesToMeters(73.54), new Rotation3d(0, Math.toRadians(30), Math.toRadians(0)))),
+            new AprilTag(5, new Pose3d(Units.inchesToMeters(265.20), Units.inchesToMeters(75.39), Units.inchesToMeters(73.54), new Rotation3d(0, Math.toRadians(30), Math.toRadians(0)))),
+            new AprilTag(6, new Pose3d(Units.inchesToMeters(530.49), Units.inchesToMeters(130.17), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(300)))),
+            new AprilTag(7, new Pose3d(Units.inchesToMeters(546.87), Units.inchesToMeters(158.50), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(0)))),
+            new AprilTag(8, new Pose3d(Units.inchesToMeters(530.49), Units.inchesToMeters(186.83), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(60)))),
+            new AprilTag(9, new Pose3d(Units.inchesToMeters(497.77), Units.inchesToMeters(186.83), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(120)))),
+            new AprilTag(10, new Pose3d(Units.inchesToMeters(481.39), Units.inchesToMeters(158.50), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(180)))),
+            new AprilTag(11, new Pose3d(Units.inchesToMeters(497.77), Units.inchesToMeters(130.17), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(240)))),
+            new AprilTag(12, new Pose3d(Units.inchesToMeters(33.51), Units.inchesToMeters(25.80), Units.inchesToMeters(58.50), new Rotation3d(0, Math.toRadians(0), Math.toRadians(54)))),
+            new AprilTag(13, new Pose3d(Units.inchesToMeters(33.51), Units.inchesToMeters(291.20), Units.inchesToMeters(58.50), new Rotation3d(0, Math.toRadians(0), Math.toRadians(306)))),
+            new AprilTag(14, new Pose3d(Units.inchesToMeters(325.68), Units.inchesToMeters(241.64), Units.inchesToMeters(73.54), new Rotation3d(0, Math.toRadians(30), Math.toRadians(180)))),
+            new AprilTag(15, new Pose3d(Units.inchesToMeters(325.68), Units.inchesToMeters(75.39), Units.inchesToMeters(73.54), new Rotation3d(0, Math.toRadians(30), Math.toRadians(180)))),
+            new AprilTag(16, new Pose3d(Units.inchesToMeters(235.73), Units.inchesToMeters(-0.15), Units.inchesToMeters(51.25), new Rotation3d(0, Math.toRadians(0), Math.toRadians(90)))),
+            new AprilTag(17, new Pose3d(Units.inchesToMeters(160.39), Units.inchesToMeters(130.17), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(240)))),
+            new AprilTag(18, new Pose3d(Units.inchesToMeters(144.00), Units.inchesToMeters(158.50), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(180)))),
+            new AprilTag(19, new Pose3d(Units.inchesToMeters(160.39), Units.inchesToMeters(186.83), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(120)))),
+            new AprilTag(20, new Pose3d(Units.inchesToMeters(193.10), Units.inchesToMeters(186.83), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(60)))),
+            new AprilTag(21, new Pose3d(Units.inchesToMeters(209.49), Units.inchesToMeters(158.58), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(0)))),
+            new AprilTag(22, new Pose3d(Units.inchesToMeters(193.10), Units.inchesToMeters(130.17), Units.inchesToMeters(12.13), new Rotation3d(0, Math.toRadians(0), Math.toRadians(300))))
+        );
     }
     
     public static class FieldConstants{
@@ -291,7 +291,8 @@ public class Constants {
 
             private FieldStates(int id, Translation2d offset, boolean facingTag, Translation2d fudgeFactor) {
                 this.id = id;
-                final Pose2d aprilTagPose = APRIL_TAGS.getTags().get(id - 1).pose.toPose2d();
+                final Pose2d aprilTagPose = APRIL_TAGS.get(id - 1).pose.toPose2d();
+                //final Pose2d aprilTagPose = APRIL_TAGS.getTags().get(id - 1).pose.toPose2d();
                 Translation2d FIELD_RELATIVE_MANIPULATOR_OFFSET = (facingTag ? ROBOT_RELATIVE_MANIPULATOR_OFFSET : ROBOT_RELATIVE_MANIPULATOR_OFFSET_BACKWARDS).rotateBy(aprilTagPose.getRotation());
                 Translation2d FIELD_RELATIVE_OFFSET = offset.rotateBy(aprilTagPose.getRotation());
                 Rotation2d rotation = facingTag ? aprilTagPose.getRotation().plus(Rotation2d.k180deg) : aprilTagPose.getRotation();
